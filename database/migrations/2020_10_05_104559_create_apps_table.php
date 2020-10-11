@@ -15,6 +15,7 @@ class CreateAppsTable extends Migration
     {
         Schema::create('apps', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('token_id')->nullable()->index();
             $table->foreignId('team_id')->nullable()->index();
             $table->string('appicon', 100)->nullable();
             $table->string('app_name', 50)->nullable();
