@@ -14,6 +14,7 @@ class AppController extends Controller
     {
         try {
             $app = DB::table('personal_access_tokens')->where('token', '=', $apptoken)->first();
+            
             if ($app == null)
             {
                 //bad access token, return 404
