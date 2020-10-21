@@ -25,3 +25,6 @@ npm-debug.log
 yarn-error.log
 .php.orig
 .env.local.php
+.env*
+/public/.DS_Store
+/public/.htaccess
