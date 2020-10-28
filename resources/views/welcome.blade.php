@@ -40,8 +40,8 @@
                 <div class="tyJCtd mGzaTb baZpAe lkHyyc">
                     <h1>Fast API eXtraction Technologies</h1>
                     <span>
-                        <h4>Your No-Code solution to an app for your business.</h4>
-                        <p><a href="mailto:info@faxt.com">contact</a> | <a href="privacy">privacy</a> | <a href="terms">terms</a></p>
+                        <h2>Your No-Code solution to an app for your business.</h2>
+                        <p><a href="contact">contact</a> | <a href="privacy">privacy</a> | <a href="terms">terms</a></p>
                         <p><small>&copy faxt 1999-2020</small></p>
                     </span>
 

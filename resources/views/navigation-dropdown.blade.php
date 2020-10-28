@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <x-jet-application-mark class="block h-9 w-auto" />
+                        <img src="{{ asset('images/FAXTsmalllogo.png') }}" class="block h-9 w-auto" />
                     </a>
                 </div>
 
@@ -17,7 +17,7 @@
                     </x-jet-nav-link>
                 </div>
             </div>
-
+@if ( Auth::user() != null)
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 <x-jet-dropdown align="right" width="48">
@@ -89,7 +89,7 @@
                     </x-slot>
                 </x-jet-dropdown>
             </div>
-
+@endif
             <!-- Hamburger -->
             <div class="-mr-2 flex items-center sm:hidden">
                 <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
@@ -102,6 +102,7 @@
         </div>
     </div>
 
+@if ( Auth::user() != null)
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
@@ -177,4 +178,5 @@
             </div>
         </div>
     </div>
+@endif
 </nav>
