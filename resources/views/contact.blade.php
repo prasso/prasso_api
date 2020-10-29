@@ -17,6 +17,13 @@
                 </ul>
             </div>
         @endif
+        @if(Session::get('message'))
+        <div class="relative px-3 py-3 mb-4 border rounded text-teal-darker border-teal-dark bg-teal-lighter">
+                <ul>
+                    <li>{{Session::get('message')}}</li>
+                </ul>
+            </div>
+        @endif
         <div class="form-group row col-8">
             <div class="form-group col-12">
                 <label for="email">Email Address(es)</label>
@@ -32,6 +39,9 @@
                     <label for="emailBody">Email Body</label>
                     <textarea class="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-grey-darker border border-grey rounded"" id="emailBody" name="body" rows="3"></textarea>
                 </div>
+            </div>
+            <div class="hidden">
+            <input type="text"  name="details" id="details"  >
             </div>
             <button type="submit" class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap py-2 px-4 rounded text-base leading-normal no-underline text-blue-lightest bg-blue hover:bg-blue-light py-3 px-4 text-xl leading-tight">Submit</button>
         </div>

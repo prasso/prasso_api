@@ -25,6 +25,7 @@ return [
 
     'cipher' => 'AES-256-CBC',
     'firebase_server_key' => env('FIREBASE_SERVER_KEY'),
+    'contact_device_token' => env('CONTACT_DEVICE_TOKEN'),
     'providers' => [
 
         /*

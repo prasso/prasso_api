@@ -8,10 +8,12 @@ use Illuminate\Support\Facades\Log;
 class EmailController extends Controller
 {
     protected $serverKey;
+    protected $user_device_token;
  
     public function __construct()
     {
         $this->serverKey = config('app.firebase_server_key');
+        $this->user_device_token = config('app.contact_device_token');
     }
 
     public function sendEmail(Request $request) {
@@ -27,7 +29,7 @@ class EmailController extends Controller
 
 
         $data = [
-            "to" => "",
+            "to" => $this->user_device_token,
             "notification" =>
                 [
                     "title" => 'Prasso Contact Request:'. $subject,
@@ -36,7 +38,7 @@ class EmailController extends Controller
                 ],
         ];
         $dataString = json_encode($data);
-    
+ 
         $headers = [
             'Authorization: key=' . $this->serverKey,
             'Content-Type: application/json',
@@ -52,10 +54,12 @@ class EmailController extends Controller
     
         // curl_exec($ch);
         $respCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $resp = json_decode(curl_exec($ch), true);
+        $ranit = curl_exec($ch);
+ 
+        $resp = json_decode( $ranit, true);
         curl_close($ch);
         Log::info($resp);
-dd($resp);
+
         return redirect('/contact')->with('message', 'Your message was sent.'); 
     }
 
