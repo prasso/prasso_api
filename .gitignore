@@ -28,4 +28,5 @@ yarn-error.log
 .env*
 /public/.DS_Store
 /public/.htaccess
-.vscode/
+./vendor
+./.vscode
