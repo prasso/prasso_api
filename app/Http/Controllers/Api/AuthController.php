@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use Illuminate\Support\Facades\Log;
+use App\Providers\AppServiceProvider;
 
 class AuthController extends BaseController
 {
@@ -47,15 +48,17 @@ class AuthController extends BaseController
     {
         $email= $request->input('email');
         $password= $request->input('password');
-        $push_token= $request->input('token');
+        $push_token= $request->input('pn_token');
+        $app_token=$request->input('app_token'); //identifies which app
+
         $firebase_uid = $request->input('firebase_uid');
         if (isset($firebase_uid ))
         {
-            $user = User::where("firebase_uid",$firebase_uid)->get();
+            $user = User::where("firebase_uid",$firebase_uid)->first();
 
         }
         if( ! Auth::attempt(['email' => $email, 'password' => $password])){ 
-            if (null != user)
+            if (null != $user)
             {
                 $user->password = bcrypt($password);
                 $user->save();
@@ -77,12 +80,14 @@ class AuthController extends BaseController
 
                 $user->save();
             }
-            $success['token'] =  $user->createToken(config('app.name'))->accessToken; 
+            $success['token'] =  json_encode($user->createToken(config('app.name'))->accessToken->token); 
             $success['name'] =  $user->name;
             $success['uid'] = $user->id;
             $success['email'] = $user->email;
             $success['photoURL'] = $user->profile_photo_url;
- 
+            $app_data = AppServiceProvider::getAppSettings($app_token);
+            $success['app_data'] = $app_data; //configuration for setting up the app is here
+  
             return $this->sendResponse($success, 'User login successfully.');
         } 
         else{ 
