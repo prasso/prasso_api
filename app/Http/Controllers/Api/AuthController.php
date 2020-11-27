@@ -87,7 +87,7 @@ class AuthController extends BaseController
             $success['photoURL'] = $user->profile_photo_url;
             $app_data = AppServiceProvider::getAppSettings($app_token);
             $success['app_data'] = $app_data; //configuration for setting up the app is here
-   Log::info($success); //bobbi
+  
             return $this->sendResponse($success, 'User login successfully.');
         } 
         else{ 
