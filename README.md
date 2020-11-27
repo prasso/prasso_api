@@ -12,7 +12,8 @@ Definition
 - to exact tribute, revenue, debts
 - to act
 
-
+##
+The API. Users are authenticated at Firebase, but the app data is stored here
 
 ## License
 
