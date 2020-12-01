@@ -166,16 +166,17 @@ class AuthController extends BaseController
             $this->sendToUnauthorized();
         }
 
-        $user = User::join('personal_access_tokens', 'users.id', '=', 'personal_access_tokens.tokenable_id')
+        $user = User::select('users.*')
+                ->join('personal_access_tokens', 'users.id', '=', 'personal_access_tokens.tokenable_id')
                 ->where('personal_access_tokens.token', '=', $accessToken)
                 ->first();
 
-        if (!$user) {
+        Log::info(json_encode($user)); //bobbi
+        if ($user == null) {
             $this->unsetAccessTokenCookie();
             $this->sendToUnauthorized();
           }
         
-        Log::info(json_encode($user)); //bobbi
         \Auth::loginUsingId($user->id);
        return $user;
     }
@@ -187,5 +188,21 @@ class AuthController extends BaseController
         $response['status_code'] = \Symfony\Component\HttpFoundation\Response::HTTP_UNAUTHORIZED;
         return $this->sendError('Unauthorized.', ['error'=>'Please login again.']);
 
+    }
+       
+    /**
+    * function is used to accessToken email cookie to browser
+    */
+    protected function unsetAccessTokenCookie()
+    {
+        setcookie('accessToken', '', time() - 3600, "/"); 
+    }
+
+    /**
+     * function is used to set accessToken cookie to browser
+     */
+    protected function setAccessTokenCookie($accessToken)
+    {
+        setcookie('accessToken', $accessToken, time() + (86400 * 30), "/");
     }
 }
