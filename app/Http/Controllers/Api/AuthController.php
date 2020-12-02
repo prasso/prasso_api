@@ -118,9 +118,9 @@ class AuthController extends BaseController
 
     public function getAppSettings($apptoken,Request $request)
     {
-        Log::info(json_encode($request));
         $user = $this->setUpUser($request);
-        try {
+
+       try {
             if (!isset($user))
             {
                 $this->sendToUnauthorized();
@@ -137,7 +137,6 @@ class AuthController extends BaseController
      */
     private function buildConfigReturn($user, $app_token)
     {
-        Log::info(json_encode($user)); //bobbi
 
         $success = [];
         $success['token'] =  json_encode($user->createToken(config('app.name'))->accessToken->token); 
@@ -155,8 +154,7 @@ class AuthController extends BaseController
     {
         $accessToken  = $request->header('Authorization');
         $accessToken = str_replace("Bearer","",$accessToken);
-        Log::info($accessToken); //bobbi
-       
+    
         if (!isset($accessToken) && isset($_COOKIE['Authorization']))
         {
             $accessToken = $_COOKIE['Authorization'];
@@ -166,12 +164,11 @@ class AuthController extends BaseController
             $this->sendToUnauthorized();
         }
 
-        $user = User::select('users.*')
+        $user = User::select('users.*','users.firebase_uid AS uid')
                 ->join('personal_access_tokens', 'users.id', '=', 'personal_access_tokens.tokenable_id')
                 ->where('personal_access_tokens.token', '=', $accessToken)
                 ->first();
 
-        Log::info(json_encode($user)); //bobbi
         if ($user == null) {
             $this->unsetAccessTokenCookie();
             $this->sendToUnauthorized();
