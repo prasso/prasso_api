@@ -174,7 +174,7 @@ class AuthController extends BaseController
             $this->sendToUnauthorized();
           }
         
-        \Auth::loginUsingId($user->id);
+        \Auth::login($user);
        return $user;
     }
 
