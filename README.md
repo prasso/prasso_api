@@ -13,6 +13,8 @@ Definition
 - to act
 
 ##
+This api serves the Prasso app, all apps are built here and then loaded to the mobile presentation through api calls after login.
+
 The API. Users are authenticated at Firebase, but the app data is stored here
 
 ## License
