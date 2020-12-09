@@ -9,7 +9,7 @@ class Tabs extends Model
 {
     use HasFactory;
     protected $fillable = [
-        ' app_id', 'icon', 'label', 'page_title', 'page_url', 'sort_order',
+        'app_id', 'icon', 'label', 'page_title', 'page_url', 'sort_order','parent'
     ];
 
 }

@@ -21,7 +21,7 @@ class CreateAppsTable extends Migration
             $table->string('app_name', 50)->nullable();
             $table->string('page_title', 500)->nullable();
             $table->string('page_url', 500);
-            $table->integer('sort_order')->index();
+            $table->integer('sort_order');
             $table->timestamps();
         });
     }
