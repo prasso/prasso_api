@@ -2,7 +2,7 @@
 ## About Prasso
 
 A Laravel team site, used to feed application structure information to a Prasso app.
-###Prasso ·
+### Prasso ·
 Definition
 - to exercise, practise, to be busy with, carry on
 - to undertake, to do
@@ -12,7 +12,7 @@ Definition
 - to exact tribute, revenue, debts
 - to act
 
-##
+## Functionality
 This api serves the Prasso app, all apps are built here and then loaded to the mobile presentation through api calls after login.
 
 The API. Users are authenticated at Firebase, but the app data is stored here
