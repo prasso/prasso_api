@@ -39,7 +39,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'firebase_uid', 'push_token'
+        'name', 'email', 'password', 'profile_photo_url', 'firebase_uid', 'push_token'
     ];
 
     /**
@@ -71,5 +71,18 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function teams()
+    {
+        return $this->hasMany(Team::class);
+    }
+
+    public static function getUserByAccessToken($accessToken)
+    {
+        return User::select('users.*','users.firebase_uid AS uid')
+                ->join('personal_access_tokens', 'users.id', '=', 'personal_access_tokens.tokenable_id')
+                ->where('personal_access_tokens.token', '=', $accessToken)
+                ->first();
+    }
 
 }
