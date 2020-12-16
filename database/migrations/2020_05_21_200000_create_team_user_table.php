@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class CreateTeamUserTable extends Migration
 {
@@ -18,7 +19,8 @@ class CreateTeamUserTable extends Migration
             $table->foreignId('team_id');
             $table->foreignId('user_id');
             $table->string('role')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->default(DB::raw('NULL ON UPDATE CURRENT_TIMESTAMP'))->nullable();
 
             $table->unique(['team_id', 'user_id']);
         });

@@ -10,6 +10,7 @@ use Validator;
 use Illuminate\Support\Facades\Log;
 use App\Providers\AppServiceProvider;
 use Illuminate\Database\Eloquent\JsonEncodingException;
+use App\Actions\Fortify\CreateNewUser;
 
 class AuthController extends BaseController
 {
@@ -33,11 +34,11 @@ class AuthController extends BaseController
         }
    
         $input = $request->all();
-        $app_token=$request->input('app_token'); //identifies which app
-
         $input['password'] = bcrypt($input['password']);
+        
         $user = User::create($input);
-        $success = $this->buildConfigReturn($user,$app_token);
+ 
+        $success = $this->buildConfigReturn($user);
 
         return $this->sendResponse($success, 'User registered successfully.');
     }
@@ -48,12 +49,11 @@ class AuthController extends BaseController
      */
     public function record_login(Request $request)
     {
-
+        Log::info($request); //debug
         $email= $request->input('email');
         $password= $request->input('password');
         $push_token= $request->input('pn_token');
-        $app_token=$request->input('app_token'); //identifies which app
-
+        
         $firebase_uid = $request->input('firebase_uid');
             
         $user = null;
@@ -87,7 +87,7 @@ class AuthController extends BaseController
 
                 $user->save();
             }
-            $success = $this->buildConfigReturn($user,$app_token);
+            $success = $this->buildConfigReturn($user);
 
             return $this->sendResponse($success, 'User has logged in.');
         } 
@@ -116,6 +116,11 @@ class AuthController extends BaseController
         } 
     }
 
+    public function saveUser(User $user, Request $request)
+    {
+        $user.save();
+    }
+
     public function getAppSettings($apptoken,Request $request)
     {
         $user = $this->setUpUser($request);
@@ -125,7 +130,7 @@ class AuthController extends BaseController
             {
                 $this->sendToUnauthorized();
             }
-            $app_data = $this->buildConfigReturn($user,$apptoken);
+            $app_data = $this->buildConfigReturn($user);
             
             return $this->sendResponse($app_data, 'Successfully refreshed app data');
         } catch (\Throwable $e) {
@@ -135,7 +140,7 @@ class AuthController extends BaseController
     /**
      * Consolidate code used in multiple places
      */
-    private function buildConfigReturn($user, $app_token)
+    private function buildConfigReturn($user)
     {
 
         $success = [];
@@ -145,13 +150,15 @@ class AuthController extends BaseController
         $success['email'] = $user->email;
         $success['photoURL'] = $user->profile_photo_url;
     
-        $app_data = AppServiceProvider::getAppSettings($app_token);
+        $app_data = AppServiceProvider::getAppSettingsByUser($user);
         $success['app_data'] = $app_data; //configuration for setting up the app is here
         return $success;
     }
 
     private function setUpUser($request)
     {
+        Log::info(json_encode($request)); //debug
+        
         $accessToken  = $request->header('Authorization');
         $accessToken = str_replace("Bearer","",$accessToken);
     
@@ -161,17 +168,14 @@ class AuthController extends BaseController
             $this->setAccessTokenCookie($accessToken);
         }
         if (!isset($accessToken)) {
-            $this->sendToUnauthorized();
+           return $this->sendToUnauthorized();
         }
 
-        $user = User::select('users.*','users.firebase_uid AS uid')
-                ->join('personal_access_tokens', 'users.id', '=', 'personal_access_tokens.tokenable_id')
-                ->where('personal_access_tokens.token', '=', $accessToken)
-                ->first();
+        $user = User::getUserByAccessToken($accessToken);
 
         if ($user == null) {
             $this->unsetAccessTokenCookie();
-            $this->sendToUnauthorized();
+            return $this->sendToUnauthorized();
           }
         
         \Auth::login($user);
@@ -183,7 +187,7 @@ class AuthController extends BaseController
         $response['message'] = trans('messages.invalid_token');
         $response['success']= false;
         $response['status_code'] = \Symfony\Component\HttpFoundation\Response::HTTP_UNAUTHORIZED;
-        return $this->sendError('Unauthorized.', ['error'=>'Please login again.']);
+        return $this->sendError('Unauthorized.', ['error'=>'Please login again.'], 400);
 
     }
        
