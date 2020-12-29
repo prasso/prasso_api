@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller as BaseController;
 use App\Models\User;
+use App\Models\Team;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use Illuminate\Support\Facades\Log;
@@ -21,6 +22,7 @@ class AuthController extends BaseController
      */
     public function register(Request $request)
     {
+        log::info($request->all());
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email',
@@ -37,7 +39,11 @@ class AuthController extends BaseController
         $input['password'] = bcrypt($input['password']);
         
         $user = User::create($input);
- 
+        $user->ownedTeams()->save(Team::forceCreate([
+            'user_id' => $user->id,
+            'name' => explode(' ', $user->name, 2)[0]."'s Team",
+            'personal_team' => true,
+        ]));
         $success = $this->buildConfigReturn($user);
 
         return $this->sendResponse($success, 'User registered successfully.');
@@ -118,7 +124,8 @@ class AuthController extends BaseController
 
     public function saveUser(User $user, Request $request)
     {
-        $user.save();
+        Log::info(json_encode($user));
+        $user->save();
     }
 
     public function getAppSettings($apptoken,Request $request)
