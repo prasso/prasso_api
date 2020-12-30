@@ -22,7 +22,6 @@ class AuthController extends BaseController
      */
     public function register(Request $request)
     {
-        log::info($request->all());
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email',
@@ -55,7 +54,6 @@ class AuthController extends BaseController
      */
     public function record_login(Request $request)
     {
-        Log::info($request); //debug
         $email= $request->input('email');
         $password= $request->input('password');
         $push_token= $request->input('pn_token');
@@ -124,7 +122,7 @@ class AuthController extends BaseController
 
     public function saveUser(User $user, Request $request)
     {
-        Log::info(json_encode($user));
+        
         $user->save();
     }
 
@@ -149,11 +147,10 @@ class AuthController extends BaseController
      */
     private function buildConfigReturn($user)
     {
-
         $success = [];
         $success['token'] =  json_encode($user->createToken(config('app.name'))->accessToken->token); 
         $success['name'] =  $user->name;
-        $success['uid'] = $user->id;
+        $success['uid'] = $user->firebase_uid;
         $success['email'] = $user->email;
         $success['photoURL'] = $user->profile_photo_url;
     
@@ -164,8 +161,6 @@ class AuthController extends BaseController
 
     private function setUpUser($request)
     {
-        Log::info(json_encode($request)); //debug
-        
         $accessToken  = $request->header('Authorization');
         $accessToken = str_replace("Bearer","",$accessToken);
     
