@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller as BaseController;
 use App\Models\User;
+use App\Models\Team;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use Illuminate\Support\Facades\Log;
@@ -37,7 +38,11 @@ class AuthController extends BaseController
         $input['password'] = bcrypt($input['password']);
         
         $user = User::create($input);
- 
+        $user->ownedTeams()->save(Team::forceCreate([
+            'user_id' => $user->id,
+            'name' => explode(' ', $user->name, 2)[0]."'s Team",
+            'personal_team' => true,
+        ]));
         $success = $this->buildConfigReturn($user);
 
         return $this->sendResponse($success, 'User registered successfully.');
@@ -49,7 +54,6 @@ class AuthController extends BaseController
      */
     public function record_login(Request $request)
     {
-        Log::info($request); //debug
         $email= $request->input('email');
         $password= $request->input('password');
         $push_token= $request->input('pn_token');
@@ -118,7 +122,8 @@ class AuthController extends BaseController
 
     public function saveUser(User $user, Request $request)
     {
-        $user.save();
+        
+        $user->save();
     }
 
     public function getAppSettings($apptoken,Request $request)
@@ -142,11 +147,10 @@ class AuthController extends BaseController
      */
     private function buildConfigReturn($user)
     {
-
         $success = [];
         $success['token'] =  json_encode($user->createToken(config('app.name'))->accessToken->token); 
         $success['name'] =  $user->name;
-        $success['uid'] = $user->id;
+        $success['uid'] = $user->firebase_uid;
         $success['email'] = $user->email;
         $success['photoURL'] = $user->profile_photo_url;
     
@@ -157,8 +161,6 @@ class AuthController extends BaseController
 
     private function setUpUser($request)
     {
-        Log::info(json_encode($request)); //debug
-        
         $accessToken  = $request->header('Authorization');
         $accessToken = str_replace("Bearer","",$accessToken);
     

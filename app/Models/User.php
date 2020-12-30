@@ -77,6 +77,10 @@ class User extends Authenticatable
         return $this->hasMany(Team::class);
     }
 
+    public function getRouteKeyName() {
+        return 'firebase_uid';
+    }
+
     public static function getUserByAccessToken($accessToken)
     {
         return User::select('users.*','users.firebase_uid AS uid')

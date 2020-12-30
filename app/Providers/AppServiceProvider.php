@@ -39,11 +39,10 @@ class AppServiceProvider extends ServiceProvider
         $team = Team::with('apps')
             ->where('user_id',$user->id)
             ->first();
-        Log::info(json_encode($team)); //debug
+            
         $app_data = Apps::with('tabs')->with('team')
             ->where('team_id',$team->id)
             ->first();
-        Log::info(json_encode($app_data)); //debug
 
        return json_encode($app_data);
     }
@@ -57,7 +56,7 @@ class AppServiceProvider extends ServiceProvider
         ->where('personal_access_tokens.token', '=', $apptoken)
         ->first();
 
-        Log::info(json_encode($user)); //debug
+        
         if ($user == null)
         {
             return '';
@@ -67,7 +66,7 @@ class AppServiceProvider extends ServiceProvider
             ->where('team_id',$user->teams[0]->id)
             ->get();
 
-            Log::info(json_encode($app_data)); //debug
+            
        return json_encode($app_data);
     }
 
