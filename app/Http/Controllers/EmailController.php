@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+
 
 class EmailController extends Controller
 {
@@ -43,22 +45,12 @@ class EmailController extends Controller
             'Authorization: key=' . $this->serverKey,
             'Content-Type: application/json',
         ];
-    
-        $ch = curl_init();
-    
-        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
-    
-        // curl_exec($ch);
-        $respCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $ranit = curl_exec($ch);
- 
-        $resp = json_decode( $ranit, true);
-        curl_close($ch);
-        Log::info($resp);
+   
+    $url='https://fcm.googleapis.com/fcm/send';
+    $response = Http::withHeaders([
+        'Content-Type' => 'application/json',
+        'Authorization'=> 'key='. $this->serverKey,
+    ])->post($url, $data);
 
         return redirect('/contact')->with('message', 'Your message was sent.'); 
     }
