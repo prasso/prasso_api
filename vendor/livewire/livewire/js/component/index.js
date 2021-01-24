@@ -78,7 +78,7 @@ export default class Component {
         // The .split() stuff is to support dot-notation.
         return name
             .split('.')
-            .reduce((carry, segment) => carry[segment], this.data)
+            .reduce((carry, segment) => typeof carry === 'undefined' ? carry : carry[segment], this.data)
     }
 
     getPropertyValueIncludingDefers(name) {
@@ -99,7 +99,7 @@ export default class Component {
                 Object.entries(value || {}).forEach(([dataKey, dataValue]) => {
                     this.serverMemo.data[dataKey] = dataValue
 
-                    if (message.shouldSkipWatcher()) return
+                    if (message.shouldSkipWatcherForDataKey(dataKey)) return
 
                     // Because Livewire (for payload reduction purposes) only returns the data that has changed,
                     // we can use all the data keys from the response as watcher triggers.
@@ -557,7 +557,7 @@ export default class Component {
         if (this.modelDebounceCallbacks) {
             this.modelDebounceCallbacks.forEach(callbackRegister => {
                 callbackRegister.callback()
-                callbackRegister = () => { }
+                callbackRegister.callback = () => { }
             })
         }
 

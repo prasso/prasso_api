@@ -1867,17 +1867,17 @@
         },
         {
             "name": "laravel/sanctum",
-            "version": "v2.7.0",
-            "version_normalized": "2.7.0.0",
+            "version": "v2.8.2",
+            "version_normalized": "2.8.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/sanctum.git",
-                "reference": "43f05df591e5099563520ab018cca4ac383681cd"
+                "reference": "331bd6572610b06ad6dd6b2a7c15a0465a3ca9c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/sanctum/zipball/43f05df591e5099563520ab018cca4ac383681cd",
-                "reference": "43f05df591e5099563520ab018cca4ac383681cd",
+                "url": "https://api.github.com/repos/laravel/sanctum/zipball/331bd6572610b06ad6dd6b2a7c15a0465a3ca9c9",
+                "reference": "331bd6572610b06ad6dd6b2a7c15a0465a3ca9c9",
                 "shasum": ""
             },
             "require": {
@@ -1885,14 +1885,14 @@
                 "illuminate/contracts": "^6.9|^7.0|^8.0",
                 "illuminate/database": "^6.9|^7.0|^8.0",
                 "illuminate/support": "^6.9|^7.0|^8.0",
-                "php": "^7.2"
+                "php": "^7.2|^8.0"
             },
             "require-dev": {
                 "mockery/mockery": "^1.0",
                 "orchestra/testbench": "^4.0|^5.0|^6.0",
-                "phpunit/phpunit": "^8.0"
+                "phpunit/phpunit": "^8.0|^9.3"
             },
-            "time": "2020-10-20T18:37:43+00:00",
+            "time": "2020-11-24T17:31:19+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -2257,24 +2257,24 @@
         },
         {
             "name": "livewire/livewire",
-            "version": "v2.3.1",
-            "version_normalized": "2.3.1.0",
+            "version": "v2.3.6",
+            "version_normalized": "2.3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/livewire/livewire.git",
-                "reference": "4dfc7752254eb316911dec13c57578768bd1b743"
+                "reference": "8663232c198ef12964b62559e9bb2023eb86701d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/livewire/livewire/zipball/4dfc7752254eb316911dec13c57578768bd1b743",
-                "reference": "4dfc7752254eb316911dec13c57578768bd1b743",
+                "url": "https://api.github.com/repos/livewire/livewire/zipball/8663232c198ef12964b62559e9bb2023eb86701d",
+                "reference": "8663232c198ef12964b62559e9bb2023eb86701d",
                 "shasum": ""
             },
             "require": {
                 "illuminate/database": "^7.0|^8.0",
                 "illuminate/support": "^7.0|^8.0",
                 "illuminate/validation": "^7.0|^8.0",
-                "php": "^7.2.5",
+                "php": "^7.2.5|^8.0",
                 "symfony/http-kernel": "^5.0"
             },
             "require-dev": {
@@ -2286,7 +2286,7 @@
                 "phpunit/phpunit": "^8.4|^9.0",
                 "psy/psysh": "@stable"
             },
-            "time": "2020-10-27T19:08:41+00:00",
+            "time": "2021-01-08T17:33:29+00:00",
             "type": "library",
             "extra": {
                 "laravel": {
@@ -2320,7 +2320,7 @@
             "description": "A front-end framework for Laravel.",
             "support": {
                 "issues": "https://github.com/livewire/livewire/issues",
-                "source": "https://github.com/livewire/livewire/tree/v2.3.1"
+                "source": "https://github.com/livewire/livewire/tree/v2.3.6"
             },
             "funding": [
                 {

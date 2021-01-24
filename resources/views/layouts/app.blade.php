@@ -5,8 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <link rel="icon" type="image/png" href="{{asset('favicon.ico')}}" />
-        <title>{{ config('app.name', 'Prasso') }}</title>
+        <title>{{ config('app.name', '') }}</title>
 
         <!-- Fonts -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
@@ -17,7 +16,7 @@
         @livewireStyles
 
         <!-- Scripts -->
-        <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.6.0/dist/alpine.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.7.3/dist/alpine.js" defer></script>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
@@ -34,16 +33,7 @@
             <main>
                 {{ $slot }}
             </main>
-
         </div>
-            <div class="bg-white shadow ">
-            <div class="p-14 flex sm:justify-center items-center  ">
-            <a class="pr-1" href="contact">contact</a> | <a href="privacy">privacy</a> | <a href="terms">terms</a>
-            </div>
-            <div class="flex sm:justify-center items-center sm:pt-0 ">
-            <small>&copy faxt 1999-2020</small>
-            </div>
-        </div> 
 
         @stack('modals')
 

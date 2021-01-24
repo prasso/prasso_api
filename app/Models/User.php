@@ -2,34 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
-use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 
-/**
- * Class User.
- *
- * @property int $id
- * @property string $name
- * @property string $email
- * @property string $password
- * @property string $firebase_uid
- * @property string $push_token
- * @property string $profile_photo_path
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- *
- */
 class User extends Authenticatable
 {
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
-    use HasTeams;
     use Notifiable;
     use TwoFactorAuthenticatable;
 
@@ -39,7 +24,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'profile_photo_url', 'firebase_uid', 'push_token'
+        'name',
+        'email',
+        'password',
     ];
 
     /**
@@ -71,22 +58,4 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
-
-    public function teams()
-    {
-        return $this->hasMany(Team::class);
-    }
-
-    public function getRouteKeyName() {
-        return 'firebase_uid';
-    }
-
-    public static function getUserByAccessToken($accessToken)
-    {
-        return User::select('users.*','users.firebase_uid AS uid')
-                ->join('personal_access_tokens', 'users.id', '=', 'personal_access_tokens.tokenable_id')
-                ->where('personal_access_tokens.token', '=', $accessToken)
-                ->first();
-    }
-
 }
