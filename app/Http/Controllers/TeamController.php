@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 
 class TeamController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +17,9 @@ class TeamController extends Controller
      */
     public function index()
     {
-        return view('app/show');
+        $apps = \App\Models\Apps::all();
+        return view('app/show')
+        ->with('apps', $apps);
     }
 
     /**
