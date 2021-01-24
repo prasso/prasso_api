@@ -37,7 +37,7 @@
                             {{ __('Profile') }}
                         </x-jet-dropdown-link>
 
-                        <x-jet-dropdown-link href="{{ route('apps.show') }}">
+                        <x-jet-dropdown-link href="{{ route('apps.show', Auth::user()->allTeams()->first()->id)  }}">
                             {{ __('Apps') }}
                         </x-jet-dropdown-link>
 
@@ -134,7 +134,7 @@
                     {{ __('Profile') }}
                 </x-jet-responsive-nav-link>
 
-                <x-jet-responsive-nav-link href="{{ route('apps.show') }}" :active="request()->routeIs('profile.show')">
+                <x-jet-dropdown-link href="{{ route('apps.show', Auth::user()->allTeams()->first()->id)  }}">
                     {{ __('Apps') }}
                 </x-jet-responsive-nav-link>
 

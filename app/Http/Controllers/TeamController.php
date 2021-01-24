@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TeamController extends Controller
 {
@@ -17,9 +18,10 @@ class TeamController extends Controller
      */
     public function index()
     {
-        $apps = \App\Models\Apps::all();
-        return view('app/show')
-        ->with('apps', $apps);
+        $teamapp = \App\Models\Apps::first();
+        $user = Auth::user(); 
+        $team = $user->teams->first();
+        return view('apps.show')->with('teamapp', $teamapp)->with('team', $team);
     }
 
     /**
