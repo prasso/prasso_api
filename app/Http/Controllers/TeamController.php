@@ -20,8 +20,11 @@ class TeamController extends Controller
     {
         $teamapp = \App\Models\Apps::first();
         $user = Auth::user(); 
+
         $team = $user->teams->first();
-        return view('apps.show')->with('teamapp', $teamapp)->with('team', $team);
+        $teams = $user->teams->toArray();
+  
+        return view('apps.show')->with('teams',$teams)->with('teamapp', $teamapp)->with('team', $team);
     }
 
     /**

@@ -4,14 +4,13 @@ namespace App\Http\Livewire\Apps;
 
 use Livewire\Component;
 
-class AppInfoForm extends Component
+class AppManager extends Component
 {
     public $teamapp;
     public $team;
-    public $teams;
 
     public function render()
     {
-        return view('livewire.apps.app-info-form');
+        return view('livewire.apps.app-manager');
     }
 }
