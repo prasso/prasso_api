@@ -30,3 +30,5 @@ Route::post('/send-email', 'EmailController@sendEmail')->name('send-email');
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
+
+Route::get('/team/{teamid}/apps', 'TeamController@index')->name('apps.show');

@@ -35,15 +35,7 @@
                 {{ $slot }}
             </main>
 
-        </div>
-            <div class="bg-white shadow ">
-            <div class="p-14 flex sm:justify-center items-center  ">
-            <a class="pr-1" href="contact">contact</a> | <a href="privacy">privacy</a> | <a href="terms">terms</a>
-            </div>
-            <div class="flex sm:justify-center items-center sm:pt-0 ">
-            <small>&copy faxt 1999-2020</small>
-            </div>
-        </div> 
+        <x-footer></x-footer>
 
         @stack('modals')
 
