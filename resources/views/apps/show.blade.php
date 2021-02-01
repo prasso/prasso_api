@@ -5,19 +5,43 @@
         </h2>
     </x-slot>
 
-    <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-           
+    <div class="items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
+   
         <x-jet-section-border />
        
-        <x-jet-label value="{{ __('My Name and Profile Image') }}" />
+<section class="text-gray-700 body-font">
+    <div class="container px-8 pt-20 pb-24 mx-auto lg:px-4">
 
-        <x-jet-label value="{{ __('My Team(s) and Info') }}" />
-        <x-team>
-                    {{ $team->name }}
-        </x-team>
-        <x-jet-label value="{{ __('Selected Teams App') }}" />
+        <div class="flex flex-col w-full mb-12 text-left lg:text-center">
+            <h2 class="mb-1 text-xs font-semibold tracking-widest text-blue-600 uppercase title-font">
+            <img src="{{ $user->profile_photo_url }}" alt="{{ $user->name }}" class="rounded-full h-20 w-20 m-auto">
+            {{ $user->name }}
+        </h2>   
 
-        <x-jet-label value="{{ __('Tab(s) of Selected App') }}" />
+        <h2 class="mb-1 text-xs font-semibold tracking-widest text-blue-600 uppercase title-font">
+        {{ __('My Team(s) and Info') }}
+        </h2> 
+        <div class="flex flex-col w-full p-8 mx-auto mt-10 border rounded-lg l md:w-1/2 md:ml-auto md:mt-0">
+      
+        <x-teams-layout :teams="$teams" />
+</div>
+<div class="flex flex-col w-full p-8 mx-auto mt-10 border rounded-lg l md:w-1/2 md:ml-auto md:mt-0">
+      
+        <h2 class="mb-1 text-xs font-semibold tracking-widest text-blue-600 uppercase title-font">
+        {{ __('Team Apps') }}
+        </h2>  
 
-    </div>
+        <x-apps-layout :selectedapp="$teamapps[0]['id']"  :apps="$teamapps"/>
+</div>
+<div class="flex flex-col w-full p-8 mx-auto mt-10 border rounded-lg l md:w-1/2 md:ml-auto md:mt-0">
+      
+        <h2 class="mb-1 text-xs font-semibold tracking-widest text-blue-600 uppercase title-font">
+        {{ __('App Tabs') }}
+        </h2> 
+
+        <x-app-tabs-layout :apptabs="$apptabs" />
+</div>
+        </div>    
+    </div>    
+</div>
 </x-app-layout>

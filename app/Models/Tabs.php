@@ -15,4 +15,10 @@ class Tabs extends Model
         'app_id', 'icon', 'label', 'page_title', 'page_url', 'sort_order','parent'
     ];
 
+
+    
+    public function app()
+    {
+        return $this->belongsTo(Apps::class);
+    }
 }

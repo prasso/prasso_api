@@ -2,7 +2,7 @@
     <div class="items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
 
 <section class="text-gray-700 body-font">
-    <div class="container px-8 pt-48 pb-24 mx-auto lg:px-4">
+    <div class="container px-8 pt-20 pb-24 mx-auto lg:px-4">
         <div class="flex flex-col w-full mb-12 text-left lg:text-center">
             <h2 class="mb-1 text-xs font-semibold tracking-widest text-blue-600 uppercase title-font">
             Fast API eXtraction Technologies</h2>
@@ -12,13 +12,14 @@
                 to an app for your business.
             </h1>
             <p class="mx-auto text-base font-medium leading-relaxed text-gray-700 lg:w-2/3">
-            Fast Api eXtraction Technologies will be designed to allow a user to select one or more api endpoints, 
+            Prasso - by faxt - is designed to allow a user to select one or more api endpoints, 
             designate which sections to pull out,
              designate what order to display the sections in, and view them in a mobile application.</p>
+             <p>Prasso setup enables you to set up your mobile app with no code required.</p>
         </div>
         <div class="flex lg:justify-center">
             <button
-                class="inline-flex px-4 py-2 font-semibold text-white transition duration-500 ease-in-out transform rounded-lg shadow-xl bg-gradient-to-r from-blue-700 hover:from-blue-600 to-blue-600 hover:to-blue-700 focus:shadow-outline focus:outline-none">Sign In</button>
+                class="px-8 py-2 font-semibold text-white transition duration-500 ease-in-out transform rounded-lg shadow-xl bg-gradient-to-r from-blue-700 hover:from-blue-600 to-blue-600 hover:to-blue-700 focus:ring focus:outline-none">Sign In</button>
         </div>
     </div>
 </section>

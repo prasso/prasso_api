@@ -18,13 +18,21 @@ class TeamController extends Controller
      */
     public function index()
     {
-        $teamapp = \App\Models\Apps::first();
         $user = Auth::user(); 
 
         $team = $user->teams->first();
         $teams = $user->teams->toArray();
   
-        return view('apps.show')->with('teams',$teams)->with('teamapp', $teamapp)->with('team', $team);
+        $teamapps = $user->teams->first()->apps;
+
+        $apptabs = $teamapps->first()->tabs()->Get();
+
+        return view('apps.show')
+            ->with('user', $user)
+            ->with('teams',$teams)
+            ->with('teamapps', $teamapps)
+            ->with('team', $team)
+            ->with('apptabs', $apptabs);
     }
 
     /**
