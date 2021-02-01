@@ -36,18 +36,8 @@
                 </div>
             @endif
 
-            <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
-                <div class="tyJCtd mGzaTb baZpAe lkHyyc">
-                    <h1>Fast API eXtraction Technologies</h1>
-                    <span>
-                        <h2>Your No-Code solution to an app for your business.</h2>
-                        
-                    </span>
-
-                </div>
-                <x-footer></x-footer>
-
-            </div>
         </div>
+
+        <x-dashboard></x-dashboard> 
     </body>
 </html>
