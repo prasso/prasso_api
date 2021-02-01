@@ -6,7 +6,7 @@ use Livewire\Component;
 
 class AppInfoForm extends Component
 {
-    public $teamapp;
+    public $teamapps;
     public $team;
     public $teams;
 
