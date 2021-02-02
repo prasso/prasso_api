@@ -1,7 +1,7 @@
 <x-guest-layout>
     <x-jet-authentication-card>
         <x-slot name="logo">
-            <img src="{{ asset('images/FAXTsmalllogo.png') }}" />
+            <img src="{{ asset('images/prasso_logo.jpg') }}" />
         </x-slot>
 
         <div class="mb-4 text-sm text-gray-600">
@@ -29,6 +29,9 @@
                     {{ __('Email Password Reset Link') }}
                 </x-jet-button>
             </div>
+            <a class="float-right underline text-sm text-gray-600 hover:text-gray-900 mt-5  " href="/login">
+                        Return to Login
+                    </a>
         </form>
     </x-jet-authentication-card>
 </x-guest-layout>
