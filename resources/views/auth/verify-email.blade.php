@@ -1,7 +1,7 @@
 <x-guest-layout>
     <x-jet-authentication-card>
         <x-slot name="logo">
-            <img src="{{ asset('images/FAXTsmalllogo.png') }}" />
+            <img src="{{ asset('images/prasso_logo.jpg') }}" />
         </x-slot>
 
         <div class="mb-4 text-sm text-gray-600">
