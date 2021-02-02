@@ -7,6 +7,7 @@ use Illuminate\View\Component;
 class TeamsLayout extends Component
 {
     public $teams;
+    public $selected_team;
 
     /**
      * Create the component instance.
@@ -15,9 +16,10 @@ class TeamsLayout extends Component
      * @param  string  $message
      * @return void
      */
-    public function __construct($teams)
+    public function __construct($selectedteam, $teams)
     {
         $this->teams = $teams;
+        $this->selected_team = $selectedteam;
     }
     /**
      * Get the view / contents that represents the component.

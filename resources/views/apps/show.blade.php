@@ -23,7 +23,7 @@
         </h2> 
         <div class="flex flex-col w-full p-8 mx-auto mt-10 border rounded-lg l md:w-1/2 md:ml-auto md:mt-0">
       
-        <x-teams-layout :teams="$teams" />
+        <x-teams-layout :selectedteam="$teams[0]['id']" :teams="$teams" />
 </div>
 <div class="flex flex-col w-full p-8 mx-auto mt-10 border rounded-lg l md:w-1/2 md:ml-auto md:mt-0">
       
