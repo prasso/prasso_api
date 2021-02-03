@@ -4,7 +4,7 @@
         @foreach($apps as $app)
         <div class="flex">
             <label class="items-center">
-                <input type="checkbox" class="form-checkbox" value="{{$app['id']}}" @if ($selected_app == $app['id'] ) selected @endif >
+                <input type="radio" class="form-radio" name="appradio" value="{{$app['id']}}" @if ($selected_app == $app['id'] ) checked @endif >
                 <span class="ml-2">  
                 @if( !empty($app['appicon']))
                     {{ $app['appicon'] }} 

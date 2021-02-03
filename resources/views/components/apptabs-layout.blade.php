@@ -3,7 +3,7 @@
         @foreach($apptabs as $tab)
         <div class="flex">
             <label class="items-center">
-                <input type="checkbox" class="form-checkbox" value="{{$tab['id']}}">
+                <input type="radio" class="form-radio" name="tabradio" value="{{$tab['id']}}">
                 <span class="ml-2">  
                 @if( !empty($tab['label']))
                     {{ $tab['label'] }} 
