@@ -4,7 +4,7 @@
         @foreach($teams as $team)
 
         <x-jet-responsive-nav-link class="sm-btn-blue "
-         href="{{ route('teams.show', Auth::user()->currentTeam->id) }}" :active="request()->routeIs('teams.show')">
+                href="{{ route('teams.show', Auth::user()->currentTeam->id) }}" >
                     {{ __('Team Settings') }}
                 </x-jet-responsive-nav-link>
          <div class="flex my-4">

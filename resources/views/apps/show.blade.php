@@ -31,7 +31,7 @@
         {{ __('Team Apps') }}
         </h2>  
 
-        <x-apps-layout :selectedapp="$teamapps[0]['id']"  :apps="$teamapps"/>
+        <x-apps-layout :selectedapp="$teamapps[0]['id']" :selectedteam="$teams[0]['id']" :apps="$teamapps"/>
 </div>
 <div class="flex flex-col w-full p-8 mx-auto mt-10 border rounded-lg l md:w-1/2 md:ml-auto md:mt-0">
       

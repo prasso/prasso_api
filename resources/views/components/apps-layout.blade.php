@@ -1,20 +1,26 @@
 <div class="col-span-6">
-    <div class="text-sm">
- 
+    <div class="max-w-xl text-sm">
         @foreach($apps as $app)
-        <div class="flex">
-            <label class="items-center">
-                <input type="radio" class="form-radio" name="appradio" value="{{$app['id']}}" @if ($selected_app == $app['id'] ) checked @endif >
-                <span class="ml-2">  
+        <x-jet-responsive-nav-link class="sm-btn-blue"
+                    href="{{ route('apps.edit',['teamid' => $selected_team, 'appid' => $app['id']])   }}">
+                        
+                {{ __('Edit App') }}
+            </x-jet-responsive-nav-link>
+
+        <div class="flex my-4">
+            <input type="radio" class="form-radio" name="appradio" value="{{$app['id']}}" @if ($selected_app == $app['id'] ) checked @endif >
+                
+            <label class="items-left"> 
+            <span class="mx-4">  
                 @if( !empty($app['appicon']))
-                    {{ $app['appicon'] }} 
+                   <img src="{{ $app['appicon'] }}" alt="app icon" class="my-0" />
                 @else
                     No appicon Given                     
                 @endif
                 </span>
             </label>
 
-            <label class=" items-center">
+            <label class="items-left">
                 <span class="ml-2">  
                 @if( !empty($app['app_name']))
                     {{ $app['app_name'] }} 
@@ -24,35 +30,6 @@
                 </span>
             </label>
 
-            <label class=" items-center">
-                <span class="ml-2">  
-                @if( !empty($app['page_title']))
-                    {{ $app['page_title'] }} 
-                @else
-                    No page_title Given                     
-                @endif
-                </span>
-            </label>
-
-            <label class=" items-center">
-                <span class="ml-2">  
-                @if( !empty($app['page_url']))
-                    {{ $app['page_url'] }} 
-                @else
-                    No page_url Given                     
-                @endif
-                </span>
-            </label>
-
-            <label class=" items-center">
-                <span class="ml-2">  
-                @if( !empty($app['sort_order']))
-                    {{ $app['sort_order'] }} 
-                @else
-                    No sort_order Given                     
-                @endif
-                </span>
-            </label>
         </div>
 
         @endforeach

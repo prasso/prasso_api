@@ -6,6 +6,7 @@ use Illuminate\View\Component;
 
 class AppsLayout extends Component
 {
+    public $selected_team;
     public $apps;
     public $selected_app;
 
@@ -16,8 +17,9 @@ class AppsLayout extends Component
      * @param  string  $message
      * @return void
      */
-    public function __construct($selectedapp, $apps)
+    public function __construct($selectedapp, $selectedteam, $apps)
     {
+        $this->selected_team = $selectedteam;
         $this->selected_app = $selectedapp;
         $this->apps = $apps;
     }
