@@ -21,7 +21,7 @@
             <label class="items-left"> 
                 <span class="mx-4">  
                     @if( !empty($tab['icon']))
-                    <img src="{{ $tab['icon'] }}" alt=" icon" class="my-0" />
+                    <i class="material-icons md-36">{{ $tab['icon'] }}</i>
                     @else
                         No icon Given                     
                     @endif
