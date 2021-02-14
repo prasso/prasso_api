@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class TeamController extends Controller
 {
@@ -43,14 +44,38 @@ class TeamController extends Controller
     public function editApp($teamid, $appid)
     {
         $user = Auth::user(); 
-        $team = $user->teams->where('id',$teamid);
-        $teamapps = $team->apps();
-        dd($teamapps);
-        $teamapp = $team->apps->pluck($appid);
-        
+        $team = $user->teams->where('id',$teamid)->first();
+        $teamapps = $team->apps;     
+        $teamapp = $teamapps->where('id',$appid)->first();
+        $team_selection = $user->teams->pluck('name','id');
+
         return view('apps.edit-app')
+        ->with('team_selection',$team_selection)
         ->with('team',$team)
-        ->with('teamapp', $teamapp);
+        ->with('teamapps',$teamapps)
+        ->with('teamapp', $teamapp)
+        ->with('show_success', false);
     }
 
+    
+    /**
+     * Show the tab edit form 
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function editTab($teamid, $appid, $tabid)
+    {
+        $user = Auth::user(); 
+        $team = $user->teams->where('id',$teamid)->first();
+        $teamapps = $team->apps;     
+        $teamapp = $teamapps->where('id',$appid)->first();
+        $team_selection = $user->teams->pluck('name','id');
+
+        return view('apps.edit-tab')
+        ->with('team_selection',$team_selection)
+        ->with('team',$team)
+        ->with('teamapps',$teamapps)
+        ->with('teamapp', $teamapp)
+        ->with('show_success', false);
+    }
 }

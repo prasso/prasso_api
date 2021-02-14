@@ -33,3 +33,4 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 
 Route::get('/team/{teamid}/apps', 'TeamController@index')->name('apps.show');
 Route::get('/team/{teamid}/apps/{appid}', 'TeamController@editApp')->name('apps.edit');
+Route::get('/team/{teamid}/apps/tabs/{tabid}', 'TeamController@editTab')->name('apps.edit-tab');

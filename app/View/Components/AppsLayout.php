@@ -3,6 +3,9 @@
 namespace App\View\Components;
 
 use Illuminate\View\Component;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AppsLayout extends Component
 {
@@ -31,5 +34,11 @@ class AppsLayout extends Component
     public function render()
     {
         return view('components.apps-layout');
+    }
+
+    public function ChangeRadioSelection($request)
+    {
+        Log::info('change radio stuff');
+        Log::info($request);
     }
 }

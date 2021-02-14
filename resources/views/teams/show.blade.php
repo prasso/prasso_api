@@ -3,6 +3,9 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Team Settings') }}
         </h2>
+        <x-jet-dropdown-link href="{{ route('apps.show', Auth::user()->allTeams()->first()->id)  }}">
+                    {{ __('Return to Apps') }}
+                </x-jet-responsive-nav-link>
     </x-slot>
 
     <div>

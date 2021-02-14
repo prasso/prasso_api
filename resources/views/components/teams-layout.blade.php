@@ -3,7 +3,7 @@
 
         @foreach($teams as $team)
 
-        <x-jet-responsive-nav-link class="sm-btn-blue "
+        <x-jet-responsive-nav-link class="sm-btn-blue hover:bg-blue-900 focus:bg-blue-900"
                 href="{{ route('teams.show', Auth::user()->currentTeam->id) }}" >
                     {{ __('Team Settings') }}
                 </x-jet-responsive-nav-link>

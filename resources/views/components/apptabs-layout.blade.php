@@ -1,9 +1,16 @@
 <div class="col-span-6">
     <div class="max-w-xl text-sm text-gray-600">
         @foreach($apptabs as $tab)
-        <div class="flex">
+
+            <x-jet-responsive-nav-link class="sm-btn-blue hover:bg-blue-900 focus:bg-blue-900"
+                href="{{ route('apps.edit-tab',['tabid' => $tab['id'],'teamid' => $selected_team, 'appid' => $selected_app])   }}">
+                        
+                {{ __('Edit tab') }}
+            </x-jet-responsive-nav-link>
+
+            <div class="flex my-4" >
             <label class="items-center">
-                <input type="radio" class="form-radio" name="tabradio" value="{{$tab['id']}}">
+                <input type="radio" x-model="tabradio" class="form-radio" name="tabradio" value="{{$tab['id']}}">
                 <span class="ml-2">  
                 @if( !empty($tab['label']))
                     {{ $tab['label'] }} 
@@ -12,7 +19,15 @@
                 @endif
                 </span>
             </label>
-
+            <label class="items-left"> 
+                <span class="mx-4">  
+                    @if( !empty($tab['icon']))
+                    <img src="{{ $tab['icon'] }}" alt=" icon" class="my-0" />
+                    @else
+                        No icon Given                     
+                    @endif
+                </span>
+            </label>
             <label class=" items-center">
                 <span class="ml-2">  
                 @if( !empty($tab['page_title']))
