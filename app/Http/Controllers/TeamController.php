@@ -26,7 +26,7 @@ class TeamController extends Controller
   
         $teamapps = $user->teams->first()->apps;
 
-        $apptabs = $teamapps->first()->tabs()->Get();
+        $apptabs = $teamapps->first()->tabs()->orderBy('sort_order')->Get();
 
         return view('apps.show')
             ->with('user', $user)
@@ -69,13 +69,33 @@ class TeamController extends Controller
         $team = $user->teams->where('id',$teamid)->first();
         $teamapps = $team->apps;     
         $teamapp = $teamapps->where('id',$appid)->first();
-        $team_selection = $user->teams->pluck('name','id');
+        $tab_data = $teamapp->tabs->where('id',$tabid)->first();
+
+        $index=1;
+        $sort_orders = [$index];
+        foreach($teamapp->tabs as $tab)
+        {
+            $index = $index + 1;
+            $sort_orders[] = $index;
+        }
+        //for the last overflow tab, called More
+        if ($index > 4)
+        {
+            $more = [[0,'Not on More'],
+                [5,$teamapp->tabs[4]->label]];
+        }
+        else
+        {
+            $more = [[0,'Not on More']];
+        }
 
         return view('apps.edit-tab')
-        ->with('team_selection',$team_selection)
         ->with('team',$team)
+        ->with('sort_orders', $sort_orders )
         ->with('teamapps',$teamapps)
         ->with('teamapp', $teamapp)
+        ->with('tab_data', $tab_data)
+        ->with('more_data', $more)
         ->with('show_success', false);
     }
 }

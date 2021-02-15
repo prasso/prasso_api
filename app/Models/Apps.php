@@ -23,7 +23,7 @@ class Apps extends Model
 
     public function tabs()
     {
-        return $this->hasMany(\App\Models\Tabs::class, "app_id", "id");
+        return $this->hasMany(\App\Models\Tabs::class, "app_id", "id")->orderBy('sort_order');
     }
     
     public function team()
