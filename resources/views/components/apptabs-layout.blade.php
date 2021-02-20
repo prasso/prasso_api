@@ -1,16 +1,25 @@
 <div class="col-span-6">
+
+    <div class="max-w-xl text-sm text-gray-600" >
+    <span class="mx-1 float-right ">  <a href="{{ route('apps.add-tab',['teamid' => $selected_team, 'appid' => $selected_app])   }}">
+                <i class="material-icons md-36">playlist_add</i>
+            </a>
+    </div></span>
     <div class="max-w-xl text-sm text-gray-600" >
         @foreach($apptabs as $tab)
-        <div x-data="{ isShowing: false }">
-            <x-jet-responsive-nav-link x-show="isShowing" class="sm-btn-blue hover:bg-blue-900 focus:bg-blue-900"
-                href="{{ route('apps.edit-tab',['teamid' => $selected_team, 'appid' => $selected_app,'tabid' => $tab['id']])   }}">
-                
-                {{ __('Edit tab') }}
-            </x-jet-responsive-nav-link>
+        <div>
+        
+            <span class="mx-1 float-right ">  
+                <a   href="{{ route('apps.delete-tab',['teamid' => $selected_team,'appid' => $selected_app,'tabid' => $tab['id']])   }}">
+                    <i class="material-icons md-36">delete_forever</i>
+                </a>
+                <a 
+                    href="{{ route('apps.edit-tab',['teamid' => $selected_team, 'appid' => $selected_app,'tabid' => $tab['id']])   }}">
+                    <i class="material-icons md-36">mode_edit</i>
+                </a>
+            </span>
             <div class="flex my-4" >
             <label class="items-left"> 
-            <input type="radio" x-bind:checked="isShowing"  @click.away="isShowing = false" x-model="isShowing" class="form-radio" name="tabradio" value="{{$tab['id']}}">
-               
                 <span class="mx-4">  
                     @if( !empty($tab['icon']))
                     <i class="material-icons md-36">{{ $tab['icon'] }}</i>

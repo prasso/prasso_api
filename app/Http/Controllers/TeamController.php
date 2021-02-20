@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Models\Tabs;
 
 class TeamController extends Controller
 {
@@ -26,14 +27,11 @@ class TeamController extends Controller
   
         $teamapps = $user->teams->first()->apps;
 
-        $apptabs = $teamapps->first()->tabs()->orderBy('sort_order')->Get();
-
         return view('apps.show')
             ->with('user', $user)
             ->with('teams',$teams)
             ->with('teamapps', $teamapps)
-            ->with('team', $team)
-            ->with('apptabs', $apptabs);
+            ->with('team', $team);
     }
 
     /**
@@ -49,12 +47,16 @@ class TeamController extends Controller
         $teamapp = $teamapps->where('id',$appid)->first();
         $team_selection = $user->teams->pluck('name','id');
 
+        $apptabs = $teamapp->tabs()->orderBy('sort_order')->Get();
+
         return view('apps.edit-app')
         ->with('team_selection',$team_selection)
         ->with('team',$team)
         ->with('teamapps',$teamapps)
         ->with('teamapp', $teamapp)
-        ->with('show_success', false);
+        ->with('show_success', false)
+        ->with('selected_app', $appid)
+        ->with('apptabs', $apptabs);
     }
 
     
@@ -65,11 +67,44 @@ class TeamController extends Controller
      */
     public function editTab($teamid, $appid, $tabid)
     {
+        return $this->getEditTab($teamid, $appid, $tabid);
+    }
+
+    public function addTab($teamid, $appid)
+    {
+        return $this->getEditTab($teamid, $appid, 0);
+    }
+  
+    public function deleteTab($appid, $tabid)
+    {
+        $tab = Tabs::findOrFail($tabid);
+        if ($tab)
+        {
+            $tab->delete();
+            return redirect()->back()
+            ->with('show_success', true);
+        }
+        return redirect()->back()
+        ->with('show_success', false);
+    }
+
+
+    private function getEditTab($teamid, $appid, $tabid)
+    {
         $user = Auth::user(); 
         $team = $user->teams->where('id',$teamid)->first();
         $teamapps = $team->apps;     
         $teamapp = $teamapps->where('id',$appid)->first();
-        $tab_data = $teamapp->tabs->where('id',$tabid)->first();
+        
+        if ($tabid == 0)
+        {
+            $tab_data = new Tabs();
+            $tab_data->app_id = $appid;
+        }
+        else
+        {
+            $tab_data = $teamapp->tabs->where('id',$tabid)->first();
+        }
 
         $index=1;
         $sort_orders = [$index];
@@ -79,10 +114,10 @@ class TeamController extends Controller
             $sort_orders[] = $index;
         }
         //for the last overflow tab, called More
-        if ($index > 4)
+        if ($index > 4 || $tabid == 0)
         {
             $more = [[0,'Not on More'],
-                [5,$teamapp->tabs[4]->label]];
+                [$teamapp->tabs[4]->id,$teamapp->tabs[4]->label]];
         }
         else
         {
@@ -98,4 +133,5 @@ class TeamController extends Controller
         ->with('more_data', $more)
         ->with('show_success', false);
     }
+  
 }

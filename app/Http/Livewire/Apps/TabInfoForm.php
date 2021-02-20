@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Apps;
 
 use Livewire\Component;
 use App\Models\Tabs;
+use Illuminate\Support\Facades\Log;
 
 class TabInfoForm extends Component
 {
@@ -33,6 +34,7 @@ class TabInfoForm extends Component
 
     public function updateTab()
     {
+
         $this->validate();
 
         // Execution doesn't reach here if validation fails.

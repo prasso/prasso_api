@@ -4,7 +4,7 @@
         <x-jet-responsive-nav-link class="sm-btn-blue hover:bg-blue-900 focus:bg-blue-900"
                     href="{{ route('apps.edit',['teamid' => $selected_team, 'appid' => $app['id']])   }}">
                         
-                {{ __('Edit App') }}
+                {{ __('Edit '.$app['app_name']) }}
             </x-jet-responsive-nav-link>
 
         <div class="flex my-4">
