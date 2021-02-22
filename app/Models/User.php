@@ -10,6 +10,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\UserActiveApp;
 
 /**
  * Class User.
@@ -79,6 +80,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Team::class, 'user_id','id')
             ->with('apps');
+    }
+
+    public function activeApp()
+    {
+        return $this->hasOne( UserActiveApp::class, 'user_id', 'id');
     }
 
     public function getRouteKeyName() {

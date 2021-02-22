@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\Tabs;
+use App\Models\FlutterIcons;
 
 class TeamController extends Controller
 {
@@ -114,7 +115,7 @@ class TeamController extends Controller
             $sort_orders[] = $index;
         }
         //for the last overflow tab, called More
-        if ($index > 4 || $tabid == 0)
+        if ($index > 4 )
         {
             $more = [[0,'Not on More'],
                 [$teamapp->tabs[4]->id,$teamapp->tabs[4]->label]];
@@ -123,15 +124,13 @@ class TeamController extends Controller
         {
             $more = [[0,'Not on More']];
         }
+        $icon_data = FlutterIcons::pluck('icon_name','id');
 
         return view('apps.edit-tab')
-        ->with('team',$team)
-        ->with('sort_orders', $sort_orders )
-        ->with('teamapps',$teamapps)
-        ->with('teamapp', $teamapp)
-        ->with('tab_data', $tab_data)
-        ->with('more_data', $more)
-        ->with('show_success', false);
+        ->with('tabdata', $tab_data)
+        ->with('moredata', $more)
+        ->with('icondata', $icon_data)
+        ->with('sortorders', $sort_orders);
     }
   
 }

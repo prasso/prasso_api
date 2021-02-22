@@ -35,15 +35,22 @@ class AppServiceProvider extends ServiceProvider
     /// a method to return the setup for this person's application
     public static function getAppSettingsByUser($user)
     {
-        
-        $team = Team::with('apps')
-            ->where('user_id',$user->id)
+ 
+        //which app has the user selected out of the team's apps to be used on  login
+        $activeApp = $user->find(1)->activeApp();
+        if (isset($activeApp->app_id))
+        {
+            $app_data = Apps::with('tabs')->with('team')
+            ->where('id',$activeApp->app_id)
             ->first();
-            
-        $app_data = Apps::with('tabs')->with('team')
-            ->where('team_id',$team->id)
+        }
+        else
+       { 
+           $app_data = Apps::with('tabs')->with('team')
+            ->where('team_id',$user->teams[0]->id)
             ->first();
-
+        }
+       
        return json_encode($app_data);
     }
     /*
@@ -56,7 +63,6 @@ class AppServiceProvider extends ServiceProvider
         ->where('personal_access_tokens.token', '=', $apptoken)
         ->first();
 
-        
         if ($user == null)
         {
             return '';

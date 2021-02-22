@@ -10,10 +10,9 @@
 
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            @livewire('apps.tab-info-form',[ 'tab_data'=>$tab_data, 'team' => $team, 
-                        'teamapp' => $teamapp,'teamapps' => $teamapps,
-                        'team_id' => $team['id'] , 'sort_orders' => $sort_orders 
-                        , 'more_data' => $more_data 
+            @livewire('apps.tab-info-form',[ 'tabdata'=>$tabdata, 
+                         'sortorders' => $sortorders 
+                        , 'moredata' => $moredata ,'icondata' => $icondata
                         ]);
             <x-jet-section-border />
 

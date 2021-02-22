@@ -10,10 +10,10 @@
   
     <x-slot name="form">
 
-    @if($show_success)
+    @if($showsuccess)
     <div class="p-5 text-green-400 bg-green-50">
     Saved!
-    {{$show_success = false}}
+    {{$showsuccess = false}}
     </div>
     @endif
     @if ($errors->any())
@@ -29,17 +29,17 @@
 
         <x-jet-input id="app_id"
                     type="hidden"
-                    wire:model="tab_data.app_id" />
+                    wire:model.defer="tabdata.app_id" />
 
     <!-- Icon -->
     <div class="col-span-6 sm:col-span-4">
         <x-jet-label for="icon" value="{{ __('Icon') }}" />
 
-        <x-jet-input id="icon"
-                    type="text"
-                    class="mt-1 block w-full"
-                    wire:model="tab_data.icon" />
-
+        <select name="icon" id="icon" class="mt-1 block w-full"  wire:model.defer="tabdata.icon" >
+            @foreach($icondata as $name)
+                <option value="{{ $name }}">{{ $name }}</option>
+            @endforeach
+        </select>
         <x-jet-input-error for="icon" class="mt-2" />
     </div>
     <!-- Tab Label -->
@@ -49,7 +49,7 @@
         <x-jet-input id="tab_label"
                     type="text"
                     class="mt-1 block w-full"
-                    wire:model="tab_data.label" />
+                    wire:model.defer="tabdata.label" />
 
         <x-jet-input-error for="tab_label" class="mt-2" />
     </div>
@@ -60,7 +60,7 @@
         <x-jet-input id="page_title"
                     type="text"
                     class="mt-1 block w-full"
-                    wire:model="tab_data.page_title" />
+                    wire:model.defer="tabdata.page_title" />
 
         <x-jet-input-error for="page_title" class="mt-2" />
     </div>
@@ -71,7 +71,7 @@
         <x-jet-input id="page_url"
                     type="text"
                     class="mt-1 block w-full"
-                    wire:model="tab_data.page_url" />
+                    wire:model.defer="tabdata.page_url" />
 
         <x-jet-input-error for="page_url" class="mt-2" />
     </div>
@@ -79,8 +79,8 @@
     <div class="col-span-6 sm:col-span-4">
         <x-jet-label for="sort_order" value="{{ __('Sort Order') }}" />
         <div class="flex items-center mt-2">
-        <select name="sort_order" id="sort_order" class="mt-1 block w-full"  wire:model="tab_data.sort_order" wire:change="change">
-            @foreach($sort_orders as $id) )
+        <select name="sort_order" id="sort_order" class="mt-1 block w-full"  wire:model.defer="tabdata.sort_order" wire:change="change">
+            @foreach($sortorders as $id) )
                 <option value="{{ json_encode($id) }}">{{ json_encode($id) }}</option>
             @endforeach
         </select>
@@ -91,8 +91,8 @@
     <div class="col-span-6 sm:col-span-4">
         <x-jet-label for="more_data" value="{{ __('Overflow/More') }}" />
         <div class="flex items-center mt-2">
-        <select name="more_data" id="more_data" class="mt-1 block w-full"  wire:model="tab_data.parent" wire:change="change">
-            @foreach($more_data as $id) )
+        <select name="more_data" id="more_data" class="mt-1 block w-full"  wire:model.defer="tabdata.parent" wire:change="change">
+            @foreach($moredata as $id) )
                 <option value="{{ $id[0] }}">{{ $id[1] }}</option>
             @endforeach
         </select>

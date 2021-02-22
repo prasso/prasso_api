@@ -26,7 +26,7 @@ class Tabs extends Model
 
     public static function processUpdates( $tab_data)
     {
-        Tabs::updateOrCreate(['id' => $tab_data['id']] , 
+        $tabdata = Tabs::updateOrCreate(['id' => $tab_data['id']] , 
         ['app_id' => $tab_data['app_id'], 
         'icon' => $tab_data['icon'], 
         'label' => $tab_data['label'], 
@@ -34,6 +34,7 @@ class Tabs extends Model
         'page_url' => $tab_data['page_url'],
         'sort_order' => $tab_data['sort_order'] ,
         'parent' => $tab_data['parent'] ] ,
-    );
+        );
+        return $tabdata;
     }
 }
