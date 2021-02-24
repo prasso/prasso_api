@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\Tabs;
+use App\Models\UserActiveApp;
 use App\Models\FlutterIcons;
 
 class TeamController extends Controller
@@ -61,6 +62,19 @@ class TeamController extends Controller
     }
 
     
+      /**
+     * Set the app that will be used when this user 
+     * logs in on a mobile device
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function activateApp($teamid, $appid)
+    {
+        $user = Auth::user(); 
+        UserActiveApp::updateOrCreate(['user_id'=>$user->id, 'app_id'=>$appid]);
+        return redirect()->route('apps.show', ['teamid' => $teamid]);
+    }
+
     /**
      * Show the tab edit form 
      *
@@ -89,7 +103,7 @@ class TeamController extends Controller
         ->with('show_success', false);
     }
 
-
+ 
     private function getEditTab($teamid, $appid, $tabid)
     {
         $user = Auth::user(); 
@@ -99,12 +113,14 @@ class TeamController extends Controller
         
         if ($tabid == 0)
         {
-            $tab_data = new Tabs();
+            $tab_data = Tabs::make();
             $tab_data->app_id = $appid;
+            Log::info('new tab'.json_encode($tab_data));    
         }
         else
         {
             $tab_data = $teamapp->tabs->where('id',$tabid)->first();
+            Log::info('existing tab'.json_encode($tab_data));  
         }
 
         $index=1;

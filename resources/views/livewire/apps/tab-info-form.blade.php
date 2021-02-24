@@ -27,9 +27,13 @@
     @endif
 
 
-        <x-jet-input id="app_id"
+    <x-jet-input id="app_id"
                     type="hidden"
                     wire:model.defer="tabdata.app_id" />
+
+    <x-jet-input id="id"
+                type="hidden"
+                wire:model.defer="tabdata.id" />
 
     <!-- Icon -->
     <div class="col-span-6 sm:col-span-4">

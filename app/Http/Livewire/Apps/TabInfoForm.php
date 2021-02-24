@@ -5,6 +5,8 @@ namespace App\Http\Livewire\Apps;
 use Livewire\Component;
 use App\Models\Tabs;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
+
 
 class TabInfoForm extends Component
 {
@@ -25,13 +27,10 @@ class TabInfoForm extends Component
         ->with('moredata', $this->moredata)
         ->with('icondata', $this->icondata);
     }
-
-      /*  'tabdata'=>$tabdata, 
-                         'sortorders' => $sortorders 
-                        , 'moredata' => $moredata ,'icondata' => $icondata*/
-    public function mount(Tabs $newtabdata, $sortorders, $moredata, $icondata)
+    
+    public function mount($sortorders, $moredata, $icondata, Request $request)
     {
-        $this->tabdata = ($this->tabdata != null) ? $newtabdata : Tabs::make();
+
         if ($sortorders == null)
         {
             $sortorders = session()->get('sortorders');
@@ -60,10 +59,12 @@ class TabInfoForm extends Component
             session()->put('icondata', $icondata);
         }
 
+        session()->put('url', $request->url());
     }
 
 
     protected $rules = [
+        'tabdata.id' => 'required',
         'tabdata.app_id' => 'required',
         'tabdata.icon' => 'required',
         'tabdata.label' => 'required|min:6',
@@ -72,42 +73,25 @@ class TabInfoForm extends Component
         'tabdata.sort_order' => 'required',
         'tabdata.parent' => 'required'
     ];
-    /*
-    [{
-	"type": "syncInput",
-	"payload": {
-		"name": "tabdata.page_url",
-		"value": "https://barimorphosis.com"
-	}
-}, {
-	"type": "syncInput",
-	"payload": {
-		"name": "tabdata.page_title",
-		"value": "First Tab"
-	}
-}, {
-	"type": "syncInput",
-	"payload": {
-		"name": "tabdata.label",
-		"value": "First Tab"
-	}
-}, {
-	"type": "callMethod",
-	"payload": {
-		"method": "updateTab",
-		"params": []
-	}
-}] */
-
+   
     public function updateTab()
     {
-Log::info('validating this data: '.json_encode($this->tabdata));
         $this->validate();
-Log::info('saving a tab'.json_encode($this->tabdata));
         // Execution doesn't reach here if validation fails.
-        $this->tabdata = Tabs::processUpdates($this->tabdata->toArray() );
- Log::info('tab was saved'.json_encode($this->tabdata));        
+        $this->tabdata = Tabs::processUpdates($this->tabdata->toArray() );      
         $this->showsuccess = true;
-        return $this->tabdata;
+
+       return $this->redirectToThisTabEditor();
+    }
+
+    protected function redirectToThisTabEditor()
+    {
+         // ./team/1/apps/2/tabs/new
+        // ./team/1/apps/2/tabs/{tabid}
+
+        $url = session()->get('url');
+        $url = str_replace('tabs/new','tabs/'.$this->tabdata['id'],$url);
+        return redirect()->to($url);
+
     }
 }

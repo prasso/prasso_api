@@ -1,20 +1,19 @@
-<div class="col-span-6">
-
+<div class="shadow overflow-hidden sm:rounded-md">
+  <div class="p-6 bg-white col-span-6">
     <div class="max-w-xl text-sm text-gray-600" >
-    <span class="mx-1 float-right ">  <a href="{{ route('apps.add-tab',['teamid' => $selected_team, 'appid' => $selected_app])   }}">
+        <span class="-mt-5 float-right ">  <a href="{{ route('apps.add-tab',['teamid' => $selected_team, 'appid' => $selected_app])   }}">
                 <i class="material-icons md-36">playlist_add</i>
             </a>
-    </div></span>
+        </span>
+    </div>   
     <div class="max-w-xl text-sm text-gray-600" >
         @foreach($apptabs as $tab)
         <div>
-        
             <span class="mx-1 float-right ">  
                 <a   href="{{ route('apps.delete-tab',['teamid' => $selected_team,'appid' => $selected_app,'tabid' => $tab['id']])   }}">
                     <i class="material-icons md-36">delete_forever</i>
                 </a>
-                <a 
-                    href="{{ route('apps.edit-tab',['teamid' => $selected_team, 'appid' => $selected_app,'tabid' => $tab['id']])   }}">
+                <a href="{{ route('apps.edit-tab',['teamid' => $selected_team, 'appid' => $selected_app,'tabid' => $tab['id']])   }}">
                     <i class="material-icons md-36">mode_edit</i>
                 </a>
             </span>
@@ -70,4 +69,5 @@
         </div>
         @endforeach
     </div>
+  </div
 </div>
