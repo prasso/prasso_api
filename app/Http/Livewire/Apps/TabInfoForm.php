@@ -67,9 +67,9 @@ class TabInfoForm extends Component
         'tabdata.id' => 'required',
         'tabdata.app_id' => 'required',
         'tabdata.icon' => 'required',
-        'tabdata.label' => 'required|min:6',
-        'tabdata.page_url' => 'required|min:6', //
-        'tabdata.page_title' => 'required|min:6', //
+        'tabdata.label' => 'required',
+        'tabdata.page_url' => 'required', //
+        'tabdata.page_title' => 'required', //
         'tabdata.sort_order' => 'required',
         'tabdata.parent' => 'required'
     ];
@@ -81,17 +81,17 @@ class TabInfoForm extends Component
         $this->tabdata = Tabs::processUpdates($this->tabdata->toArray() );      
         $this->showsuccess = true;
 
-       return $this->redirectToThisTabEditor();
+       return $this->redirectToThisApp();
     }
 
-    protected function redirectToThisTabEditor()
+    protected function redirectToThisApp()
     {
          // ./team/1/apps/2/tabs/new
-        // ./team/1/apps/2/tabs/{tabid}
+        // ./team/1/apps/2
 
         $url = session()->get('url');
-        $url = str_replace('tabs/new','tabs/'.$this->tabdata['id'],$url);
+        //$url = str_replace('tabs/new','tabs/'.$this->tabdata['id'],$url);
+        $url = str_replace('tabs/new','',$url);
         return redirect()->to($url);
-
     }
 }

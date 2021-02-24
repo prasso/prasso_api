@@ -36,9 +36,4 @@ class AppsLayout extends Component
         return view('components.apps-layout');
     }
 
-    public function ChangeRadioSelection($request)
-    {
-        Log::info('change radio stuff');
-        Log::info($request);
-    }
 }

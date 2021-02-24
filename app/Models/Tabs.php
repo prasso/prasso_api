@@ -41,7 +41,6 @@ class Tabs extends Model
 
     public static function processUpdates( $tab_data)
     {
-        Log::info('updateOrCreate: ' .json_encode($tab_data));
         $tabdata = Tabs::updateOrCreate(['id' => $tab_data['id']] , 
         ['app_id' => $tab_data['app_id'], 
         'icon' => $tab_data['icon'], 

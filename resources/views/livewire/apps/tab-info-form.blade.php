@@ -83,8 +83,8 @@
     <div class="col-span-6 sm:col-span-4">
         <x-jet-label for="sort_order" value="{{ __('Sort Order') }}" />
         <div class="flex items-center mt-2">
-        <select name="sort_order" id="sort_order" class="mt-1 block w-full"  wire:model.defer="tabdata.sort_order" wire:change="change">
-            @foreach($sortorders as $id) )
+         <select name="sort_order" id="sort_order" class="mt-1 block w-full"  wire:model.defer="tabdata.sort_order" >
+            @foreach(Session::get('sortorders') as $id) )
                 <option value="{{ json_encode($id) }}">{{ json_encode($id) }}</option>
             @endforeach
         </select>
@@ -95,8 +95,9 @@
     <div class="col-span-6 sm:col-span-4">
         <x-jet-label for="more_data" value="{{ __('Overflow/More') }}" />
         <div class="flex items-center mt-2">
-        <select name="more_data" id="more_data" class="mt-1 block w-full"  wire:model.defer="tabdata.parent" wire:change="change">
-            @foreach($moredata as $id) )
+
+        <select name="more_data" id="more_data" class="mt-1 block w-full"  wire:model.defer="tabdata.parent" >
+            @foreach(Session::get('moredata') as $id) )
                 <option value="{{ $id[0] }}">{{ $id[1] }}</option>
             @endforeach
         </select>

@@ -114,13 +114,11 @@ class TeamController extends Controller
         if ($tabid == 0)
         {
             $tab_data = Tabs::make();
-            $tab_data->app_id = $appid;
-            Log::info('new tab'.json_encode($tab_data));    
+            $tab_data->app_id = $appid;  
         }
         else
         {
             $tab_data = $teamapp->tabs->where('id',$tabid)->first();
-            Log::info('existing tab'.json_encode($tab_data));  
         }
 
         $index=1;
@@ -138,7 +136,7 @@ class TeamController extends Controller
         }
         else
         {
-            $more = [[0,'Not on More']];
+            $more = [[0,'Not on More or Is More']];
         }
         $icon_data = FlutterIcons::pluck('icon_name','id');
 
