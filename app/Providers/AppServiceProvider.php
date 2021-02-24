@@ -38,7 +38,6 @@ class AppServiceProvider extends ServiceProvider
     {
         //which app has the user selected out of the team's apps to be used on  login
         $activeApp = UserActiveApp::where('user_id',$user->id)->first();
-        Log::info('activeApp for user: '.json_encode($activeApp));
         if (isset($activeApp->app_id))
         {
             $app_data = Apps::with('tabs')->with('team')->with('activeApp')
