@@ -24,16 +24,25 @@ class TeamController extends Controller
     {
         $user = Auth::user(); 
 
+        $activeApp = UserActiveApp::where('user_id',$user['id'])->first();
+  
         $team = $user->teams->first();
         $teams = $user->teams->toArray();
   
-        $teamapps = $user->teams->first()->apps;
+        $teamapps = $team->apps;
+
+        $activeAppId = '0';
+        if (isset($activeApp->app_id))
+        {
+            $activeAppId = $activeApp->app_id;
+        }
 
         return view('apps.show')
             ->with('user', $user)
             ->with('teams',$teams)
             ->with('teamapps', $teamapps)
-            ->with('team', $team);
+            ->with('team', $team)
+            ->with('activeappid',$activeAppId);
     }
 
     /**
@@ -71,7 +80,8 @@ class TeamController extends Controller
     public function activateApp($teamid, $appid)
     {
         $user = Auth::user(); 
-        UserActiveApp::updateOrCreate(['user_id'=>$user->id, 'app_id'=>$appid]);
+        $result = UserActiveApp::processUpdates($user->id, $appid);
+
         return redirect()->route('apps.show', ['teamid' => $teamid]);
     }
 
@@ -123,16 +133,25 @@ class TeamController extends Controller
 
         $index=1;
         $sort_orders = [$index];
+        $hasMore = false;
+        $moreindex = 0;
         foreach($teamapp->tabs as $tab)
         {
-            $index = $index + 1;
             $sort_orders[] = $index;
+            if ($tab->page_url == config('constants.MORE_TAB'))
+            {
+                $hasMore = true;
+                $moreindex = $index-1;
+            }
+
+            $index = $index + 1;
         }
+        
         //for the last overflow tab, called More
-        if ($index > 4 )
+        if ( $hasMore )
         {
             $more = [[0,'Not on More'],
-                [$teamapp->tabs[4]->id,$teamapp->tabs[4]->label]];
+                [$teamapp->tabs[$moreindex]->id,$teamapp->tabs[$moreindex]->label]];
         }
         else
         {

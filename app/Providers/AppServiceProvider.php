@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Apps;
 use App\Models\Team;
 use App\Models\User;
+use App\Models\UserActiveApp;
 use Illuminate\Support\Facades\Log;
 
 class AppServiceProvider extends ServiceProvider
@@ -35,18 +36,18 @@ class AppServiceProvider extends ServiceProvider
     /// a method to return the setup for this person's application
     public static function getAppSettingsByUser($user)
     {
- 
         //which app has the user selected out of the team's apps to be used on  login
-        $activeApp = $user->find(1)->activeApp();
+        $activeApp = UserActiveApp::where('user_id',$user->id)->first();
+        Log::info('activeApp for user: '.json_encode($activeApp));
         if (isset($activeApp->app_id))
         {
-            $app_data = Apps::with('tabs')->with('team')
+            $app_data = Apps::with('tabs')->with('team')->with('activeApp')
             ->where('id',$activeApp->app_id)
             ->first();
         }
         else
-       { 
-           $app_data = Apps::with('tabs')->with('team')
+        { 
+           $app_data = Apps::with('tabs')->with('team')->with('activeApp')
             ->where('team_id',$user->teams[0]->id)
             ->first();
         }

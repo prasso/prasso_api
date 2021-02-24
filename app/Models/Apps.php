@@ -31,6 +31,11 @@ class Apps extends Model
         return $this->belongsTo(Team::class, 'team_id', 'id');
     }
 
+    public function activeApp()
+    {
+        return $this->hasOne( UserActiveApp::class, 'app_id', 'id');
+    }
+
     public static function processUpdates( $teamModel)
     {
         Apps::updateOrCreate(['id' => $teamModel['id']] , 
