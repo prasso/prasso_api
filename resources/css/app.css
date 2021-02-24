@@ -8,8 +8,11 @@
 
 .btn-blue, .sm-btn-blue {
     color: #ffffff !important;
-    @apply bg-blue-700 float-right px-8 py-2 font-semibold text-white transition duration-500 ease-in-out transform rounded-lg shadow-xl  
+    @apply bg-blue-700 float-right px-8 py-2 font-semibold text-white transition 
+    duration-500 ease-in-out transform rounded-lg shadow-xl  
   }
-  .sm-btn-blue{
+  .sm-btn-blue {
     font-size: .75em !important;
   } 
+ 
+  

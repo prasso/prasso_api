@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Laravel\Jetstream\Events\TeamCreated;
 use Laravel\Jetstream\Events\TeamDeleted;
 use Laravel\Jetstream\Events\TeamUpdated;
@@ -9,7 +10,10 @@ use Laravel\Jetstream\Team as JetstreamTeam;
 
 class Team extends JetstreamTeam
 {
+    use HasTimestamps;
+    
     /**
+     * 
      * The attributes that should be cast to native types.
      *
      * @var array
@@ -27,6 +31,12 @@ class Team extends JetstreamTeam
         'name',
         'personal_team',
     ];
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = ['timestamp'];
 
     /**
      * The event map for the model.
@@ -41,6 +51,10 @@ class Team extends JetstreamTeam
 
     public function apps()
     {
-        return $this->hasMany(Apps::class);
+        return $this->hasMany(\App\Models\Apps::class, "team_id", "id");
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

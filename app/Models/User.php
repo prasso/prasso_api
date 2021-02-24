@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -9,6 +10,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\UserActiveApp;
 
 /**
  * Class User.
@@ -32,6 +34,8 @@ class User extends Authenticatable
     use HasTeams;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use HasTimestamps;
+    
 
     /**
      * The attributes that are mass assignable.
@@ -74,7 +78,13 @@ class User extends Authenticatable
 
     public function teams()
     {
-        return $this->hasMany(Team::class);
+        return $this->hasMany(Team::class, 'user_id','id')
+            ->with('apps');
+    }
+
+    public function activeApp()
+    {
+        return $this->hasOne( UserActiveApp::class, 'user_id', 'id');
     }
 
     public function getRouteKeyName() {

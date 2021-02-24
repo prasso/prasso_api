@@ -1,10 +1,34 @@
-<div class="col-span-6">
-    <div class="max-w-xl text-sm text-gray-600">
+<div class="shadow overflow-hidden sm:rounded-md">
+  <div class="p-6 bg-white col-span-6">
+    <div class="max-w-xl text-sm text-gray-600" >
+        <span class="-mt-5 float-right ">  <a href="{{ route('apps.add-tab',['teamid' => $selected_team, 'appid' => $selected_app])   }}">
+                <i class="material-icons md-36">playlist_add</i>
+            </a>
+        </span>
+    </div>   
+    <div class="max-w-xl text-sm text-gray-600" >
         @foreach($apptabs as $tab)
-        <div class="flex">
-            <label class="items-center">
-                <input type="radio" class="form-radio" name="tabradio" value="{{$tab['id']}}">
-                <span class="ml-2">  
+        <div>
+            <span class="mx-1 float-right ">  
+                <a   href="{{ route('apps.delete-tab',['teamid' => $selected_team,'appid' => $selected_app,'tabid' => $tab['id']])   }}">
+                    <i class="material-icons md-36">delete_forever</i>
+                </a>
+                <a href="{{ route('apps.edit-tab',['teamid' => $selected_team, 'appid' => $selected_app,'tabid' => $tab['id']])   }}">
+                    <i class="material-icons md-36">mode_edit</i>
+                </a>
+            </span>
+            <div class="flex my-4" >
+            <label class="items-left"> 
+                <span class="mx-4">  
+                    @if( !empty($tab['icon']))
+                    <i class="material-icons md-36">{{ $tab['icon'] }}</i>
+                    @else
+                        No icon Given                     
+                    @endif
+                </span>
+            </label>
+            <label class="items-left">
+                 <span class="ml-2">  
                 @if( !empty($tab['label']))
                     {{ $tab['label'] }} 
                 @else
@@ -12,8 +36,8 @@
                 @endif
                 </span>
             </label>
-
-            <label class=" items-center">
+           
+            <label class=" items-left">
                 <span class="ml-2">  
                 @if( !empty($tab['page_title']))
                     {{ $tab['page_title'] }} 
@@ -23,16 +47,15 @@
                 </span>
             </label>
 
-            <label class=" items-center">
+            <label class=" items-left">
                 <span class="ml-2">  
                 @if( !empty($tab['page_url']))
-                    {{ $tab['page_url'] }} 
+                 <a href="{{ $tab['page_url'] }}" target="_blank">   {{ $tab['page_url'] }} </a>
                 @else
                     No page_url Given                     
                 @endif
                 </span>
             </label>
-
             <label class=" items-center">
                 <span class="ml-2">  
                 @if( !empty($tab['sort_order']))
@@ -43,6 +66,8 @@
                 </span>
             </label>
         </div>
+        </div>
         @endforeach
     </div>
+  </div
 </div>
