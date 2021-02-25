@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Prasso') }}</title>
+        <title>{{ config('app.name', 'Prasso') }} - {{ $title }}</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700" rel="stylesheet">
@@ -20,5 +20,7 @@
         <div class="font-sans text-gray-900 antialiased">
             {{ $slot }}
         </div>
+        <x-footer></x-footer>
+
     </body>
 </html>
