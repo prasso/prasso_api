@@ -1,4 +1,6 @@
 <x-guest-layout>
+
+<x-slot name="title">Forgot Password</x-slot>
     <x-jet-authentication-card>
         <x-slot name="logo">
             <img src="{{ asset('images/prasso_logo.jpg') }}" />

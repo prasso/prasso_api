@@ -6,7 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <link rel="icon" type="image/png" href="{{asset('favicon.ico')}}" />
-        <title>{{ config('app.name', 'Prasso') }}</title>
+        <title>{{ config('app.name', 'Prasso') }} - {{ $title }}</title>
 
         <!-- Fonts -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
