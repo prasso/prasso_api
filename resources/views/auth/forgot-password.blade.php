@@ -3,7 +3,7 @@
 <x-slot name="title">Forgot Password</x-slot>
     <x-jet-authentication-card>
         <x-slot name="logo">
-            <img src="{{ asset('images/prasso_logo.jpg') }}" />
+            <img src="{{ asset('images/mercy_full_logo.jpg') }}" />
         </x-slot>
 
         <div class="mb-4 text-sm text-gray-600">

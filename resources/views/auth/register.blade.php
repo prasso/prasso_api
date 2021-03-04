@@ -3,7 +3,7 @@
 <x-slot name="title">Register</x-slot>
     <x-jet-authentication-card>
         <x-slot name="logo">
-            <img src="{{ asset('images/prasso_logo.jpg') }}" />
+            <img src="{{ asset('images/mercy_full_logo.jpg') }}" />
         </x-slot>
 
         <x-jet-validation-errors class="mb-4" />

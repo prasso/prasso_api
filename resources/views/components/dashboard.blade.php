@@ -5,25 +5,26 @@
     <div class="container px-8 pt-20 pb-4 mx-auto lg:px-4">
         <div class="flex flex-col w-full mb-12 text-left lg:text-center">
             <h2 class="mb-1 font-semibold tracking-widest text-blue-600 uppercase title-font">
-            Your No-Code solution<br class="md:hidden">
-                to an app for your business.</h2>
+            Mercy Full Farms, Inc is a non profit organized and operating exclusively for charitable purposes, specifically to provide emergency and low cost housing to homeless individuals and families, stabilize their situation then help train them to support themselves as productive members of society. We also protect and support special needs foster care children who have aged out of the foster system but do not have family love and support. The Dog House Rescue lawn service and Mercy Cleaning operate alongside of Mercy Full Farms to provide job training and skills to farm residents.
+</h2>
             <h1 class="mb-6 text-2xl font-semibold tracking-tighter text-blue-800 sm:text-6xl title-font">
-            Prasso 
+            Mercy Full Farms 
             </h1>
-            
+            <h2> Goals</h2>
             <p class="mx-auto text-base font-medium leading-relaxed text-gray-700 lg:w-2/3">
-            Fast API eXtraction Technologies - faxt - presents Prasso. 
-            Prasso is an easy way to create your own app. Use these tools to assemble your personalized
-            mobile app, then add your team to provide access.
-            With Prasso, you designate which tabs to include in a mobile application and who can use it.</p>
-             <p>Prasso setup enables you to set up your mobile app with no code required.</p>
+           
+We seek to be a half way house between the streets and individual independence for those who through economic and social circumstances are working toward rehabilitation but are not fully functioning members of society yet.
+</p>
+<h2> Solution</h2>
+            <p class="mx-auto text-base font-medium leading-relaxed text-gray-700 lg:w-2/3">
+           
+
+We further our purposes by conducting the following activities:
+Housing- Emergency shelter for homeless and low cost housing during rehabilitation.
+Housing and care for special needs young adults who have aged out of the foster care system.
+</p>
         </div>
-        @if (auth()->user() == null)
-        <div class="flex lg:justify-center">
-            <a href="/login"
-                class="px-8 py-2 font-semibold text-white transition duration-500 ease-in-out transform rounded-lg shadow-xl bg-gradient-to-r from-blue-700 hover:from-blue-600 to-blue-600 hover:to-blue-700 focus:ring focus:outline-none">Sign In</a>
-        </div>
-        @endif
+       
     </div>
 </section>
 <section class="block " id="section">

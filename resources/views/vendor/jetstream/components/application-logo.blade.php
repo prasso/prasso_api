@@ -1,1 +1,1 @@
-<img src="/images/prasso_logo.jpg">
+<img src="/images/mercy_full_logo.jpg">
