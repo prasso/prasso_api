@@ -3,7 +3,7 @@
 
 <section class="text-gray-700 body-font">
     <div class="container px-8 pt-20 pb-4 mx-auto lg:px-4">
-        <div class="flex flex-col w-full mb-12 text-left lg:text-center">
+        <div class="flex flex-col w-full mb-12 text-left ">
             
             <h1 class="mb-6 text-2xl font-semibold tracking-tighter text-blue-800 sm:text-6xl title-font">
             Mercy Full Farms 
