@@ -9,7 +9,7 @@
             Mercy Full Farms 
             </h1>
             <h2 class="mb-6 font-semibold tracking-widest text-blue-600 title-font ">
-            Mercy Full Farms, Inc is a non profit organized and operating exclusively for charitable purposes, specifically to provide emergency and low cost housing to homeless individuals and families, stabilize their situation then help train them to support themselves as productive members of society. We also protect and support special needs foster care children who have aged out of the foster system but do not have family love and support. The Dog House Rescue lawn service and Mercy Cleaning operate alongside of Mercy Full Farms to provide job training and skills to farm residents.
+            Mercy Full Farms, Inc is a non profit organized and operating exclusively for charitable purposes, specifically to provide emergency and low cost housing to homeless individuals and families, stabilize their situation then help train them to support themselves as productive members of society. We also protect and support special needs foster care children who have aged out of the foster system but do not have family love and support. The Liley Scapes lawn service and Mercy Cleaning operate alongside of Mercy Full Farms to provide job training and skills to farm residents.
             </h2>
             <h2 class="mb-2 font-semibold tracking-widest text-blue-600 uppercase title-font text-center"> Goals</h2>
             <p class="mx-auto text-base font-medium leading-relaxed text-gray-700 lg:w-2/3">
