@@ -30,7 +30,7 @@ Housing and care for special needs young adults who have aged out of the foster 
 </section>
 <section class="block " id="section">
     <div class="container flex flex-col items-center justify-center px-10 py-2 mx-auto lg:px-48">
-        <img src="{{ asset('images/mercy_full_logo.jpg') }}" class="block h-9 w-auto" />
+        <img src="{{ asset('images/mercy_full_logo.jpg') }}" class="block w-auto" />
 
     </div>
 </section>
