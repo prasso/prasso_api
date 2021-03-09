@@ -46,6 +46,16 @@ class AppServiceProvider extends ServiceProvider
         }
         else
         { 
+           if ( count($user->teams)<1 )
+           {
+               //add a team for this user. it didn't happen when registered. maybe an early user
+               $user->ownedTeams()->save(Team::forceCreate([
+                'user_id' => $user->id,
+                'name' => explode(' ', $user->name, 2)[0]."'s Team",
+                'personal_team' => true,
+            ]));
+            $user = $user->fresh();
+           }
            $app_data = Apps::with('tabs')->with('team')->with('activeApp')
             ->where('team_id',$user->teams[0]->id)
             ->first();

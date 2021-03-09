@@ -5,8 +5,8 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Tab') }}
         </h2>
-        <x-jet-dropdown-link href="{{ route('apps.show', Auth::user()->allTeams()->first()->id)  }}">
-                    {{ __('Return to Apps') }}
+        <x-jet-dropdown-link href="{{ route('apps.edit',['teamid' => Auth::user()->allTeams()->first()->id, 'appid' => $tabdata->app_id])   }}">
+                    {{ __('Return to App') }}
                 </x-jet-responsive-nav-link>
     </x-slot>
 
