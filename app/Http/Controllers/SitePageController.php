@@ -18,7 +18,7 @@ class SitePageController extends Controller
         $welcomepage = SitePages::where('section','Welcome')->first();
         if ($welcomepage == null)
         {
-            return view('Welcome');
+            return view('welcome');
         }
         return view('sitepage.masterpage')
             ->with('content',$welcomepage);
