@@ -13,8 +13,8 @@
             
             <p class="mx-auto text-base font-medium leading-relaxed text-gray-700 lg:w-2/3">
             Fast API eXtraction Technologies - faxt - presents Prasso. 
-            Prasso is an easy way to create your own app. Use these tools to assemble your personalized
-            mobile app, then add your team to provide access.
+            Prasso is a simple framework to create ANY app. Useful for fast prototyping too!
+            Use these tools to assemble your personalized mobile app, then add your team to provide access.
             With Prasso, you designate which tabs to include in a mobile application and who can use it.</p>
              <p>Prasso setup enables you to set up your mobile app with no code required.</p>
         </div>
@@ -28,7 +28,7 @@
 </section>
 <section class="block " id="section">
     <div class="container flex flex-col items-center justify-center px-10 py-2 mx-auto lg:px-48">
-        <img class="object-cover object-center mx-auto mb-10 rounded-lg lg:w-full md:w-15/5 w-20/6" alt="hero"
+        <img class="object-cover object-center mx-auto mb-10 rounded-lg lg:w-full md:w-14/5 w-18/6" alt="hero"
             src="/images/butterfly.png">
     </div>
 </section>
