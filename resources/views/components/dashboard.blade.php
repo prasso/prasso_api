@@ -4,7 +4,7 @@
       <div id="imv9h" class="gpd-container">
         <div id="id342" class="gdp-row">
           <div id="itj0b" class="cell">
-            <a id="i43oo" href="//b3f0d2b.grapedrop.net" class="gpd-link-box"></a>
+            <a id="i43oo" href="//www.mercyfullfarms.com" class="gpd-link-box"></a>
             <h1 class="gpd-header" id="ijmpwv">Mercy Full Farms
             </h1>
           </div>
@@ -17,13 +17,13 @@
           <div id="iwubf" class="cell gpd-navbar__items">
             <div id="ibw6n" class="gdp-row gpd-navbar__items-grid">
               <div id="izxnp" class="cell gpd-navbar__item">
-                <a id="iorwn" href="//b3f0d2b.grapedrop.net/about" class="gpd-navbar__item-link">Our Story</a>
+                <a id="iorwn" href="//www.mercyfullfarms.com/about" class="gpd-navbar__item-link">Our Story</a>
               </div>
               <div id="i1riv" class="cell gpd-navbar__item">
-                <a id="iv8kh" href="//b3f0d2b.grapedrop.net/projects" class="gpd-navbar__item-link">Projects</a>
+                <a id="iv8kh" href="//www.mercyfullfarms.com/projects" class="gpd-navbar__item-link">Projects</a>
               </div>
               <div id="iaen3" class="cell gpd-navbar__item">
-                <a id="ikagz" href="//b3f0d2b.grapedrop.net/contact" class="gpd-navbar__item-link">Contact</a>
+                <a id="ikagz" href="//www.mercyfullfarms.com/contact" class="gpd-navbar__item-link">Contact</a>
               </div>
             </div>
           </div>
@@ -43,7 +43,7 @@
         </h1>
         <div id="iumdsu" class="gpd-divider">
         </div>
-        <a id="ioi2cj" href="//b3f0d2b.grapedrop.net/donate" class="gpd-link">Donate Today</a>
+        <a id="ioi2cj" href="//www.mercyfullfarms.com/donate" class="gpd-link">Donate Today</a>
       </div>
     </div>
   </div>
@@ -77,7 +77,7 @@
         </div>
         <div id="ifzbla" class="gpd-divider">
         </div>
-        <a id="i4fll" href="//b3f0d2b.grapedrop.net/international-conservation" class="gpd-link">Learn More</a>
+        <a id="i4fll" href="//www.mercyfullfarms.com/international-conservation" class="gpd-link">Learn More</a>
       </div>
     </div>
   </div>
@@ -93,7 +93,7 @@
         </div>
         <div id="iwkv7k" class="gpd-divider">
         </div>
-        <a id="i8ygw" href="//b3f0d2b.grapedrop.net/grassroots-advocacy" class="gpd-link">Learn More</a>
+        <a id="i8ygw" href="//www.mercyfullfarms.com/grassroots-advocacy" class="gpd-link">Learn More</a>
         <div id="i0mr9h" class="gpd-divider">
         </div>
       </div>
@@ -116,7 +116,7 @@
         </div>
         <div id="issau9" class="gpd-divider">
         </div>
-        <a id="i4ozg" href="//b3f0d2b.grapedrop.net/transparant-aid" class="gpd-link">Learn More</a>
+        <a id="i4ozg" href="//www.mercyfullfarms.com/transparant-aid" class="gpd-link">Learn More</a>
       </div>
     </div>
   </div>
@@ -136,7 +136,7 @@
       <h1 id="iht21s" class="gpd-header">Subscribe To Our Newsletter
       </h1>
       <form method="post" name="section-form" data-redirect="" id="i7n94">
-        <div id="iidm02" class="gpd-text">Recieve updates about our conservation projects.
+        <div id="iidm02" class="gpd-text">Recieve updates about our projects.
         </div>
         <div class="input-group">
           <input type="email" name="email" placeholder="Enter your email" id="iwy8c" required class="input"/>
@@ -152,23 +152,23 @@
 </section>
 <section id="i6n844" data-anim-type="fadeIn" class="gpd-section">
   <div id="iaa0jf" class="gpd-container">
-    <a id="i8skgl" href="//b3f0d2b.grapedrop.net" class="gpd-link-box"></a>
     <div id="ipqeri" class="footer-details">
-      <br>1-234-567-8900
-      <br>info@company.com
+    778 NW Cambridge Hill Way, Lake City, FL
+      <br>(386) 288-3024
+      <br>mercyfullfarms@gmail.com
     </div>
     <div id="i4kf4a" class="gpd-divider">
     </div>
-    <a href="//b3f0d2b.grapedrop.net/about" id="isksaz" class="footer-link">About Us</a>
+    <a href="//www.mercyfullfarms.com/about" id="isksaz" class="footer-link">About Us</a>
     <div id="ivmrhw" class="gpd-divider">
     </div>
-    <a href="//b3f0d2b.grapedrop.net/projects" id="icpjuk" class="footer-link">Projects</a>
+    <a href="//www.mercyfullfarms.com/projects" id="icpjuk" class="footer-link">Projects</a>
     <div id="ipdhgm" class="gpd-divider">
     </div>
-    <a href="//b3f0d2b.grapedrop.net/contact" id="if2jeg" class="footer-link">Contact</a>
+    <a href="//www.mercyfullfarms.com/contact" id="if2jeg" class="footer-link">Contact</a>
     <div id="irq10v" class="gpd-divider">
     </div>
-    <a href="//b3f0d2b.grapedrop.net/donate" id="izgdw1" class="footer-link">Donate</a>
+    <a href="//www.mercyfullfarms.com/donate" id="izgdw1" class="footer-link">Donate</a>
     <div id="i7psdt" class="gpd-divider">
     </div>
     <h3 id="it9ts3" class="footer-item-title">FOLLOW US
@@ -195,7 +195,6 @@
 </section>
 <section id="ir4gt" data-anim-type="fadeIn" class="gpd-section">
   <div id="ix2vp" class="gpd-container">
-    <a id="ijqoae" href="https://grapedrop.com/" class="gpd-link-box"><div id="if1fe" class="gpd-text">Powered by Grapedrop.
       </div></a>
   </div>
 </section>
