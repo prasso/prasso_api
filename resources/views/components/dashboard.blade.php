@@ -17,13 +17,13 @@
           <div id="iwubf" class="cell gpd-navbar__items">
             <div id="ibw6n" class="gdp-row gpd-navbar__items-grid">
               <div id="izxnp" class="cell gpd-navbar__item">
-                <a id="iorwn" href="//www.mercyfullfarms.com/about" class="gpd-navbar__item-link">Our Story</a>
+                <a id="iorwn" href="/about" class="gpd-navbar__item-link">Our Story</a>
               </div>
               <div id="i1riv" class="cell gpd-navbar__item">
-                <a id="iv8kh" href="//www.mercyfullfarms.com/projects" class="gpd-navbar__item-link">Projects</a>
+                <a id="iv8kh" href="/projects" class="gpd-navbar__item-link">Projects</a>
               </div>
               <div id="iaen3" class="cell gpd-navbar__item">
-                <a id="ikagz" href="//www.mercyfullfarms.com/contact" class="gpd-navbar__item-link">Contact</a>
+                <a id="ikagz" href="/contact" class="gpd-navbar__item-link">Contact</a>
               </div>
             </div>
           </div>
@@ -159,22 +159,22 @@
     </div>
     <div id="i4kf4a" class="gpd-divider">
     </div>
-    <a href="//www.mercyfullfarms.com/about" id="isksaz" class="footer-link">About Us</a>
+    <a href="/about" id="isksaz" class="footer-link">About Us</a>
     <div id="ivmrhw" class="gpd-divider">
     </div>
-    <a href="//www.mercyfullfarms.com/projects" id="icpjuk" class="footer-link">Projects</a>
+    <a href="/projects" id="icpjuk" class="footer-link">Projects</a>
     <div id="ipdhgm" class="gpd-divider">
     </div>
-    <a href="//www.mercyfullfarms.com/contact" id="if2jeg" class="footer-link">Contact</a>
+    <a href="/contact" id="if2jeg" class="footer-link">Contact</a>
     <div id="irq10v" class="gpd-divider">
     </div>
-    <a href="//www.mercyfullfarms.com/donate" id="izgdw1" class="footer-link">Donate</a>
+    <a href="/donate" id="izgdw1" class="footer-link">Donate</a>
     <div id="i7psdt" class="gpd-divider">
     </div>
     <h3 id="it9ts3" class="footer-item-title">FOLLOW US
     </h3>
     <div id="i85ryr" class="footer-socials">
-      <a id="im0re" href="" class="gpd-link-box"><span id="i5rnt" class="gpd-icon footer-link-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <a id="im0re" href="https://www.facebook.com/mercyfullfarms" class="gpd-link-box"><span id="i5rnt" class="gpd-icon footer-link-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path d="M5 3h14c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2m13 2h-2.5C13.57 5 12 6.57 12 8.5V11h-2v3h2v7h3v-7h3v-3h-3V9c0-.55.45-1 1-1h2V5z">
         </path>
         </svg></span></a>
