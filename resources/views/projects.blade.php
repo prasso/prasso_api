@@ -39,11 +39,7 @@
         </div>
       </div>
     </div>
-
-</section>
-<section id="iw4q5" data-anim-type="fadeIn" class="gpd-section">
-  <div id="ibqh8" class="gpd-container">
-    <div id="ija44" class="gdp-row">
+    <div id="i1aq8i" class="gdp-row">
       <div id="itrpx" class="cell">
         <h1 id="i7fzvf" class="gpd-header">Providing
         </h1>
@@ -54,6 +50,22 @@
           <br>The last way your gifts impact a family is when we move them into their own home or apartment to continue forward fully supporting themselves.
         </div>
       </div>
+   
+    </div>
+</section>
+<section id="iw4q5" data-anim-type="fadeIn" class="gpd-section">
+  <div id="ibqh8" class="gpd-container">
+  <div id="i1aq8i" class="gdp-row">
+      <div id="itrpx" class="cell">
+        <h1 id="i7fzvf" class="gpd-header">Goals
+        </h1>
+      </div>
+      <div id="ic0x5" class="cell">
+        <div id="iee901" class="gpd-text">
+        We seek to be a half way house between the streets and individual independence for those who through economic and social circumstances are working toward rehabilitation but are not fully functioning members of society yet.
+           </div>
+      </div>
+   
     </div>
   </div>
 </section>
@@ -76,13 +88,21 @@
   </div>
 </section>
 
-<section id="iobof" class="gpd-section">
-  <div id="iv3av" class="gpd-container">
-    <h1 id="ilr55" data-anim-type="fadeIn" class="gpd-header">“Kindness is the language the deaf can hear and the blind can see.” 
-      <br>
-      <br>—Mark Twain
-      <br>​​​​​​​
-    </h1>
+<section id="iw4q5" data-anim-type="fadeIn" class="gpd-section">
+  <div id="ibqh8" class="gpd-container">
+  <div id="i1aq8i" class="gdp-row">
+      <div id="itrpx" class="cell">
+        <h1 id="i7fzvf" class="gpd-header">Solution
+        </h1>
+      </div>
+      <div id="ic0x5" class="cell">
+        <div id="iee901" class="gpd-text">
+        We further our purposes by conducting the following activities:<br>
+Housing- Emergency shelter for homeless and low cost housing during rehabilitation.<br>
+Housing and care for special needs young adults who have aged out of the foster care system.   </div>
+      </div>
+   
+    </div>
   </div>
 </section>
 <section id="ieug0c" data-anim-type="fadeIn" class="section-form1">
