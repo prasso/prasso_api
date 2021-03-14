@@ -39,24 +39,7 @@
         </div>
       </div>
     </div>
-    <section id="i8fq2" class="gpd-section">
-  <div id="ietjt" data-anim-type="fadeIn" class="gpd-container">
-    <div id="ijyrap" class="gdp-row">
-      <div id="ivjyu4" class="cell">
-        <img src="https://www.mercyfullfarms.com/images/familyathome.png" id="idn9af"/>
-      </div>
-      <div id="i901i" class="cell">
-        <h1 id="ilmgnj" class="gpd-header">Time to Heal
-        </h1>
-        <div id="i2gv1z" class="gpd-text">From start to finish it takes the average family two years to go from homelessness to independence. Please partner with us as we minister to families in need.&nbsp;
-        </div>
-        <div id="ifzbla" class="gpd-divider">
-        </div>
-        <a id="i4fll" href="//www.mercyfullfarms.com/international-conservation" class="gpd-link">Learn More</a>
-      </div>
-    </div>
-  </div>
-</section>
+
 </section>
 <section id="iw4q5" data-anim-type="fadeIn" class="gpd-section">
   <div id="ibqh8" class="gpd-container">
@@ -92,45 +75,7 @@
     </div>
   </div>
 </section>
-<section id="ibklk" class="gpd-section">
-  <div id="ilvvj" class="gpd-container">
-    <div id="iyhgnk" class="gdp-row">
-      <div id="ii54tt" data-anim-type="fadeInLeft" class="cell">
-        <h1 id="i4lbw3" class="gpd-header">Pray
-        </h1>
-        <div class="gpd-text" id="i1gt6a">Mercy Full Farms is a ministry. May others see Jesus in all that we do.
-          <br>
-        </div>
-        <div id="iwkv7k" class="gpd-divider">
-        </div>
-        <a id="i8ygw" href="//www.mercyfullfarms.com/grassroots-advocacy" class="gpd-link">Learn More</a>
-        <div id="i0mr9h" class="gpd-divider">
-        </div>
-      </div>
-      <div id="itmqd1" data-anim-type="fadeInRight" class="cell">
-        <img src="https://www.mercyfullfarms.com/images/boyNhisdog.png" id="ibkggj"/>
-      </div>
-    </div>
-  </div>
-</section>
-<section id="ifs71" class="gpd-section">
-  <div class="gpd-container">
-    <div id="ijrzix" data-anim-type="fadeIn" class="gdp-row">
-      <div id="ic1upg" class="cell">
-        <img src="https://www.mercyfullfarms.com/images/smilesAthome.png" id="igw82h"/>
-      </div>
-      <div id="igtmgv" class="cell">
-        <h1 id="iowefr" class="gpd-header">Encouraging
-        </h1>
-        <div id="ivlxkk" class="gpd-text">When many work together to make life better for someone else our view of our own circumstances changes. We are encouraged by encouraging others. We are uplifted by uplifting others.
-        </div>
-        <div id="issau9" class="gpd-divider">
-        </div>
-        <a id="i4ozg" href="//www.mercyfullfarms.com/transparant-aid" class="gpd-link">Learn More</a>
-      </div>
-    </div>
-  </div>
-</section>
+
 <section id="iobof" class="gpd-section">
   <div id="iv3av" class="gpd-container">
     <h1 id="ilr55" data-anim-type="fadeIn" class="gpd-header">“Kindness is the language the deaf can hear and the blind can see.” 
