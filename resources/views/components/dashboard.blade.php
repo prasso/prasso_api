@@ -49,11 +49,14 @@
   </div>
 </section>
 <section id="iw4q5" data-anim-type="fadeIn" class="gpd-section">
+    <div id="itmqd1" data-anim-type="fadeInLeft" class="cell">
+        <img src="https://www.mercyfullfarms.com/images/Zee.png" id="ibkggj2"/>
+    </div>
   <div id="ibqh8" class="gpd-container">
     <div id="ija44" class="gdp-row">
+     <div id="ii54tt" data-anim-type="fadeInRight" class="cell">
       <div id="itrpx" class="cell">
-        <h1 id="i7fzvf" class="gpd-header">Providing
-        </h1>
+        <h1 id="i7fzvf" class="gpd-header">Providing </h1>
       </div>
       <div id="ic0x5" class="cell">
         <div id="iee901" class="gpd-text">Many who have come to us for help are homeless. Basic needs such as food and shelter are provided. Needs are assessed and met as we are able. Your gifts directly impact a family by providing food, clothing, housing and utilities
@@ -61,41 +64,32 @@
           <br>The last way your gifts impact a family is when we move them into their own home or apartment to continue forward fully supporting themselves.
         </div>
       </div>
-    </div>
-  </div>
+     </div>
+
+   </div>
+ </div>
 </section>
-<section id="i8fq2" class="gpd-section">
-  <div id="ietjt" data-anim-type="fadeIn" class="gpd-container">
-    <div id="ijyrap" class="gdp-row">
-      <div id="ivjyu4" class="cell">
-        <img src="https://www.mercyfullfarms.com/images/familyathome.png" id="idn9af"/>
-      </div>
-      <div id="i901i" class="cell">
-        <h1 id="ilmgnj" class="gpd-header">Time to Heal
-        </h1>
-        <div id="i2gv1z" class="gpd-text">From start to finish it takes the average family two years to go from homelessness to independence. Please partner with us as we minister to families in need.&nbsp;
-        </div>
-        <div id="ifzbla" class="gpd-divider">
-        </div>
-        <a id="i4fll" href="//www.mercyfullfarms.com/international-conservation" class="gpd-link">Learn More</a>
-      </div>
-    </div>
-  </div>
-</section>
+
 <section id="ibklk" class="gpd-section">
   <div id="ilvvj" class="gpd-container">
     <div id="iyhgnk" class="gdp-row">
       <div id="ii54tt" data-anim-type="fadeInLeft" class="cell">
-        <h1 id="i4lbw3" class="gpd-header">Pray
-        </h1>
-        <div class="gpd-text" id="i1gt6a">Mercy Full Farms is a ministry. May others see Jesus in all that we do.
+      <div id="itrpx" class="cell">
+        <h1 id="i7fzvf" class="gpd-header">Mentoring </h1>
+      </div>
+      <div id="ic0x5" class="cell">
+        <div id="iee901" class="gpd-text">
+        <b> Life Training, One on One Discipleship</b>
+       <br>
+Residents of Mercy Full Farms learn through doing. Wether it is learning to budget, avoiding bad influences or practicing a skill we match each individual with training that will help them reach life goals and provide for themselves.
+The friendships built give encouragement that the current struggle can be won and that there are friends here who have walked in their shoes, understand, and care.
           <br>
         </div>
         <div id="iwkv7k" class="gpd-divider">
         </div>
-        <a id="i8ygw" href="//www.mercyfullfarms.com/grassroots-advocacy" class="gpd-link">Learn More</a>
+        <a id="i8ygw" href="//www.mercyfullfarms.com/projects" class="gpd-link">Learn More</a>
         <div id="i0mr9h" class="gpd-divider">
-        </div>
+        </div></div>
       </div>
       <div id="itmqd1" data-anim-type="fadeInRight" class="cell">
         <img src="https://www.mercyfullfarms.com/images/boyNhisdog.png" id="ibkggj"/>

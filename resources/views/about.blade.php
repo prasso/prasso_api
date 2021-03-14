@@ -1,3 +1,12 @@
+<x-app-layout>
+
+<x-slot name="title">Dashboard</x-slot>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Dashboard') }}
+        </h2>
+    </x-slot>
+
 <section id="i6l63q" class="gpd-section">
   <div id="im2ax9" class="gpd-container">
     <div id="idnvj" class="gpd-navbar">
@@ -16,7 +25,7 @@
           </div>
           <div id="iwubf" class="cell gpd-navbar__items">
             <div id="ibw6n" class="gdp-row gpd-navbar__items-grid">
-              <div id="izxnp" class="cell gpd-navbar__item">
+              <div id="izxnp" class="cell gpd-navbar__item  border-2 border-white-600">
                 <a id="iorwn" href="//www.mercyfullfarms.com/about" class="gpd-navbar__item-link">Our Story</a>
               </div>
               <div id="i1riv" class="cell gpd-navbar__item">
@@ -32,15 +41,15 @@
     </div>
     <div id="i1aq8i" class="gdp-row">
       <div id="inrrg1" class="cell">
-        <h1 id="ibd4bq" class="gpd-header">
-          <div data-cke-filler-webkit="start" data-cke-temp="1" style="display: block; width: 0px; height: 0px; padding: 0px; border: 0px; margin: 0px; position: absolute; top: 0px; left: -9999px; opacity: 0; overflow: hidden;">&nbsp;
-          </div>&nbsp;
-          <br>Giving hope to the hopeless, shelter to the homeless, showing the love of God by living what we believe....​​​​​​​
-          <br>
-          <br>
-          <div data-cke-filler-webkit="end" data-cke-temp="1" style="display: block; width: 0px; height: 0px; padding: 0px; border: 0px; margin: 0px; position: absolute; top: 0px; left: -9999px; opacity: 0; overflow: hidden;">&nbsp;
-          </div>
-        </h1>
+       <div class="cell">
+       Mercy Full Farms, Inc is a non profit organized and operating exclusively for charitable purposes, specifically to provide emergency and low cost housing to homeless individuals and families, stabilize their situation then help train them to support themselves as productive members of society. We also protect and support special needs foster care children who have aged out of the foster system but do not have family love and support work toward independence and provide end of life support for seniors with no family.<br>
+We seek to be a half way house between the streets and individual independence for those who through economic and social circumstances are working toward rehabilitation but are not fully functioning members of society yet.<br>
+We further our purposes by conducting the following activities:<br>
+Housing- Emergency shelter for homeless and low cost housing during rehabilitation.<br>
+Housing and care for special needs young adults who have aged out of the foster care system. Training-Individual goal setting, weekly assessment and adjustment to goals, job training in home repair or carpentry work through Mercy Full Farms; house keeping work through Mercy Cleaners or lawn service work through The Dog House Rescue Lawn Service.<br>
+Support- Providing mentoring, friendship, encouragement as a community to help each one help themselves. Making sure basic physical needs are met.<br>
+Through each step we strive to honor God by serving one another in love and kindness.<br>
+       </div>
         <div id="iumdsu" class="gpd-divider">
         </div>
         <a id="ioi2cj" href="//www.mercyfullfarms.com/donate" class="gpd-link">Donate Today</a>
@@ -52,14 +61,14 @@
   <div id="ibqh8" class="gpd-container">
     <div id="ija44" class="gdp-row">
       <div id="itrpx" class="cell">
-        <h1 id="i7fzvf" class="gpd-header">Providing
+        <h1 id="i7fzvf" class="gpd-header">Volunteer
         </h1>
       </div>
       <div id="ic0x5" class="cell">
-        <div id="iee901" class="gpd-text">Many who have come to us for help are homeless. Basic needs such as food and shelter are provided. Needs are assessed and met as we are able. Your gifts directly impact a family by providing food, clothing, housing and utilities
-          <br>Once the family is stable and moving forward to independence your donations provide rides to and from work and doctors appointment or school, utilities assistance and job training.
-          <br>The last way your gifts impact a family is when we move them into their own home or apartment to continue forward fully supporting themselves.
-        </div>
+        <div id="iee901" class="gpd-text">
+        
+Have a passion or skill to teach? Contact us at (386) 288-3024 to volunteer.
+         </div>
       </div>
     </div>
   </div>
@@ -71,56 +80,19 @@
         <img src="https://www.mercyfullfarms.com/images/familyathome.png" id="idn9af"/>
       </div>
       <div id="i901i" class="cell">
-        <h1 id="ilmgnj" class="gpd-header">Time to Heal
+        <h1 id="ilmgnj" class="gpd-header">Pray
         </h1>
-        <div id="i2gv1z" class="gpd-text">From start to finish it takes the average family two years to go from homelessness to independence. Please partner with us as we minister to families in need.&nbsp;
+        <div id="i2gv1z" class="gpd-text">
+        
+Mercy Full Farms is a ministry. May others see Jesus in all that we do.
         </div>
         <div id="ifzbla" class="gpd-divider">
         </div>
-        <a id="i4fll" href="//www.mercyfullfarms.com/international-conservation" class="gpd-link">Learn More</a>
-      </div>
+         </div>
     </div>
   </div>
 </section>
-<section id="ibklk" class="gpd-section">
-  <div id="ilvvj" class="gpd-container">
-    <div id="iyhgnk" class="gdp-row">
-      <div id="ii54tt" data-anim-type="fadeInLeft" class="cell">
-        <h1 id="i4lbw3" class="gpd-header">Pray
-        </h1>
-        <div class="gpd-text" id="i1gt6a">Mercy Full Farms is a ministry. May others see Jesus in all that we do.
-          <br>
-        </div>
-        <div id="iwkv7k" class="gpd-divider">
-        </div>
-        <a id="i8ygw" href="//www.mercyfullfarms.com/grassroots-advocacy" class="gpd-link">Learn More</a>
-        <div id="i0mr9h" class="gpd-divider">
-        </div>
-      </div>
-      <div id="itmqd1" data-anim-type="fadeInRight" class="cell">
-        <img src="https://www.mercyfullfarms.com/images/boyNhisdog.png" id="ibkggj"/>
-      </div>
-    </div>
-  </div>
-</section>
-<section id="ifs71" class="gpd-section">
-  <div class="gpd-container">
-    <div id="ijrzix" data-anim-type="fadeIn" class="gdp-row">
-      <div id="ic1upg" class="cell">
-        <img src="https://www.mercyfullfarms.com/images/smilesAthome.png" id="igw82h"/>
-      </div>
-      <div id="igtmgv" class="cell">
-        <h1 id="iowefr" class="gpd-header">Encouraging
-        </h1>
-        <div id="ivlxkk" class="gpd-text">When many work together to make life better for someone else our view of our own circumstances changes. We are encouraged by encouraging others. We are uplifted by uplifting others.
-        </div>
-        <div id="issau9" class="gpd-divider">
-        </div>
-        <a id="i4ozg" href="//www.mercyfullfarms.com/transparant-aid" class="gpd-link">Learn More</a>
-      </div>
-    </div>
-  </div>
-</section>
+
 <section id="iobof" class="gpd-section">
   <div id="iv3av" class="gpd-container">
     <h1 id="ilr55" data-anim-type="fadeIn" class="gpd-header">“Kindness is the language the deaf can hear and the blind can see.” 
@@ -130,26 +102,7 @@
     </h1>
   </div>
 </section>
-<section id="ieug0c" data-anim-type="fadeIn" class="section-form1">
-  <div id="ipimj" class="container">
-    <div id="i2zaxv">
-      <h1 id="iht21s" class="gpd-header">Subscribe To Our Newsletter
-      </h1>
-      <form method="post" name="section-form" data-redirect="" id="i7n94">
-        <div id="iidm02" class="gpd-text">Recieve updates about our conservation projects.
-        </div>
-        <div class="input-group">
-          <input type="email" name="email" placeholder="Enter your email" id="iwy8c" required class="input"/>
-          <button type="button" id="iiw76" class="button">Send</button>
-        </div>
-        <div data-form-state="success" id="iakxnm" class="state-success">Thanks! We received your request
-        </div>
-        <div data-form-state="error" id="iwhk5l" class="state-error">An error occurred on processing your request, try again!
-        </div>
-      </form>
-    </div>
-  </div>
-</section>
+
 <section id="i6n844" data-anim-type="fadeIn" class="gpd-section">
   <div id="iaa0jf" class="gpd-container">
     <div id="ipqeri" class="footer-details">
@@ -230,3 +183,5 @@
      .bind(items[i]))();
   }
 </script>
+                        
+</x-app-layout>

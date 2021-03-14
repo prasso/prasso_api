@@ -1,4 +1,12 @@
-<section id="i6l63q" class="gpd-section">
+<x-app-layout>
+
+<x-slot name="title">Donate</x-slot>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Donate') }}
+        </h2>
+    </x-slot>
+    <section id="i6l63q" class="gpd-section">
   <div id="im2ax9" class="gpd-container">
     <div id="idnvj" class="gpd-navbar">
       <div id="imv9h" class="gpd-container">
@@ -25,131 +33,38 @@
               <div id="iaen3" class="cell gpd-navbar__item">
                 <a id="ikagz" href="//www.mercyfullfarms.com/contact" class="gpd-navbar__item-link">Contact</a>
               </div>
+              <div id="iaen4" class="cell gpd-navbar__item border-2 border-white-600">
+                <a id="ikagz" href="//www.mercyfullfarms.com/donate" class="gpd-navbar__item-link">Donate</a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div id="i1aq8i" class="gdp-row">
-      <div id="inrrg1" class="cell">
-        <h1 id="ibd4bq" class="gpd-header">
-          <div data-cke-filler-webkit="start" data-cke-temp="1" style="display: block; width: 0px; height: 0px; padding: 0px; border: 0px; margin: 0px; position: absolute; top: 0px; left: -9999px; opacity: 0; overflow: hidden;">&nbsp;
-          </div>&nbsp;
-          <br>Giving hope to the hopeless, shelter to the homeless, showing the love of God by living what we believe....​​​​​​​
-          <br>
-          <br>
-          <div data-cke-filler-webkit="end" data-cke-temp="1" style="display: block; width: 0px; height: 0px; padding: 0px; border: 0px; margin: 0px; position: absolute; top: 0px; left: -9999px; opacity: 0; overflow: hidden;">&nbsp;
-          </div>
-        </h1>
-        <div id="iumdsu" class="gpd-divider">
+        <div id="ibd4bq">Give
         </div>
-        <a id="ioi2cj" href="//www.mercyfullfarms.com/donate" class="gpd-link">Donate Today</a>
+        <div class="cell gpd-navbar__items text-center">All donations are 
+Tax Deductible.
+We accept cash, 
+Checks, and 
+Donations made 
+Through PayPay to mercyfullfarms@gmail.com
+Item donations are accepted as well and can be picked up at your convenience.
+      <form action="https://www.paypal.com/donate" method="post" target="_top">
+<input type="hidden" name="business" value="RC7R8N7M35V8L" />
+<input type="hidden" name="item_name" value="All donations are Tax Deductible. We accept cash, checks, and donations made through Paypal." />
+<input type="hidden" name="currency_code" value="USD" />
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
+</form>
+</div>
       </div>
-    </div>
+    
+    
+      
+     
+</div>
   </div>
 </section>
-<section id="iw4q5" data-anim-type="fadeIn" class="gpd-section">
-  <div id="ibqh8" class="gpd-container">
-    <div id="ija44" class="gdp-row">
-      <div id="itrpx" class="cell">
-        <h1 id="i7fzvf" class="gpd-header">Providing
-        </h1>
-      </div>
-      <div id="ic0x5" class="cell">
-        <div id="iee901" class="gpd-text">Many who have come to us for help are homeless. Basic needs such as food and shelter are provided. Needs are assessed and met as we are able. Your gifts directly impact a family by providing food, clothing, housing and utilities
-          <br>Once the family is stable and moving forward to independence your donations provide rides to and from work and doctors appointment or school, utilities assistance and job training.
-          <br>The last way your gifts impact a family is when we move them into their own home or apartment to continue forward fully supporting themselves.
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<section id="i8fq2" class="gpd-section">
-  <div id="ietjt" data-anim-type="fadeIn" class="gpd-container">
-    <div id="ijyrap" class="gdp-row">
-      <div id="ivjyu4" class="cell">
-        <img src="https://www.mercyfullfarms.com/images/familyathome.png" id="idn9af"/>
-      </div>
-      <div id="i901i" class="cell">
-        <h1 id="ilmgnj" class="gpd-header">Time to Heal
-        </h1>
-        <div id="i2gv1z" class="gpd-text">From start to finish it takes the average family two years to go from homelessness to independence. Please partner with us as we minister to families in need.&nbsp;
-        </div>
-        <div id="ifzbla" class="gpd-divider">
-        </div>
-        <a id="i4fll" href="//www.mercyfullfarms.com/international-conservation" class="gpd-link">Learn More</a>
-      </div>
-    </div>
-  </div>
-</section>
-<section id="ibklk" class="gpd-section">
-  <div id="ilvvj" class="gpd-container">
-    <div id="iyhgnk" class="gdp-row">
-      <div id="ii54tt" data-anim-type="fadeInLeft" class="cell">
-        <h1 id="i4lbw3" class="gpd-header">Pray
-        </h1>
-        <div class="gpd-text" id="i1gt6a">Mercy Full Farms is a ministry. May others see Jesus in all that we do.
-          <br>
-        </div>
-        <div id="iwkv7k" class="gpd-divider">
-        </div>
-        <a id="i8ygw" href="//www.mercyfullfarms.com/grassroots-advocacy" class="gpd-link">Learn More</a>
-        <div id="i0mr9h" class="gpd-divider">
-        </div>
-      </div>
-      <div id="itmqd1" data-anim-type="fadeInRight" class="cell">
-        <img src="https://www.mercyfullfarms.com/images/boyNhisdog.png" id="ibkggj"/>
-      </div>
-    </div>
-  </div>
-</section>
-<section id="ifs71" class="gpd-section">
-  <div class="gpd-container">
-    <div id="ijrzix" data-anim-type="fadeIn" class="gdp-row">
-      <div id="ic1upg" class="cell">
-        <img src="https://www.mercyfullfarms.com/images/smilesAthome.png" id="igw82h"/>
-      </div>
-      <div id="igtmgv" class="cell">
-        <h1 id="iowefr" class="gpd-header">Encouraging
-        </h1>
-        <div id="ivlxkk" class="gpd-text">When many work together to make life better for someone else our view of our own circumstances changes. We are encouraged by encouraging others. We are uplifted by uplifting others.
-        </div>
-        <div id="issau9" class="gpd-divider">
-        </div>
-        <a id="i4ozg" href="//www.mercyfullfarms.com/transparant-aid" class="gpd-link">Learn More</a>
-      </div>
-    </div>
-  </div>
-</section>
-<section id="iobof" class="gpd-section">
-  <div id="iv3av" class="gpd-container">
-    <h1 id="ilr55" data-anim-type="fadeIn" class="gpd-header">“Kindness is the language the deaf can hear and the blind can see.” 
-      <br>
-      <br>—Mark Twain
-      <br>​​​​​​​
-    </h1>
-  </div>
-</section>
-<section id="ieug0c" data-anim-type="fadeIn" class="section-form1">
-  <div id="ipimj" class="container">
-    <div id="i2zaxv">
-      <h1 id="iht21s" class="gpd-header">Subscribe To Our Newsletter
-      </h1>
-      <form method="post" name="section-form" data-redirect="" id="i7n94">
-        <div id="iidm02" class="gpd-text">Recieve updates about our conservation projects.
-        </div>
-        <div class="input-group">
-          <input type="email" name="email" placeholder="Enter your email" id="iwy8c" required class="input"/>
-          <button type="button" id="iiw76" class="button">Send</button>
-        </div>
-        <div data-form-state="success" id="iakxnm" class="state-success">Thanks! We received your request
-        </div>
-        <div data-form-state="error" id="iwhk5l" class="state-error">An error occurred on processing your request, try again!
-        </div>
-      </form>
-    </div>
-  </div>
-</section>
+
 <section id="i6n844" data-anim-type="fadeIn" class="gpd-section">
   <div id="iaa0jf" class="gpd-container">
     <div id="ipqeri" class="footer-details">
@@ -167,9 +82,6 @@
     </div>
     <a href="//www.mercyfullfarms.com/contact" id="if2jeg" class="footer-link">Contact</a>
     <div id="irq10v" class="gpd-divider">
-    </div>
-    <a href="//www.mercyfullfarms.com/donate" id="izgdw1" class="footer-link">Donate</a>
-    <div id="i7psdt" class="gpd-divider">
     </div>
     <h3 id="it9ts3" class="footer-item-title">FOLLOW US
     </h3>
@@ -230,3 +142,4 @@
      .bind(items[i]))();
   }
 </script>
+</x-app-layout>
