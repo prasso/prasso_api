@@ -25,16 +25,16 @@
           <div id="iwubf" class="cell gpd-navbar__items">
             <div id="ibw6n" class="gdp-row gpd-navbar__items-grid">
               <div id="izxnp" class="cell gpd-navbar__item">
-                <a id="iorwn" href="//www.mercyfullfarms.com/about" class="gpd-navbar__item-link">Our Story</a>
+                <a id="iorwn" href="/about" class="gpd-navbar__item-link">Our Story</a>
               </div>
               <div id="i1riv" class="cell gpd-navbar__item">
-                <a id="iv8kh" href="//www.mercyfullfarms.com/projects" class="gpd-navbar__item-link">Projects</a>
+                <a id="iv8kh" href="/projects" class="gpd-navbar__item-link">Projects</a>
               </div>
-              <div id="iaen3" class="cell gpd-navbar__item">
-                <a id="ikagz" href="//www.mercyfullfarms.com/contact" class="gpd-navbar__item-link">Contact</a>
+              <div id="iaen3" class="cell gpd-navbar__item mr-3">
+                <a id="ikagz" href="/contact" class="gpd-navbar__item-link">Contact</a>
               </div>
-              <div id="iaen4" class="cell gpd-navbar__item border-2 border-white-600">
-                <a id="ikagz" href="//www.mercyfullfarms.com/donate" class="gpd-navbar__item-link">Donate</a>
+              <div id="iaen4" class="cell gpd-navbar__item">
+                <a id="ikagz" href="/donate" class="gpd-navbar__item-link text-black">Donate</a>
               </div>
             </div>
           </div>
@@ -51,7 +51,7 @@ Item donations are accepted as well and can be picked up at your convenience.<br
 <input type="hidden" name="business" value="RC7R8N7M35V8L" />
 <input type="hidden" name="item_name" value="All donations are Tax Deductible. We accept cash, checks, and donations made through Paypal." />
 <input type="hidden" name="currency_code" value="USD" />
-<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button"  class="border-0" />
 <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
 </form>
 </div>
@@ -73,13 +73,13 @@ Item donations are accepted as well and can be picked up at your convenience.<br
     </div>
     <div id="i4kf4a" class="gpd-divider">
     </div>
-    <a href="//www.mercyfullfarms.com/about" id="isksaz" class="footer-link">About Us</a>
+    <a href="/about" id="isksaz" class="footer-link">About Us</a>
     <div id="ivmrhw" class="gpd-divider">
     </div>
-    <a href="//www.mercyfullfarms.com/projects" id="icpjuk" class="footer-link">Projects</a>
+    <a href="/projects" id="icpjuk" class="footer-link">Projects</a>
     <div id="ipdhgm" class="gpd-divider">
     </div>
-    <a href="//www.mercyfullfarms.com/contact" id="if2jeg" class="footer-link">Contact</a>
+    <a href="/contact" id="if2jeg" class="footer-link">Contact</a>
     <div id="irq10v" class="gpd-divider">
     </div>
     <h3 id="it9ts3" class="footer-item-title">FOLLOW US

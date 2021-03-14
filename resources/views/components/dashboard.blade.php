@@ -22,8 +22,11 @@
               <div id="i1riv" class="cell gpd-navbar__item">
                 <a id="iv8kh" href="/projects" class="gpd-navbar__item-link">Projects</a>
               </div>
-              <div id="iaen3" class="cell gpd-navbar__item">
+              <div id="iaen3" class="cell gpd-navbar__item mr-3">
                 <a id="ikagz" href="/contact" class="gpd-navbar__item-link">Contact</a>
+              </div>
+              <div id="iaen4" class="cell gpd-navbar__item border-2">
+                <a id="ikagz" href="/donate" class="gpd-navbar__item-link">Donate</a>
               </div>
             </div>
           </div>
@@ -43,7 +46,7 @@
         </h1>
         <div id="iumdsu" class="gpd-divider">
         </div>
-        <a id="ioi2cj" href="//www.mercyfullfarms.com/donate" class="gpd-link">Donate Today</a>
+        <a id="ioi2cj" href="/donate" class="gpd-link">Donate Today</a>
       </div>
     </div>
   </div>
@@ -81,13 +84,13 @@
         <div id="iee901" class="gpd-text">
         <b> Life Training, One on One Discipleship</b>
        <br>
-Residents of Mercy Full Farms learn through doing. Wether it is learning to budget, avoiding bad influences or practicing a skill we match each individual with training that will help them reach life goals and provide for themselves.
+Residents of Mercy Full Farms learn through doing. Whether it is learning to budget, avoiding bad influences or practicing a skill we match each individual with training that will help them reach life goals and provide for themselves.
 The friendships built give encouragement that the current struggle can be won and that there are friends here who have walked in their shoes, understand, and care.
           <br>
         </div>
         <div id="iwkv7k" class="gpd-divider">
         </div>
-        <a id="i8ygw" href="//www.mercyfullfarms.com/projects" class="gpd-link">Learn More</a>
+        <a id="i8ygw" href="/projects" class="gpd-link">Learn More</a>
         <div id="i0mr9h" class="gpd-divider">
         </div></div>
       </div>
@@ -110,8 +113,7 @@ The friendships built give encouragement that the current struggle can be won an
         </div>
         <div id="issau9" class="gpd-divider">
         </div>
-        <a id="i4ozg" href="//www.mercyfullfarms.com/transparant-aid" class="gpd-link">Learn More</a>
-      </div>
+          </div>
     </div>
   </div>
 </section>

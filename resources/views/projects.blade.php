@@ -26,13 +26,16 @@
           <div id="iwubf" class="cell gpd-navbar__items">
             <div id="ibw6n" class="gdp-row gpd-navbar__items-grid">
               <div id="izxnp" class="cell gpd-navbar__item ">
-                <a id="iorwn" href="//www.mercyfullfarms.com/about" class="gpd-navbar__item-link">Our Story</a>
+                <a id="iorwn" href="/about" class="gpd-navbar__item-link">Our Story</a>
               </div>
-              <div id="i1riv" class="cell gpd-navbar__item  border-2 border-white-600">
-                <a id="iv8kh" href="//www.mercyfullfarms.com/projects" class="gpd-navbar__item-link">Projects</a>
+              <div id="i1riv" class="cell gpd-navbar__item">
+                <a id="iv8kh" href="/projects" class="gpd-navbar__item-link text-black">Projects</a>
               </div>
-              <div id="iaen3" class="cell gpd-navbar__item">
-                <a id="ikagz" href="//www.mercyfullfarms.com/contact" class="gpd-navbar__item-link">Contact</a>
+              <div id="iaen3" class="cell gpd-navbar__item mr-3">
+                <a id="ikagz" href="/contact" class="gpd-navbar__item-link">Contact</a>
+              </div>
+              <div id="iaen4" class="cell gpd-navbar__item">
+                <a id="ikagz" href="/donate" class="gpd-navbar__item-link">Donate</a>
               </div>
             </div>
           </div>
@@ -82,7 +85,6 @@
         </div>
         <div id="ifzbla" class="gpd-divider">
         </div>
-        <a id="i4fll" href="//www.mercyfullfarms.com/international-conservation" class="gpd-link">Learn More</a>
       </div>
     </div>
   </div>
@@ -134,16 +136,16 @@ Housing and care for special needs young adults who have aged out of the foster 
     </div>
     <div id="i4kf4a" class="gpd-divider">
     </div>
-    <a href="//www.mercyfullfarms.com/about" id="isksaz" class="footer-link">About Us</a>
+    <a href="/about" id="isksaz" class="footer-link">About Us</a>
     <div id="ivmrhw" class="gpd-divider">
     </div>
-    <a href="//www.mercyfullfarms.com/projects" id="icpjuk" class="footer-link">Projects</a>
+    <a href="/projects" id="icpjuk" class="footer-link">Projects</a>
     <div id="ipdhgm" class="gpd-divider">
     </div>
-    <a href="//www.mercyfullfarms.com/contact" id="if2jeg" class="footer-link">Contact</a>
+    <a href="/contact" id="if2jeg" class="footer-link">Contact</a>
     <div id="irq10v" class="gpd-divider">
     </div>
-    <a href="//www.mercyfullfarms.com/donate" id="izgdw1" class="footer-link">Donate</a>
+    <a href="/donate" id="izgdw1" class="footer-link">Donate</a>
     <div id="i7psdt" class="gpd-divider">
     </div>
     <h3 id="it9ts3" class="footer-item-title">FOLLOW US
