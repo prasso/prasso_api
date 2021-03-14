@@ -50,7 +50,7 @@
 </section>
 <section id="iw4q5" data-anim-type="fadeIn" class="gpd-section">
     <div id="itmqd1" data-anim-type="fadeInLeft" class="cell">
-        <img src="https://www.mercyfullfarms.com/images/Zee.png" id="ibkggj2"/>
+        <img src="https://www.mercyfullfarms.com/images/zee.png" id="ibkggj2"/>
     </div>
   <div id="ibqh8" class="gpd-container">
     <div id="ija44" class="gdp-row">
