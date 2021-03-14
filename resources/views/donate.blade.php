@@ -39,15 +39,14 @@
             </div>
           </div>
         </div>
-        <div id="ibd4bq">Give
-        </div>
-        <div class="cell gpd-navbar__items text-center">All donations are 
+        <div id="ibd4bq">Give </div>
+        <div class="cell text-center">All donations are 
 Tax Deductible.
 We accept cash, 
 Checks, and 
 Donations made 
 Through PayPay to mercyfullfarms@gmail.com
-Item donations are accepted as well and can be picked up at your convenience.
+Item donations are accepted as well and can be picked up at your convenience.<br><br>
       <form action="https://www.paypal.com/donate" method="post" target="_top">
 <input type="hidden" name="business" value="RC7R8N7M35V8L" />
 <input type="hidden" name="item_name" value="All donations are Tax Deductible. We accept cash, checks, and donations made through Paypal." />
