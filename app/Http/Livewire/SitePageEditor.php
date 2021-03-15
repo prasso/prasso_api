@@ -10,10 +10,10 @@ class SitePageEditor extends Component
 {
     public $sitePages,$section, $title, $description, $url, $sitePage_id;
     public $isOpen = 0;
+    public $isVisualEditorOpen = 0;
 
     public function render()
     {
-        Log::info('showing site page editor');
         $this->sitePages = SitePages::all();
         return view('livewire.site-page-editor');
     }
@@ -22,6 +22,17 @@ class SitePageEditor extends Component
     {
         $this->resetInputFields();
         $this->openModal();
+    }
+  
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    public function openVisualModal()
+    {
+        $this->isVisualEditorOpen = true;
+        
     }
   
     /**
@@ -42,6 +53,7 @@ class SitePageEditor extends Component
     public function closeModal()
     {
         $this->isOpen = false;
+        $this->isVisualEditorOpen = false;
     }
   
     /**
@@ -82,6 +94,7 @@ class SitePageEditor extends Component
             $this->sitePage_id ? 'Site Page Updated Successfully.' : 'Site Page Created Successfully.');
   
         $this->closeModal();
+        
         $this->resetInputFields();
     }
     /**
@@ -100,7 +113,24 @@ class SitePageEditor extends Component
 
         $this->openModal();
     }
-     
+    
+       /**
+     * can we make this work with GrapesJs?
+     *
+     * @var array
+     */
+    public function visualEditor($id)
+    {
+        $sitePage = SitePages::findOrFail($id);
+        $this->sitePage_id = $id;
+        $this->section = $sitePage->section;
+        $this->title = $sitePage->title;
+        $this->description = $sitePage->description;
+        $this->url = $sitePage->url;
+
+        $this->openVisualModal();
+    }
+
     /**
      * The attributes that are mass assignable.
      *

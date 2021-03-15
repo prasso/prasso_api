@@ -33,4 +33,9 @@ class SitePageController extends Controller
     {
         return view('sitepage.view-site-pages');
     }
+
+    public function visualEditor($pageid)
+    {
+        return view('sitepage.grapes');
+    }
 }

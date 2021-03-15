@@ -30,6 +30,7 @@ class TeamController extends Controller
         $teams = $user->teams->toArray();
   
         $teamapps = $team->apps;
+        
 
         $activeAppId = '0';
         if (isset($activeApp->app_id))

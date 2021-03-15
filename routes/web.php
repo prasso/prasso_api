@@ -39,3 +39,4 @@ Route::get('/team/{teamid}/apps/{appid}/tabs/new', 'TeamController@addTab')->nam
 Route::get('/team/{teamid}/apps/{appid}/tabs/{tabid}/delete', 'TeamController@deleteTab')->name('apps.delete-tab');
 
 Route::get('sitepages', 'SitePageController@editSites');
+Route::get('visual-editor/{pageid}', 'SitePageController@visualEditor');
