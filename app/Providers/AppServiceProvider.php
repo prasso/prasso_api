@@ -59,7 +59,7 @@ class AppServiceProvider extends ServiceProvider
            $app_data = Apps::with('tabs')->with('team')->with('activeApp')
             ->where('team_id',$user->teams[0]->id)
             ->first();
-            if ($app_data->isEmpty())
+            if ($app_data == null || $app_data->isEmpty())
             {
                 
                 $app_data = Apps::with('tabs')->with('team')->with('activeApp')
