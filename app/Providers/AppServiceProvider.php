@@ -59,6 +59,14 @@ class AppServiceProvider extends ServiceProvider
            $app_data = Apps::with('tabs')->with('team')->with('activeApp')
             ->where('team_id',$user->teams[0]->id)
             ->first();
+            if ($app_data->isEmpty())
+            {
+                
+                $app_data = Apps::with('tabs')->with('team')->with('activeApp')
+                    ->where('team_id',0)
+                    ->first();
+            }
+
         }
        
        return json_encode($app_data);
