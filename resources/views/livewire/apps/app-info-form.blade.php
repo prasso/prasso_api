@@ -51,6 +51,9 @@
         <div class="col-span-6 sm:col-span-4">
             <x-jet-label for="app_name" value="{{ __('App Name') }}" />
 
+            <x-jet-input id="app_id"
+                        type="hidden"
+                        wire:model="teamapp.id" />
             <x-jet-input id="app_name"
                         type="text"
                         class="mt-1 block w-full"

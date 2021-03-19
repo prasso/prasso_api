@@ -8,13 +8,18 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Tabs;
 use App\Models\UserActiveApp;
 use App\Models\FlutterIcons;
+use App\Providers\AppServiceProvider;
 
 class TeamController extends Controller
 {
-    public function __construct()
+    protected $appServiceProvider;
+
+    public function __construct(AppServiceProvider $appSP)
     {
         $this->middleware('auth:sanctum');
+        $appServiceProvider =  $appSP;
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -55,12 +60,16 @@ class TeamController extends Controller
     {
         $user = Auth::user(); 
         $team = $user->teams->where('id',$teamid)->first();
-        $teamapps = $team->apps;     
+        $teamapps = $this->appServiceProvider->getTeamApps($user->teams);    
         $teamapp = $teamapps->where('id',$appid)->first();
         $team_selection = $user->teams->pluck('name','id');
 
-        $apptabs = $teamapp->tabs()->orderBy('sort_order')->Get();
-
+        $apptabs = [];
+        if ($teamapp ==  null)
+        {
+            $teamapp = $this->appServiceProvider::getBlankApp();
+        }
+        
         return view('apps.edit-app')
         ->with('team_selection',$team_selection)
         ->with('team',$team)

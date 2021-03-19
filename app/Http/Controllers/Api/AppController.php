@@ -10,10 +10,17 @@ use Illuminate\Http\Request;
 
 class AppController extends Controller
 {
+    protected $appServiceProvider;
+
+    public function __construct(AppServiceProvider $appSP)
+    {
+        $appServiceProvider =  $appSP;
+    }
+
     public function getAppSettings($apptoken)
     {
         try {
-            $app_data = AppServiceProvider::getAppSettings($apptoken);
+            $app_data = $this->appServiceProvidergetAppSettings($apptoken);
             return $app_data;
         } catch (\Throwable $e) {
             Log::info($e);
@@ -24,7 +31,7 @@ class AppController extends Controller
     {
         try {
 
-            $success = AppServiceProvider::saveApp($request);
+            $success = $this->appServiceProvidersaveApp($request);
             
             return $this->sendResponse($success, 'App saved.');
         } catch (\Throwable $e) {

@@ -15,6 +15,13 @@ use App\Actions\Fortify\CreateNewUser;
 
 class AuthController extends BaseController
 {
+    protected $appServiceProvider;
+
+    public function __construct(AppServiceProvider $appSP)
+    {
+        $appServiceProvider =  $appSP;
+    }
+
     /**
      * Register api
      *
@@ -154,7 +161,7 @@ class AuthController extends BaseController
         $success['email'] = $user->email;
         $success['photoURL'] = $user->profile_photo_url;
     
-        $app_data = AppServiceProvider::getAppSettingsByUser($user);
+        $app_data = $this->appServiceProvider->getAppSettingsByUser($user);
         $success['app_data'] = $app_data; //configuration for setting up the app is here
         return $success;
     }

@@ -30,7 +30,6 @@ class UserActiveApp extends Model
 
     public static function processUpdates($userid, $appid)
     {
-
         $updatedata = UserActiveApp::firstOrNew(['user_id'=>$userid]);
         $updatedata->app_id = $appid;
         $updatedata->save();

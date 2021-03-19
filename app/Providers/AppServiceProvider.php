@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
 
     /// user in team (user_id ) team in app (team_id) app in tabs (app-id)
     /// a method to return the setup for this person's application
-    public static function getAppSettingsByUser($user)
+    public function getAppSettingsByUser($user)
     {
         //which app has the user selected out of the team's apps to be used on  login
         $activeApp = UserActiveApp::where('user_id',$user->id)->first();
@@ -61,20 +61,26 @@ class AppServiceProvider extends ServiceProvider
             ->first();
             if ($app_data == null )
             {
-                
-                $app_data = Apps::with('tabs')->with('team')->with('activeApp')
-                    ->where('team_id',0)
-                    ->first();
+                $app_data = $this->getBlankApp();
+                $app_data->team_id=$user->teams[0]->id;
             }
 
         }
        
        return json_encode($app_data);
     }
+
+    public function getBlankApp()
+    {
+        return Apps::with('tabs')->with('team')->with('activeApp')
+        ->where('team_id',0)
+        ->first();
+    }
+
     /*
     a method to return the setup for an app by app token
     */
-    public static function getAppSettings($apptoken)
+    public function getAppSettings($apptoken)
     {   
         $user = User::select('users.*','users.firebase_uid AS uid')
         ->join('personal_access_tokens', 'users.id', '=', 'personal_access_tokens.tokenable_id')
@@ -94,7 +100,7 @@ class AppServiceProvider extends ServiceProvider
        return json_encode($app_data);
     }
 
-    public static function saveApp($request)
+    public function saveApp($request)
     {
         $app = Apps::create($request->all());
         return json_encode($app);
