@@ -4,20 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\AppsService;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
+use App\Models\Apps;
 use App\Models\Tabs;
 use App\Models\UserActiveApp;
 use App\Models\FlutterIcons;
-use App\Providers\AppServiceProvider;
 
 class TeamController extends Controller
 {
-    protected $appServiceProvider;
 
-    public function __construct(AppServiceProvider $appSP)
+    public function __construct()
     {
         $this->middleware('auth:sanctum');
-        $appServiceProvider =  $appSP;
     }
 
     /**
@@ -56,18 +56,18 @@ class TeamController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function editApp($teamid, $appid)
+    public function editApp(AppsService $appsService,$teamid, $appid)
     {
         $user = Auth::user(); 
         $team = $user->teams->where('id',$teamid)->first();
-        $teamapps = $this->appServiceProvider->getTeamApps($user->teams);    
+        $teamapps = $team->apps;     
         $teamapp = $teamapps->where('id',$appid)->first();
         $team_selection = $user->teams->pluck('name','id');
 
-        $apptabs = [];
+        $apptabs = $teamapp->tabs()->orderBy('sort_order')->Get();
         if ($teamapp ==  null)
         {
-            $teamapp = $this->appServiceProvider::getBlankApp();
+            $teamapp = $appsService->getBlankApp();
         }
         
         return view('apps.edit-app')

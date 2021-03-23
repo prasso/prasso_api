@@ -9,17 +9,17 @@ use App\Models\Team;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use Illuminate\Support\Facades\Log;
-use App\Providers\AppServiceProvider;
+use App\Services\AppsService;
 use Illuminate\Database\Eloquent\JsonEncodingException;
 use App\Actions\Fortify\CreateNewUser;
 
 class AuthController extends BaseController
 {
-    protected $appServiceProvider;
+    protected $appsService;
 
-    public function __construct(AppServiceProvider $appSP)
+    public function __construct(AppsService $appsServ)
     {
-        $appServiceProvider =  $appSP;
+        $this->$appsService = $appsServ
     }
 
     /**
@@ -161,7 +161,7 @@ class AuthController extends BaseController
         $success['email'] = $user->email;
         $success['photoURL'] = $user->profile_photo_url;
     
-        $app_data = $this->appServiceProvider->getAppSettingsByUser($user);
+        $app_data = $this->appsService->getAppSettingsByUser($user);
         $success['app_data'] = $app_data; //configuration for setting up the app is here
         return $success;
     }

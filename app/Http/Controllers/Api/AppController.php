@@ -4,23 +4,24 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Http\Controllers\Controller;
-use App\Providers\AppServiceProvider;
+use App\Services\AppsService;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
 
 class AppController extends Controller
 {
-    protected $appServiceProvider;
+    protected $appsService;
 
-    public function __construct(AppServiceProvider $appSP)
+    public function __construct(AppsService $appSP)
     {
-        $appServiceProvider =  $appSP;
+        $appsService =  $appSP;
     }
 
     public function getAppSettings($apptoken)
     {
         try {
-            $app_data = $this->appServiceProvidergetAppSettings($apptoken);
+            $app_data = $this->appsService->getAppSettings($apptoken);
             return $app_data;
         } catch (\Throwable $e) {
             Log::info($e);
@@ -31,7 +32,7 @@ class AppController extends Controller
     {
         try {
 
-            $success = $this->appServiceProvidersaveApp($request);
+            $success = $this->appsService->saveApp($request);
             
             return $this->sendResponse($success, 'App saved.');
         } catch (\Throwable $e) {
