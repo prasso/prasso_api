@@ -4,10 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Models\SitePages;
+use App\Models\Site;
 
 class SitePageController extends Controller
 {
+    protected $site;
+    
+    public function __construct(Site $site)
+    {
+        $this->site = $site;
+    }
     /**
      * return welcome page
      *
@@ -15,7 +23,8 @@ class SitePageController extends Controller
      */
     public function index()
     {
-        $welcomepage = SitePages::where('section','Welcome')->first();
+        $welcomepage = SitePages::where('fk_site_table',$this->site->id)->where('section','Welcome')->first();
+
         if ($welcomepage == null)
         {
             return view('welcome');
