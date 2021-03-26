@@ -45,6 +45,7 @@ class SitePageController extends Controller
 
     public function visualEditor($pageid)
     {
-        return view('sitepage.grapes');
+        $pageToEdit = SitePages::where('id',$pageid)->first();
+        return view('sitepage.grapes')->with('content', $pageToEdit);
     }
 }

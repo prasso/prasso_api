@@ -31,6 +31,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
 
+Route::get('/team/{teamid}/sites', 'SitePageController@editSites')->name('sites.show');
 Route::get('/team/{teamid}/apps', 'TeamController@index')->name('apps.show');
 Route::get('/team/{teamid}/apps/{appid}', 'TeamController@editApp')->name('apps.edit');
 Route::get('/team/{teamid}/apps/{appid}/activate', 'TeamController@activateApp')->name('apps.activate');

@@ -2,8 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>GrapesJS Demo - Free Open Source Website Page Builder</title>
-    <meta content="Best Free Open Source Responsive Websites Builder" name="description">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ config('app.name', 'Prasso') }} - Visual Editor</title>   
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <link rel="icon" type="image/png" href="{{asset('favicon.ico')}}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.css">
     <link rel="stylesheet" href="/css/grapes.min.css?v0.16.44">
     <link rel="stylesheet" href="/css/grapesjs-preset-webpage.min.css">
@@ -12,8 +15,6 @@
     <link rel="stylesheet" href="/css/demos.css?v3">
     <link href="https://unpkg.com/grapick/dist/grapick.min.css" rel="stylesheet">
 
-    <!-- <script src="//static.filestackapi.com/v3/filestack.js"></script> -->
-    <!-- <script src="js/aviary.js"></script> old //feather.aviary.com/imaging/v3/editor.js -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
 
@@ -145,10 +146,24 @@
           border-color: transparent;
         }
     </style>
+  
+  
+  
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
   </head>
   <body>
-   
     <div id="gjs" style="height:0px; overflow:hidden">
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+
+    @livewireStyles
+
+  
+  
+   {!! $content->description !!}
       <header class="header-banner">
         <div class="container-width">
           <div class="logo-container">
@@ -941,29 +956,8 @@
       </style>
     </div>
 
-    <div id="info-panel" style="display:none">
-      <br/>
-      <svg class="info-panel-logo" xmlns="https://www.w3.org/2000/svg" version="1"><g id="gjs-logo">
-        <path d="M40 5l-12.9 7.4 -12.9 7.4c-1.4 0.8-2.7 2.3-3.7 3.9 -0.9 1.6-1.5 3.5-1.5 5.1v14.9 14.9c0 1.7 0.6 3.5 1.5 5.1 0.9 1.6 2.2 3.1 3.7 3.9l12.9 7.4 12.9 7.4c1.4 0.8 3.3 1.2 5.2 1.2 1.9 0 3.8-0.4 5.2-1.2l12.9-7.4 12.9-7.4c1.4-0.8 2.7-2.2 3.7-3.9 0.9-1.6 1.5-3.5 1.5-5.1v-14.9 -12.7c0-4.6-3.8-6-6.8-4.2l-28 16.2" style="fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-width:10;stroke:#fff"/>
-      </g></svg>
-      <br/>
-      <div class="info-panel-label">
-        <b>GrapesJS Webpage Builder</b> is a simple showcase of what is possible to achieve with the
-        <a class="info-panel-link gjs-four-color" target="_blank" href="https://github.com/artf/grapesjs">GrapesJS</a>
-        core library
-        <br/><br/>
-        For any hint about the demo check the
-        <a class="info-panel-link gjs-four-color" target="_blank" href="https://github.com/artf/grapesjs-preset-webpage">Webpage Preset repository</a>
-        and open an issue. For problems with the builder itself, open an issue on the main
-        <a class="info-panel-link gjs-four-color" target="_blank" href="https://github.com/artf/grapesjs">GrapesJS repository</a>
-        <br/><br/>
-        Being a free and open source project contributors and supporters are extremely welcome.
-        If you like the project support it with a donation of your choice or become a backer/sponsor via
-        <a class="info-panel-link gjs-four-color" target="_blank" href="https://opencollective.com/grapesjs">Open Collective</a>
-      </div>
-    </div>
-
     <script type="text/javascript">
+   
       var lp = './img/';
       var plp = '//placehold.it/350x250/';
       var images = [
@@ -973,6 +967,7 @@
       ];
 
       var editor  = grapesjs.init({
+        storageManager: { type: null },
         avoidInlineStyle: 1,
         height: '100%',
         container : '#gjs',
@@ -1463,17 +1458,8 @@
         var openBlocksBtn = editor.Panels.getButton('views', 'open-blocks');
         openBlocksBtn && openBlocksBtn.set('active', 1);
 
-        // Move Ad
-        $('#gjs').append($('.ad-cont'));
       });
 
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-      ga('create', '{{ $gaID }}', 'auto');
-      ga('send', 'pageview');
     </script>
   </body>
 </html>
