@@ -19,7 +19,7 @@ class AuthController extends BaseController
 
     public function __construct(AppsService $appsServ)
     {
-        $this->$appsService = $appsServ;
+        $this->appsService = $appsServ;
     }
 
     /**
