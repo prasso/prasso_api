@@ -42,4 +42,4 @@ Route::get('/team/{teamid}/apps/{appid}/tabs/{tabid}/delete', 'TeamController@de
 Route::get('sitepages', 'SitePageController@editSites');
 Route::post('/save-site-page', 'SitePageController@saveSitePage');
 Route::get('visual-editor/{pageid}', 'SitePageController@visualEditor');
-Route::get('/page/{pageid}','SitePageController@viewSitePage');
+Route::get('/page/{section}','SitePageController@viewSitePage');
