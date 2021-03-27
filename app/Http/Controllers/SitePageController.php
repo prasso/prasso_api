@@ -5,16 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Services\SitePageService;
 use App\Models\SitePages;
 use App\Models\Site;
 
 class SitePageController extends Controller
 {
     protected $site;
+    protected $sitePageService;
     
-    public function __construct(Site $site)
+    public function __construct(Site $site, SitePageService $sitePageService)
     {
         $this->site = $site;
+        $this->sitePageService = $sitePageService;
     }
     /**
      * return welcome page
@@ -51,8 +54,7 @@ class SitePageController extends Controller
 
     public function saveSitePage(Request $request)
     {
-        Log::info('hi');
-        Log::info(json_encode($request));
+        $this->sitePageService->saveSitePage($request);
         return redirect()->back();
     }
 }
