@@ -35,7 +35,22 @@ class SitePageController extends Controller
         return view('sitepage.masterpage')
             ->with('sitePage',$welcomepage);
     }
+    /**
+     * return welcome page
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function viewSitePage($section)
+    {
+        $sitepage = SitePages::where('fk_site_id',$this->site->id)->where('section',$section)->first();
 
+        if ($sitepage == null)
+        {
+            return view('welcome');
+        }
+        return view('sitepage.masterpage')
+            ->with('sitePage',$sitepage);
+    }
      /**
      * Show the app edit form 
      *
