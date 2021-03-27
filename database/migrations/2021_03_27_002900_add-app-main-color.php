@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSiteTable extends Migration
+class AddAppMainColor extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,10 @@ class CreateSiteTable extends Migration
      */
     public function up()
     {
-        Schema::table('site_pages', function (Blueprint $table) {
-            $table->integer('fk_site_id')
-                    ->after('id')
+        Schema::table('apps', function (Blueprint $table) {
+            $table->string('main_color')
+                    ->after('page_url')
                     ->nullable();
-        });
-        Schema::create('sites', function (Blueprint $table) {
-            $table->id();
-            $table->string('host');
-            $table->timestamps();
         });
     }
 
@@ -32,6 +27,6 @@ class CreateSiteTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('site');
+        //
     }
 }

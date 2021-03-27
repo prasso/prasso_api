@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class SitePageEditor extends Component
 {
-    public $sitePages,$section, $title, $description, $url, $sitePage_id;
+    public $sitePages,$fk_site_id, $section, $title, $description, $url, $sitePage_id;
     public $isOpen = 0;
     public $isVisualEditorOpen = 0;
 
@@ -62,6 +62,7 @@ class SitePageEditor extends Component
      * @var array
      */
     private function resetInputFields(){
+        $this->fk_site_id = '';
         $this->section = '';
         $this->title = '';
         $this->description = '';
@@ -77,6 +78,7 @@ class SitePageEditor extends Component
     public function store()
     {
         $this->validate([
+            'fk_site_id' => 'required',
             'section' => 'required',
             'title' => 'required',
             'description' => 'required',
@@ -84,6 +86,7 @@ class SitePageEditor extends Component
         ]);
    
         SitePages::updateOrCreate(['id' => $this->sitePage_id], [
+            'fk_site_id' => $this->fk_site_id,
             'section' => $this->section,
             'title' => $this->title,
             'description' => $this->description,
@@ -106,6 +109,7 @@ class SitePageEditor extends Component
     {
         $sitePage = SitePages::findOrFail($id);
         $this->sitePage_id = $id;
+        $this->fk_site_id = $sitePage->fk_site_id;
         $this->section = $sitePage->section;
         $this->title = $sitePage->title;
         $this->description = $sitePage->description;
@@ -115,7 +119,7 @@ class SitePageEditor extends Component
     }
     
        /**
-     * can we make this work with GrapesJs?
+     * can we make this work with GrapesJs? (it works when loaded from a new page, not from the livewire component)
      *
      * @var array
      */
@@ -123,6 +127,7 @@ class SitePageEditor extends Component
     {
         $sitePage = SitePages::findOrFail($id);
         $this->sitePage_id = $id;
+        $this->fk_site_id = $sitePage->fk_site_id;
         $this->section = $sitePage->section;
         $this->title = $sitePage->title;
         $this->description = $sitePage->description;

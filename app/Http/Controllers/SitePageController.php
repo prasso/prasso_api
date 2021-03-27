@@ -23,14 +23,14 @@ class SitePageController extends Controller
      */
     public function index()
     {
-        $welcomepage = SitePages::where('fk_site_table',$this->site->id)->where('section','Welcome')->first();
+        $welcomepage = SitePages::where('fk_site_id',$this->site->id)->where('section','Welcome')->first();
 
         if ($welcomepage == null)
         {
             return view('welcome');
         }
         return view('sitepage.masterpage')
-            ->with('content',$welcomepage);
+            ->with('sitePage',$welcomepage);
     }
 
      /**
@@ -46,6 +46,13 @@ class SitePageController extends Controller
     public function visualEditor($pageid)
     {
         $pageToEdit = SitePages::where('id',$pageid)->first();
-        return view('sitepage.grapes')->with('content', $pageToEdit);
+        return view('sitepage.grapes')->with('sitePage', $pageToEdit);
+    }
+
+    public function saveSitePage(Request $request)
+    {
+        Log::info('hi');
+        Log::info(json_encode($request));
+        return redirect()->back();
     }
 }
