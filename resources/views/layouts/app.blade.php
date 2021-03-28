@@ -69,6 +69,9 @@ Housing and care for special needs young adults who have aged out of the foster 
         <style data-css-anim="">
             [data-anim-type]:not([data-anim-done]) { opacity: 0; }
         </style>
+
+        @livewireStyles
+    
         <!-- Scripts -->
         <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.2.1/dist/alpine.js" defer></script>
     </head>
@@ -78,5 +81,12 @@ Housing and care for special needs young adults who have aged out of the foster 
         </div>
         <x-footer></x-footer>
 
+<<<<<<< HEAD
+=======
+        @stack('modals')
+
+        @livewireScripts
+    
+>>>>>>> 0f13a50d7a28ccbeff6f54196e5fdc6a46ae1e85
     </body>
 </html>

@@ -43,6 +43,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
 
+Route::get('/team/{teamid}/sites', 'SitePageController@editSites')->name('sites.show');
 Route::get('/team/{teamid}/apps', 'TeamController@index')->name('apps.show');
 Route::get('/team/{teamid}/apps/{appid}', 'TeamController@editApp')->name('apps.edit');
 Route::get('/team/{teamid}/apps/{appid}/activate', 'TeamController@activateApp')->name('apps.activate');
@@ -51,3 +52,6 @@ Route::get('/team/{teamid}/apps/{appid}/tabs/new', 'TeamController@addTab')->nam
 Route::get('/team/{teamid}/apps/{appid}/tabs/{tabid}/delete', 'TeamController@deleteTab')->name('apps.delete-tab');
 
 Route::get('sitepages', 'SitePageController@editSites');
+Route::post('/save-site-page', 'SitePageController@saveSitePage');
+Route::get('visual-editor/{pageid}', 'SitePageController@visualEditor');
+Route::get('/page/{section}','SitePageController@viewSitePage');
