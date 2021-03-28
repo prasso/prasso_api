@@ -30,12 +30,25 @@
                     <x-teams-layout :selectedteam="$teams[0]['id']" :teams="$teams" />
                 </div>
                 <div class="flex flex-col w-full p-5 mx-auto m-5 border rounded-lg l md:w-1/2 md:ml-auto md:mt-0">
-                    
+                <div class="p-6 bg-white col-span-6">
+    <div class="max-w-xl text-sm text-gray-600" >
+        <span class="-mt-5 float-right ">  <a href="{{ route('apps.edit',['teamid' => $teams[0]['id'], 'appid' => 0])   }}">
+                <i class="material-icons md-36">playlist_add</i>
+            </a>
+        </span>
+    </div>  
+                @if ($teamapps->isNotEmpty())
                         <h2 class="mb-5 text-xs font-semibold tracking-widest text-blue-600 uppercase title-font">
                         {{ __('Selected Team\'s Apps') }}
                         </h2>  
-
+                       
                         <x-apps-layout :activeAppId="$activeappid" :selectedapp="$teamapps[0]['id']" :selectedteam="$teams[0]['id']" :apps="$teamapps"/>
+                @else
+                        <h2 class="mb-5 text-xs font-semibold tracking-widest text-blue-600 uppercase title-font">
+                        <a href="">{{ __('Add your App') }}</a>
+                        </h2>
+                        <x-apps-layout :activeAppId="$activeappid" :selectedapp="0" :selectedteam="$teams[0]['id']" :apps="$teamapps"/>                       
+                @endif
                 </div>
             </div>    
         </div> 

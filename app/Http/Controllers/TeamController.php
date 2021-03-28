@@ -4,17 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\AppsService;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
+use App\Models\Apps;
 use App\Models\Tabs;
 use App\Models\UserActiveApp;
 use App\Models\FlutterIcons;
 
 class TeamController extends Controller
 {
+
     public function __construct()
     {
         $this->middleware('auth:sanctum');
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -30,6 +35,7 @@ class TeamController extends Controller
         $teams = $user->teams->toArray();
   
         $teamapps = $team->apps;
+        
 
         $activeAppId = '0';
         if (isset($activeApp->app_id))
@@ -50,7 +56,7 @@ class TeamController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function editApp($teamid, $appid)
+    public function editApp(AppsService $appsService,$teamid, $appid)
     {
         $user = Auth::user(); 
         $team = $user->teams->where('id',$teamid)->first();
@@ -59,7 +65,11 @@ class TeamController extends Controller
         $team_selection = $user->teams->pluck('name','id');
 
         $apptabs = $teamapp->tabs()->orderBy('sort_order')->Get();
-
+        if ($teamapp ==  null)
+        {
+            $teamapp = $appsService->getBlankApp();
+        }
+        
         return view('apps.edit-app')
         ->with('team_selection',$team_selection)
         ->with('team',$team)

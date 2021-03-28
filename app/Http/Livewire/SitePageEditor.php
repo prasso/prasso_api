@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\Log;
 
 class SitePageEditor extends Component
 {
-    public $sitePages,$section, $title, $description, $url, $sitePage_id;
+    public $sitePages,$fk_site_id, $section, $title, $description, $url, $sitePage_id;
     public $isOpen = 0;
+    public $isVisualEditorOpen = 0;
 
     public function render()
     {
-        Log::info('showing site page editor');
         $this->sitePages = SitePages::all();
         return view('livewire.site-page-editor');
     }
@@ -22,6 +22,17 @@ class SitePageEditor extends Component
     {
         $this->resetInputFields();
         $this->openModal();
+    }
+  
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    public function openVisualModal()
+    {
+        $this->isVisualEditorOpen = true;
+        
     }
   
     /**
@@ -42,6 +53,7 @@ class SitePageEditor extends Component
     public function closeModal()
     {
         $this->isOpen = false;
+        $this->isVisualEditorOpen = false;
     }
   
     /**
@@ -50,6 +62,7 @@ class SitePageEditor extends Component
      * @var array
      */
     private function resetInputFields(){
+        $this->fk_site_id = '';
         $this->section = '';
         $this->title = '';
         $this->description = '';
@@ -65,6 +78,7 @@ class SitePageEditor extends Component
     public function store()
     {
         $this->validate([
+            'fk_site_id' => 'required',
             'section' => 'required',
             'title' => 'required',
             'description' => 'required',
@@ -72,6 +86,7 @@ class SitePageEditor extends Component
         ]);
    
         SitePages::updateOrCreate(['id' => $this->sitePage_id], [
+            'fk_site_id' => $this->fk_site_id,
             'section' => $this->section,
             'title' => $this->title,
             'description' => $this->description,
@@ -82,6 +97,7 @@ class SitePageEditor extends Component
             $this->sitePage_id ? 'Site Page Updated Successfully.' : 'Site Page Created Successfully.');
   
         $this->closeModal();
+        
         $this->resetInputFields();
     }
     /**
@@ -93,6 +109,7 @@ class SitePageEditor extends Component
     {
         $sitePage = SitePages::findOrFail($id);
         $this->sitePage_id = $id;
+        $this->fk_site_id = $sitePage->fk_site_id;
         $this->section = $sitePage->section;
         $this->title = $sitePage->title;
         $this->description = $sitePage->description;
@@ -100,7 +117,25 @@ class SitePageEditor extends Component
 
         $this->openModal();
     }
-     
+    
+       /**
+     * can we make this work with GrapesJs? (it works when loaded from a new page, not from the livewire component)
+     *
+     * @var array
+     */
+    public function visualEditor($id)
+    {
+        $sitePage = SitePages::findOrFail($id);
+        $this->sitePage_id = $id;
+        $this->fk_site_id = $sitePage->fk_site_id;
+        $this->section = $sitePage->section;
+        $this->title = $sitePage->title;
+        $this->description = $sitePage->description;
+        $this->url = $sitePage->url;
+
+        $this->openVisualModal();
+    }
+
     /**
      * The attributes that are mass assignable.
      *

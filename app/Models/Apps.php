@@ -38,6 +38,7 @@ class Apps extends Model
 
     public static function processUpdates( $teamModel)
     {
+
         Apps::updateOrCreate(['id' => $teamModel['id']] , 
         ['team_id' => $teamModel['team_id'], 
         'appicon' => $teamModel['appicon'], 
@@ -45,5 +46,7 @@ class Apps extends Model
         'page_title' => $teamModel['page_title'],
         'page_url' => $teamModel['page_url'],
         'sort_order' => $teamModel['sort_order'] ] );
+
     }
+
 }
