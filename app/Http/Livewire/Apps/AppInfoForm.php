@@ -31,7 +31,6 @@ class AppInfoForm extends Component
     public function updateApp()
     {
         $this->validate();
-
         // Execution doesn't reach here if validation fails.
         Apps::processUpdates($this->teamapp->toArray()  );
         $this->show_success = true;

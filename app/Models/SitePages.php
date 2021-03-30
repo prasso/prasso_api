@@ -15,7 +15,7 @@ class SitePages extends Model
      * @var array
     */
     protected $fillable = [
-        'section', 'title', 'description', 'url',
+        'fk_site_id', 'section', 'title', 'description', 'url', 
     ];
 
 

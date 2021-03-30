@@ -51,7 +51,7 @@ class Team extends JetstreamTeam
 
     public function apps()
     {
-        return $this->hasMany(\App\Models\Apps::class, "team_id", "id");
+        return $this->hasMany(\App\Models\Apps::class, "team_id", "id")->with('tabs');
     }
     public function user()
     {
