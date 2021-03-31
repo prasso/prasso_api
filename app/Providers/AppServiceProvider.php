@@ -35,8 +35,7 @@ class AppServiceProvider extends ServiceProvider
           if ($site->host == '')
           {
             $host = $request->getHost();
-            $site = Site::getClient($host);   
-            Log::info('appserviceprovider: '.json_encode($site));        
+            $site = Site::getClient($host);         
           }
           View::share('site', $site);
 

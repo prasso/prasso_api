@@ -26,8 +26,6 @@ class SiteRecognition
             $session_host = Site::getClient($host);
         }
         
-        Log::info('siterecognition: '.json_encode($session_host));
-        
         app()->instance(Site::class, $session_host);
         return $next($request);
     }
