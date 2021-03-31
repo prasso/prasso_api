@@ -3,7 +3,7 @@
 <x-slot name="title">Confirm</x-slot>
     <x-jet-authentication-card>
         <x-slot name="logo">
-            <img src="{{ asset('images/prasso_logo.jpg') }}" />
+            <img src="{{ $site->logo_image }}" />
         </x-slot>
 
         <div x-data="{ recovery: false }">

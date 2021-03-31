@@ -3,7 +3,7 @@
 <x-slot name="title">Login</x-slot>
     <x-jet-authentication-card>
         <x-slot name="logo">
-            <img src="{{ asset('images/prasso_logo.jpg') }}" />
+            <img src="{{ $site->logo_image }}" />
         </x-slot>
 
         <x-jet-validation-errors class="mb-4" />

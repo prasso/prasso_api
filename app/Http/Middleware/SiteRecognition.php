@@ -25,6 +25,7 @@ class SiteRecognition
         {
             $session_host = Site::getClient($host);
         }
+        
         app()->instance(Site::class, $session_host);
         return $next($request);
     }
