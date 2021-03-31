@@ -19,8 +19,6 @@ class Controller extends BaseController
     public function __construct(Site $site)
     {
       $site = $site;
-  
-      Log::info('controller: '.json_encode($site));
       View::share('site', $site);
     }
 
