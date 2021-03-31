@@ -11,7 +11,7 @@ use App\Models\Site;
 
 class SitePageController extends Controller
 {
-    protected $site;
+
     protected $sitePageService;
     
     public function __construct(Site $site, SitePageService $sitePageService)

@@ -3,7 +3,7 @@
 <x-slot name="title">Verification</x-slot>
     <x-jet-authentication-card>
         <x-slot name="logo">
-            <img src="{{ asset('images/prasso_logo.jpg') }}" />
+            <img src="{{ $site->logo_image }}" />
         </x-slot>
 
         <div class="mb-4 text-sm text-gray-600">

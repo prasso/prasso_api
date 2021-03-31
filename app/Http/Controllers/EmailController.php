@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use App\Models\Site;
 
 
 class EmailController extends Controller
@@ -18,7 +19,7 @@ class EmailController extends Controller
         $this->user_device_token = config('app.contact_device_token');
     }
 
-    public function sendEmail(Request $request) {
+    public function sendEmail(Request $request, Site $site) {
         $this->validate($request, [
             'email' => 'required',
             'subject' => 'required',
@@ -36,7 +37,7 @@ class EmailController extends Controller
                 [
                     "title" => 'Prasso Contact Request:'. $subject,
                     "body" => $body,
-                    "icon" => url('/logo.png')
+                    "icon" => url($site->logo_image)
                 ],
         ];
         $dataString = json_encode($data);

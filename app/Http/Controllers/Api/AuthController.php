@@ -10,15 +10,22 @@ use Illuminate\Support\Facades\Auth;
 use Validator;
 use Illuminate\Support\Facades\Log;
 use App\Services\AppsService;
+use App\Services\SitePageService;
+use App\Models\SitePages;
+use App\Models\Site;
 use Illuminate\Database\Eloquent\JsonEncodingException;
 use App\Actions\Fortify\CreateNewUser;
 
 class AuthController extends BaseController
 {
     protected $appsService;
-
-    public function __construct(AppsService $appsServ)
+    protected $site;
+    protected $sitePageService;
+    
+    public function __construct(Site $site, SitePageService $sitePageService,AppsService $appsServ)
     {
+        $this->site = $site;
+        $this->sitePageService = $sitePageService;
         $this->appsService = $appsServ;
     }
 
@@ -129,7 +136,6 @@ class AuthController extends BaseController
 
     public function saveUser(User $user, Request $request)
     {
-        
         $user->save();
     }
 

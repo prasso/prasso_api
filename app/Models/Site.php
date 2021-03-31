@@ -22,13 +22,16 @@ class Site extends Model
 
     protected $fillable = [
         'id',
-        'host'
+        'host',
+        'main_color',
+        'logo_image'
     ];
     
     public static function getClient( $host) 
     {
         $host = $host;
         $currentsite =  self::where('host' , $host )->get()->first();
+
         if ($currentsite != null)
         {
             $id = $currentsite->id;
