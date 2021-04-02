@@ -11,6 +11,7 @@ class SitePageService
     
     public function saveSitePage($request)
     {
+        Log::info($request);
         $updatedSitePage = SitePages::updateOrCreate(['id' => $request['id'], 
             'fk_site_id' => $request['fk_site_id'],
             'section' => $request['section'],
