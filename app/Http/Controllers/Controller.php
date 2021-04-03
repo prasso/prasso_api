@@ -9,6 +9,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use App\Models\Site;
+use Illuminate\Http\Request;
 
 class Controller extends BaseController
 {
@@ -16,10 +17,13 @@ class Controller extends BaseController
 
     public $site; 
 
-    public function __construct(Site $site)
+    public function __construct(Request $request)
     {
-      $site = $site;
-      View::share('site', $site);
+        $host = $request->getHost();
+        $site = Site::getClient($host);
+        $this->site = $site;
+Log::info('base class site: '.$site);
+        View::share('site', $site);
     }
 
     /**

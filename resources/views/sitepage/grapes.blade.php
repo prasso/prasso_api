@@ -19,6 +19,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
 
     <script src="/js/grapes.min.js?v0.16.44"></script>
+    <script src="https://unpkg.com/@truenorthtechnology/grapesjs-code-editor"></script>
     <script src="/js/grapesjs-preset-webpage.min.js?v0.1.11"></script>
     <script src="/js/grapesjs-lory-slider.min.js?0.1.5"></script>
     <script src="/js/grapesjs-tabs.min.js?0.1.1"></script>
@@ -152,25 +153,21 @@
 
   </head>
   <body>
-    <div id="gjs" style="height:0px; overflow:hidden">
-
-      <form id="sitePageForm" action="/save-site-page" method="post">
+  <form id="sitePageForm" action="/save-site-page" method="post">
         <input type="hidden" name="id" value="{{$sitePage->id}}"/>
         <input type="hidden" name="fk_site_id" value="{{$sitePage->fk_site_id}}"/>
         <input type="hidden" name="section" value="{{$sitePage->section}}"/>
         <input type="hidden" name="title" value="{{$sitePage->title}}"/>
+        <input type="hidden" id="page_data" name="description" value="{{$sitePage->description}}"/>
         <input type="hidden" name="url" value="{{$sitePage->url}}"/>
         <input type="hidden" name="csrf-token" value="{{ csrf_token() }}" />
         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
-
-        
-        <!-- Styles from Tailwind inside gjs div so they will be applied -->
-        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-
-        @livewireStyles
-
-        {!! $sitePage->description !!}
-      </form>
+        <input type="hidden" id="livewirecss" value="
+            @livewireStyles
+        " />
+  </form>
+    <div id="gjs" style="height:0px; overflow:hidden">
+    {!! $sitePage->description !!}
     </div>
 
     <script type="text/javascript">
@@ -183,19 +180,32 @@
         lp+'work-desk.jpg', lp+'phone-app.png', lp+'bg-gr-v.png'
       ];
 
+      var livewirestyles = document.getElementById("livewirecss");
+
       var editor  = grapesjs.init({
-        storageManager: { type: null },
+        storageManager: {autoload: true},//{ type: null },
         avoidInlineStyle: 1,
         height: '100%',
         container : '#gjs',
+        style: livewirestyles,
         fromElement: 1,
         showOffsets: 1,
+        commands: {
+          defaults: [
+            window['@truenorthtechnology/grapesjs-code-editor'].codeCommandFactory(),
+          ],
+        },
         assetManager: {
           embedAsBase64: 1,
           assets: images
         },
         selectorManager: { componentFirst: true },
         styleManager: { clearProperties: 1 },
+        canvas: {
+          styles: [
+            "{{ asset('css/app.css') }}"
+            ]
+        },
         plugins: [
           'grapesjs-lory-slider',
           'grapesjs-tabs',
@@ -551,7 +561,7 @@
       var modal = editor.Modal;
       var cmdm = editor.Commands;
       cmdm.add('canvas-clear', function() {
-        if(confirm('Areeee you sure to clean the canvas?')) {
+        if(confirm('Are you sure you want to clean the canvas?')) {
           var comps = editor.DomComponents.clear();
           setTimeout(function(){ localStorage.clear()}, 0)
         }
@@ -578,7 +588,7 @@
         var mdlDialog = document.querySelector('.gjs-mdl-dialog');
         mdlDialog.className += ' ' + mdlClass;
         infoContainer.style.display = 'block';
-        modal.setTitle('About this demo');
+        modal.setTitle('About');
         modal.setContent(infoContainer);
         modal.open();
         modal.getModel().once('change:open', function() {
@@ -616,7 +626,6 @@
        ['export-template', 'Export'], ['undo', 'Undo'], ['redo', 'Redo'],
        ['gjs-open-import-webpage', 'Import'], ['canvas-clear', 'Clear canvas']]
       .forEach(function(item) {
-        console.log('1button ', item[0]);
         pn.getButton('options', item[0]).set('attributes', {title: item[1], 'data-tooltip-pos': 'bottom'});
       });
       [['open-sm', 'Style Manager'], ['open-layers', 'Layers'], ['open-blocks', 'Blocks']]
@@ -639,7 +648,7 @@
       pn.getButton('options', 'sw-visibility').set('active', 1);
 
 
-      // Store and load events (storage can be disabled in init by adding this line: storageManager: { type: null }, and that is currently active)
+      // Store and load events (storage can be disabled in init by adding this line: storageManager: { type: null })
       editor.on('storage:load', function(e) { console.log('Loaded ', e) });
       editor.on('storage:store', function(e) { console.log('Stored ', e) });
 
@@ -680,26 +689,35 @@
         editor.Panels.addButton('options', [ { id: 'save', 
           className: 'fa fa-floppy-o icon-blank', command: function(editor1, sender)
            { 
-              
-                /*<input type="hidden" action="/save-site-page" name="id" value="{{$sitePage->id}}"/>
-                <input type="hidden" name="fk_site_id" value="{{$sitePage->fk_site_id}}"/>
-                <input type="hidden" name="section" value="{{$sitePage->section}}"/>
-                <input type="hidden" name="title" value="{{$sitePage->title}}"/>
-                <input type="hidden" name="url" value="{{$sitePage->url}}"/>*/
-                var frames = document.getElementsByTagName('iframe');
-                var ifr = frames[0];
-                var ifrDoc = ifr.contentDocument || ifr.contentWindow.document;
-                var sitePageForm = ifrDoc.getElementById( "sitePageForm" );
-                console.log(sitePageForm);
+                document.getElementById("page_data").value = editor1.getHtml();
+                var spf = document.getElementById("sitePageForm")
+                spf.submit();
 
-    // need this added to the header of the form submit... <meta name="csrf-token" content="{{ csrf_token() }}">
-
-     
-                sitePageForm.submit();
             }, attributes: { title: 'Save Page' } }, ]);
-  
 
       });
+
+      editor.Panels.addButton('views', {
+        id: 'open-code',
+        className: 'fa fa-file-code-o',
+        command: 'open-code',
+        attributes: {
+          title: 'Edit Code'
+        }
+      });
+      editor.Panels.addButton('options', {
+        id: 'dashboard',
+        className: 'fa fa-home',
+        command: function(editor1, sender)
+           { 
+            window.location.replace("/dashboard");;
+
+            },
+        attributes: {
+          title: 'Return to Home'
+        }
+      });
+  
 
     </script>
   </body>
