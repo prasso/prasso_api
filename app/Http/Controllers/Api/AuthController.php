@@ -19,12 +19,11 @@ use App\Actions\Fortify\CreateNewUser;
 class AuthController extends BaseController
 {
     protected $appsService;
-    protected $site;
     protected $sitePageService;
     
-    public function __construct(Site $site, SitePageService $sitePageService,AppsService $appsServ)
+    public function __construct(Request $request, SitePageService $sitePageService,AppsService $appsServ)
     {
-        $this->site = $site;
+        parent::__construct( $request);
         $this->sitePageService = $sitePageService;
         $this->appsService = $appsServ;
     }
