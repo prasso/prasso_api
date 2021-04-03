@@ -20,6 +20,7 @@ class Controller extends BaseController
     public function __construct(Request $request)
     {
         $host = $request->getHost();
+        Log::info('host: '.$host);
         $site = Site::getClient($host);
         $this->site = $site;
 Log::info('base class site: '.$site);

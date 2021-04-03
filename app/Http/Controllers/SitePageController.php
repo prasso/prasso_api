@@ -25,11 +25,16 @@ class SitePageController extends Controller
      */
     public function index()
     {
-        $welcomepage = SitePages::where('fk_site_id',$this->site->id)->where('section','Welcome')->first();
+        $welcomepage = null;
+        if ($this->site != null)
+        {
+            $welcomepage = SitePages::where('fk_site_id',$this->site->id)->where('section','Welcome')->first();
+        }
         if ($welcomepage == null)
         {
             return view('welcome');
         }
+        
         return view('sitepage.masterpage')
             ->with('sitePage',$welcomepage);
     }
