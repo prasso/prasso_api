@@ -11,12 +11,11 @@ use App\Models\Site;
 
 class SitePageController extends Controller
 {
-
     protected $sitePageService;
 
-    public function __construct( Request $request, SitePageService $sitePageService)
+    public function __construct(Request $request, SitePageService $sitePageService)
     {
-
+        parent::__construct( $request);
         $this->sitePageService = $sitePageService;
     }
     /**

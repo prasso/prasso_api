@@ -13,8 +13,9 @@ class AppController extends Controller
 {
     protected $appsService;
 
-    public function __construct(AppsService $appSP)
+    public function __construct(Request $request, AppsService $appSP)
     {
+        parent::__construct( $request);
         $appsService =  $appSP;
     }
 

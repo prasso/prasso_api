@@ -13,8 +13,9 @@ class EmailController extends Controller
     protected $serverKey;
     protected $user_device_token;
  
-    public function __construct()
+    public function __construct(Request $request)
     {
+        parent::__construct( $request);
         $this->serverKey = config('app.firebase_server_key');
         $this->user_device_token = config('app.contact_device_token');
     }

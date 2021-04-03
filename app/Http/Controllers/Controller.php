@@ -22,7 +22,7 @@ class Controller extends BaseController
         $host = $request->getHost();
         $site = Site::getClient($host);
         $this->site = $site;
-
+Log::info('base class site: '.$site);
         View::share('site', $site);
     }
 
