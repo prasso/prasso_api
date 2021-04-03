@@ -13,10 +13,10 @@ class SitePageController extends Controller
 {
 
     protected $sitePageService;
-    
-    public function __construct(Site $site, SitePageService $sitePageService)
+
+    public function __construct( Request $request, SitePageService $sitePageService)
     {
-        $this->site = $site;
+
         $this->sitePageService = $sitePageService;
     }
     /**
@@ -27,7 +27,6 @@ class SitePageController extends Controller
     public function index()
     {
         $welcomepage = SitePages::where('fk_site_id',$this->site->id)->where('section','Welcome')->first();
-
         if ($welcomepage == null)
         {
             return view('welcome');

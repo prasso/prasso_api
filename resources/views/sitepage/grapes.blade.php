@@ -167,7 +167,7 @@
         " />
   </form>
     <div id="gjs" style="height:0px; overflow:hidden">
-
+    {!! $sitePage->description !!}
     </div>
 
     <script type="text/javascript">
@@ -180,11 +180,14 @@
         lp+'work-desk.jpg', lp+'phone-app.png', lp+'bg-gr-v.png'
       ];
 
+      var livewirestyles = document.getElementById("livewirecss");
+
       var editor  = grapesjs.init({
-       // storageManager: { type: null },
+        storageManager: {autoload: true},//{ type: null },
         avoidInlineStyle: 1,
         height: '100%',
         container : '#gjs',
+        style: livewirestyles,
         fromElement: 1,
         showOffsets: 1,
         commands: {
@@ -682,7 +685,7 @@
         openBlocksBtn && openBlocksBtn.set('active', 1);
 
         //add the save button and action
-        //editor.Panels.getPanels().forEach(item => console.log(item.get('id')))
+        editor.Panels.getPanels().forEach(item => console.log(item.get('id')))
         editor.Panels.addButton('options', [ { id: 'save', 
           className: 'fa fa-floppy-o icon-blank', command: function(editor1, sender)
            { 
@@ -692,8 +695,6 @@
 
             }, attributes: { title: 'Save Page' } }, ]);
 
-            var doc = document.getElementById("page_data");
-            editor.load( doc );
       });
 
       editor.Panels.addButton('views', {
@@ -702,6 +703,18 @@
         command: 'open-code',
         attributes: {
           title: 'Edit Code'
+        }
+      });
+      editor.Panels.addButton('options', {
+        id: 'dashboard',
+        className: 'fa fa-home',
+        command: function(editor1, sender)
+           { 
+            window.location.replace("/dashboard");;
+
+            },
+        attributes: {
+          title: 'Return to Home'
         }
       });
   

@@ -5,16 +5,29 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\SitePages;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
+use App\Models\Site;
 
 class SitePageEditor extends Component
 {
     public $sitePages,$fk_site_id, $section, $title, $description, $url, $sitePage_id;
+    
     public $isOpen = 0;
     public $isVisualEditorOpen = 0;
+    public $site;
+    
+    public function mount( Request $request)
+    {
+        $host = $request->getHost();
+        $site = Site::getClient($host);
+        $this->site = $site;
+
+    }
 
     public function render()
     {
         $this->sitePages = SitePages::all();
+
         return view('livewire.site-page-editor');
     }
 
@@ -62,7 +75,6 @@ class SitePageEditor extends Component
      * @var array
      */
     private function resetInputFields(){
-        $this->fk_site_id = '';
         $this->section = '';
         $this->title = '';
         $this->description = '';
@@ -77,16 +89,17 @@ class SitePageEditor extends Component
      */
     public function store()
     {
+
+   Log::info('validating');
         $this->validate([
-            'fk_site_id' => 'required',
             'section' => 'required',
             'title' => 'required',
             'description' => 'required',
             'url' => 'required',
         ]);
-   
+   Log::info('saving');
         SitePages::updateOrCreate(['id' => $this->sitePage_id], [
-            'fk_site_id' => $this->fk_site_id,
+            'fk_site_id' => $this->site->id,
             'section' => $this->section,
             'title' => $this->title,
             'description' => $this->description,
