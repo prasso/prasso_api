@@ -1,7 +1,7 @@
 
 ## About Prasso
 
-A Laravel team site, used to feed application structure information to a Prasso app.
+A Laravel team site, used to feed application structure information to a Prasso app. Prasso app is a rapid prototyping tool that is configured with this api.
 ### Prasso Definition·
 Definition
 - to exercise, practise, to be busy with, carry on
