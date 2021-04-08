@@ -33,8 +33,10 @@ A Prasso site is both business information site and Prasso api site. The api ser
 
 ## Prasso setup
 Firebase is required for the Prasso app, since users are authenticated at Firebase, but the app data is stored at the API site.
-So if you don't have a Firebase project configured. Do so. And download the files for adding to your project.
-Also, you will need to setup Cloud Firestore there. Create a Cloud Firestore database.
+- If you don't have a Firebase project configured, create one for your app. 
+- Download the files for adding to your iOS and Android projects.
+- Enable Authentication for email/password
+- Create a Cloud Firestore database.
 
 ### Sites
 How sites and sites pages work
