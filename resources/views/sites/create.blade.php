@@ -11,13 +11,13 @@
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="">
                         <div class="mb-4">
-                            <label for="sectionInput" class="block text-gray-700 text-sm font-bold mb-2">Section:</label>
-                            <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="sectionInput" placeholder="Enter Section" wire:model="section">
+                            <label for="hostInput" class="block text-gray-700 text-sm font-bold mb-2">Host:</label>
+                            <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="hostInput" placeholder="Enter Hosts" wire:model="section">
                             @error('section') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
-                            <label for="titleInput" class="block text-gray-700 text-sm font-bold mb-2">Title: (this is in the top too)</label>
-                            <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="titleInput" placeholder="Enter Title" wire:model="title">
+                            <label for="titleInput" class="block text-gray-700 text-sm font-bold mb-2">Logo:</label>
+                            <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="titleInput" placeholder="Enter Logo" >
                             @error('title') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">

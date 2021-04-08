@@ -18,7 +18,7 @@ class Apps extends Model
     use HasTimestamps;
     
     protected $fillable = [
-        'team_id', 'appicon', 'app_name', 'page_title', 'page_url', 'sort_order'
+        'team_id', 'appicon', 'app_name', 'page_title', 'page_url', 'sort_order','favicon'
     ];
 
     public function tabs()

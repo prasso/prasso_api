@@ -15,7 +15,7 @@ class AddMoreSiteFields extends Migration
     {
         Schema::table('sites', function (Blueprint $table) {
             $table->string('main_color')->after('host')->nullable();
-            $table->string('logo_image')->after('main_color')->nullable();
+            $table->string('logo_image', 500)->after('main_color')->nullable();
         });
     }
 

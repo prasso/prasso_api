@@ -6,5 +6,6 @@ return [
         'TAB_DEFAULT_PARENT' => 0,
         'TAB_DEFAULT_APP_ID' => 0,
         'TAB_DEFAULT_ICON' => 'beach_access',
-        'MORE_TAB' => 'More()'
+        'MORE_TAB' => 'More()',
+        'UNAUTHORIZED' => 401
 ];

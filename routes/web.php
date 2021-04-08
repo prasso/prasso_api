@@ -43,3 +43,5 @@ Route::get('sitepages', 'SitePageController@editSites');
 Route::post('/save-site-page', 'SitePageController@saveSitePage');
 Route::get('visual-editor/{pageid}', 'SitePageController@visualEditor');
 Route::get('/page/{section}','SitePageController@viewSitePage');
+
+Route::resource('Sites', SiteController::class);

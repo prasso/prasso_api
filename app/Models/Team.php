@@ -53,6 +53,12 @@ class Team extends JetstreamTeam
     {
         return $this->hasMany(\App\Models\Apps::class, "team_id", "id")->with('tabs');
     }
+
+    public function site()
+    {
+        return $this->hasMany(\App\Models\Site::class, "site_id", "id")->with('apps');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

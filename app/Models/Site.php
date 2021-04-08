@@ -20,13 +20,17 @@ class Site extends Model
 
     protected $currentsite;
 
+    protected $table = 'sites';
+    public $timestamps = true;
+
     protected $fillable = [
         'id',
         'host',
         'main_color',
-        'logo_image'
+        'logo_image',
+        'database'
     ];
-    
+
     public static function getClient( $host) 
     {
         $host = $host;
