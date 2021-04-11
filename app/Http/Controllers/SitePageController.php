@@ -59,7 +59,7 @@ class SitePageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function editSites()
+    public function editSitePages()
     {
         return view('sitepage.view-site-pages');
     }

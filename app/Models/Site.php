@@ -28,13 +28,16 @@ class Site extends Model
         'host',
         'main_color',
         'logo_image',
-        'database'
+        'database',
+        'favicon'
     ];
 
     public static function getClient( $host) 
     {
         $host = $host;
-        $currentsite =  self::where('host' , $host )->get()->first();
+
+        $currentsite =  self::where('host' ,  $host )
+                ->orWhere('host', 'like', '%' . $host . '%')->get()->first();
 
         if ($currentsite != null)
         {

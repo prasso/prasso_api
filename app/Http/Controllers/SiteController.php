@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Site;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SiteController extends Controller
 {
@@ -14,9 +15,10 @@ class SiteController extends Controller
      */
     public function index()
     {
-        $Sites = Site::latest()->paginate(5);
+        $sites = Site::latest()->paginate(5);
 
-        return view('sites.index', compact('Sites'))
+        return view('sites.show', compact('sites'))
+            
             ->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
@@ -42,7 +44,8 @@ class SiteController extends Controller
             'host' => 'required',
             'logo_image' => 'required',
             'main_color' => 'required',
-            'database' => 'required' 
+            'database' => 'required' ,
+            'favicon' => 'required'
         ]);
 
         Site::create($request->all());
@@ -63,17 +66,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Site  $site
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Site $site)
-    {
-        return view('sites.edit', compact('Site'));
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -86,7 +78,8 @@ class SiteController extends Controller
             'host' => 'required',
             'logo_image' => 'required',
             'main_color' => 'required',
-            'database' => 'required'
+            'database' => 'required',
+            'favicon' => 'required'
         ]);
         $site->update($request->all());
 

@@ -18,7 +18,7 @@ class Apps extends Model
     use HasTimestamps;
     
     protected $fillable = [
-        'team_id', 'appicon', 'app_name', 'page_title', 'page_url', 'sort_order','favicon'
+        'team_id', 'appicon', 'app_name', 'page_title', 'page_url', 'sort_order'
     ];
 
     public function tabs()
@@ -36,16 +36,16 @@ class Apps extends Model
         return $this->hasOne( UserActiveApp::class, 'app_id', 'id');
     }
 
-    public static function processUpdates( $teamModel)
+    public static function processUpdates( $appModel)
     {
 
-        Apps::updateOrCreate(['id' => $teamModel['id']] , 
-        ['team_id' => $teamModel['team_id'], 
-        'appicon' => $teamModel['appicon'], 
-        'app_name' => $teamModel['app_name'], 
-        'page_title' => $teamModel['page_title'],
-        'page_url' => $teamModel['page_url'],
-        'sort_order' => $teamModel['sort_order'] ] );
+        Apps::updateOrCreate(['id' => $appModel['id']] , 
+        ['team_id' => $appModel['team_id'], 
+        'appicon' => $appModel['appicon'], 
+        'app_name' => $appModel['app_name'], 
+        'page_title' => $appModel['page_title'],
+        'page_url' => $appModel['page_url'],
+        'sort_order' => $appModel['sort_order'] ] );
 
     }
 

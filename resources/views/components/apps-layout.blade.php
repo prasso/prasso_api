@@ -38,7 +38,7 @@
                         <i class="material-icons md-36">notifications_active</i>
                 </x-jet-responsive-nav-link>
                 @else
-                    <i class="material-icons md-36 mr-4 text-blue-50">notifications_active</i>
+                    <i class="material-icons md-36 mr-4 mt-2 text-blue-500">notifications_active</i>
             @endif
                 </label>
             </div>
