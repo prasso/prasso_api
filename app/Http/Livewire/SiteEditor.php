@@ -17,14 +17,12 @@ class SiteEditor extends Component
     public function mount(User $user, Request $request)
     {
         //does this user have an admin role?
-Log::info('site editor user:'.json_encode($user));
-       $this->current_user = $user;
+        $this->current_user = $user;
     }
 
     public function render()
     {
         $this->sites = Site::all();
-Log::info($this->sites);
         return view('livewire.site-editor');
     }
 

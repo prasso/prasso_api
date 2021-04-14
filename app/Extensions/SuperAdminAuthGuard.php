@@ -79,10 +79,8 @@ class SuperAdminAuthGuard implements Guard
    */
   public function validate(Array $credentials=[])
   {
-      Log::info('user credentials: '.json_encode($credentials));
 
     if (empty($credentials['username']) || empty($credentials['password'])) {
-        Log::info('AuperAdminAuthGuard validate returning false');
       return false;
     }
  
@@ -105,9 +103,6 @@ class SuperAdminAuthGuard implements Guard
    */
   public function setUser(Authenticatable $user)
   {
-
-    Log::info('Setting SuperAdmin user: '.json_encode($user));
-
     $this->user = $user;
     return $this;
   }

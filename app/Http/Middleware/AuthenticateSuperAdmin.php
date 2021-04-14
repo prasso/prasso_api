@@ -29,8 +29,6 @@ class AuthenticateSuperAdmin
        {
             $user = \Auth::user();
 
-       Log::info($user);
-      
             //double check because this guard/provider isn't plugged in properly yet
             $adminuser = $this->superuser->fetchUserByCredentials($user->email);
             

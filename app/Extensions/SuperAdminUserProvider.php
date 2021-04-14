@@ -34,7 +34,6 @@ class SuperAdminUserProvider extends ServiceProvider implements UserProvider
    */
   public function retrieveByCredentials(array $credentials)
   {
-    Log::info('SuperAdminUserProvider retrieveByCredentials: '.$credentials);
       if (empty($credentials)) {
           return;
       }

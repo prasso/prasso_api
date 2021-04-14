@@ -11,6 +11,10 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\UserActiveApp;
+use App\Models\UserRole;
+use App\Models\Role;
+
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class User.
@@ -36,7 +40,6 @@ class User extends Authenticatable
     use TwoFactorAuthenticatable;
     use HasTimestamps;
     
-
     /**
      * The attributes that are mass assignable.
      *
@@ -82,6 +85,11 @@ class User extends Authenticatable
             ->with('apps');
     }
 
+    public function roles()
+    {
+        return $this->hasMany(UserRole::class, 'user_id','id');
+    }
+
     public function activeApp()
     {
         return $this->hasOne( UserActiveApp::class, 'user_id', 'id');
@@ -99,4 +107,24 @@ class User extends Authenticatable
                 ->first();
     }
 
+    public function hasRole(...$roles)
+    {
+        foreach ($this->roles as $role) {
+            if (in_array($role->name, $roles)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    public function isSuperAdmin()
+    {
+        if ($this->hasRole(config('constants.SUPER_ADMIN'))) 
+        {
+            return true;
+        }
+        return false;
+    }
 }
