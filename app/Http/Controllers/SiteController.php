@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Log;
 
 class SiteController extends Controller
 {
+    public function __construct(Request $request)
+    {
+        parent::__construct( $request);
+        $this->middleware('super_admin');
+    }
     /**
      * Display a listing of the resource.
      *
