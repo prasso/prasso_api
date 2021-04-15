@@ -1,6 +1,6 @@
 <x-slot name="header">
     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Manage Site Pages
+        Manage Site Pages for {{$site_name}}
     </h2>
 </x-slot>
 <div class="py-12">
@@ -38,10 +38,9 @@
                         <td class="border px-4 py-2">{{ $sitePage->section }}</td>
                         <td class="border px-4 py-2">{{ $sitePage->title }}</td>
                         <td class="border px-4 py-2">
-                        <button wire:click="edit({{ $sitePage->id }})" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</button>
-                        <a href="/visual-editor/{{ $sitePage->id }}" class="bg-blue-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Visualize</a>
-                        <!-- <button wire:click="visualEditor({{ $sitePage->id }})" class="bg-blue-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Visualize</button>-->
-                        <button wire:click="delete({{ $sitePage->id }})" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+                        <button wire:click="edit({{ $sitePage->id }})" class="py-2 px-4 rounded"> <i class="material-icons md-36">mode_edit</i></button>
+                        <a href="/visual-editor/{{ $sitePage->id }}" class=" py-2 px-4 rounded"><i class="material-icons md-36">transform</i></a>
+                        <button wire:click="delete({{ $sitePage->id }})" class="py-2 px-4 rounded"><i class="material-icons md-36">delete_forever</i></button>
                         </td>
                     </tr>
                     @endforeach

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
  * Class Site.
  *
  * @property int $id
+ * @property string site_name
  * @property string $host
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -25,6 +26,7 @@ class Site extends Model
 
     protected $fillable = [
         'id',
+        'site_name',
         'host',
         'main_color',
         'logo_image',

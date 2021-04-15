@@ -37,7 +37,6 @@ class TeamController extends Controller
   
         $teamapps = $team->apps;
         
-
         $activeAppId = '0';
         if (isset($activeApp->app_id))
         {
@@ -64,12 +63,11 @@ class TeamController extends Controller
         $teamapps = $team->apps;     
         $teamapp = $teamapps->where('id',$appid)->first();
         $team_selection = $user->teams->pluck('name','id');
-
-        $apptabs = $teamapp->tabs()->orderBy('sort_order')->Get();
-        if ($teamapp ==  null)
+        if ($appid == 0 || $teamapp ==  null)
         {
-            $teamapp = $appsService->getBlankApp();
+            $teamapp = $appsService->getBlankApp($user);
         }
+        $apptabs = $teamapp->tabs()->orderBy('sort_order')->Get();
         
         return view('apps.edit-app')
         ->with('team_selection',$team_selection)
@@ -123,8 +121,20 @@ class TeamController extends Controller
         return redirect()->back()
         ->with('show_success', false);
     }
-
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    public function deleteApp($id)
+    {
+        Apps::find($id)->delete();
+        session()->flash('message', 'App Deleted Successfully.');
+        return redirect()->back()
+        ->with('show_success', true);
+    }
  
+
     private function getEditTab($teamid, $appid, $tabid)
     {
         $user = Auth::user(); 

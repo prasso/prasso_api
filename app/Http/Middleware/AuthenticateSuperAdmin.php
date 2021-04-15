@@ -28,13 +28,15 @@ class AuthenticateSuperAdmin
        if (! $guard->check()) 
        {
             $user = \Auth::user();
-
+            if ($user == null)
+            {
+                return redirect('/login');
+            }
             //double check because this guard/provider isn't plugged in properly yet
             $adminuser = $this->superuser->fetchUserByCredentials($user->email);
             
             if ($adminuser == null)
             {
-                Log::info('Sending to Login');
                 return redirect('/login');
             }
             $credentials['email'] = $user->email;

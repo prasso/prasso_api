@@ -37,13 +37,14 @@ Route::get('/team/{teamid}/apps/{appid}', 'TeamController@editApp')->name('apps.
 Route::get('/team/{teamid}/apps/{appid}/activate', 'TeamController@activateApp')->name('apps.activate');
 Route::get('/team/{teamid}/apps/{appid}/tabs/{tabid}', 'TeamController@editTab')->name('apps.edit-tab');
 Route::get('/team/{teamid}/apps/{appid}/tabs/new', 'TeamController@addTab')->name('apps.add-tab');
+Route::get('/team/{teamid}/apps/{appid}/delete', 'TeamController@deleteApp')->name('apps.delete');
 Route::get('/team/{teamid}/apps/{appid}/tabs/{tabid}/delete', 'TeamController@deleteTab')->name('apps.delete-tab');
 
 Route::group(['middleware'=>'super_admin'], function() {
     
-    Route::get('sitepages', 'SitePageController@editSitePages');
+    Route::get('/sitepages/{siteid}', 'SitePageController@editSitePages');
     Route::post('/save-site-page', 'SitePageController@saveSitePage');
-    Route::get('visual-editor/{pageid}', 'SitePageController@visualEditor');
+    Route::get('/visual-editor/{pageid}', 'SitePageController@visualEditor');
     Route::get('/page/{section}','SitePageController@viewSitePage');
 
     Route::resource('Sites', SiteController::class);

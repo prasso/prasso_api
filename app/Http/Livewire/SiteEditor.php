@@ -10,7 +10,7 @@ use App\Models\Site;
 
 class SiteEditor extends Component
 {
-    public $sites, $site_id, $host,$main_color,$logo_image, $database, $favicon;
+    public $sites, $site_id,$site_name, $host,$main_color,$logo_image, $database, $favicon;
     public $current_user;
     public $isOpen = 0;
     
@@ -58,6 +58,7 @@ class SiteEditor extends Component
      * @var array
      */
     private function resetInputFields(){
+        $this->site_name = '';
         $this->host = '';
         $this->main_color = '';
         $this->logo_image = '';
@@ -74,16 +75,17 @@ class SiteEditor extends Component
     public function store()
     {
 
-   Log::info('validating');
         $this->validate([
+            'site_name' => 'required',
             'host' => 'required',
             'main_color' => 'required',
             'logo_image' => 'required',
             'database' => 'required',
             'favicon' => 'required'
         ]);
-   Log::info('saving');
+        
         Site::updateOrCreate(['id' => $this->site_id], [
+            'site_name' => $this->site_name,
             'host' => $this->host,
             'main_color' => $this->main_color,
             'logo_image' => $this->logo_image,
@@ -107,6 +109,7 @@ class SiteEditor extends Component
     {
         $site = Site::findOrFail($id);
         $this->site_id = $id;
+        $this->site_name = $site->site_name;
         $this->host = $site->host;
         $this->main_color = $site->main_color;
         $this->logo_image = $site->logo_image;
