@@ -13,11 +13,27 @@ Definition
 - to act
 
 ## Prasso Concept
-1. Url is a site. The software is configured to use CMS pages based on the site configuration. Sites are configured in the Admin.
-2. SITES have site pages. These can be created and maintained using a visual editor, that is GrapesJs
-3. Users belong to teams. When a user registers, a private team is assigned. Users can also be included in other teams.
-4. Teams have apps. When a user who is a member of a team logs into the Prasso app, the default-designated app will be loaded for use.
-5. Apps have tabs. App tabs are web page urls. Custom header information can be sent to the url with the request to enable application specific sessions.
+### relationships
+* team
+  * users
+     * roles
+  * sites
+    * apps
+      * tabs
+    * pages
+
+1. *Site* Url is a site. The software is configured to use CMS pages based on the site configuration. Sites are configured in the Admin.
+2. *Site* Sites have Teams
+3. *Site* Sites have site pages. These can be created and maintained using a visual editor, that is GrapesJs
+4. *Team* Teams have users. Users belong to teams. When a user registers, a private team is assigned. Users can also be included in other teams.
+5. *Team* Teams have sites. Sites have apps. When a user who is a member of a team logs into the Prasso app, the default-designated app will be loaded for use.
+6. *Apps* Apps have tabs. App tabs are web page urls. Custom header information can be sent to the url with the request to enable application specific sessions.
+7. *Users* Users have roles.
+    * how roles work: Allow anyone with a login to log into the app. No role required
+      * site-admins can log into the sites they have association with
+      * super-admins can access any site admin area
+        // INSERT INTO `yourdatabase`.`roles` (`role_name`) VALUES ('super-admin');
+        // INSERT INTO `yourdatabase`.`roles` (`role_name`) VALUES ('site-admin');
 
 
 ## No Code Apps

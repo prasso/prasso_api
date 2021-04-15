@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddMoreSiteFields extends Migration
+class AddRequestHeaderToTabData extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class AddMoreSiteFields extends Migration
      */
     public function up()
     {
-        Schema::table('sites', function (Blueprint $table) {
-            $table->string('main_color')->after('host')->nullable();
-            $table->string('logo_image', 500)->after('main_color')->nullable();
+        Schema::table('tabs', function (Blueprint $table) {
+            $table->string('request_header', 500)
+            ->after('sort_order')
+            ->nullable();
         });
     }
 
@@ -26,6 +27,8 @@ class AddMoreSiteFields extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('tab_data', function (Blueprint $table) {
+            //
+        });
     }
 }

@@ -29,10 +29,12 @@
                 <x-jet-responsive-nav-link href="{{ route('apps.show', Auth::user()->allTeams()->first()->id)  }}">
                     {{ __('Apps') }}
                 </x-jet-responsive-nav-link>
-
-                <x-jet-responsive-nav-link href="{{ route('sites.show', Auth::user()->allTeams()->first()->id)  }}">
-                    {{ __('Sites') }}
-                </x-jet-dropdown-link>
+                
+                @if (Auth::user()->isSuperAdmin())
+                    <x-jet-responsive-nav-link href="{{ route('sites.show', Auth::user()->allTeams()->first()->id)  }}">
+                        {{ __('Sites') }}
+                    </x-jet-dropdown-link>
+                @endif
 
                 <!-- Team Management -->
                 @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())

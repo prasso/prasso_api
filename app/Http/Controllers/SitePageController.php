@@ -59,9 +59,9 @@ class SitePageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function editSites()
+    public function editSitePages($siteid)
     {
-        return view('sitepage.view-site-pages');
+        return view('sitepage.view-site-pages') ->with('siteid', $siteid);
     }
 
     public function visualEditor($pageid)

@@ -6,5 +6,10 @@ return [
         'TAB_DEFAULT_PARENT' => 0,
         'TAB_DEFAULT_APP_ID' => 0,
         'TAB_DEFAULT_ICON' => 'beach_access',
-        'MORE_TAB' => 'More()'
+        'TAB_DEFAULT_URL' => 'https://prasso.io',
+        'TAB_DEFAULT_HEADER' => 'Origin:Prasso',
+        'MORE_TAB' => 'More()',
+        'UNAUTHORIZED' => 401,
+        'SITE_ADMIN_ROLE' => 2,
+        'SUPER_ADMIN_ROLE' => 1
 ];

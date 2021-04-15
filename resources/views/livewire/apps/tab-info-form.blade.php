@@ -68,7 +68,7 @@
 
         <x-jet-input-error for="page_title" class="mt-2" />
     </div>
-    <!-- Tab Label -->
+    <!-- Page Url -->
     <div class="col-span-6 sm:col-span-4">
         <x-jet-label for="page_url" value="{{ __('Page Url') }}" />
 
@@ -78,6 +78,17 @@
                     wire:model.defer="tabdata.page_url" />
 
         <x-jet-input-error for="page_url" class="mt-2" />
+    </div>
+     <!-- Request Headers -->
+     <div class="col-span-6 sm:col-span-4">
+        <x-jet-label for="page_url" value="{{ __('Request Headers (advanced and optional)') }}" />
+
+        <x-jet-input id="request_header"
+                    type="text"
+                    class="mt-1 block w-full"
+                    wire:model.defer="tabdata.request_header" />
+
+        <x-jet-input-error for="request_header" class="mt-2" />
     </div>
     <!--Sort Order -->
     <div class="col-span-6 sm:col-span-4">

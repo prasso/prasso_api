@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Site;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -30,14 +31,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(Request $request, Site $site)
     {
-        
-          $site = $site;
-          if ($site->host == '')
-          {
-            $host = $request->getHost();
-            $site = Site::getClient($host);         
-          }
-          View::share('site', $site);
+      Schema::defaultStringLength(191);
+
+      $site = $site;
+      if ($site->host == '')
+      {
+        $host = $request->getHost();
+        $site = Site::getClient($host);         
+      }
+      View::share('site', $site);
 
     
     }

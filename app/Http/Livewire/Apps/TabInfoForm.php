@@ -70,6 +70,7 @@ class TabInfoForm extends Component
         'tabdata.label' => 'required',
         'tabdata.page_url' => 'required', //
         'tabdata.page_title' => 'required', //
+        'tabdata.request_header' => 'required', 
         'tabdata.sort_order' => 'required',
         'tabdata.parent' => 'required'
     ];

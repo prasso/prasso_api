@@ -10,24 +10,22 @@ use App\Models\Site;
 
 class SitePageEditor extends Component
 {
-    public $sitePages,$fk_site_id, $section, $title, $description, $url, $sitePage_id;
+    public $sitePages,$site_name,$fk_site_id, $section, $title, $description, $url, $sitePage_id;
     
     public $isOpen = 0;
     public $isVisualEditorOpen = 0;
-    public $site;
+    public $siteid;
     
-    public function mount( Request $request)
+    public function mount( $siteid)
     {
-        $host = $request->getHost();
-        $site = Site::getClient($host);
-        $this->site = $site;
-
+        $site = Site::where('id',$siteid)->first();
+        $this->site_name = $site->site_name;
+        $this->siteid = $siteid;
     }
 
     public function render()
     {
-        $this->sitePages = SitePages::all();
-
+        $this->sitePages = SitePages::where('fk_site_id', $this->siteid)->get();
         return view('livewire.site-page-editor');
     }
 
@@ -90,14 +88,13 @@ class SitePageEditor extends Component
     public function store()
     {
 
-   Log::info('validating');
         $this->validate([
             'section' => 'required',
             'title' => 'required',
             'description' => 'required',
             'url' => 'required',
         ]);
-   Log::info('saving');
+        
         SitePages::updateOrCreate(['id' => $this->sitePage_id], [
             'fk_site_id' => $this->site->id,
             'section' => $this->section,
@@ -131,6 +128,7 @@ class SitePageEditor extends Component
         $this->openModal();
     }
     
+
        /**
      * can we make this work with GrapesJs? (it works when loaded from a new page, not from the livewire component)
      *

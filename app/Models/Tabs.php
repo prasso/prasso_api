@@ -22,6 +22,7 @@ class Tabs extends Model
         'label',
         'page_url' , 
         'page_title' , 
+        'request_header',
         'sort_order' ,
         'parent' 
     ];
@@ -37,6 +38,8 @@ class Tabs extends Model
         $this->sort_order = config('constants.TAB_DEFAULT_SORT_ORDER');
         $this->parent = config('constants.TAB_DEFAULT_PARENT');
         $this->icon = config('constants.TAB_DEFAULT_ICON');
+        $this->page_url = config('constants.TAB_DEFAULT_URL');
+        $this->request_header = config('constants.TAB_DEFAULT_HEADER');
     }
 
     public static function processUpdates( $tab_data)
@@ -47,6 +50,7 @@ class Tabs extends Model
         'label' => $tab_data['label'], 
         'page_title' => $tab_data['page_title'],
         'page_url' => $tab_data['page_url'],
+        'request_header' => $tab_data['request_header'],
         'sort_order' => $tab_data['sort_order'] ,
         'parent' => $tab_data['parent'] ] ,
         );

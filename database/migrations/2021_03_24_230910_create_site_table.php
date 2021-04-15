@@ -20,7 +20,7 @@ class CreateSiteTable extends Migration
         });
         Schema::create('sites', function (Blueprint $table) {
             $table->id();
-            $table->string('host');
+            $table->string('host', 500); //a list of hosts. ['www.barimorphosis.com','barimorphosis.com']
             $table->timestamps();
         });
     }

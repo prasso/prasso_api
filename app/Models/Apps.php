@@ -36,16 +36,37 @@ class Apps extends Model
         return $this->hasOne( UserActiveApp::class, 'app_id', 'id');
     }
 
-    public static function processUpdates( $teamModel)
+    public static function copyApp(Apps $app, User $user)
+    {
+        $newapp = Apps::forceCreate(
+            ['team_id' => $user->teams[0]->id, 
+            'appicon' => $app->appicon, 
+            'app_name' => $app->app_name, 
+            'page_title' => $app->page_title,
+            'page_url' => $app->page_url,
+            'sort_order' => $app->sort_order ]
+        );
+        $user->refresh();
+
+        foreach ($app->tabs as $tab)
+        {
+            Tabs::forceCreate(
+                ['app_id' => $newapp->id]
+            );
+        }
+
+        return $newapp;
+    }
+    public static function processUpdates( $appModel)
     {
 
-        Apps::updateOrCreate(['id' => $teamModel['id']] , 
-        ['team_id' => $teamModel['team_id'], 
-        'appicon' => $teamModel['appicon'], 
-        'app_name' => $teamModel['app_name'], 
-        'page_title' => $teamModel['page_title'],
-        'page_url' => $teamModel['page_url'],
-        'sort_order' => $teamModel['sort_order'] ] );
+        Apps::updateOrCreate(['id' => $appModel['id']] , 
+        ['team_id' => $appModel['team_id'], 
+        'appicon' => $appModel['appicon'], 
+        'app_name' => $appModel['app_name'], 
+        'page_title' => $appModel['page_title'],
+        'page_url' => $appModel['page_url'],
+        'sort_order' => $appModel['sort_order'] ] );
 
     }
 

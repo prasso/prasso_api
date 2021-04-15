@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddMoreSiteFields extends Migration
+class AddSitenameToSites extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,9 @@ class AddMoreSiteFields extends Migration
     public function up()
     {
         Schema::table('sites', function (Blueprint $table) {
-            $table->string('main_color')->after('host')->nullable();
-            $table->string('logo_image', 500)->after('main_color')->nullable();
+            $table->string('site_name', 500)
+                ->after('id')
+                ->nullable();
         });
     }
 
@@ -26,6 +27,8 @@ class AddMoreSiteFields extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('sites', function (Blueprint $table) {
+            //
+        });
     }
 }

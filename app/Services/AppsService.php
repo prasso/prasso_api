@@ -41,7 +41,7 @@ class AppsService
             ->first();
             if ($app_data == null )
             {
-                $app_data = $this->getBlankApp();
+                $app_data = $this->getBlankApp($user);
                 $app_data->team_id=$user->teams[0]->id;
             }
 
@@ -50,11 +50,14 @@ class AppsService
        return json_encode($app_data);
     }
 
-    public function getBlankApp()
+    public function getBlankApp($user)
     {
-        return Apps::with('tabs')->with('team')->with('activeApp')
+        $app0 = Apps::with('tabs')->with('team')->with('activeApp')
         ->where('team_id',0)
         ->first();
+
+        $blankapp = Apps::copyApp($app0, $user);
+        return $blankapp;
     }
 
     /*
