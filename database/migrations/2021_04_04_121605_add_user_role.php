@@ -21,6 +21,11 @@ class AddUserRole extends Migration
 
         });
 
+        DB::table('roles')->insert([   
+            ['role_name' => 'super-admin', 'id' => 1],    
+            ['role_name' => 'site-admin', 'id' => 2] 
+         ]);
+
         Schema::create('user_role', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->index();
