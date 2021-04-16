@@ -21,16 +21,7 @@ class SiteFaviconPageHeadersAddTeamSite extends Migration
             $table->timestamp('updated_at')->default(DB::raw('NULL ON UPDATE CURRENT_TIMESTAMP'))->nullable();
 
         });
-        Schema::table('sites', function (Blueprint $table) {
-            $table->string('favicon', 500)
-                ->after('sort_order')
-                ->nullable();
-        });
-        Schema::table('site_pages', function (Blueprint $table) {
-            $table->string('headers', 1000)
-                ->after('url')
-                ->nullable();
-        });
+
     }
 
     /**
