@@ -1,5 +1,5 @@
 
-## About Prasso
+## About Prasso, Rapid Prototype Tool
 
 A Laravel team site, used to feed application structure information to a Prasso app. Prasso app is a rapid prototyping tool that is configured with this api.
 ### Prasso Definition·
