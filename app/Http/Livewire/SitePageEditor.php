@@ -15,11 +15,14 @@ class SitePageEditor extends Component
     public $isOpen = 0;
     public $isVisualEditorOpen = 0;
     public $siteid;
+
+    public $site;
     
     public function mount( $siteid)
     {
-        $site = Site::where('id',$siteid)->first();
-        $this->site_name = $site->site_name;
+        $site = Site::where('id',$siteid)->first()->toArray();
+        $this->site = $site;
+        $this->site_name = $site['site_name'];
         $this->siteid = $siteid;
     }
 
@@ -78,6 +81,7 @@ class SitePageEditor extends Component
         $this->description = '';
         $this->url = '';
         $this->sitePage_id = '';
+        
     }
      
     /**
@@ -96,7 +100,7 @@ class SitePageEditor extends Component
         ]);
         
         SitePages::updateOrCreate(['id' => $this->sitePage_id], [
-            'fk_site_id' => $this->site->id,
+            'fk_site_id' => $this->site['id'],
             'section' => $this->section,
             'title' => $this->title,
             'description' => $this->description,

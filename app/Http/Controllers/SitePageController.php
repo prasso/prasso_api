@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Providers\RouteServiceProvider;
 use App\Services\SitePageService;
 use App\Models\SitePages;
 use App\Models\Site;
@@ -26,6 +27,13 @@ class SitePageController extends Controller
     public function index()
     {
         $welcomepage = null;
+
+        $user = Auth::user();
+        if ($user != null)
+        {
+            return redirect(RouteServiceProvider::HOME);
+        }
+
         if ($this->site != null)
         {
             $welcomepage = SitePages::where('fk_site_id',$this->site->id)->where('section','Welcome')->first();

@@ -20,6 +20,7 @@ class SiteController extends Controller
      */
     public function index()
     {
+        
         $sites = Site::latest()->paginate(5);
 
         return view('sites.show', compact('sites'))
