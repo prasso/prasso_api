@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Contracts\Auth\MustVerifyEmail ;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
@@ -31,7 +30,7 @@ use Illuminate\Support\Facades\Log;
  * @property \Carbon\Carbon $updated_at
  *
  */
-class User extends Authenticatable implements MustVerifyEmail 
+class User extends Authenticatable
 {
     use HasApiTokens;
     use HasFactory;
