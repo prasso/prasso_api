@@ -18,6 +18,22 @@
     
         <!-- Scripts -->
         <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.6.0/dist/alpine.js" defer></script>
+    
+        <script type="text/javascript"
+                src="https://prasso.outseta.com/Scripts/client/dist/outseta.nocode.widget.min.js">
+        </script>
+        <script type="text/javascript"
+                src="https://prasso.outseta.com/Scripts/client/dist/outseta.auth.widget.min.js"
+                data-popup-selector="a[href^='https://prasso.outseta.com/widgets/auth']"
+                defer>
+        </script>
+        <script type="text/javascript"
+                src="https://prasso.outseta.com/Scripts/client/dist/outseta.profile.widget.min.js"
+                data-popup-selector="a[href^='https://prasso.outseta.com/widgets/profile']"
+                defer>
+        </script>
+    
+    
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">

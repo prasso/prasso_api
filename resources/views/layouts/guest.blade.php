@@ -7,14 +7,23 @@
 
         <title>{{ config('app.name', 'Prasso') }} - {{ $title }}</title>
 
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700" rel="stylesheet">
+<script type="text/javascript"
+src="https://prasso.outseta.com/Scripts/client/dist/outseta.nocode.widget.min.js">
+</script>
+<script type="text/javascript"
+src="https://prasso.outseta.com/Scripts/client/dist/outseta.auth.widget.min.js"
+data-popup-selector="a[href^='https://prasso.outseta.com/widgets/auth']"
+defer>
+</script>
+<script type="text/javascript"
+src="https://prasso.outseta.com/Scripts/client/dist/outseta.profile.widget.min.js"
+data-popup-selector="a[href^='https://prasso.outseta.com/widgets/profile']"
+defer>
+</script>
 
-        <!-- Styles -->
-        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
-        <!-- Scripts -->
-        <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.2.1/dist/alpine.js" defer></script>
+
+
     </head>
     <body>
         <div class="font-sans text-gray-900 antialiased">
