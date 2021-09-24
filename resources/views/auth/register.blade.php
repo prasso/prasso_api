@@ -1,6 +1,6 @@
 <x-guest-layout>
 
-<x-slot name="title">Register</x-slot>
+    <x-slot name="title">Register</x-slot>
     <x-jet-authentication-card>
         <x-slot name="logo">
             <img src="{{ $site->logo_image }}" />
@@ -17,9 +17,17 @@
             </div>
 
             <div class="mt-4">
-                <x-jet-label value="{{ __('Email') }}" />
-                <x-jet-input class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
+                <x-jet-label for="email" value="{{ __('Email') }}" />
+                @if (app('request')->input('email'))
+                <x-jet-input id="email" class="block mt-1 w-full" type="email" name="email" value="{{ app('request')->input('email') }}" required />
+                @else
+                <x-jet-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
+                @endif
             </div>
+            @if (app('request')->input('invite'))
+            <x-jet-input id="invite" class="hidden" type="hidden" name="invite" value="{{ app('request')->input('invite') }}" required />
+            @endif
+
 
             <div class="mt-4">
                 <x-jet-label value="{{ __('Password') }}" />

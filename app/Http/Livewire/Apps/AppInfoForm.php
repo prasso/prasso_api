@@ -13,6 +13,8 @@ class AppInfoForm extends Component
     public $team;
     public $team_selection;
     public $team_id;
+    public $site_id;
+    public $sites;
 
     public $show_success;
 
@@ -25,6 +27,7 @@ class AppInfoForm extends Component
         'teamapp.app_name' => 'required|min:6',
         'teamapp.page_title' => 'required|min:6',
         'teamapp.page_url' => 'required|min:6',
+        'teamapp.site_id' => 'required|min:1',
         'teamapp.sort_order' => 'required'
     ];
 

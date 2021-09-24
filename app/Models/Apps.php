@@ -18,14 +18,24 @@ class Apps extends Model
     use HasTimestamps;
     
     protected $fillable = [
-        'team_id', 'appicon', 'app_name', 'page_title', 'page_url', 'sort_order'
+        'team_id','site_id' ,'appicon', 'app_name', 'page_title', 'page_url', 'sort_order', 'user_role'
     ];
 
+    //includes admin level tabs
     public function tabs()
     {
-        return $this->hasMany(\App\Models\Tabs::class, "app_id", "id")->orderBy('sort_order');
+        return $this->hasMany(\App\Models\Tabs::class, "app_id", "id")
+        ->orderBy('sort_order');
     }
-    
+
+    //for app users that have no admin roles added
+    public function nullroletabs()
+    {
+        return $this->hasMany(\App\Models\Tabs::class, "app_id", "id")
+            ->where("team_role", null)
+            ->orderBy('sort_order');
+    }
+
     public function team()
     {
         return $this->belongsTo(Team::class, 'team_id', 'id');

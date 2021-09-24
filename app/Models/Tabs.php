@@ -42,6 +42,12 @@ class Tabs extends Model
         $this->request_header = config('constants.TAB_DEFAULT_HEADER');
     }
 
+  //  It's hasOne($related, $foreignKey, $localKey)
+    public function team_role() {
+        return $this->hasOne(UserRole::class, 'team_role', 'id');
+    }
+
+
     public static function processUpdates( $tab_data)
     {
         $tabdata = Tabs::updateOrCreate(['id' => $tab_data['id']] , 

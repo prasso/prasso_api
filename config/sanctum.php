@@ -41,6 +41,7 @@ return [
 
     'middleware' => [
         'verify_csrf_token' => App\Http\Middleware\VerifyCsrfToken::class,
+        'instructor_user' =>\App\Http\Middleware\UserPageAccess::class,
         'encrypt_cookies' => App\Http\Middleware\EncryptCookies::class,
     ],
 

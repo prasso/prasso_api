@@ -83,7 +83,10 @@ class SiteEditor extends Component
             'database' => 'required',
             'favicon' => 'required'
         ]);
-        
+        if (empty($this->site_id))
+        {
+            $this->site_id = 0;
+        }
         Site::updateOrCreate(['id' => $this->site_id], [
             'site_name' => $this->site_name,
             'host' => $this->host,

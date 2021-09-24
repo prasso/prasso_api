@@ -39,7 +39,7 @@
                         <td class="border px-4 py-2"><img src="{{ $site->logo_image }}" class="block h-9 w-auto" /></td>
                         <td class="border px-4 py-2">
                         <button wire:click="edit({{ $site->id }})" class=" py-2 px-3 "> <i class="material-icons md-36">mode_edit</i></button>
-                        <a href="/sitepages/{{ $site->id }}" ><i class="material-icons md-36 text-black ">labels</i></a>
+                        <a href="/sitepages/{{ $site->id }}" ><i class="material-icons md-36 text-black ">list</i></a>
                         <button wire:click="delete({{ $site->id }})" class="ml-3 py-2 px-3 rounded"><i class="material-icons md-36">delete_forever</i></button>
                         </td>
                     </tr>

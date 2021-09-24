@@ -16,7 +16,7 @@ return [
     */
 
     'stack' => 'livewire',
-
+    'profile_photo_disk' => env('AWS_URL'),
     /*
     |--------------------------------------------------------------------------
     | Features
@@ -31,7 +31,7 @@ return [
     'features' => [
         Features::profilePhotos(),
         Features::api(),
-        Features::teams(),
+        Features::teams()
     ],
 
 ];

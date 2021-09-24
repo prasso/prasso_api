@@ -40,10 +40,14 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        'super_admin' => [
+        'superadmin' => [
             'driver' => 'session',
             'provider' => 'superadmins',
         ],
+        'instructor' => [
+            'driver' => 'session',
+            'provider' => 'instructorusers',
+        ], 
         'api' => [
             'driver' => 'token',
             'provider' => 'users',
@@ -73,12 +77,10 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
-     //Admin user provider
+        'instructorusers' => [
+            'driver' => 'eloquent',  //We are using eloquent model
+            'model' => App\Models\Instructor::class,
+        ],
       'superadmins' => [
           'driver' => 'eloquent',  //We are using eloquent model
           'model' => App\Models\SuperAdmin::class,

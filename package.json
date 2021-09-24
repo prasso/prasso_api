@@ -20,5 +20,5 @@
         "tailwindcss": "^1.5.1",
         "vue-template-compiler": "^2.6.12"
     },
-    "name": "prasso_api"
+    "name": "barimorphosis_api"
 }

@@ -6,13 +6,95 @@
 @tailwind components;
 @tailwind utilities;
 
-.btn-blue, .sm-btn-blue {
+@layer components {
+
+  .btn-blue, .sm-btn-blue {
     color: #ffffff !important;
-    @apply bg-blue-700 float-right px-8 py-2 font-semibold text-white transition 
-    duration-500 ease-in-out transform rounded-lg shadow-xl  
+    --bg-opacity: 1;
+    background-color: #54CDDF !important;
+    background-color: rgba(26, 86, 219, var(--bg-opacity));
+    float: right;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-weight: 600;
+    --text-opacity: 1;
+    color: #ffffff;
+    color: rgba(255, 255, 255, var(--text-opacity));
+    transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+    transition-duration: 500ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    --transform-translate-x: 0;
+    --transform-translate-y: 0;
+    --transform-rotate: 0;
+    --transform-skew-x: 0;
+    --transform-skew-y: 0;
+    --transform-scale-x: 1;
+    --transform-scale-y: 1;
+    transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
+    border-radius: 0.5rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)
   }
   .sm-btn-blue {
     font-size: .75em !important;
   } 
+  .form-label{
+    display: block;
+    --text-opacity: 1;
+    color: #374151;
+    color: rgba(55, 65, 81, var(--text-opacity));
+    font-size: 0.875rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem
+  }
+  .form-input{
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    border-width: 1px;
+    border-radius: 0.25rem;
+    width: 100%;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    --text-opacity: 1;
+    color: #374151;
+    color: rgba(55, 65, 81, var(--text-opacity));
+    line-height: 1.25
+  }
+}
+.beakfast_ico {
+    background: url(https://yourhealth.azurewebsites.net/images/breakfast_ico.png) no-repeat;
+    background-position: center;
+}
+
+.amsnack_ico {
+    background: url(https://yourhealth.azurewebsites.net/images/am_snack_ico.png) no-repeat;
+    background-position: center;
+}
+
+.lnch_ico {
+    background: url(https://yourhealth.azurewebsites.net/images/lunch_ico.png) no-repeat;
+    background-position: center;
+}
+
+.pmsnack_ico {
+    background: url(https://yourhealth.azurewebsites.net/images/pmsnack_ico.png) no-repeat;
+    background-position: center;
+}
+
+.diner_ico {
+    background: url(https://yourhealth.azurewebsites.net/images/dinner_ico.png) no-repeat;
+    background-position: center;
+}
+
+.late_ico {
+    background: url(https://yourhealth.azurewebsites.net/images/late_snack_ico.png) no-repeat;
+    background-position: center;
+}
+
  
   

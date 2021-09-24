@@ -20,32 +20,29 @@ class AuthenticateSuperAdmin
 
    public function handle($request, Closure $next)
    {
-       $guard = Auth::guard('super_admin');
+      $guard = Auth::guard('superadmin');
 
-       // If request does not comes from logged in admin
-       // check one more time cause this middleware/guard/provider aint workin right yet
-       // then he shall be redirected to admin Login page
-       if (! $guard->check()) 
-       {
-            $user = \Auth::user();
-            if ($user == null)
-            {
-                return redirect('/login');
-            }
-            //double check because this guard/provider isn't plugged in properly yet
-            $adminuser = $this->superuser->fetchUserByCredentials($user->email);
-            
-            if ($adminuser == null)
-            {
-                return redirect('/login');
-            }
-            $credentials['email'] = $user->email;
-            $credentials['password'] = $user->password;
+      if (!$guard->check()) 
+      {
+        $user = \Auth::user();
+        //Log::info('in AuthenticateSuperAdmin, handle, after guard->check: ' . json_encode($user));
 
-            $guard->validate($credentials);
+        //double check because this guard/provider isn't plugged in properly yet
+        if ($user != null)
+        {
+          $adminuser = $this->superuser->fetchUserByCredentials($user->email);
+          
+          if ($adminuser == null)
+          {
+            session()->flash('message', config('constants.UNAUTHORIZED'));
+            return redirect('/login');
+          }
+          $credentials['email'] = $user->email;
+          $credentials['password'] = $user->password;
 
-       }
-
-       return $next($request);
+          $guard->validate($credentials);
+        }
+      }
+      return $next($request);
    }
 }

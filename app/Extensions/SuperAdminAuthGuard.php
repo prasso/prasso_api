@@ -1,6 +1,6 @@
 <?php
 // app/Services/Auth/JsonGuard.php
-namespace App\Services\Auth;
+namespace App\Extensions;
  
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
@@ -79,7 +79,7 @@ class SuperAdminAuthGuard implements Guard
    */
   public function validate(Array $credentials=[])
   {
-
+//Log::info('SuperAdminAuthGuard validate: '.json_encode($credentials));
     if (empty($credentials['username']) || empty($credentials['password'])) {
       return false;
     }

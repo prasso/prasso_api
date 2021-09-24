@@ -3,22 +3,60 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller as BaseController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use App\Models\Site;
+use App\Services\UserService;
 
 
-class EmailController extends Controller
+class EmailController extends BaseController
 {
     protected $serverKey;
-    protected $user_device_token;
+    protected $userService;
  
-    public function __construct(Request $request)
+    public function __construct(Request $request, UserService $userServ )
     {
         parent::__construct( $request);
         $this->serverKey = config('app.firebase_server_key');
-        $this->user_device_token = config('app.contact_device_token');
+        $this->userService = $userServ;
     }
+
+    public function unsubscribe(Request $request)
+    {
+        $this->userService->unsubscribe($request['email']);
+        return redirect('/page/email_subscription_removed')->with('message', 'You are unsubscribed. :-('); 
+    
+    }
+
+    public function confirm_newsletter_subscription(Request $request)
+    {
+        $this->userService->confirmNewsletter($request['email']);
+
+        return redirect('/page/email_subscription_confirmed')->with('message', 'Please confirm your subscription'); 
+    }
+
+    public function registerEmailForNewsletter(Request $request)
+    {
+        if (!isset($request['email']) )
+        {
+            return redirect('/')->with('message','email was empty');
+        }
+        $email = $request['email'];
+        // Remove all illegal characters from email
+        $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+
+        // Validate e-mail
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            //send a confirmation email to the poster - if they confirm to signup for the newsletter then inform me
+            $this->userService->subscribeNewsletter($request['email']);
+
+            return redirect('/page/please_confirm_your_subscription')->with('message', 'Please confirm your subscription'); 
+    
+        } else {
+            return redirect('/')->with('message','email was not valid');
+        }
+   }
 
     public function sendEmail(Request $request, Site $site) {
         $this->validate($request, [
@@ -31,9 +69,10 @@ class EmailController extends Controller
         $subject = $request->subject;
         $body = $request->body;
 
+        $admin_user = \App\Models\User::where('email','bcp@faxt.com')->first();
 
         $data = [
-            "to" => $this->user_device_token,
+            "to" => $admin_user->pn_token,
             "notification" =>
                 [
                     "title" => 'Prasso Contact Request:'. $subject,
@@ -42,17 +81,17 @@ class EmailController extends Controller
                 ],
         ];
         $dataString = json_encode($data);
- 
+
         $headers = [
             'Authorization: key=' . $this->serverKey,
             'Content-Type: application/json',
         ];
    
-    $url='https://fcm.googleapis.com/fcm/send';
-    $response = Http::withHeaders([
-        'Content-Type' => 'application/json',
-        'Authorization'=> 'key='. $this->serverKey,
-    ])->post($url, $data);
+        $url='https://fcm.googleapis.com/fcm/send';
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Authorization'=> 'key='. $this->serverKey,
+        ])->post($url, $data);
 
         return redirect('/contact')->with('message', 'Your message was sent.'); 
     }

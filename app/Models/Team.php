@@ -59,8 +59,17 @@ class Team extends JetstreamTeam
         return $this->hasMany(\App\Models\Site::class, "site_id", "id")->with('apps');
     }
 
+    public function team_members()
+    {
+        return $this->hasMany(\App\Models\TeamUser::class, 'team_id', 'id');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+    
+    public function invitations() {
+        return $this->hasMany('App\Models\Invitation');
     }
 }

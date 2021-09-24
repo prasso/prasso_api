@@ -21,7 +21,7 @@ class SiteFaviconPageHeadersAddTeamSite extends Migration
             $table->timestamp('updated_at')->default(DB::raw('NULL ON UPDATE CURRENT_TIMESTAMP'))->nullable();
 
         });
-
+    
     }
 
     /**

@@ -11,10 +11,16 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\UserActiveApp;
+use App\Models\PersonalAccessToken;
 use App\Models\UserRole;
-use App\Models\Role;
-
+use App\Models\TeamUser;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\welcome_user;
+use App\Mail\user_needs_coach;
+use Laravel\Cashier\Billable;
 
 /**
  * Class User.
@@ -26,6 +32,8 @@ use Illuminate\Support\Facades\Log;
  * @property string $firebase_uid
  * @property string $push_token
  * @property string $profile_photo_path
+ * @property bool $enableMealReminders
+ * @property string reminderTimesJson
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  *
@@ -39,6 +47,7 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
     use HasTimestamps;
+    use Billable;
     
     /**
      * The attributes that are mass assignable.
@@ -46,7 +55,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'profile_photo_url', 'firebase_uid', 'push_token'
+        'name', 'email', 'password', 'profile_photo_path', 'firebase_uid', 'push_token', 'enableMealReminders','reminderTimesJson','timeZone'
     ];
 
     /**
@@ -59,6 +68,7 @@ class User extends Authenticatable
         'remember_token',
         'two_factor_recovery_codes',
         'two_factor_secret',
+        'reminderTimesJson'
     ];
 
     /**
@@ -74,10 +84,33 @@ class User extends Authenticatable
      * The accessors to append to the model's array form.
      *
      * @var array
-     */
+
     protected $appends = [
-        'profile_photo_url',
+        'profile_photo_path', 'enableMealReminders', 'timeZone'
     ];
+    
+    /**
+     * Get the disk that profile photos should be stored on.
+     *
+     * @return string
+     */
+    protected function profilePhotoDisk()
+    {
+        return 's3';
+    }
+
+    public function getProfilePhoto()
+    {
+        if ($this->profile_photo_path == null)
+        {
+            return $this->defaultProfilePhotoUrl();
+        }
+        if (str_starts_with($this->profile_photo_path,'http'))
+        {
+            return  $this->profile_photo_path;
+        }
+        return  config('app.photo_url').$this->profile_photo_path;
+    }
 
     public function teams()
     {
@@ -85,14 +118,34 @@ class User extends Authenticatable
             ->with('apps');
     }
 
+    public function team_member()
+    {
+        return $this->hasMany(TeamUser::class, 'user_id','id')
+            ->with('team');
+    }
+
+    public function invitations() {
+        return $this->hasMany('App\Models\Invitation');
+    }
+
     public function roles()
     {
         return $this->hasMany(UserRole::class, 'user_id','id');
     }
 
-    public function activeApp()
+    public function activeApp() 
     {
-        return $this->hasOne( UserActiveApp::class, 'user_id', 'id');
+        return $this->hasOne(UserActiveApp::class, 'user_id', 'id');
+    }
+
+    public function personalAccessToken() 
+    {
+        return $this->hasOne(PersonalAccessToken::class, 'tokenable_id', 'id');
+    }
+
+    public function yourHealthToken()
+    {
+        return $this->hasOne(YourHealthToken::class, 'user_id', 'id');
     }
 
     public function getRouteKeyName() {
@@ -101,16 +154,23 @@ class User extends Authenticatable
 
     public static function getUserByAccessToken($accessToken)
     {
-        return User::select('users.*','users.firebase_uid AS uid')
+        $user = User::select('users.*','users.firebase_uid AS uid')
                 ->join('personal_access_tokens', 'users.id', '=', 'personal_access_tokens.tokenable_id')
                 ->where('personal_access_tokens.token', '=', $accessToken)
                 ->first();
+        //Log::info('User::getUserByAccessToken: '.json_encode($user));
+        return $user;
     }
 
-    public function hasRole(...$roles)
+    public function hasRole(...$role_looking_for)
     {
+       //Log::info('received roles: ' . json_encode($role_looking_for));
+        
         foreach ($this->roles as $role) {
-            if (in_array($role->name, $roles)) {
+
+           //Log::info('role: ' . json_encode($role));
+            
+            if (in_array($role->role_id, $role_looking_for)) {
                 return true;
             }
         }
@@ -118,13 +178,61 @@ class User extends Authenticatable
         return false;
     }
 
-
-    public function isSuperAdmin()
-    {
-        if ($this->hasRole(config('constants.SUPER_ADMIN'))) 
-        {
+    public function isSuperAdmin() {
+        if ($this->hasRole(config('constants.SUPER_ADMIN'))) {
             return true;
         }
         return false;
     }
+    public function isInstructor() {
+       // Log::info('checking for isInstructor: ' );
+        
+        if ($this->hasRole(config('constants.INSTRUCTOR'))) {
+            return true;
+        }
+        if ($this->hasRole(config('constants.SUPER_ADMIN'))) {
+            return true;
+        }
+        return false;
+    }
+
+    public function fillFromAppjson($user_from_app)
+    {
+        if (isset($user_from_app['displayName']))
+        { 
+            $this->name = $user_from_app['displayName'];
+        }
+        else
+        {
+            if (isset($user_from_app['name']))
+            { 
+                $this->name = $user_from_app['name'];
+            }
+        }
+        $this->email = $user_from_app['email'];
+        $this->profile_photo_path= $user_from_app['photoURL'];
+        $this->enableMealReminders = $user_from_app['enableMealReminders'] ? str_replace('\\','',$user_from_app['enableMealReminders']) : '0';
+        
+         if ($this->enableMealReminders = '1')
+         {
+             $this->reminderTimesJson = $user_from_app['reminderTimesFromJson'] ?? config('constants.REMINDER_TIMES');
+         }
+   
+    }
+
+    public function sendWelcomeEmail()
+    {
+        $emailbcc = 'info@prasso.io'; //because .env setting is not being read on prod server!
+        Mail::to($this)->send(new welcome_user($this));
+
+        try{
+        Mail::to($emailbcc,'Prasso Sign Up')->send(new user_needs_coach($this));
+        }
+        catch(\Throwable $err)
+        {
+            Log::info('error sending coach email: '.$err);
+        }
+        
+    }
+    
 }

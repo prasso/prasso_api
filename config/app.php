@@ -4,28 +4,22 @@ return [
 
 
     'name' => env('APP_NAME', 'Prasso'),
-
     'env' => env('APP_ENV', 'production'),
-
     'debug' => (bool) env('APP_DEBUG', false),
-
     'url' => env('APP_URL', 'http://localhost'),
-
+    'photo_url' => env('AWS_URL', 'http://localhost'),
+    'resize_photo_url' =>'https://ata1636khe.execute-api.us-east-1.amazonaws.com/production/image-resize',
     'asset_url' => env('ASSET_URL', null),
-
     'timezone' => 'UTC',
-
     'locale' => 'en',
-
     'fallback_locale' => 'en',
-
     'faker_locale' => 'en_US',
-
     'key' => env('APP_KEY'),
-
     'cipher' => 'AES-256-CBC',
     'firebase_server_key' => env('FIREBASE_SERVER_KEY'),
     'contact_device_token' => env('CONTACT_DEVICE_TOKEN'),
+    'twilio_sid' => env('TWILIO_ACCOUNT_SID'),
+    'twilio_token' => env('TWILIO_AUTH_TOKEN'),
     'providers' => [
 
         /*
@@ -55,10 +49,6 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 
         /*
-         * Package Service Providers...
-         */
-
-        /*
          * Application Service Providers...
          */
 
@@ -69,6 +59,7 @@ return [
         App\Providers\FortifyServiceProvider::class,
         App\Providers\JetstreamServiceProvider::class,
         App\Extensions\SuperAdminUserProvider::class,
+        App\Extensions\InstructorUserProvider::class,
 
     ],
 

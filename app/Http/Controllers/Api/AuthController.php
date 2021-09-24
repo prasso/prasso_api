@@ -7,10 +7,12 @@ use App\Http\Controllers\Controller as BaseController;
 use App\Models\User;
 use App\Models\Team;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Validator;
 use Illuminate\Support\Facades\Log;
 use App\Services\AppsService;
 use App\Services\SitePageService;
+use App\Services\UserService;
 use App\Models\SitePages;
 use App\Models\Site;
 use Illuminate\Database\Eloquent\JsonEncodingException;
@@ -20,13 +22,18 @@ class AuthController extends BaseController
 {
     protected $appsService;
     protected $sitePageService;
+    protected $userService;
     
-    public function __construct(Request $request, SitePageService $sitePageService,AppsService $appsServ)
+    public function __construct(Request $request, SitePageService $sitePageService,
+                                 AppsService $appsServ,
+                                UserService $userServ)
     {
         parent::__construct( $request);
         $this->sitePageService = $sitePageService;
         $this->appsService = $appsServ;
+        $this->userService = $userServ;
     }
+
 
     /**
      * Register api
@@ -35,29 +42,31 @@ class AuthController extends BaseController
      */
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validator = \Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email',
             'password' => 'required',
             'c_password' => 'required|same:password',
             'firebase_uid' => 'required'
         ]);
-   
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());       
         }
    
         $input = $request->all();
+
+   Log::info('In register, input is: '.json_encode($input));
         $input['password'] = bcrypt($input['password']);
+        $sendInvitation = false; //will send welcome email
         
         $user = User::create($input);
-        $user->ownedTeams()->save(Team::forceCreate([
-            'user_id' => $user->id,
-            'name' => explode(' ', $user->name, 2)[0]."'s Team",
-            'personal_team' => true,
-        ]));
-        $success = $this->buildConfigReturn($user);
+        $success_p1 = $this->userService->register($user,'user', $sendInvitation);
 
+        $success_p2 = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);
+
+        $success = array_merge($success_p1,$success_p2);
+        $success['ShowIntro'] = 'SHOW';
+   Log::info('register returning: '.json_encode($success));
         return $this->sendResponse($success, 'User registered successfully.');
     }
 
@@ -69,7 +78,7 @@ class AuthController extends BaseController
     {
         $email= $request->input('email');
         $password= $request->input('password');
-        $push_token= $request->input('pn_token');
+        $push_token=  $request->input('pn_token');
         
         $firebase_uid = $request->input('firebase_uid');
             
@@ -77,35 +86,48 @@ class AuthController extends BaseController
         if (isset($firebase_uid ))
         {
             $user = User::where("firebase_uid",$firebase_uid)->first();
-
         }
-        if( ! Auth::attempt(['email' => $email, 'password' => $password])){ 
+        $user_logged_in=false;
+        if(  Auth::attempt(['email' => $email, 'password' => $password]))
+        {
+            $user_logged_in = true;           
+        }
+        else
+        { 
             if (null != $user)
             {
-                Log::info("set password, firebase auth approved so we will too");
-            
+                //Log::info("set password, firebase auth approved so we will too");
                 $user->password = bcrypt($password);
                 $user->save();
+                if (Auth::attempt(['email' => $email, 'password' => $password])) 
+                { 
+                    $user_logged_in = true;
+                }
             }
         }
-        if( Auth::attempt(['email' => $email, 'password' => $password])){ 
-        
+    
+        if ( $user_logged_in)
+        {
             $user = Auth::user(); 
-            if ($user->firebase_uid <> $firebase_uid || $user->push_token != $push_token)
+            if ($user->firebase_uid <> $firebase_uid ||
+            ($push_token != '' && $user->pn_token != $push_token))
             {
                 if (isset($firebase_uid ))
                 {
                     $user->firebase_uid = $firebase_uid;
                 }
-                if (isset($push_token))
+                
+                if ($push_token != '' && isset($push_token))
                 {
+                    Log::info('saving push token for user');
                     $user->pn_token = $push_token;
                 }
-
                 $user->save();
             }
-            $success = $this->buildConfigReturn($user);
-
+            $user = $this->setUpUser($request,$user);
+            $success = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);
+            $success['pn_token'] = $user->pn_token;
+                    
             return $this->sendResponse($success, 'User has logged in.');
         } 
         else{ 
@@ -113,18 +135,21 @@ class AuthController extends BaseController
             return $this->sendError('Unauthorized.', ['error'=>'Please enter a valid username and password']);
         } 
     }
+
     /**
      * @return \Illuminate\Http\Response
+     * this is not used by the apps since we use firebase to login for those
      */
     public function login(Request $request)
     {
         $email= $request->input('email');
         $password= $request->input('password');
-        $app_token=$request->input('app_token'); //identifies which app
-
+        Log::info('logging in: '.$email);
         if(Auth::attempt(['email' => $email, 'password' => $password])){ 
             $user = Auth::user(); 
-            $success = $this->buildConfigReturn($user,$app_token);
+            $user = $this->setUpUser($request,$user);
+
+            $success = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);
 
             return $this->sendResponse($success, 'User logged in successfully.');
         } 
@@ -133,67 +158,114 @@ class AuthController extends BaseController
         } 
     }
 
-    public function saveUser(User $user, Request $request)
+    public function logout(Request $request)
     {
-        $user->save();
+        $this->unsetAccessTokenCookie();
+        return $this->sendResponse('', 'User logged out successfully.');
+      
+    }
+
+
+    public function saveEnhancedProfile(Request $request)
+    {
+        //goes in here. as described in the notes for Aug 27
+        $user = $this->userService->saveUser($request);
+
+        $success = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);
+        $success['ShowIntro'] = 'DONE';
+   Log::info('save enhanced profile returning: '.json_encode($success));
+        return $this->sendResponse($success, 'User registered successfully.');
+    }
+
+    public function saveUser(Request $request)
+    {
+        return $this->saveEnhancedProfile($request);
+      /*  // I had to do it this way instead of putting the User into the incoming parameters
+        //because the value for enableMealReminders was always false even when true
+        $user_from_request =  $request->json()->all();
+        $user_access_token = $user_from_request['appToken'];
+        $user = $this->userService->saveUser($request);
+        $app_data = $this->appsService->getAppSettingsBySite($this->site, $user,$user_access_token);
+
+        $success['app_data'] = $app_data; //configuration for setting up the app is here
+        $success['token'] = $user_access_token;
+        return $this->sendResponse($success, 'Profile updated successfully.');
+    */
     }
 
     public function getAppSettings($apptoken,Request $request)
     {
-        $user = $this->setUpUser($request);
+        
+        $user = $this->setUpUser($request,null);
 
        try {
             if (!isset($user))
             {
                 $this->sendToUnauthorized();
             }
-            $app_data = $this->buildConfigReturn($user);
+            $app_data = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);
             
             return $this->sendResponse($app_data, 'Successfully refreshed app data');
         } catch (\Throwable $e) {
             Log::info($e);
         }
     }
-    /**
-     * Consolidate code used in multiple places
-     */
-    private function buildConfigReturn($user)
-    {
-        $success = [];
-        $success['token'] =  json_encode($user->createToken(config('app.name'))->accessToken->token); 
-        $success['name'] =  $user->name;
-        $success['uid'] = $user->firebase_uid;
-        $success['email'] = $user->email;
-        $success['photoURL'] = $user->profile_photo_url;
     
-        $app_data = $this->appsService->getAppSettingsByUser($user);
-        $success['app_data'] = $app_data; //configuration for setting up the app is here
-        return $success;
-    }
-
-    private function setUpUser($request)
+    private function setUpUser($request,$user)
     {
-        $accessToken  = $request->header('Authorization');
-        $accessToken = str_replace("Bearer","",$accessToken);
+        $accessToken  = $request->header(config('constants.AUTHORIZATION_'));
+        $accessToken = str_replace("Bearer ","",$accessToken);
     
-        if (!isset($accessToken) && isset($_COOKIE['Authorization']))
+        if (!isset($accessToken) && isset($_COOKIE[config('constants.AUTHORIZATION_')]))
         {
-            $accessToken = $_COOKIE['Authorization'];
+            $accessToken = $_COOKIE[config('constants.AUTHORIZATION_')];
+        }
+        else
+        if (!isset($accessToken) && $user != null) 
+        {
+
+            $accessToken = $request->user()->createToken(config('app.name'))->accessToken->token;
+
+Log::info('accesstoken empty but user is not. new access token: '.$accessToken);
+        }
+        if (isset($accessToken))
+        {
+Log::info('in setUpUser -  accesstoken: '.$accessToken);
             $this->setAccessTokenCookie($accessToken);
-        }
-        if (!isset($accessToken)) {
-           return $this->sendToUnauthorized();
-        }
+            if ($user == null)
+            {
+                $user = User::getUserByAccessToken($accessToken);
+            }
 
-        $user = User::getUserByAccessToken($accessToken);
-
-        if ($user == null) {
-            $this->unsetAccessTokenCookie();
-            return $this->sendToUnauthorized();
-          }
-        
-        \Auth::login($user);
+            if ($user != null) 
+            {
+                \Auth::login($user); 
+            }
+        }
        return $user;
+    }
+ 
+    public function uploadProfileImageApi(Request $request)
+    {
+        $user = $this->setUpUser($request,null);
+
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+        ]);
+        if($request->hasfile('image'))
+        {
+            $file = $request->file('image');
+            $imageName=time().$file->getClientOriginalName();
+            $filePath = 'Prasso/-user-photos/photos-'.$user->id.'/'. $imageName;
+            Storage::disk('s3')->put($filePath, file_get_contents($file));
+            $usr = User::where('email',$user->email)->first();
+            $usr->profile_photo_path = $filePath;
+            $usr->save();
+            
+            $success['photoURL'] = $user->getProfilePhoto();
+        return $this->sendResponse($success, 'Photo updated successfully.');
+        //return back()->with('success','The image has been uploaded')->with('user',$usr);
+        }   
     }
 
     private function sendToUnauthorized()
@@ -210,7 +282,7 @@ class AuthController extends BaseController
     */
     protected function unsetAccessTokenCookie()
     {
-        setcookie('accessToken', '', time() - 3600, "/"); 
+        setcookie(config('constants.ACCESSTOKEN_'), '', time() - 3600, "/"); 
     }
 
     /**
@@ -218,6 +290,9 @@ class AuthController extends BaseController
      */
     protected function setAccessTokenCookie($accessToken)
     {
-        setcookie('accessToken', $accessToken, time() + (86400 * 30), "/");
+        setcookie(config('constants.ACCESSTOKEN_'), $accessToken, time() + (86400 * 30), "/");
+        
+        setcookie(config('constants.COMMUNITYTOKEN'), $accessToken, time() + (86400 * 30), "/");
+        setcookie(config('constants.COMMUNTIYREMEMBER'), $accessToken, time() + (86400 * 30), "/");
     }
 }

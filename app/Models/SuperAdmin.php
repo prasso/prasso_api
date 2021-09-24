@@ -11,19 +11,19 @@ class SuperAdmin extends User
     
     protected $table = 'users';
 
-    protected $guard = 'super_admin';
+    protected $guard = 'superadmin';
 
     public function __construct(array $attributes = array()){
         parent::__construct($attributes);
      }
  
-     public static function fetchUserByCredentials($username)
-     {
-         return User::select('users.*','users.firebase_uid AS uid')
+     public function fetchUserByCredentials($email) {
+        $superuser = User::select('users.*','users.firebase_uid AS uid')
                  ->join('user_role', 'users.id','=','user_role.user_id')
-                 ->where('users.email', '=', $username)
-                 ->where('user_role.role_id','=',config('constants.SUPER_ADMIN_ROLE'))
+                 ->where('users.email', '=', $email)
+                 ->where('user_role.role_id','=',config('constants.SUPER_ADMIN'))
                  ->first();
+        return $superuser;
      }
 
     public static function getUserByAccessToken($accessToken)
@@ -31,7 +31,7 @@ class SuperAdmin extends User
         return User::select('users.*','users.firebase_uid AS uid')
                 ->join('user_role', 'users.id','=','user_role.user_id')
                 ->where('personal_access_tokens.token', '=', $accessToken)
-                ->where('user_role.role_id','=',config('constants.SUPER_ADMIN_ROLE'))
+                ->where('user_role.role_id','=',config('constants.SUPER_ADMIN'))
                 ->first();
     }
 }
