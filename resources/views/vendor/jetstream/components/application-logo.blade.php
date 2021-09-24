@@ -1,1 +1,1 @@
-<img src="/images/prasso_logo.jpg">
+<img src="/images/barimorphosis_logo.png">

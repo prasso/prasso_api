@@ -16,7 +16,7 @@
             </div>
             <div></div>
             <div>
-            <x-jet-responsive-nav-link href="{{ route('teams.show', Auth::user()->currentTeam->id) }}" >
+            <x-jet-responsive-nav-link href="{{ route('teams.show', $team['id']) }}" >
                 <i class="material-icons md-36">mode_edit</i>
                 </x-jet-responsive-nav-link>
             </div>

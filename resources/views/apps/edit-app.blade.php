@@ -14,7 +14,7 @@
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             @livewire('apps.app-info-form',[ 'team_selection'=> $team_selection, 'team' => $team, 
                         'teamapp' => $teamapp,'teamapps' => $teamapps,
-                        'team_id' => $team['id'] 
+                        'team_id' => $team['id'] ,'sites' => $sites
                         ])
     
         </div>

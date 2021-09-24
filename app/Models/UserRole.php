@@ -27,4 +27,9 @@ class UserRole extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function team_role() {
+        return $this->belongsTo(Tab::class, 'team_role');
+    }
+
 }

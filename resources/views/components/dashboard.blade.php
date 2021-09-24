@@ -1,13 +1,10 @@
-
-  <div class="shadow overflow-hidden sm:rounded-md">
-  <div class="p-12 bg-white col-span-12 items-center ">
-@if ( Auth::user() != null)
-
-
+<div class="shadow overflow-hidden sm:rounded-md">
+    @if ( Auth::user() != null)
+    <div class="p-12 bg-white col-span-12 items-center ">
         <div class="max-w-xs p-0 m-auto">
             <div class="flex px-4">
                 <div class="flex-shrink-0">
-                    <img class="h-10 w-10 rounded-full" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
+                    <img class="h-10 w-10 rounded-full" src="{{ Auth::user()->getProfilePhoto() }}" alt="{{ Auth::user()->name }}" />
                 </div>
 
                 <div class="ml-3">
@@ -22,66 +19,70 @@
                     {{ __('Profile') }}
                 </x-jet-responsive-nav-link>
                 <div class="border-t border-gray-200 mt-2"></div>
-
-                <div class="block px-4 py-2 text-xs text-gray-400">
+                @if (Auth::user()->isSuperAdmin())
+                <div class="block px-4 py-2 text-xs text-gray-600">
                     {{ __('Manage Apps') }}
                 </div>
-                <x-jet-responsive-nav-link href="{{ route('apps.show', Auth::user()->allTeams()->first()->id)  }}">
+
+                <x-jet-responsive-nav-link href="{{ route('apps.show', Auth::user()->current_team_id)  }}">
                     {{ __('Apps') }}
                 </x-jet-responsive-nav-link>
-                
-                @if (Auth::user()->isSuperAdmin())
-                    <x-jet-responsive-nav-link href="{{ route('sites.show', Auth::user()->allTeams()->first()->id)  }}">
-                        {{ __('Sites') }}
-                    </x-jet-dropdown-link>
-                @endif
 
+                <x-jet-responsive-nav-link href="{{ route('sites.show', Auth::user()->allTeams()->first()->id)  }}">
+                    {{ __('Sites') }}
+                </x-jet-responsive-nav-link>
+
+                @endif
+                @if (Auth::user()->isInstructor())
                 <!-- Team Management -->
                 @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
-                    <div class="border-t border-gray-200 mt-2"></div>
+                <div class="border-t border-gray-200 mt-2"></div>
 
-                    <div class="block px-4 py-2 text-xs text-gray-400">
-                        {{ __('Manage Team') }}
-                    </div>
+                <div class="block px-4 py-2 text-xs text-gray-600">
+                    {{ __('Manage Team') }}
+                </div>
 
-                    <!-- Team Settings -->
-                    <x-jet-responsive-nav-link href="{{ route('teams.show', Auth::user()->currentTeam->id) }}" :active="request()->routeIs('teams.show')">
-                        {{ __('Team Settings') }}
-                    </x-jet-responsive-nav-link>
+                <!-- Team Settings -->
+                <x-jet-responsive-nav-link href="{{ route('teams.show', Auth::user()->currentTeam->id) }}" :active="request()->routeIs('teams.show')">
+                    {{ __('Team Settings') }}
+                </x-jet-responsive-nav-link>
 
-                    <x-jet-responsive-nav-link href="{{ route('teams.create') }}" :active="request()->routeIs('teams.create')">
-                        {{ __('Create New Team') }}
-                    </x-jet-responsive-nav-link>
+                <x-jet-responsive-nav-link href="{{ route('teams.create') }}" :active="request()->routeIs('teams.create')">
+                    {{ __('Create New Team') }}
+                </x-jet-responsive-nav-link>
+                @endif
 
-                    <div class="border-t border-gray-200"></div>
+                <div class="border-t border-gray-200"></div>
 
 
                 @if (count(Auth::user()->allTeams()) > 1)
-                    <!-- Team Switcher -->
-                    <div class="block px-4 py-2 text-xs text-gray-400">
-                        {{ __('Switch Teams') }}
-                    </div>
+                <!-- Team Switcher -->
+                <div class="block px-4 py-2 text-xs text-gray-600">
+                    {{ __('Switch Teams') }}
+                </div>
 
-                    @foreach (Auth::user()->allTeams() as $team)
-                        <x-jet-switchable-team :team="$team" component="jet-responsive-nav-link" />
-                    @endforeach
-                    @endif
+                @foreach (Auth::user()->allTeams() as $team)
+                <x-jet-switchable-team :team="$team" component="jet-responsive-nav-link" />
+                @endforeach
+                @endif
                 @endif
 
+                <div class="m-auto text-center">
+                    <!-- Authentication -->
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
 
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-jet-responsive-nav-link href="{{ route('logout') }}"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                        {{ __('Logout') }}
-                    </x-jet-responsive-nav-link>
-                </form>
-
+                        <x-jet-responsive-nav-link href="{{ route('logout') }}" onclick="event.preventDefault();
+                                    this.closest('form').submit();">
+                            {{ __('Logout') }}
+                        </x-jet-responsive-nav-link>
+                    </form>
+                </div>
             </div>
         </div>
- 
-@endif
-
+    </div>
+    @else
+    <!-- no login cookie -->
+    <x-welcome></x-welcome>
+    @endif
+</div>

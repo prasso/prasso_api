@@ -2,7 +2,7 @@
   <div class="p-6 bg-white col-span-6">
     <div class="max-w-xl text-sm text-gray-600" >
         <span class="-mt-5 float-right ">  <a href="{{ route('apps.add-tab',['teamid' => $selected_team, 'appid' => $selected_app])   }}">
-                <i class="material-icons md-36">playlist_add</i>
+                <i class="material-icons md-36">add</i>
             </a>
         </span>
     </div>   

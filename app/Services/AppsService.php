@@ -4,13 +4,75 @@ namespace App\Services;
 
 use App\Models\Apps;
 use App\Models\Team;
+use App\Models\Site;
 use App\Models\User;
 use App\Models\UserActiveApp;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 
 class AppsService 
 {
+
+    // for apps that have no role determinations.
+    //this serves the first app only app serves only one at this time ( will possibly add more later)
+    public function getBarimorphosisAppSettings($user)
+    {
+      //  Log::info('getBarimorphosisAppSettings app id: '. config('constants.BARIMORPHOSIS_APP'));
+        $app_data = Apps::with('tabs')->with('team')
+            ->where('id',config('constants.BARIMORPHOSIS_APP'))
+            ->first();
+      //  Log::info(json_encode($app_data));
+        return json_encode($app_data);
+    }
+
+     //get tabs based on the role this user plays in the app
+    //(instructor will have app management features. users will not)
+    public function getAppSettingsBySite(Site $site, $user,$user_access_token) 
+    {
+        //Log::info('user in getAppSettingsBySite: '.json_encode($user));
+        $returnval='';
+      
+        if ( !isset($user->roles) || 
+            (isset($user->roles) && count($user->roles) == 0))
+        {
+            //only tabs with  null roles
+            $app_data = Apps::with('nullroletabs')->with('team')
+            ->where('site_id', $site->id)
+            ->first();
+
+            //fix the label
+            $returnval = str_replace('nullroletabs','tabs',json_encode($app_data));
+
+        }
+        else
+        {
+            //return all if a role is set for this user
+            $app_data = Apps::with('tabs')->with('team')
+                ->where('site_id', $site->id)
+                ->first();
+            $returnval = json_encode($app_data);
+        }
+        // Log::info('app data raw before putting token in: ' . $returnval);
+        // Log::info('user token: ' . $user_access_token);
+   // Log::info('constant yourhealth token label: ' . config('constants.USER_TOKEN'));
+        //update any user specific headers
+        $returnval = str_replace(config('constants.USER_TOKEN'), $user_access_token, $returnval);
+
+        if (isset($user->yourHealthToken))
+        {
+            $returnval = str_replace(config('constants.YOUR_HEALTH_TOKEN'), $user->yourHealthToken->your_health_token, $returnval);
+        }
+        if (isset($user->current_team_id ))
+        {
+            $returnval = str_replace(config('constants.TEAM_ID'), $user->current_team_id, $returnval);
+        }
+        $returnval = str_replace(config('constants.CSRF_HEADER'), csrf_token(), $returnval);
+ 
+        //Log::info('app settings by site: '.$returnval);
+       return $returnval;    
+    }
+
 
     /// user in team (user_id ) team in app (team_id) app in tabs (app-id)
     /// a method to return the setup for this person's application
@@ -37,14 +99,13 @@ class AppsService
             $user = $user->fresh();
            }
            $app_data = Apps::with('tabs')->with('team')->with('activeApp')
-            ->where('team_id',$user->teams[0]->id)
+            ->where('team_id',$user->current_team_id)
             ->first();
             if ($app_data == null )
             {
                 $app_data = $this->getBlankApp($user);
                 $app_data->team_id=$user->teams[0]->id;
             }
-
         }
        
        return json_encode($app_data);
@@ -53,7 +114,7 @@ class AppsService
     public function getBlankApp($user)
     {
         $app0 = Apps::with('tabs')->with('team')->with('activeApp')
-        ->where('team_id',0)
+        ->where('team_id',1)
         ->first();
 
         $blankapp = Apps::copyApp($app0, $user);

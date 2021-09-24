@@ -8,7 +8,10 @@ use App\Services\AppsService;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use App\Models\Apps;
+use App\Models\Team;
+use App\Models\Notifications;
 use App\Models\Tabs;
+use App\Models\Site;
 use App\Models\UserActiveApp;
 use App\Models\FlutterIcons;
 
@@ -18,7 +21,7 @@ class TeamController extends Controller
     public function __construct(Request $request)
     {
         parent::__construct( $request);
-        $this->middleware('auth:sanctum');
+        $this->middleware('instructorusergroup');
     }
 
     /**
@@ -32,7 +35,8 @@ class TeamController extends Controller
 
         $activeApp = UserActiveApp::where('user_id',$user['id'])->first();
   
-        $team = $user->teams->first();
+        $team = Team::where('id',$user->current_team_id)->first();
+     
         $teams = $user->teams->toArray();
   
         $teamapps = $team->apps;
@@ -49,6 +53,120 @@ class TeamController extends Controller
             ->with('teamapps', $teamapps)
             ->with('team', $team)
             ->with('activeappid',$activeAppId);
+    }
+
+    
+    public function editTeam($teamid)
+    {
+        $user = Auth::user(); 
+        if ($user->current_team_id != $teamid)
+        {
+            $response['message'] = trans('messages.invalid_token');
+            $response['success'] = false;
+            $response['status_code'] = \Symfony\Component\HttpFoundation\Response::HTTP_UNAUTHORIZED;
+            return $this->sendError('Unauthorized.', ['error' => 'Please login again.'], 400);
+        }
+        $team = $user->currentTeam;
+        
+        return view('teams.show')->with('team', $team);
+    }
+
+    /**
+     * show the team messages form
+     * messages to users ( pn's )
+     * users will be selected and the pns will be scheduled
+     */
+    public function setupForTeamMessages($teamid, Request $request) {
+
+        $user = Auth::user();
+       // Log::info('In setupForTeamMessages');
+        $user_access_token = isset($user->personalAccessToken) ? $user->personalAccessToken->token : null;
+
+        $team = $user->teams->where('id', $teamid)->first();
+
+        if (count($team->users)>0)
+        {
+            $recipients = $team->users->sortBy('name');
+        }
+        $user_email='';
+        if (isset($request->user_email))
+        {
+            $user_email = $request->user_email;
+        }
+        $formdata['notifications'] = new Notifications();
+        $formdata['recipients'] = $recipients;
+        $formdata['team'] = $team;
+        //get the team members and the user info and send back to the form
+        return view('teams.team-messages')
+        ->with('user', $user)
+            ->with('formdata', $formdata)
+            ->with('user_email',$user_email)
+            ->with('access_token', $user_access_token)
+            ->with('message','');
+    }
+
+    /**
+     * process the messages, schedule them and return the form with messages
+     */
+    public function processTeamMessages(Request $request, $teamid) 
+    {
+        //Log::info('In processTeamMessages');
+        $user = Auth::user();
+
+        // MAKE THIS WORK TO EITHER SEND PUSH NOTIFICATIONS OR AN EMAIL
+        // OR A TXT MESSAGE IF THE USER'S PROFILE HAS A PHONE NUMBER
+    
+        $is_email_request=false;
+        $is_pn_request=false;
+        
+        $input = $request->all();
+        $sendto = [];
+        $notify = new Notifications();
+        $notify->user_sender = $user->id;
+        if (isset($input['subject']) )
+        {
+            $is_pn_request = true;
+            $notify->subject = $input['subject'];
+            $notify->body = $input['body'];
+        }
+        if (isset($input['emailToSend']) )
+        {
+            $is_email_request = true;
+            $notify->emailToSend = $input['emailToSend'];
+        }
+
+        //convert the user's input time to UTC. assume this comes in from their timezone
+        $notify->schedule_date_time = \DateTime::createFromFormat('Y-m-d H:i', $input['schedule_date_time'], new \DateTimeZone($user->timeZone));
+        $notify->action='openapp';
+
+        foreach($input as $formitem)
+        {
+            if (str_starts_with($formitem, 'member-')  )
+            {
+                $aruserId = explode ( '-', $formitem);
+                $sendto[] = $aruserId[1];
+            }
+        }
+        foreach($sendto as $userid)
+        {
+            if ($is_pn_request)
+            {
+                $blank_notify =   $notify->replicate();
+                $blank_notify->user_receiver = $userid;
+                $blank_notify->save();
+            }
+            else if ($is_email_request)
+            {
+                //ship this off to the logic that processes emails
+                // TODO TODO TODO
+            }
+        }
+        session()->flash(
+            'message',
+            'Messages have been scheduled.'
+        );
+  
+        return redirect()->back();
     }
 
     /**
@@ -68,6 +186,7 @@ class TeamController extends Controller
             $teamapp = $appsService->getBlankApp($user);
         }
         $apptabs = $teamapp->tabs()->orderBy('sort_order')->Get();
+        $sites = Site::pluck('site_name', 'id');
         
         return view('apps.edit-app')
         ->with('team_selection',$team_selection)
@@ -75,7 +194,9 @@ class TeamController extends Controller
         ->with('teamapps',$teamapps)
         ->with('teamapp', $teamapp)
         ->with('show_success', false)
+        ->with('sites',$sites)
         ->with('selected_app', $appid)
+
         ->with('apptabs', $apptabs);
     }
 
@@ -106,7 +227,7 @@ class TeamController extends Controller
 
     public function addTab($teamid, $appid)
     {
-        return $this->getEditTab($teamid, $appid, 0);
+        return $this->getEditTab($teamid, $appid, 'new');
     }
   
     public function deleteTab($appid, $tabid)
@@ -141,19 +262,25 @@ class TeamController extends Controller
         $team = $user->teams->where('id',$teamid)->first();
         $teamapps = $team->apps;     
         $teamapp = $teamapps->where('id',$appid)->first();
+
+        $index=1;
+        $sort_orders = [$index];
         
-        if ($tabid == 0)
+        // Log::info('in getEditTab, $tabid: '.$tabid);
+        if ($tabid == 'new')
         {
+            Log::info('set up for new tab');
             $tab_data = Tabs::make();
+            $tab_data->id=$tabid ;
             $tab_data->app_id = $appid;  
+            $tab_data->sort_order = $index; 
+            $tab_data->parent = 0; 
         }
         else
         {
             $tab_data = $teamapp->tabs->where('id',$tabid)->first();
         }
-
-        $index=1;
-        $sort_orders = [$index];
+        
         $hasMore = false;
         $moreindex = 0;
         foreach($teamapp->tabs as $tab)
@@ -181,6 +308,7 @@ class TeamController extends Controller
         $icon_data = FlutterIcons::pluck('icon_name','id');
 
         return view('apps.edit-tab')
+        ->with('selected_app',$appid)
         ->with('tabdata', $tab_data)
         ->with('moredata', $more)
         ->with('icondata', $icon_data)

@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-gray-100 border-b border-gray-100">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <img src="{{ $site->logo_image ?? '' }}" class="block h-9 w-auto" />
+                        <img src="{{ $site->logo_image??'' }}" class="block h-9 w-auto" />
                     </a>
                 </div>
 
@@ -23,19 +23,21 @@
                 <x-jet-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
-                            <img class="h-8 w-8 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
+                            <img class="h-8 w-8 rounded-full object-cover" src="{{ Auth::user()->getProfilePhoto() }}" alt="{{ Auth::user()->name }}" />
                         </button>
                     </x-slot>
 
                     <x-slot name="content">
                         <!-- Account Management -->
-                        <div class="block px-4 py-2 text-xs text-gray-400">
+                        <div class="block px-4 py-2 text-xs text-gray-600">
                             {{ __('Manage Account') }}
                         </div>
 
                         <x-jet-dropdown-link href="{{ route('profile.show') }}">
                             {{ __('Profile') }}
                         </x-jet-dropdown-link>
+
+    @if (Auth::user()->isSuperAdmin())
 
                         <x-jet-dropdown-link href="{{ route('apps.show', Auth::user()->allTeams()->first()->id)  }}">
                             {{ __('Apps') }}
@@ -55,7 +57,7 @@
 
                         <!-- Team Management -->
                         @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
-                            <div class="block px-4 py-2 text-xs text-gray-400">
+                            <div class="block px-4 py-2 text-xs text-gray-600">
                                 {{ __('Manage Team') }}
                             </div>
 
@@ -73,7 +75,7 @@
                             <div class="border-t border-gray-100"></div>
 
                             <!-- Team Switcher -->
-                            <div class="block px-4 py-2 text-xs text-gray-400">
+                            <div class="block px-4 py-2 text-xs text-gray-600">
                                 {{ __('Switch Teams') }}
                             </div>
 
@@ -83,7 +85,7 @@
 
                             <div class="border-t border-gray-100"></div>
                         @endif
-
+@endif
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -123,7 +125,7 @@
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="flex items-center px-4">
                 <div class="flex-shrink-0">
-                    <img class="h-10 w-10 rounded-full" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
+                    <img class="h-10 w-10 rounded-full" src="{{ Auth::user()->getProfilePhoto() }}" alt="{{ Auth::user()->name }}" />
                 </div>
 
                 <div class="ml-3">
@@ -138,6 +140,7 @@
                     {{ __('Profile') }}
                 </x-jet-responsive-nav-link>
 
+ @if (Auth::user()->isSuperAdmin())
                 <x-jet-dropdown-link href="{{ route('apps.show', Auth::user()->allTeams()->first()->id)  }}">
                     {{ __('Apps') }}
                 </x-jet-responsive-nav-link>
@@ -148,22 +151,11 @@
                     </x-jet-responsive-nav-link>
                 @endif
 
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-jet-responsive-nav-link href="{{ route('logout') }}"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                        {{ __('Logout') }}
-                    </x-jet-responsive-nav-link>
-                </form>
-
                 <!-- Team Management -->
                 @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
                     <div class="border-t border-gray-200"></div>
 
-                    <div class="block px-4 py-2 text-xs text-gray-400">
+                    <div class="block px-4 py-2 text-xs text-gray-600">
                         {{ __('Manage Team') }}
                     </div>
 
@@ -179,7 +171,7 @@
                     <div class="border-t border-gray-200"></div>
 
                     <!-- Team Switcher -->
-                    <div class="block px-4 py-2 text-xs text-gray-400">
+                    <div class="block px-4 py-2 text-xs text-gray-600">
                         {{ __('Switch Teams') }}
                     </div>
 
@@ -187,6 +179,19 @@
                         <x-jet-switchable-team :team="$team" component="jet-responsive-nav-link" />
                     @endforeach
                 @endif
+
+                @endif
+                <!-- Authentication -->
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+
+                    <x-jet-responsive-nav-link href="{{ route('logout') }}"
+                                    onclick="event.preventDefault();
+                                                this.closest('form').submit();">
+                        {{ __('Logout') }}
+                    </x-jet-responsive-nav-link>
+                </form>
+
             </div>
         </div>
     </div>

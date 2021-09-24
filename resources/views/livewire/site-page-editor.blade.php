@@ -39,9 +39,11 @@
                         <td class="border px-4 py-2">{{ $sitePage->title }}</td>
                         <td class="border px-4 py-2">
                         <button wire:click="edit({{ $sitePage->id }})" class="py-2 px-4 rounded"> <i class="material-icons md-36">mode_edit</i></button>
-                        <a href="/visual-editor/{{ $sitePage->id }}" class=" py-2 px-4 rounded"><i class="material-icons md-36">transform</i></a>
+                        <a href="/visual-editor/{{ $sitePage->id }}" class="py-2 px-4 rounded"><i class="material-icons md-36">transform</i></a>
                         <button wire:click="delete({{ $sitePage->id }})" class="py-2 px-4 rounded"><i class="material-icons md-36">delete_forever</i></button>
-                        </td>
+                        <a href="/page/{{ $sitePage->section }}" target="new" class="py-2 px-4 rounded"><i class="material-icons md-36">preview</i></a>
+  
+                    </td>
                     </tr>
                     @endforeach
                 </tbody>

@@ -2,6 +2,9 @@
 <div class="col-span-6">
     <div class="max-w-xl text-sm bg-gray">
         @foreach($apps as $app)
+        @if (Auth::user()->id == 1 || $app['app_name'] == 'Prasso')
+
+        {{ $activeAppId=$app['id'] }}
         <div class="grid my-4 grid-cols-3 mb-2 @if(isset($activeAppId) && $app['id'] == $activeAppId) bg-blue-50 @endif">
             <div>
                 <label class="items-left"> 
@@ -13,7 +16,7 @@
                 </label>
             </div>
             <div>
-                <label class="float-left">
+                <label class="block mx-10 my-5 text-xs font-bold tracking-widest uppercase title-font">
                     @if( !empty($app['app_name']))
                         {{ $app['app_name'] }} 
                     @else
@@ -51,7 +54,7 @@
              
             </div>
         </div>
-
+        @endif
         @endforeach
     </div>
 </div>

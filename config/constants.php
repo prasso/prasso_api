@@ -1,6 +1,7 @@
 <?php
 
 return [
+        'BLANK_PHOTO_PATH' =>  'profile-photos/blankprofile.jpg',
         'TAB_DEFAULT_ID' => 0,
         'TAB_DEFAULT_SORT_ORDER' => 1, 
         'TAB_DEFAULT_PARENT' => 0,
@@ -9,7 +10,28 @@ return [
         'TAB_DEFAULT_URL' => 'https://prasso.io',
         'TAB_DEFAULT_HEADER' => 'Origin:Prasso',
         'MORE_TAB' => 'More()',
+        'ADMIN_EMAIL_SIGNATURE' => 'Prasso Support',
+        'WELCOME_EMAIL_SUBJECT' => 'Welcome to Prasso',
+        'COACH_COPY_WELCOME_EMAIL' => 'Welcome this user to Prasso',
+        'NOTIFY_NEWSLETTER_SUBSCRIBER_EMAIL' => 'A person signed up for Prasso newsletter',
         'UNAUTHORIZED' => 401,
-        'SITE_ADMIN_ROLE' => 2,
-        'SUPER_ADMIN_ROLE' => 1
+        'INSTRUCTOR' => 2,
+        'INSTRUCTOR_ROLE_TEXT' => 'instructor',
+        'SUPER_ADMIN' => 1,
+        'SUPER_ADMIN_ROLE_TEXT' => 'admin',
+        'TEAM_USER_ROLE' => 'user',
+        'NEWSLETTER_ROLE_TEXT' => 'newsletter',
+        'DEFAULT_COACH_TEAM_ID' => '1',
+        'NEWSLETTER_TEAM_ID' => '2',
+        'UNAUTHORIZED' => 'Not Authorized',
+        'USER_TOKEN' => '[USER_TOKEN]',
+        'YOUR_HEALTH_TOKEN' => '[YOUR_HEALTH_TOKEN]',
+        'TEAM_ID' => '[TEAM_ID]',
+        'CSRF_HEADER' => '[CSRF_HEADER]',
+        'BARIMORPHOSIS_APP' => 1,
+            //cookie constants
+        'AUTHORIZATION_' =>'Authorization',
+        'COMMUNITYTOKEN' => 'flarum_session',
+        'COMMUNTIYREMEMBER' => 'flarum_remember',
+        'ACCESSTOKEN_' => 'accessToken' 
 ];

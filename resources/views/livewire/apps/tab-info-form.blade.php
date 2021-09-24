@@ -19,9 +19,13 @@
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
+                @if (is_array($errors))
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
+                @else
+                dd($errors)
+                @endif
             </ul>
         </div>
     @endif
@@ -39,12 +43,24 @@
     <div class="col-span-6 sm:col-span-4">
         <x-jet-label for="icon" value="{{ __('Icon') }}" />
 
-        <select name="icon" id="icon" class="mt-1 block w-full"  wire:model.defer="tabdata.icon" >
-            @foreach($icondata as $name)
-                <option value="{{ $name }}">{{ $name }}</option>
-            @endforeach
-        </select>
+        <div class="multiselect">
+            <div class="selectBox" x-data="{ isShowing: false }" onclick="showRadios()">
+                <select>
+                    <option>Select an icon</option>
+                </select>
+                <div class="overSelect"></div>
+            </div>
+            <div id="checkboxes">
+                @foreach($icondata as $name)
+                <label for="{{ $name }}">
+                    <input x:model="selectedIcon" onclick="showRadios()" type="radio" value="{{ $name }}" wire:model.defer="tabdata.icon"  name="icon" /><i class="material-icons md-36">{{ $name }}</i> {{ $name }}</label>
+                @endforeach
+            </div>
+        </div>
+        <div style="float:right; margin-left:2px;color:brown;" id="selectedIcon"></div>
+        
         <x-jet-input-error for="icon" class="mt-2" />
+
     </div>
     <!-- Tab Label -->
     <div class="col-span-6 sm:col-span-4">

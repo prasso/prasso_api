@@ -20,7 +20,7 @@ class SitePageController extends Controller
         $this->sitePageService = $sitePageService;
     }
     /**
-     * return welcome page
+     * return welcome page if one is defined for this site
      *
      * @return \Illuminate\Http\Response
      */
@@ -33,8 +33,8 @@ class SitePageController extends Controller
         {
             return redirect(RouteServiceProvider::HOME);
         }
-
-        if ($this->site != null)
+        
+        if ( $this->site != null && strcmp($this->site->site_name, config('app.name')) != 0)
         {
             $welcomepage = SitePages::where('fk_site_id',$this->site->id)->where('section','Welcome')->first();
         }

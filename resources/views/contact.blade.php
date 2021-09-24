@@ -10,7 +10,7 @@
         <form method="post" action="{{ route('send-email') }}">
         @csrf
         @if ($errors->any())
-            <div class="relative px-3 py-3 mb-4 border rounded text-teal-darker border-teal-dark bg-teal-lighter">
+            <div class="relative px-3 py-3 mb-4 border rounded text-teal-800 border-teal-900 bg-teal-300">
                 <ul>
                     @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -19,7 +19,7 @@
             </div>
         @endif
         @if(Session::get('message'))
-        <div class="relative px-3 py-3 mb-4 border rounded text-teal-darker border-teal-dark bg-teal-lighter">
+        <div class="relative px-3 py-3 mb-4 border rounded text-teal-800 border-teal-900 bg-teal-300">
                 <ul>
                     <li>{{Session::get('message')}}</li>
                 </ul>
@@ -44,7 +44,7 @@
             <div class="hidden">
             <input type="text"  name="details" id="details"  >
             </div>
-            <button type="submit" class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap py-2 px-4 rounded text-base leading-normal no-underline text-blue-lightest bg-blue hover:bg-blue-light py-3 px-4 text-xl leading-tight">Submit</button>
+            <button type="submit" class="btn-blue hover:bg-gray-800 text-white w-full p-2">Send Info</button>
         </div>
     </form>                          
                 </div>
