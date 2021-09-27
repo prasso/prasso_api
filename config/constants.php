@@ -31,7 +31,5 @@ return [
         'BARIMORPHOSIS_APP' => 1,
             //cookie constants
         'AUTHORIZATION_' =>'Authorization',
-        'COMMUNITYTOKEN' => 'flarum_session',
-        'COMMUNTIYREMEMBER' => 'flarum_remember',
         'ACCESSTOKEN_' => 'accessToken' 
 ];

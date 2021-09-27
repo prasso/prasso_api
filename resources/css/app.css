@@ -66,35 +66,6 @@
     line-height: 1.25
   }
 }
-.beakfast_ico {
-    background: url(https://yourhealth.azurewebsites.net/images/breakfast_ico.png) no-repeat;
-    background-position: center;
-}
-
-.amsnack_ico {
-    background: url(https://yourhealth.azurewebsites.net/images/am_snack_ico.png) no-repeat;
-    background-position: center;
-}
-
-.lnch_ico {
-    background: url(https://yourhealth.azurewebsites.net/images/lunch_ico.png) no-repeat;
-    background-position: center;
-}
-
-.pmsnack_ico {
-    background: url(https://yourhealth.azurewebsites.net/images/pmsnack_ico.png) no-repeat;
-    background-position: center;
-}
-
-.diner_ico {
-    background: url(https://yourhealth.azurewebsites.net/images/dinner_ico.png) no-repeat;
-    background-position: center;
-}
-
-.late_ico {
-    background: url(https://yourhealth.azurewebsites.net/images/late_snack_ico.png) no-repeat;
-    background-position: center;
-}
 
  
   

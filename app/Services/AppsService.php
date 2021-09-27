@@ -53,16 +53,9 @@ class AppsService
                 ->first();
             $returnval = json_encode($app_data);
         }
-        // Log::info('app data raw before putting token in: ' . $returnval);
-        // Log::info('user token: ' . $user_access_token);
-   // Log::info('constant yourhealth token label: ' . config('constants.USER_TOKEN'));
-        //update any user specific headers
+       //update any user specific headers
         $returnval = str_replace(config('constants.USER_TOKEN'), $user_access_token, $returnval);
 
-        if (isset($user->yourHealthToken))
-        {
-            $returnval = str_replace(config('constants.YOUR_HEALTH_TOKEN'), $user->yourHealthToken->your_health_token, $returnval);
-        }
         if (isset($user->current_team_id ))
         {
             $returnval = str_replace(config('constants.TEAM_ID'), $user->current_team_id, $returnval);

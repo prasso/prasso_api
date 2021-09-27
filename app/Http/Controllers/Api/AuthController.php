@@ -180,17 +180,6 @@ class AuthController extends BaseController
     public function saveUser(Request $request)
     {
         return $this->saveEnhancedProfile($request);
-      /*  // I had to do it this way instead of putting the User into the incoming parameters
-        //because the value for enableMealReminders was always false even when true
-        $user_from_request =  $request->json()->all();
-        $user_access_token = $user_from_request['appToken'];
-        $user = $this->userService->saveUser($request);
-        $app_data = $this->appsService->getAppSettingsBySite($this->site, $user,$user_access_token);
-
-        $success['app_data'] = $app_data; //configuration for setting up the app is here
-        $success['token'] = $user_access_token;
-        return $this->sendResponse($success, 'Profile updated successfully.');
-    */
     }
 
     public function getAppSettings($apptoken,Request $request)
@@ -291,8 +280,5 @@ Log::info('in setUpUser -  accesstoken: '.$accessToken);
     protected function setAccessTokenCookie($accessToken)
     {
         setcookie(config('constants.ACCESSTOKEN_'), $accessToken, time() + (86400 * 30), "/");
-        
-        setcookie(config('constants.COMMUNITYTOKEN'), $accessToken, time() + (86400 * 30), "/");
-        setcookie(config('constants.COMMUNTIYREMEMBER'), $accessToken, time() + (86400 * 30), "/");
-    }
+     }
 }

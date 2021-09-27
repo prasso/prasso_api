@@ -32,8 +32,6 @@ use Laravel\Cashier\Billable;
  * @property string $firebase_uid
  * @property string $push_token
  * @property string $profile_photo_path
- * @property bool $enableMealReminders
- * @property string reminderTimesJson
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  *
@@ -55,7 +53,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'profile_photo_path', 'firebase_uid', 'push_token', 'enableMealReminders','reminderTimesJson','timeZone'
+        'name', 'email', 'password', 'profile_photo_path', 'firebase_uid', 'push_token','timeZone'
     ];
 
     /**
@@ -86,7 +84,7 @@ class User extends Authenticatable
      * @var array
 
     protected $appends = [
-        'profile_photo_path', 'enableMealReminders', 'timeZone'
+        'profile_photo_path', 'timeZone'
     ];
     
     /**
@@ -141,11 +139,6 @@ class User extends Authenticatable
     public function personalAccessToken() 
     {
         return $this->hasOne(PersonalAccessToken::class, 'tokenable_id', 'id');
-    }
-
-    public function yourHealthToken()
-    {
-        return $this->hasOne(YourHealthToken::class, 'user_id', 'id');
     }
 
     public function getRouteKeyName() {
@@ -211,12 +204,7 @@ class User extends Authenticatable
         }
         $this->email = $user_from_app['email'];
         $this->profile_photo_path= $user_from_app['photoURL'];
-        $this->enableMealReminders = $user_from_app['enableMealReminders'] ? str_replace('\\','',$user_from_app['enableMealReminders']) : '0';
-        
-         if ($this->enableMealReminders = '1')
-         {
-             $this->reminderTimesJson = $user_from_app['reminderTimesFromJson'] ?? config('constants.REMINDER_TIMES');
-         }
+       
    
     }
 

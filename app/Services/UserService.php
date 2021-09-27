@@ -2,18 +2,15 @@
 
 namespace App\Services;
 
-use App\Models\CommunityAccessTokens;
 use Illuminate\Support\Facades\Log;
 use App\Models\Invitation;
 use App\Models\Team;
 use App\Models\TeamUser;
-use App\Models\CommunityUser;
 use App\Models\Instructor;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\newsletter_signup;
 use Str;
-use App\Jobs\ObtainYourHealthToken;
 
 class UserService 
 {
@@ -162,7 +159,7 @@ class UserService
             $invitation->sendEmailInviteNotification();
             if ($role == config('constants.NEWSLETTER_ROLE_TEXT'))
             {
-                //no community, no yourhealth. we are done if our guys are newsletter
+                //we are done if our guys are newsletter
                 return;
             }
         }
@@ -172,18 +169,7 @@ class UserService
           TeamUser::addToBaseTeam($user);     
         }
        
-        $communityuser = CommunityUser::forceCreate([
-            'id' => $user->id,
-            'username' => $user->email,
-            'email' => $user->email,
-            'password' => $user->password,
-            'is_email_confirmed' => '1',
-            'joined_at' => $user->created_at,
-            'last_seen_at' => $user->created_at
-        ]);
-
-        ObtainYourHealthToken::dispatch($user);
-        $success['your_health_token'] = 'initializing';  //the job will obtain one for future use
+        $success['status'] = 'logged in';  //the job will obtain one for future use
         return $success;
     }
 
@@ -212,21 +198,11 @@ class UserService
             $success['token'] = $user_access_token; 
         }
         
-        $this->updateCommunityToken($user, $user_access_token);;
-
         $success['name'] = $user->name;
         $success['uid'] = $user->firebase_uid;
         $success['email'] = $user->email;
         $success['photoURL'] = $user->getProfilePhoto();
-        $success['enableMealReminders'] = $user->enableMealReminders == 1 ?true : false;
-        //Log::info('value of enableMealRemnders: '.json_encode($user->enableMealReminders));
-        try{
-          $success['reminderTimesJson'] = $user->reminderTimesJson;
-        } catch (\Throwable $e) {
-          Log::info($e);
-          $success['reminderTimesJson'] = config('constants.REMINDER_TIMES');
-        }
-        $success['timeZone'] = $user->timeZone;
+        
         try{
           $success['roles'] = json_encode($user->roles->makeHidden(['deleted_at', 'created_at','updated_at']));
         } catch (\Throwable $e) {
@@ -251,6 +227,7 @@ class UserService
               $success['team_members'] = json_encode(Instructor::getTeamMembersFor($user->teams[0]->id));
             } catch (\Throwable $e) {
               Log::info($e);
+              $success['timeZone'] = $user->timeZone;
               $success['team_members'] = [];
             }
           }
@@ -267,41 +244,6 @@ class UserService
         return $success;
     }
 
-    public function updateCommunityToken($user, $user_access_token)
-    {
-      $community_token = CommunityAccessTokens::where('user_id',$user->id)->first();
-      if ($community_token == null)
-      {
-        //make sure they are in community users first.
-        $cusr = CommunityUser::where('id',$user->id)->first();
-        if ($cusr == null)
-        {
-            $communityuser = CommunityUser::forceCreate([
-              'id' => $user->id,
-              'username' => $user->email,
-              'email' => $user->email,
-              'password' => $user->password,
-              'is_email_confirmed' => '1',
-              'joined_at' => $user->created_at,
-              'last_seen_at' => $user->created_at
-          ]);
-        }
-        $community_token = CommunityAccessTokens::forceCreate([
-            'token' => $user_access_token,
-            'user_id' => $user->id,
-            'last_activity_at' => date("Y-m-d H:i:s"),
-            'created_at' => date("Y-m-d H:i:s"),
-            'type' => 'session_remember'
-        ]);
-      }
-      else
-      {
-          $community_token->token = $user_access_token;
-          $community_token->last_activity_at = date("Y-m-d H:i:s");
-          $community_token->created_at = date("Y-m-d H:i:s");
-          $community_token->save();
-      }
-    }
 }
 
 
