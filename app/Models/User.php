@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\welcome_user;
 use App\Mail\user_needs_coach;
-use Laravel\Cashier\Billable;
+//use Laravel\Cashier\Billable;
 
 /**
  * Class User.
@@ -45,7 +45,7 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
     use HasTimestamps;
-    use Billable;
+    //use Billable;
     
     /**
      * The attributes that are mass assignable.
