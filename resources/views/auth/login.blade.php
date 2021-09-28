@@ -3,8 +3,9 @@
 <x-slot name="title">Login</x-slot>
     <x-jet-authentication-card>
         <x-slot name="logo">
+        @isset($site)
         <img class="max-w-md" src="{{ $site->logo_image }}" />
-        
+        @endisset
         </x-slot>
 
         <x-jet-validation-errors class="mb-4" />
