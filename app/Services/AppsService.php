@@ -106,12 +106,7 @@ class AppsService
 
     public function getBlankApp($user)
     {
-        $app0 = Apps::with('tabs')->with('team')->with('activeApp')
-        ->where('team_id',1)
-        ->first();
-
-        $blankapp = Apps::copyApp($app0, $user);
-        return $blankapp;
+        return Apps::getBlankApp($user);
     }
 
     /*

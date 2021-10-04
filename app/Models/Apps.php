@@ -46,6 +46,16 @@ class Apps extends Model
         return $this->hasOne( UserActiveApp::class, 'app_id', 'id');
     }
 
+    public static function getBlankApp(User $user)
+    {
+        $app0 = Apps::with('tabs')->with('team')->with('activeApp')
+        ->where('team_id',1)
+        ->first();
+
+        $blankapp = Apps::copyApp($app0, $user);
+        return $blankapp;
+    }
+
     public static function copyApp(Apps $app, User $user)
     {
         $newapp = Apps::forceCreate(

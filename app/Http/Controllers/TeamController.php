@@ -32,27 +32,14 @@ class TeamController extends Controller
     public function index()
     {
         $user = Auth::user(); 
-
-        $activeApp = UserActiveApp::where('user_id',$user['id'])->first();
-  
-        $team = Team::where('id',$user->current_team_id)->first();
-     
-        $teams = $user->teams->toArray();
-  
-        $teamapps = $team->apps;
-        
-        $activeAppId = '0';
-        if (isset($activeApp->app_id))
-        {
-            $activeAppId = $activeApp->app_id;
-        }
+        $user_app_info = $user->getUserAppInfo();
 
         return view('apps.show')
             ->with('user', $user)
-            ->with('teams',$teams)
-            ->with('teamapps', $teamapps)
-            ->with('team', $team)
-            ->with('activeappid',$activeAppId);
+            ->with('teams',$user_app_info['teams'])
+            ->with('teamapps', $user_app_info['teamapps'])
+            ->with('team', $user_app_info['team'])
+            ->with('activeappid',$user_app_info['activeAppId']);
     }
 
     
