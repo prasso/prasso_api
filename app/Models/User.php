@@ -14,8 +14,8 @@ use App\Models\UserActiveApp;
 use App\Models\PersonalAccessToken;
 use App\Models\UserRole;
 use App\Models\TeamUser;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
+use App\Models\Apps;
+use App\Services\AppsService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\welcome_user;
@@ -150,8 +150,10 @@ class User extends Authenticatable
         $user = User::select('users.*','users.firebase_uid AS uid')
                 ->join('personal_access_tokens', 'users.id', '=', 'personal_access_tokens.tokenable_id')
                 ->where('personal_access_tokens.token', '=', $accessToken)
+                ->with('activeApp')
+                ->with('teams')
                 ->first();
-        //Log::info('User::getUserByAccessToken: '.json_encode($user));
+Log::info('User::getUserByAccessToken: '.json_encode($user));
         return $user;
     }
 
@@ -189,6 +191,36 @@ class User extends Authenticatable
         return false;
     }
 
+
+    public function getUserAppInfo()
+    {
+        $user_app_info=[];
+        $activeApp = $this->activeApp();
+  
+        $user_app_info['team'] = $this->teams[0];
+      
+        $user_app_info['teams'] = $this->teams->toArray();
+  
+        $user_app_info['teamapps'] = $user_app_info['team']->apps;
+        
+        $activeAppId = '0';
+        if (isset($activeApp->app_id))
+        {
+            $activeAppId = $activeApp->app_id;
+        }
+        else
+        {
+            if (count($user_app_info['team']->apps) > 0)
+            {
+                $activeAppId = $user_app_info['team']->apps[0]->id;
+                UserActiveApp::processUpdates($this->id, $activeAppId);
+            }
+        }
+        $user_app_info['activeAppId']=$activeAppId;
+  
+        return $user_app_info;
+    }
+
     public function fillFromAppjson($user_from_app)
     {
         if (isset($user_from_app['displayName']))
@@ -205,7 +237,21 @@ class User extends Authenticatable
         $this->email = $user_from_app['email'];
         $this->profile_photo_path= $user_from_app['photoURL'];
        
-   
+        if (isset($user_from_app['appName']))
+        {
+            //does this user have a matching app? if not, set it up for them
+            //apps are accessed through teams
+            $user_app_info = $this->getUserAppInfo();
+            //find the app if it exists if it doesn't add it.
+            if ($user_app_info['activeAppId'] == '0' || count($user_app_info['teamapps']) == 0)
+            {
+                $teamapp = Apps::getBlankApp($this);
+                $teamapp->app_name = $user_from_app['appName'];
+                $teamapp->save;
+                UserActiveApp::processUpdates($this->id, $teamapp->id);
+            }
+
+        }
     }
 
     public function sendWelcomeEmail()
