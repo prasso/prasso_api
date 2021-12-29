@@ -22,6 +22,7 @@ class Controller extends BaseController
         $host = $request->getHost();
 
         $site = Site::getClient($host);
+        info('site: '.json_encode($site));
         $this->site = $site;
 
         View::share('site', $site);
