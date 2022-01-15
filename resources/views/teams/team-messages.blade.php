@@ -107,39 +107,33 @@
         <form id="teamMessages" method="post" action="{{ route('team.postmessages', Auth::user()->currentTeam->id)}}">
         <input type="hidden" name="csrf-token" value="{{ csrf_token() }}" />
         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
-         
+        <div class="text-lg">Email or Push Notifications</div>
         <div class="shadow overflow-hidden sm:rounded-md">
                 <div class="px-4 py-5 bg-white sm:p-6">
                     <div class="grid grid-cols-6 gap-6">
-                       {{$user_email}}
-                       <div class="text-lg">Push Notifications</div>
-                        <div class="col-span-6 sm:col-span-4">
+                       
+                    <div class="col-span-3 sm:col-span-2">
+
+Email<input id="emailselections" name="emailselections" type="radio" checked class="mt-1  "  value="email"  /> 
+Push Notification<input  id="emailselections" name="emailselections" type="radio" class="mt-1"  value="pn"  / > 
+        </div>
+                    </div>
+                        <div class="col-span-6 sm:col-span-4 p-5 " class="py-2">
                             
                             <x-jet-label for="subject" value="{{ __('Message Subject') }}" />
-
                             <x-jet-input id="subject" name="subject" type="text" class="mt-1 block w-full"  value="{{old('subject') ?? $formdata['notifications']->subject}}"   />
-
                             <x-jet-input-error for="subject" class="mt-2" />
                         </div>
-                        <div class="col-span-6 sm:col-span-4">
+                        <div class="col-span-6 sm:col-span-4 p-5 ">
                             <x-jet-label for="body" value="{{ __('Message Body') }}" />
                             <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="body" name="body" value="{{old('body') ?? $formdata['notifications']->body}}" placeholder="Enter Body"></textarea>
                             @error('body') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
-                        <div class="text-lg">Emails</div>
-                        <div class="col-span-6 sm:col-span-4">
-                            <x-jet-label for="emailselection" value="{{ __('Email Selection') }}" />
-
-                            <x-jet-input id="emailToSend" name="emailToSend" type="text" class="mt-1 block w-full"  value="{{old('emailToSend') ?? $formdata['notifications']->emailToSend}}"   />
-
-                            <x-jet-input-error for="subject" class="mt-2" />
-                        </div>
-                    
-                    <div class="col-span-6">
-                        <x-jet-label value="{{ __('Select recipient') }}" />
+                       
+                    <div class="col-span-6 p-5">
                         <div class="flex items-center mt-2">
 
-                            <div class="multiselect">
+                            <div class="multiselect border">
                                 <div class="selectBox" onclick="showCheckboxes()">
                                     <select>
                                         <option>Select one or more recipients</option>
@@ -155,7 +149,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-span-6 sm:col-span-4">
+                    <div class="col-span-6 sm:col-span-4 p-5">
                         <x-jet-label for="schedule_date_time" value="{{ __('Date and Time to Send') }}" />
 
                         <x-jet-input id="schedule_date_time" name="schedule_date_time"  value="{{old('schedule_date_time')  ?? $formdata['notifications']->schedule_date_time}}"  type="text" class="mt-1 block w-full"  />

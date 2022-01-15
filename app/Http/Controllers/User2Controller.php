@@ -18,26 +18,26 @@ class User2Controller extends BaseController
         $this->middleware('instructorusergroup');
     }
 
-    public function Prasso_profile()
+    public function prasso_profile()
     {
         $user = Auth::user(); 
         $usr = User::where('email',$user->email)->first();
-        return view('profile.Prasso-profile')->with('user',$usr);
+        return view('profile.prasso-profile')->with('user',$usr);
     }
 
     public function uploadProfileImage(Request $request)
-    {
-        
+    { 
+        info('saving a profile image. ');
         $user = Auth::user(); 
 
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
         ]);
         if($request->hasfile('image'))
         {
             $file = $request->file('image');
             $imageName=time().$file->getClientOriginalName();
-            $filePath = 'Prasso/-user-photos/photos-'.$user->id.'/'. $imageName;
+            $filePath = config('constants.PROFILE_PHOTO_PATH') .'photos-'.$user->id.'/'. $imageName;
             Storage::disk('s3')->put($filePath, file_get_contents($file));
             $usr = User::where('email',$user->email)->first();
             $usr->profile_photo_path = $filePath;
@@ -46,9 +46,5 @@ class User2Controller extends BaseController
         }   
     }
 
-    public function setupProfile(Request $request)
-    {
-
-    }
 
 }

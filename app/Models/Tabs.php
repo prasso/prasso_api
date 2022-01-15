@@ -24,8 +24,10 @@ class Tabs extends Model
         'page_title' , 
         'request_header',
         'sort_order' ,
-        'parent' 
+        'parent' ,
+        'restrict_role'
     ];
+    protected $hidden = ['created_at','updated_at'];
 
     public function app()
     {
@@ -40,6 +42,7 @@ class Tabs extends Model
         $this->icon = config('constants.TAB_DEFAULT_ICON');
         $this->page_url = config('constants.TAB_DEFAULT_URL');
         $this->request_header = config('constants.TAB_DEFAULT_HEADER');
+        $this->restrict_role = false;
     }
 
   //  It's hasOne($related, $foreignKey, $localKey)
@@ -58,7 +61,7 @@ class Tabs extends Model
         'page_url' => $tab_data['page_url'],
         'request_header' => $tab_data['request_header'],
         'sort_order' => $tab_data['sort_order'] ,
-        'parent' => $tab_data['parent'] ] ,
+        'parent' => $tab_data['parent'] ] 
         );
         return $tabdata;
     }

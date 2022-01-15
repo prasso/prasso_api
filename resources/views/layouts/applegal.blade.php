@@ -37,7 +37,7 @@
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-         <img style="max-width:150px;" src="https://d2bj0u1jhmvqgo.cloudfront.net/prasso/prasso_logo.png" alt="Prasso" />
+         <img style="max-width:150px;" src=config('constants.cloudfront_asset_url')."/prasso/prasso_logo.png" alt="Prasso" />
 </div>
             @if (isset($header))
 

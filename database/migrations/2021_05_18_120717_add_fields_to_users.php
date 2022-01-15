@@ -14,6 +14,8 @@ class AddFieldsToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->integer('enableMealReminders')->default(0);
+            $table->text('reminderTimesJson')->nullable();
             $table->string('timeZone')->default('EST'); // default eastern -for time translation in meal reminders
         });
     }

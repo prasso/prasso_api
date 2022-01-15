@@ -2,19 +2,49 @@
 
 namespace App\Services;
 
+use App\Models\CommunityAccessTokens;
 use Illuminate\Support\Facades\Log;
 use App\Models\Invitation;
 use App\Models\Team;
 use App\Models\TeamUser;
+use App\Models\CommunityUser;
 use App\Models\Instructor;
 use App\Models\User;
+use App\Models\ThirdPartyToken;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\newsletter_signup;
 use Str;
+use App\Jobs\ObtainThirdPartyToken;
+use App\Models\UserRole;
 
 class UserService 
 {
-    
+  private $instruc;
+
+    public function __construct(Instructor $suser)
+    {
+      $this->instruc = $suser;
+    }
+
+    // after qonversion processes a subscription, the app will post it here
+    // create the instructor access and return success
+    public function addOrUpdateSubscription($request, $user, $appsService, $site)
+    {
+      $inputs =  $request->json()->all();
+info('addOrUpdateSubscription: '.json_encode($user));
+        //if subscribed, add the instructor role to user_roles if this user doesn't have it
+        $instructoruser = $this->instruc->fetchUserByCredentials($user->email);
+        if ($instructoruser == null)
+        {
+          $this->instruc->setupAsInstructor($user);
+        }
+        $success = $this->buildConfigReturn($user, $appsService, $site);
+       $success['status'] = 'success'; 
+       return $success;
+      
+    }
+
+
     public function saveUser($request)
     {
       $user_from_request =  $request->json()->all();
@@ -74,7 +104,7 @@ class UserService
         $usr->email_verified_at = null ;
         $usr->save();
 
-        TeamUser::removeTeamMembership($email, config('constants.NEWSLETTER_TEAM_ID'));
+        TeamUser::removeTeamMembership($usr, config('constants.NEWSLETTER_TEAM_ID'));
       }
 
     }
@@ -159,7 +189,7 @@ class UserService
             $invitation->sendEmailInviteNotification();
             if ($role == config('constants.NEWSLETTER_ROLE_TEXT'))
             {
-                //we are done if our guys are newsletter
+                //no community, no third party. we are done if our guys are newsletter
                 return;
             }
         }
@@ -169,7 +199,10 @@ class UserService
           TeamUser::addToBaseTeam($user);     
         }
        
-        $success['status'] = 'logged in';  //the job will obtain one for future use
+        $this->makeCommunityUser($user);
+
+       // ObtainThirdPartyToken::dispatch($user);
+        $success[config('constants.thirdPartyToken')] = 'initializing';  //the job will obtain one for future use
         return $success;
     }
 
@@ -183,7 +216,6 @@ class UserService
         $success = [];
         if (!isset($user_access_token))
         {
-            Log::info('buildConfigReturn no access token: '.json_encode($user));
             // Revoke all tokens, we are getting a fresh one
             if ($user->tokens())
             {
@@ -191,18 +223,19 @@ class UserService
             }
             $user_access_token = $user->createToken(config('app.name'))->accessToken->token;
             $success['token'] = $user_access_token; 
-            //Log::info('AuthController::buildConfigReturn - Refreshed User Access Token');
         }
         else
         {
             $success['token'] = $user_access_token; 
         }
         
+        $this->updateCommunityToken($user, $user_access_token);;
+
         $success['name'] = $user->name;
         $success['uid'] = $user->firebase_uid;
+        $success[config('constants.thirdPartyToken')] = $this->getThirdPartyToken($user);
         $success['email'] = $user->email;
         $success['photoURL'] = $user->getProfilePhoto();
-        
         try{
           $success['roles'] = json_encode($user->roles->makeHidden(['deleted_at', 'created_at','updated_at']));
         } catch (\Throwable $e) {
@@ -211,14 +244,16 @@ class UserService
         }
         if ($user->current_team_id == null )
         {
+          $user->current_team_id = $user->teams[0]->id;
           $success['personal_team_id'] = $user->teams[0]->id;
           $success['team_coach_id'] = $user->teams[0]->user_id;
-         
+          $success['coach_uid'] = $user->getCoachUid();
         }
         else
         {
           $success['personal_team_id'] = $user->current_team_id;
           $success['team_coach_id'] = Team::where('id',$user->current_team_id)->first()->user_id;
+          $success['coach_uid'] = $user->getCoachUid();
         }
 
         if ($user->isInstructor())
@@ -227,7 +262,6 @@ class UserService
               $success['team_members'] = json_encode(Instructor::getTeamMembersFor($user->teams[0]->id));
             } catch (\Throwable $e) {
               Log::info($e);
-              $success['timeZone'] = $user->timeZone;
               $success['team_members'] = [];
             }
           }
@@ -240,10 +274,88 @@ class UserService
         
         $success['app_data'] = $app_data; //configuration for setting up the app is here
 
-    Log::info('app data being returned: ' . json_encode($success)); 
+    //Log::info('app data being returned: ' . json_encode($success)); 
         return $success;
     }
 
+    public function updateCommunityToken($user, $user_access_token)
+    {
+      $community_token = CommunityAccessTokens::where('user_id',$user->id)->first();
+      if ($community_token == null)
+      {
+        //make sure they are in community users first.
+        $cusr = CommunityUser::where('id',$user->id)->first();
+        if ($cusr == null)
+        {
+            $communityuser = $this->makeCommunityUser($user);
+        }
+        $community_token = CommunityAccessTokens::forceCreate([
+            'token' => $user_access_token,
+            'user_id' => $user->id,
+            'last_activity_at' => date("Y-m-d H:i:s"),
+            'created_at' => date("Y-m-d H:i:s"),
+            'type' => 'session_remember'
+        ]);
+      }
+      else
+      {
+          $community_token->token = $user_access_token;
+          $community_token->last_activity_at = date("Y-m-d H:i:s");
+          $community_token->created_at = date("Y-m-d H:i:s");
+          $community_token->save();
+      }
+    }
+
+    public function updateCommunityUser($user)
+    {
+      $community_user = CommunityUser::where('id',$user->id)->first();
+      if ($community_user == null)
+      {
+        $community_user = $this->makeCommunityUser($user);
+      }
+      $community_user->username = $user->name?str_replace($user->name,' ',''):'JustAUser '.$user->id;
+      $community_user->email = $user->email;
+      $community_user->save();
+
+    }
+
+    private function makeCommunityUser($user)
+    {
+
+      $communityuser = CommunityUser::forceCreate([
+        'id' => $user->id,
+        'username' => 'JustAUser '.$user->id,
+        'email' => $user->email,
+        'password' => $user->password,
+        'is_email_confirmed' => '1',
+        'joined_at' => $user->created_at,
+        'last_seen_at' => $user->created_at
+    ]);
+    return $communityuser;
+    }
+
+    public function getThirdPartyToken(User $user)
+    {
+      $yh_token = '';
+      //if this user doesn't have a yourhealth token or if the age of the token is
+      //greater than 90 days
+      //log them in at yourhealth
+      $yourhealth_token = ThirdPartyToken::where('user_id',$user->id)->first();
+      $date_utc = new \DateTime("now", new \DateTimeZone("UTC"));
+      if (!isset($yourhealth_token) || $yourhealth_token-> updated_at->modify('+2 months') < $date_utc)
+      {
+          //refresh or get new
+          info('need a new your health token, getting it now. ');
+          $yourHealthApiService = \App::make(YourHealthApiService::class);
+          $yourhealth_token = $yourHealthApiService->getAndSaveUserToken($user);
+      }
+      if ($yourhealth_token != 'error' )
+      {
+        $yh_token = $yourhealth_token->THIRD_PARTY_TOKEN;
+      }
+      //info('Your Health Token for app:  '.$yh_token);
+      return $yh_token; 
+    }
 }
 
 

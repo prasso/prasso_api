@@ -1,5 +1,5 @@
 <div style="max-width: 800px;background:#fefefe;padding:20px;">
-<img src="https://d2bj0u1jhmvqgo.cloudfront.net/prasso/prasso_logo.png" style="max-width:100px;margin:auto;text-align:center;margin-bottom:20px;" alt="Prasso"/>
+<img src=config('constants.cloudfront_asset_url')."/prasso/prasso_logo.png" style="max-width:100px;margin:auto;text-align:center;margin-bottom:20px;" alt="Prasso"/>
 <p>Hi,</p>
 
 <p>Welcome to Prasso!</p>

@@ -11,7 +11,7 @@ class PersonalAccessToken extends Model
     use HasFactory;
     use HasTimestamps;
 
-    protected $fillable = ['user_id', 'your_health_token'];
+    protected $fillable = ['user_id', 'third_party_token'];
 
     public function user() {
         return $this->belongsTo(User::class, 'tokenable_id');

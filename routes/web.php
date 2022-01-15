@@ -19,6 +19,9 @@ Route::get('contact', function () {
     return view('contact');
 });
 
+//this will manually check for the correct header information.
+Route::post('subscription/qonversion_hook', 'SubscriptionController@qonversion_hook');
+
 Route::post('/send-email', 'EmailController@sendEmail')->name('send-email');
 Route::get('/page/faqs', 'SiteController@seeFaqs')->name('see-faqs');
 Route::post('/question', 'SiteController@processQuestion')->name('send-question');
@@ -35,8 +38,7 @@ Route::get('/dashboard', function () {
 
 Route::group(['middleware'=> 'instructorusergroup'], function() {
 
-    Route::get('/Prasso/dashboard', [Dashboard::class, '__invoke']);
- 
+    Route::get('/prasso/dashboard', [Dashboard::class, '__invoke']);
     Route::get('/team/{teamid}', 'TeamController@editTeam')->name('team.edit');
     Route::get('/team/{teamid}/messages', 'TeamController@setupForTeamMessages')->name('team.getmessages');
     Route::post('/team/{teamid}/postmessages', 'TeamController@processTeamMessages')->name('team.postmessages');
@@ -49,8 +51,7 @@ Route::group(['middleware'=> 'instructorusergroup'], function() {
     Route::get('/team/{teamid}/apps/{appid}/delete', 'TeamController@deleteApp')->name('apps.delete');
     Route::get('/team/{teamid}/apps/{appid}/tabs/{tabid}/delete', 'TeamController@deleteTab')->name('apps.delete-tab');
 
-    Route::post('/account/initial-profile', 'User2Controller@setupProfile')->name('account.initialprofile');
-    Route::get('/profile/Prasso_profile','User2Controller@Prasso_profile')->name('Prasso.profile');
+    Route::get('/profile/prasso_profile','User2Controller@prasso_profile')->name('prasso.profile');
     Route::post('/profile/profile_update_image','User2Controller@uploadProfileImage')->name('upload.post.image');
     
 

@@ -17,3 +17,5 @@ Route::post('/save_enhanced_profile','\App\Http\Controllers\Api\AuthController@s
     
 Route::post('save_app', [\App\Http\Controllers\Api\AppController::class, 'saveApp']);
 
+Route::post('save_subscription', 'SubscriptionController@save_subscription');
+

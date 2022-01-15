@@ -1,6 +1,8 @@
 <?php
 
 return [
+        'CLOUDFRONT_ASSET_URL' => 'https://d2bj0u1jhmvqgo.cloudfront.net/',
+        'PROFILE_PHOTO_PATH' => 'prasso/-user-photos/',
         'BLANK_PHOTO_PATH' =>  'profile-photos/blankprofile.jpg',
         'TAB_DEFAULT_ID' => 0,
         'TAB_DEFAULT_SORT_ORDER' => 1, 
@@ -12,6 +14,7 @@ return [
         'MORE_TAB' => 'More()',
         'ADMIN_EMAIL_SIGNATURE' => 'Prasso Support',
         'WELCOME_EMAIL_SUBJECT' => 'Welcome to Prasso',
+        'CONTACT_FORM_SUBJECT' => 'Prasso Contact Form',
         'COACH_COPY_WELCOME_EMAIL' => 'Welcome this user to Prasso',
         'NOTIFY_NEWSLETTER_SUBSCRIBER_EMAIL' => 'A person signed up for Prasso newsletter',
         'UNAUTHORIZED' => 401,
@@ -25,11 +28,14 @@ return [
         'NEWSLETTER_TEAM_ID' => '2',
         'UNAUTHORIZED' => 'Not Authorized',
         'USER_TOKEN' => '[USER_TOKEN]',
-        'YOUR_HEALTH_TOKEN' => '[YOUR_HEALTH_TOKEN]',
+        'THIRD_PARTY_TOKEN' => '[THIRD_PARTY_TOKEN]',
+        'yourHealthToken' => 'yourHealthToken',
         'TEAM_ID' => '[TEAM_ID]',
         'CSRF_HEADER' => '[CSRF_HEADER]',
         'BARIMORPHOSIS_APP' => 1,
             //cookie constants
         'AUTHORIZATION_' =>'Authorization',
+        'COMMUNITYTOKEN' => 'flarum_session',
+        'COMMUNTIYREMEMBER' => 'flarum_remember',
         'ACCESSTOKEN_' => 'accessToken' 
 ];

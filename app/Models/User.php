@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Mail\coach_message;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -14,13 +15,14 @@ use App\Models\UserActiveApp;
 use App\Models\PersonalAccessToken;
 use App\Models\UserRole;
 use App\Models\TeamUser;
-use App\Models\Apps;
-use App\Services\AppsService;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\welcome_user;
+use App\Mail\contact_form;
 use App\Mail\user_needs_coach;
-//use Laravel\Cashier\Billable;
+use Laravel\Cashier\Billable;
 
 /**
  * Class User.
@@ -30,8 +32,10 @@ use App\Mail\user_needs_coach;
  * @property string $email
  * @property string $password
  * @property string $firebase_uid
- * @property string $push_token
+ * @property string $pn_token
  * @property string $profile_photo_path
+ * @property bool $enableMealReminders
+ * @property string reminderTimesJson
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  *
@@ -45,7 +49,7 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
     use HasTimestamps;
-    //use Billable;
+    use Billable;
     
     /**
      * The attributes that are mass assignable.
@@ -53,7 +57,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'profile_photo_path', 'firebase_uid', 'push_token','timeZone'
+        'name', 'email', 'password', 'profile_photo_path', 'firebase_uid', 'pn_token', 'enableMealReminders','reminderTimesJson','timeZone'
     ];
 
     /**
@@ -84,7 +88,7 @@ class User extends Authenticatable
      * @var array
 
     protected $appends = [
-        'profile_photo_path', 'timeZone'
+        'profile_photo_path'
     ];
     
     /**
@@ -141,8 +145,22 @@ class User extends Authenticatable
         return $this->hasOne(PersonalAccessToken::class, 'tokenable_id', 'id');
     }
 
+    public function thirdPartyToken()
+    {
+        return $this->hasOne(ThirdPartyToken::class, 'user_id', 'id');
+    }
+
     public function getRouteKeyName() {
         return 'firebase_uid';
+    }
+
+
+    public function getCoachUid() {
+        $coachrecord = Team::find($this->current_team_id)->first();
+        $coachId = $coachrecord->user_id;
+        $coachUid = User::find($coachId)->firebase_uid;
+        info('for user '.$this->id.' the coachUid is: '.$coachUid);
+        return $coachUid;
     }
 
     public static function getUserByAccessToken($accessToken)
@@ -150,10 +168,8 @@ class User extends Authenticatable
         $user = User::select('users.*','users.firebase_uid AS uid')
                 ->join('personal_access_tokens', 'users.id', '=', 'personal_access_tokens.tokenable_id')
                 ->where('personal_access_tokens.token', '=', $accessToken)
-                ->with('activeApp')
-                ->with('teams')
                 ->first();
-Log::info('User::getUserByAccessToken: '.json_encode($user));
+        //Log::info('User::getUserByAccessToken: '.json_encode($user));
         return $user;
     }
 
@@ -236,7 +252,7 @@ Log::info('User::getUserByAccessToken: '.json_encode($user));
         }
         $this->email = $user_from_app['email'];
         $this->profile_photo_path= $user_from_app['photoURL'];
-       
+
         if (isset($user_from_app['appName']))
         {
             //does this user have a matching app? if not, set it up for them
@@ -266,6 +282,20 @@ Log::info('User::getUserByAccessToken: '.json_encode($user));
         {
             Log::info('error sending coach email: '.$err);
         }
+        
+    }
+
+    public function sendContactFormEmail($subject, $body)
+    {
+
+         Mail::to($this)->send(new contact_form($this,$subject,$body));
+    }
+    
+    // the user here is the receiver of the email. the email from came from the logged in user
+    public function sendCoachEmail($subject, $body, $fromemail, $fromname)
+    {
+
+        Mail::to($this)->send(new coach_message($this,$subject,$body,$fromemail,$fromname));
         
     }
     

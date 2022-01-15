@@ -17,6 +17,24 @@ class Instructor extends User
         parent::__construct($attributes);
      }
  
+     public function setupAsInstructor($user)
+     {
+         $userExistingInstructorRole = $user->roles()->where('name', 'instructor')->first();
+        if (!isset($userExistingInstructorRole))
+        {
+            UserRole::forceCreate([
+            'user_id' => $user->id,
+            'role_id' => config('constants.INSTRUCTOR')
+          ]);
+        }
+        TeamUser::removeTeamMembership($user, config('constants.DEFAULT_COACH_TEAM_ID'));
+        $personalteam = TeamUser::where('user_id','=', $user->id)->first();
+        $user->current_team_id = $personalteam->team_id;
+        $user->save();
+        //this user's personal team is now this user's team
+        
+     }
+     
      public function fetchUserByCredentials($email) {
         $instruc = User::select('users.*','users.firebase_uid AS uid')
                  ->join('user_role', 'users.id','=','user_role.user_id')
@@ -53,7 +71,8 @@ class Instructor extends User
 
     public static function getTeamMembersFor($team_id)
     {
-        return User::select('users.firebase_uid as uid', 'users.id')
+        info('returning members for team_id: '.$team_id);
+        return User::select('users.firebase_uid as uid', 'users.id', 'users.name', 'users.email')
                 ->join('team_user', 'users.id','team_user.user_id')
                 ->where('team_user.team_id','=',$team_id)
                 ->get()->toArray();
