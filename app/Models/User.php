@@ -15,8 +15,8 @@ use App\Models\UserActiveApp;
 use App\Models\PersonalAccessToken;
 use App\Models\UserRole;
 use App\Models\TeamUser;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
+use App\Models\Apps;
+use App\Services\AppsService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\welcome_user;
@@ -168,8 +168,10 @@ class User extends Authenticatable
         $user = User::select('users.*','users.firebase_uid AS uid')
                 ->join('personal_access_tokens', 'users.id', '=', 'personal_access_tokens.tokenable_id')
                 ->where('personal_access_tokens.token', '=', $accessToken)
+                ->with('activeApp')
+                ->with('teams')
                 ->first();
-        //Log::info('User::getUserByAccessToken: '.json_encode($user));
+Log::info('User::getUserByAccessToken: '.json_encode($user));
         return $user;
     }
 
