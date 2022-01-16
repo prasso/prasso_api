@@ -98,7 +98,7 @@ class AuthController extends BaseController
                 { 
                     $user_logged_in = true;
                 }
-                $this->userService->updateCommunityUser($user);
+             //   $this->userService->updateCommunityUser($user);
             }
         }
     
@@ -166,7 +166,7 @@ class AuthController extends BaseController
     {
         //goes in here. as described in the notes for Aug 27
         $user = $this->userService->saveUser($request);
-        $this->userService->updateCommunityUser($user);
+        //$this->userService->updateCommunityUser($user);
         $success = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);
         $success['ShowIntro'] = 'DONE';
    Log::info('save enhanced profile returning: '.json_encode($success));
