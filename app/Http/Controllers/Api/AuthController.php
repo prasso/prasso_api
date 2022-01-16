@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller as BaseController;
 use App\Models\User;
-use App\Models\Team;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Validator;
@@ -13,10 +12,6 @@ use Illuminate\Support\Facades\Log;
 use App\Services\AppsService;
 use App\Services\SitePageService;
 use App\Services\UserService;
-use App\Models\SitePages;
-use App\Models\Site;
-use Illuminate\Database\Eloquent\JsonEncodingException;
-use App\Actions\Fortify\CreateNewUser;
 
 class AuthController extends BaseController
 {
@@ -103,6 +98,7 @@ class AuthController extends BaseController
                 { 
                     $user_logged_in = true;
                 }
+                $this->userService->updateCommunityUser($user);
             }
         }
     
@@ -127,7 +123,7 @@ class AuthController extends BaseController
             $user = $this->setUpUser($request,$user);
             $success = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);
             $success['pn_token'] = $user->pn_token;
-                    
+            $success['thirdPartyToken'] = '';      
             return $this->sendResponse($success, 'User has logged in.');
         } 
         else{ 
@@ -170,7 +166,7 @@ class AuthController extends BaseController
     {
         //goes in here. as described in the notes for Aug 27
         $user = $this->userService->saveUser($request);
-
+        $this->userService->updateCommunityUser($user);
         $success = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);
         $success['ShowIntro'] = 'DONE';
    Log::info('save enhanced profile returning: '.json_encode($success));
@@ -210,7 +206,7 @@ class AuthController extends BaseController
             $accessToken = $_COOKIE[config('constants.AUTHORIZATION_')];
         }
         else
-        if (!isset($accessToken) && $user != null) 
+        if ((!isset($accessToken) || $accessToken == 'Bearer') && $user != null) 
         {
 
             $accessToken = $request->user()->createToken(config('app.name'))->accessToken->token;
@@ -233,28 +229,73 @@ Log::info('in setUpUser -  accesstoken: '.$accessToken);
         }
        return $user;
     }
+
+    private function uploadImage(Request $request, $filePath, $userid)
+    {
+        if($request->hasfile('image'))
+        {
+            $file = $request->file('image');
+            $imageName=time().$file->getClientOriginalName();
+            $filePath = $filePath.$userid.'/'. $imageName;
+            Storage::disk('s3')->put($filePath, file_get_contents($file));
+           return $filePath;
+        }
+        else
+        {
+            return '';
+        } 
+    }
  
+    public function uploadFoodImageApi(Request $request)
+    {
+
+        info('saving a food image. ');
+        $user = $this->setUpUser($request,null);
+        if ($user == null)
+        {
+            return $this->sendToUnauthorized();
+        }
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+        ]);
+        $filePath = $this->uploadImage($request, config('constants.PROFILE_PHOTO_PATH') .'photos-', $user->id); 
+        if ($filePath != '')
+        {
+            $success['foodImageUrl'] = $filePath;
+            info('file uploaded: '.$filePath);
+            return $this->sendResponse($success, 'Image uploaded successfully.');
+        }
+        else
+        {
+            $success['foodImageUrl'] = 'image upload failed';
+            return $this->sendError($success, 'error');
+        }
+
+    }
+
     public function uploadProfileImageApi(Request $request)
     {
+
+        info('saving a profile image. ');
         $user = $this->setUpUser($request,null);
 
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
         ]);
-        if($request->hasfile('image'))
+        $filePath = $this->uploadImage($request, config('constants.PROFILE_PHOTO_PATH') .'photos-', $user->id); 
+        if ($filePath != '')
         {
-            $file = $request->file('image');
-            $imageName=time().$file->getClientOriginalName();
-            $filePath = 'Prasso/-user-photos/photos-'.$user->id.'/'. $imageName;
-            Storage::disk('s3')->put($filePath, file_get_contents($file));
             $usr = User::where('email',$user->email)->first();
             $usr->profile_photo_path = $filePath;
             $usr->save();
             
             $success['photoURL'] = $user->getProfilePhoto();
-        return $this->sendResponse($success, 'Photo updated successfully.');
-        //return back()->with('success','The image has been uploaded')->with('user',$usr);
-        }   
+            return $this->sendResponse($success, 'Photo updated successfully.');
+        }
+        else
+        {
+            return $this->sendError('Photo not updated.', ['error'=>'Please upload a valid image']);
+        }
     }
 
     private function sendToUnauthorized()
@@ -280,5 +321,8 @@ Log::info('in setUpUser -  accesstoken: '.$accessToken);
     protected function setAccessTokenCookie($accessToken)
     {
         setcookie(config('constants.ACCESSTOKEN_'), $accessToken, time() + (86400 * 30), "/");
-     }
+        
+        setcookie(config('constants.COMMUNITYTOKEN'), $accessToken, time() + (86400 * 30), "/");
+        setcookie(config('constants.COMMUNTIYREMEMBER'), $accessToken, time() + (86400 * 30), "/");
+    }
 }

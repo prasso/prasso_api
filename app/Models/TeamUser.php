@@ -47,6 +47,7 @@ class TeamUser extends Model
 
     public static function removeTeamMembership($user, $team_id)
     {
+        info('remove team membership for user: '.$user.' and team: '.$team_id);
         TeamUser::where('team_id',$team_id)->where('user_id',$user->id)->delete();
     }
 

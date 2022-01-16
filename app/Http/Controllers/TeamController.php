@@ -97,7 +97,9 @@ class TeamController extends Controller
      */
     public function processTeamMessages(Request $request, $teamid) 
     {
-        //Log::info('In processTeamMessages');
+
+        $input = $request->all();
+        //Log::info('In processTeamMessages: '.$input['emailselections']);
         $user = Auth::user();
 
         // MAKE THIS WORK TO EITHER SEND PUSH NOTIFICATIONS OR AN EMAIL
@@ -105,19 +107,25 @@ class TeamController extends Controller
     
         $is_email_request=false;
         $is_pn_request=false;
-        
-        $input = $request->all();
+        if (isset($input['emailselections']) && $input['emailselections'] == 'email' )
+        {
+            $is_email_request=true;
+        }
+        else
+        {
+            $is_pn_request=true;
+        }
         $sendto = [];
         $notify = new Notifications();
         $notify->user_sender = $user->id;
         if (isset($input['subject']) )
         {
-            $is_pn_request = true;
             $notify->subject = $input['subject'];
             $notify->body = $input['body'];
         }
         if (isset($input['emailToSend']) )
         {
+           // info('input says we are sending an email');
             $is_email_request = true;
             $notify->emailToSend = $input['emailToSend'];
         }
@@ -128,26 +136,33 @@ class TeamController extends Controller
 
         foreach($input as $formitem)
         {
-            if (str_starts_with($formitem, 'member-')  )
+            if ($formitem != null && str_starts_with($formitem, 'member-')  )
             {
                 $aruserId = explode ( '-', $formitem);
                 $sendto[] = $aruserId[1];
             }
         }
-        foreach($sendto as $userid)
-        {
-            if ($is_pn_request)
+        
+            foreach($sendto as $userid)
             {
-                $blank_notify =   $notify->replicate();
-                $blank_notify->user_receiver = $userid;
-                $blank_notify->save();
+                if ($is_pn_request)
+                {
+                    $blank_notify =   $notify->replicate();
+                    $blank_notify->user_receiver = $userid;
+                    $blank_notify->save();
+                }
+                if ($is_email_request)
+                {
+                    //ship this off to the logic that processes emails
+                   // info('sending an email: '.$userid);
+                    $receipient_user = \App\Models\User::where('id',$userid)->first();
+                    $receipient_user->sendCoachEmail($input['subject'], $input['body'], $user->email, $user->name);
+
+                }
+                
             }
-            else if ($is_email_request)
-            {
-                //ship this off to the logic that processes emails
-                // TODO TODO TODO
-            }
-        }
+        
+        
         session()->flash(
             'message',
             'Messages have been scheduled.'
@@ -234,9 +249,15 @@ class TeamController extends Controller
      *
      * @var array
      */
-    public function deleteApp($id)
+    public function deleteApp($teamid,$selectedappid)
     {
-        Apps::find($id)->delete();
+        $app = Apps::find($selectedappid);
+        info('deleting app: '.json_encode($app));
+        if ($app == null)
+        {
+            info('app not found: '.$selectedappid);
+        }
+        $app->delete();
         session()->flash('message', 'App Deleted Successfully.');
         return redirect()->back()
         ->with('show_success', true);

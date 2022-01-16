@@ -29,7 +29,7 @@
             <div class="form-group col-12">
                 <label for="email">Email Address(es)</label>
                 <input type="text" class="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-grey-darker border border-grey rounded" name="email" id="email" placeholder="Example: johndoe@email.com,JohnDoe@email.com, " required>
-                <small id="email" class="form-text text-muted">Enter the comma separated email addresses</small>
+                <small id="email" class="form-text text-muted">Enter your email address, if more than one separate with a comma</small>
             </div>
             <div class="form-group col-12">
                 <label for="subject">Subject</label>
@@ -37,14 +37,14 @@
             </div>
             <div class="form-group col-12">
                 <div class="form-group">
-                    <label for="emailBody">Email Body</label>
+                    <label for="emailBody">Details</label>
                     <textarea class="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-grey-darker border border-grey rounded"" id="emailBody" name="body" rows="3"></textarea>
                 </div>
             </div>
             <div class="hidden">
             <input type="text"  name="details" id="details"  >
             </div>
-            <button type="submit" class="btn-blue hover:bg-gray-800 text-white w-full p-2">Send Info</button>
+            <button type="submit" class="btn-blue hover:bg-gray-800 text-white w-full p-2">Send Inquiry</button>
         </div>
     </form>                          
                 </div>

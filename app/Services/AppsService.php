@@ -48,14 +48,20 @@ class AppsService
         else
         {
             //return all if a role is set for this user
-            $app_data = Apps::with('tabs')->with('team')
+            //do though, allow for some to be marked as only nullrole ( such as subscribepage )
+            $app_data = Apps::with('instructorroletabs')
+                ->with('team')
                 ->where('site_id', $site->id)
                 ->first();
-            $returnval = json_encode($app_data);
+            $returnval = str_replace('instructorroletabs','tabs',json_encode($app_data));
         }
-       //update any user specific headers
+        //update any user specific headers
         $returnval = str_replace(config('constants.USER_TOKEN'), $user_access_token, $returnval);
 
+        if (isset($user->thirdPartyToken))
+        {
+            $returnval = str_replace(config('constants.THIRD_PARTY_TOKEN'), $user->thirdPartyToken->THIRD_PARTY_TOKEN, $returnval);
+        }
         if (isset($user->current_team_id ))
         {
             $returnval = str_replace(config('constants.TEAM_ID'), $user->current_team_id, $returnval);

@@ -21,10 +21,27 @@ class Apps extends Model
         'team_id','site_id' ,'appicon', 'app_name', 'page_title', 'page_url', 'sort_order', 'user_role'
     ];
 
+    protected $hidden = ['created_at','updated_at'];
+    
     //includes admin level tabs
     public function tabs()
     {
         return $this->hasMany(\App\Models\Tabs::class, "app_id", "id")
+        ->orderBy('sort_order');
+    }
+
+    // for app users that have either instructor or admin, will exclude subscribepage links
+    public function instructorroletabs()
+    {
+        info('instructorroletabs');
+
+        return $this->hasMany(\App\Models\Tabs::class, "app_id", "id")
+        ->where("team_role","=", config('constants.INSTRUCTOR'))
+        ->orWhere(function($query) 
+        {
+           $query->where("team_role","=", null)
+           ->where('restrict_role',"=",false);
+        })
         ->orderBy('sort_order');
     }
 

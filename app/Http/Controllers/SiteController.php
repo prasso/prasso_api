@@ -44,7 +44,9 @@ class SiteController extends BaseController
     }
 
     /**
-     * FAQ question, send the message via Twilio to the customer support folk
+     * FAQ question,
+     * eventually - send the message via Twilio to the customer support folk
+     * atm txt to me
      *
      */
     public function processQuestion(Request $request, Site $site)

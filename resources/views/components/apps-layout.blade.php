@@ -26,7 +26,7 @@
             </div>
             <div class='mr-0'>
             <label class="float-right">
-               <x-jet-responsive-nav-link  onclick="return window.confirm('Save data?')" class="sm-btn hover:bg-white-900 focus:bg-white-900"
+               <x-jet-responsive-nav-link  onclick="return window.confirm('Are you sure you want to delete this app?')" class="sm-btn hover:bg-white-900 focus:bg-white-900"
                 title="active mobile app"
                 href="{{ route('apps.delete',['teamid' => $selected_team, 'appid' => $app['id']])   }}">
                         <i class="material-icons md-36">delete_forever</i>
