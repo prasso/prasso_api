@@ -337,23 +337,7 @@ info('addOrUpdateSubscription: '.json_encode($user));
     public function getThirdPartyToken(User $user)
     {
       $yh_token = '';
-      //if this user doesn't have a yourhealth token or if the age of the token is
-      //greater than 90 days
-      //log them in at yourhealth
-      $yourhealth_token = ThirdPartyToken::where('user_id',$user->id)->first();
-      $date_utc = new \DateTime("now", new \DateTimeZone("UTC"));
-      if (!isset($yourhealth_token) || $yourhealth_token-> updated_at->modify('+2 months') < $date_utc)
-      {
-          //refresh or get new
-          info('need a new your health token, getting it now. ');
-          $yourHealthApiService = \App::make(YourHealthApiService::class);
-          $yourhealth_token = $yourHealthApiService->getAndSaveUserToken($user);
-      }
-      if ($yourhealth_token != 'error' )
-      {
-        $yh_token = $yourhealth_token->THIRD_PARTY_TOKEN;
-      }
-      //info('Your Health Token for app:  '.$yh_token);
+      
       return $yh_token; 
     }
 }
