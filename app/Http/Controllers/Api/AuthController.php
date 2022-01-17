@@ -121,6 +121,7 @@ class AuthController extends BaseController
                 $user->save();
             }
             $user = $this->setUpUser($request,$user);
+            info('in record_login, the site is: '.json_encode($this->site));
             $success = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);
             $success['pn_token'] = $user->pn_token;
             $success['thirdPartyToken'] = '';      
@@ -145,6 +146,7 @@ class AuthController extends BaseController
             $user = Auth::user(); 
             $user = $this->setUpUser($request,$user);
 
+          
             $success = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);
 
             return $this->sendResponse($success, 'User logged in successfully.');
