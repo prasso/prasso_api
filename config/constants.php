@@ -37,5 +37,6 @@ return [
         'AUTHORIZATION_' =>'Authorization',
         'COMMUNITYTOKEN' => 'flarum_session',
         'COMMUNTIYREMEMBER' => 'flarum_remember',
-        'ACCESSTOKEN_' => 'accessToken' 
+        'ACCESSTOKEN_' => 'accessToken' ,
+        'thirdPartyToken' => 'thirdPartyToken',
 ];

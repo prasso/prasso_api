@@ -199,7 +199,7 @@ info('addOrUpdateSubscription: '.json_encode($user));
           TeamUser::addToBaseTeam($user);     
         }
        
-        $this->makeCommunityUser($user);
+      //  $this->makeCommunityUser($user);
 
        // ObtainThirdPartyToken::dispatch($user);
         $success[config('constants.thirdPartyToken')] = 'initializing';  //the job will obtain one for future use
@@ -229,7 +229,7 @@ info('addOrUpdateSubscription: '.json_encode($user));
             $success['token'] = $user_access_token; 
         }
         
-        $this->updateCommunityToken($user, $user_access_token);;
+      //  $this->updateCommunityToken($user, $user_access_token);;
 
         $success['name'] = $user->name;
         $success['uid'] = $user->firebase_uid;
@@ -280,6 +280,9 @@ info('addOrUpdateSubscription: '.json_encode($user));
 
     public function updateCommunityToken($user, $user_access_token)
     {
+      return //fix this
+
+      
       $community_token = CommunityAccessTokens::where('user_id',$user->id)->first();
       if ($community_token == null)
       {
@@ -308,6 +311,8 @@ info('addOrUpdateSubscription: '.json_encode($user));
 
     public function updateCommunityUser($user)
     {
+      return;//todo fix
+
       $community_user = CommunityUser::where('id',$user->id)->first();
       if ($community_user == null)
       {
@@ -321,7 +326,7 @@ info('addOrUpdateSubscription: '.json_encode($user));
 
     private function makeCommunityUser($user)
     {
-
+return; //todo fix
       $communityuser = CommunityUser::forceCreate([
         'id' => $user->id,
         'username' => 'JustAUser '.$user->id,
