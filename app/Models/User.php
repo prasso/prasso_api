@@ -275,8 +275,13 @@ Log::info('User::getUserByAccessToken: '.json_encode($user));
     public function sendWelcomeEmail()
     {
         $emailbcc = 'info@prasso.io'; //because .env setting is not being read on prod server!
-        Mail::to($this)->send(new welcome_user($this));
-
+        try{
+            Mail::to($this)->send(new welcome_user($this));
+        }
+        catch(\Throwable $err)
+        {
+            Log::info('error sending welcome email: '.$err);
+        }
         try{
         Mail::to($emailbcc,'Prasso Sign Up')->send(new user_needs_coach($this));
         }
