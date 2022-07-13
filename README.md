@@ -13,6 +13,25 @@ Definition
 - to act
 
 ## Prasso Concept
+1. everything is based on a site.
+    
+    a site is determined by it’s url
+    
+2. Apps have an association to a site.
+    1. an app is configured with tabs 
+        1. tabs point to views
+    2. an app is identified at the backend by the host of the request
+        1. the host is associated with the site, the site is associated with the app
+    3. when a request is received the host is used to look up the tab configuration that will be loaded by the app
+    4. the tab configuration is sent back to the app in json format. 
+    5. the app receives the json, parses the data into tabs and shows the tabs.
+    6. the user is able to interact with the tabs as they have been configured
+3. changing the tab configuration of an app is done through the admin panel
+    1. users are associated with sites based on the team they are a member of
+    2. teams are assigned to sites
+    3. users have roles. admin and user
+    4. admins can setup apps through the admin panel based on what sites they have been associated with through their team
+4. teams are the basic unit in a social group. teams have coaches and members
 ### relationships
 * team
   * users
