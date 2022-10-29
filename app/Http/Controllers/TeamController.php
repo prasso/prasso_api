@@ -32,14 +32,27 @@ class TeamController extends Controller
     public function index()
     {
         $user = Auth::user(); 
-        $user_app_info = $user->getUserAppInfo();
+
+        $activeApp = UserActiveApp::where('user_id',$user['id'])->first();
+  
+        $team = Team::where('id',$user->current_team_id)->first();
+     
+        $teams = $user->teams->toArray();
+  
+        $teamapps = $team->apps;
+        
+        $activeAppId = '0';
+        if (isset($activeApp->app_id))
+        {
+            $activeAppId = $activeApp->app_id;
+        }
 
         return view('apps.show')
             ->with('user', $user)
-            ->with('teams',$user_app_info['teams'])
-            ->with('teamapps', $user_app_info['teamapps'])
-            ->with('team', $user_app_info['team'])
-            ->with('activeappid',$user_app_info['activeAppId']);
+            ->with('teams',$teams)
+            ->with('teamapps', $teamapps)
+            ->with('team', $team)
+            ->with('activeappid',$activeAppId);
     }
 
     
@@ -99,7 +112,7 @@ class TeamController extends Controller
     {
 
         $input = $request->all();
-        //Log::info('In processTeamMessages: '.$input['emailselections']);
+    Log::info('In processTeamMessages: '.$input['emailselections']);
         $user = Auth::user();
 
         // MAKE THIS WORK TO EITHER SEND PUSH NOTIFICATIONS OR AN EMAIL
@@ -107,9 +120,14 @@ class TeamController extends Controller
     
         $is_email_request=false;
         $is_pn_request=false;
+        $is_sms_request=false;
         if (isset($input['emailselections']) && $input['emailselections'] == 'email' )
         {
             $is_email_request=true;
+        }
+        else if (isset($input['emailselections']) && $input['emailselections'] == 'sms' )
+        {
+            $is_sms_request=true;
         }
         else
         {
@@ -125,14 +143,13 @@ class TeamController extends Controller
         }
         if (isset($input['emailToSend']) )
         {
-           // info('input says we are sending an email');
             $is_email_request = true;
             $notify->emailToSend = $input['emailToSend'];
         }
 
         //convert the user's input time to UTC. assume this comes in from their timezone
         $notify->schedule_date_time = \DateTime::createFromFormat('Y-m-d H:i', $input['schedule_date_time'], new \DateTimeZone($user->timeZone));
-        $notify->action='openapp';
+        $notify->action= $input['emailselections'];
 
         foreach($input as $formitem)
         {
@@ -143,6 +160,8 @@ class TeamController extends Controller
             }
         }
         
+       // $this->processCalendar($sendto);
+
             foreach($sendto as $userid)
             {
                 if ($is_pn_request)
@@ -151,15 +170,33 @@ class TeamController extends Controller
                     $blank_notify->user_receiver = $userid;
                     $blank_notify->save();
                 }
-                if ($is_email_request)
-                {
-                    //ship this off to the logic that processes emails
+                else {
+                     //ship this off to the logic that processes emails
                    // info('sending an email: '.$userid);
-                    $receipient_user = \App\Models\User::where('id',$userid)->first();
+                   $receipient_user = \App\Models\User::where('id',$userid)->first();
+                    
+                    if ($is_email_request)
+                    {
+                    //ship this off to the logic that processes emails
                     $receipient_user->sendCoachEmail($input['subject'], $input['body'], $user->email, $user->name);
-
+                    }
+                    if ($is_sms_request)
+                    {
+                    info('sending text message: '.$user->phone);
+                    
+                    $team = Team::where('id',$user->current_team_id)->first();
+     
+                    info($team->phone);
+                    $fromphone = $team->phone;
+                    if (!isset($fromphone))
+                    {
+                        $fromphone = getenv("TWILIO_NUMBER");
+                    }
+                    info('FROM : '.$fromphone);
+                    
+                    $receipient_user->sendCoachSms( $input['body'], $fromphone, $receipient_user->phone);
+                    }
                 }
-                
             }
         
         
@@ -167,8 +204,71 @@ class TeamController extends Controller
             'message',
             'Messages have been scheduled.'
         );
-  
+        
         return redirect()->back();
+    }
+
+    private function processCalendar($sendTo){
+        //sendto is the list of users to send to
+        //start with a blank calendar
+        //loop through the list of users
+        //each user gets assigned a day a week after the previous user
+        //print the user's name and the day they are assigned
+        //when the end of the user list is reached, start over at the beginning
+        //until a year is filled
+
+        //order sendto by id
+        $sendTo = collect($sendTo)->sort()->toArray();
+        foreach($sendTo as $userid)
+        {
+            info('sending an email: '.$userid);
+        }
+        $calendar = [];
+        $day = 0;
+        $week = 0;
+        $year = 0;
+        $usercount = count($sendTo);
+        $userindex = 0;
+       
+
+        //set a variable equal to today's date
+        $today = new \DateTime();
+        $user = \App\Models\User::where('id',$sendTo[$userindex])->first();
+        $today_str = $today->format('Y-m-d');
+        $calendar[$year][$week][$day] = $today_str.$user->name;
+        info( $today_str.':'.$user->name);
+        $userindex++;
+        
+    
+        //increment that date by one week
+        $today->add(new \DateInterval('P7D'));
+        
+
+        while ($week < 52)
+        {
+            while ($day < 7)
+            {
+                if ($day ==6)
+                {
+                    if ($userindex >= $usercount)
+                    {
+                        $userindex = 0;
+                    }
+                    $user = \App\Models\User::where('id',$sendTo[$userindex])->first();
+                    $today_str = $today->format('Y-m-d');
+                    $calendar[$year][$week][$day] = $today_str.$user->name;
+                    info( $today_str.':'.$user->name);
+                    $userindex++;
+                }
+                $day++;
+            }
+
+            $day = 0;
+            $week++;
+
+            $today->add(new \DateInterval('P7D'));
+        }
+        return $calendar;
     }
 
     /**
@@ -249,15 +349,9 @@ class TeamController extends Controller
      *
      * @var array
      */
-    public function deleteApp($teamid,$selectedappid)
+    public function deleteApp($id)
     {
-        $app = Apps::find($selectedappid);
-        info('deleting app: '.json_encode($app));
-        if ($app == null)
-        {
-            info('app not found: '.$selectedappid);
-        }
-        $app->delete();
+        Apps::find($id)->delete();
         session()->flash('message', 'App Deleted Successfully.');
         return redirect()->back()
         ->with('show_success', true);

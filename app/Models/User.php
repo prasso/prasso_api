@@ -15,14 +15,15 @@ use App\Models\UserActiveApp;
 use App\Models\PersonalAccessToken;
 use App\Models\UserRole;
 use App\Models\TeamUser;
-use App\Models\Apps;
-use App\Services\AppsService;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\welcome_user;
 use App\Mail\contact_form;
 use App\Mail\user_needs_coach;
 use Laravel\Cashier\Billable;
+use Twilio\Rest\Client;
 
 /**
  * Class User.
@@ -40,8 +41,7 @@ use Laravel\Cashier\Billable;
  * @property \Carbon\Carbon $updated_at
  *
  */
-class User extends Authenticatable
-{
+class User extends Authenticatable {
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
@@ -50,14 +50,14 @@ class User extends Authenticatable
     use TwoFactorAuthenticatable;
     use HasTimestamps;
     use Billable;
-    
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'profile_photo_path', 'firebase_uid', 'pn_token', 'enableMealReminders','reminderTimesJson','timeZone'
+        'name', 'email', 'password', 'profile_photo_path', 'firebase_uid', 'pn_token', 'enableMealReminders', 'reminderTimesJson', 'timeZone', 'version'
     ];
 
     /**
@@ -88,7 +88,7 @@ class User extends Authenticatable
      * @var array
 
     protected $appends = [
-        'profile_photo_path'
+        'profile_photo_path', 'enableMealReminders', 'timeZone'
     ];
     
     /**
@@ -96,33 +96,34 @@ class User extends Authenticatable
      *
      * @return string
      */
-    protected function profilePhotoDisk()
-    {
+    protected function profilePhotoDisk() {
         return 's3';
     }
 
-    public function getProfilePhoto()
-    {
-        if ($this->profile_photo_path == null)
-        {
-            return $this->defaultProfilePhotoUrl();
+    public function getVersionIsNotFirebase() {
+        if ($this->version == null || $this->version == 'v1' || $this->version == '') {
+            return true;
         }
-        if (str_starts_with($this->profile_photo_path,'http'))
-        {
-            return  $this->profile_photo_path;
-        }
-        return  config('app.photo_url').$this->profile_photo_path;
+        return false;
     }
 
-    public function teams()
-    {
-        return $this->hasMany(Team::class, 'user_id','id')
+    public function getProfilePhoto() {
+        if ($this->profile_photo_path == null) {
+            return $this->defaultProfilePhotoUrl();
+        }
+        if (str_starts_with($this->profile_photo_path, 'http')) {
+            return  $this->profile_photo_path;
+        }
+        return  config('app.photo_url') . $this->profile_photo_path;
+    }
+
+    public function teams() {
+        return $this->hasMany(Team::class, 'user_id', 'id')
             ->with('apps');
     }
 
-    public function team_member()
-    {
-        return $this->hasMany(TeamUser::class, 'user_id','id')
+    public function team_member() {
+        return $this->hasMany(TeamUser::class, 'user_id', 'id')
             ->with('team');
     }
 
@@ -130,24 +131,20 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\Invitation');
     }
 
-    public function roles()
-    {
-        return $this->hasMany(UserRole::class, 'user_id','id');
+    public function roles() {
+        return $this->hasMany(UserRole::class, 'user_id', 'id');
     }
 
-    public function activeApp() 
-    {
+    public function activeApp() {
         return $this->hasOne(UserActiveApp::class, 'user_id', 'id');
     }
 
-    public function personalAccessToken() 
-    {
+    public function personalAccessToken() {
         return $this->hasOne(PersonalAccessToken::class, 'tokenable_id', 'id');
     }
 
-    public function thirdPartyToken()
-    {
-        return $this->hasOne(ThirdPartyToken::class, 'user_id', 'id');
+    public function yourHealthToken() {
+        return $this->hasOne(YourHealthToken::class, 'user_id', 'id');
     }
 
     public function getRouteKeyName() {
@@ -159,30 +156,26 @@ class User extends Authenticatable
         $coachrecord = Team::find($this->current_team_id)->first();
         $coachId = $coachrecord->user_id;
         $coachUid = User::find($coachId)->firebase_uid;
-        info('for user '.$this->id.' the coachUid is: '.$coachUid);
+        info('for user ' . $this->id . ' the coachUid is: ' . $coachUid);
         return $coachUid;
     }
 
-    public static function getUserByAccessToken($accessToken)
-    {
-        $user = User::select('users.*','users.firebase_uid AS uid')
-                ->join('personal_access_tokens', 'users.id', '=', 'personal_access_tokens.tokenable_id')
-                ->where('personal_access_tokens.token', '=', $accessToken)
-                ->with('activeApp')
-                ->with('teams')
-                ->first();
-Log::info('User::getUserByAccessToken: '.json_encode($user));
+    public static function getUserByAccessToken($accessToken) {
+        $user = User::select('users.*', 'users.firebase_uid AS uid')
+            ->join('personal_access_tokens', 'users.id', '=', 'personal_access_tokens.tokenable_id')
+            ->where('personal_access_tokens.token', '=', $accessToken)
+            ->first();
+        //Log::info('User::getUserByAccessToken: '.json_encode($user));
         return $user;
     }
 
-    public function hasRole(...$role_looking_for)
-    {
-       //Log::info('received roles: ' . json_encode($role_looking_for));
-        
+    public function hasRole(...$role_looking_for) {
+        //Log::info('received roles: ' . json_encode($role_looking_for));
+
         foreach ($this->roles as $role) {
 
-           //Log::info('role: ' . json_encode($role));
-            
+            //Log::info('role: ' . json_encode($role));
+
             if (in_array($role->role_id, $role_looking_for)) {
                 return true;
             }
@@ -198,8 +191,8 @@ Log::info('User::getUserByAccessToken: '.json_encode($user));
         return false;
     }
     public function isInstructor() {
-       // Log::info('checking for isInstructor: ' );
-        
+        // Log::info('checking for isInstructor: ' );
+
         if ($this->hasRole(config('constants.INSTRUCTOR'))) {
             return true;
         }
@@ -208,7 +201,6 @@ Log::info('User::getUserByAccessToken: '.json_encode($user));
         }
         return false;
     }
-
 
     public function getUserAppInfo()
     {
@@ -239,21 +231,22 @@ Log::info('User::getUserByAccessToken: '.json_encode($user));
         return $user_app_info;
     }
 
-    public function fillFromAppjson($user_from_app)
-    {
-        if (isset($user_from_app['displayName']))
-        { 
+    public function fillFromAppjson($user_from_app) {
+        if (isset($user_from_app['displayName'])) {
             $this->name = $user_from_app['displayName'];
-        }
-        else
-        {
-            if (isset($user_from_app['name']))
-            { 
+        } else {
+            if (isset($user_from_app['name'])) {
                 $this->name = $user_from_app['name'];
             }
         }
         $this->email = $user_from_app['email'];
-        $this->profile_photo_path= $user_from_app['photoURL'];
+        $this->profile_photo_path = $user_from_app['photoURL'];
+        $this->enableMealReminders = $user_from_app['enableMealReminders'] ? str_replace('\\', '', $user_from_app['enableMealReminders']) : '0';
+
+        if ($this->enableMealReminders = '1') {
+            $this->reminderTimesJson = $user_from_app['reminderTimesFromJson'] ?? config('constants.REMINDER_TIMES');
+        }
+
 
         if (isset($user_from_app['appName']))
         {
@@ -268,42 +261,49 @@ Log::info('User::getUserByAccessToken: '.json_encode($user));
                 $teamapp->save;
                 UserActiveApp::processUpdates($this->id, $teamapp->id);
             }
-
         }
     }
 
-    public function sendWelcomeEmail()
-    {
-        $emailbcc = 'info@prasso.io'; //because .env setting is not being read on prod server!
-        try{
-            Mail::to($this)->send(new welcome_user($this));
+    public function sendWelcomeEmail() {
+        $emailbcc = 'info@optamize.app'; //because .env setting is not being read on prod server!
+        Mail::to($this)->send(new welcome_user($this));
+
+        try {
+            Mail::to($emailbcc, 'Optamize Sign Up')->send(new user_needs_coach($this));
+        } catch (\Throwable $err) {
+            Log::info('error sending coach email: ' . $err);
         }
-        catch(\Throwable $err)
-        {
-            Log::info('error sending welcome email: '.$err);
-        }
-        try{
-        Mail::to($emailbcc,'Prasso Sign Up')->send(new user_needs_coach($this));
-        }
-        catch(\Throwable $err)
-        {
-            Log::info('error sending coach email: '.$err);
-        }
-        
     }
 
-    public function sendContactFormEmail($subject, $body)
-    {
+    public function sendContactFormEmail($subject, $body) {
 
-         Mail::to($this)->send(new contact_form($this,$subject,$body));
+        Mail::to($this)->send(new contact_form($this, $subject, $body));
     }
-    
+
     // the user here is the receiver of the email. the email from came from the logged in user
-    public function sendCoachEmail($subject, $body, $fromemail, $fromname)
-    {
+    public function sendCoachEmail($subject, $body, $fromemail, $fromname) {
 
-        Mail::to($this)->send(new coach_message($this,$subject,$body,$fromemail,$fromname));
-        
+        Mail::to($this)->send(new coach_message($this, $subject, $body, $fromemail, $fromname));
     }
-    
+
+    // the user here is the receiver of the email. the email from came from the logged in user
+    public function sendCoachSms( $body, $fromphone, $phone) 
+    {
+        $this->sendMessage($body,$fromphone, $phone);
+    }
+    /**
+     * Sends sms to user using Twilio's programmable sms client
+     * @param String $message Body of sms
+     * @param Number $recipients string or array of phone number of recepient
+     */
+    private function sendMessage($message,$fromphone, $tophone)
+    {
+        $account_sid = getenv("TWILIO_SID");
+        $auth_token = getenv("TWILIO_AUTH_TOKEN");
+        $client = new Client($account_sid, $auth_token);
+
+        info('sendMessage: '.$tophone);
+        $client->messages->create('+'.$tophone, 
+                ['from' => $fromphone, 'body' => $message] );
+    }
 }

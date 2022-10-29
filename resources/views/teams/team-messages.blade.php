@@ -112,10 +112,11 @@
                 <div class="px-4 py-5 bg-white sm:p-6">
                     <div class="grid grid-cols-6 gap-6">
                        
-                    <div class="col-span-3 sm:col-span-2">
+                    <div class="col-span-6 sm:col-span-6">
 
 Email<input id="emailselections" name="emailselections" type="radio" checked class="mt-1  "  value="email"  /> 
 Push Notification<input  id="emailselections" name="emailselections" type="radio" class="mt-1"  value="pn"  / > 
+Txt Message<input  id="emailselections" name="emailselections" type="radio" class="mt-1"  value="sms"  / > 
         </div>
                     </div>
                         <div class="col-span-6 sm:col-span-4 p-5 " class="py-2">
