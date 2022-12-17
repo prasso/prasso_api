@@ -31,7 +31,7 @@
         <div class="col-span-6">
             <x-jet-label value="{{ __('Select Team') }}" />
             <div class="flex items-center mt-2">
-                <select name="teams" id="teams" class="mt-1 block w-full" wire:model="team_id" wire:change="change">
+                <select name="teams" id="teams" class="mt-1 block w-full" wire:model="team_id" wire:change="updateApp">
                     @foreach($team_selection as $id=>$name) 
                     <option value="{{ $id }}">{{ $name }}</option>
                     @endforeach
@@ -41,7 +41,7 @@
         <div class="col-span-6">
             <x-jet-label value="{{ __('Select Site') }}" />
             <div class="flex items-center mt-2">
-                <select name="sites" id="sites" class="mt-1 block w-full" wire:model="site_id" wire:change="change">
+                <select name="sites" id="sites" class="mt-1 block w-full" wire:model="site_id" wire:change="updateApp">
                     @foreach($sites as $id=>$site_name) 
                     <option value="{{ $id }}">{{ $site_name }}</option>
                     @endforeach
