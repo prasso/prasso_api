@@ -349,9 +349,10 @@ class TeamController extends Controller
      *
      * @var array
      */
-    public function deleteApp($id)
+    public function deleteApp($teamid, $appid)
     {
-        Apps::find($id)->delete();
+        Log::info('delete id: '.$appid);
+        Apps::find($appid)->delete();
         session()->flash('message', 'App Deleted Successfully.');
         return redirect()->back()
         ->with('show_success', true);
