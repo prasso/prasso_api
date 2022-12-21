@@ -50,7 +50,8 @@ Route::group(['middleware'=> 'instructorusergroup'], function() {
     Route::get('/team/{teamid}/apps/{appid}/tabs/new', 'TeamController@addTab')->name('apps.add-tab');
     Route::get('/team/{teamid}/apps/{appid}/delete', 'TeamController@deleteApp')->name('apps.delete');
     Route::get('/team/{teamid}/apps/{appid}/tabs/{tabid}/delete', 'TeamController@deleteTab')->name('apps.delete-tab');
-
+    Route::post('/team/{teamid}/apps/{appid}/app_logo_image','TeamController@uploadAppIcon')->name('upload.app.icon');
+    
     Route::get('/profile/prasso_profile','User2Controller@prasso_profile')->name('prasso.profile');
     Route::post('/profile/profile_update_image','User2Controller@uploadProfileImage')->name('upload.post.image');
     

@@ -96,7 +96,7 @@ class Apps extends Model
     }
     public static function processUpdates( $appModel)
     {
-
+        
         Apps::updateOrCreate(['id' => $appModel['id']] , 
         ['team_id' => $appModel['team_id'], 
         'appicon' => $appModel['appicon'], 
