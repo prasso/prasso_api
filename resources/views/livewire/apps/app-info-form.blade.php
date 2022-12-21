@@ -51,8 +51,21 @@
         <div class="col-span-6">
             <x-jet-label value="{{ __('App Icon') }}" />
             <div class="flex items-center mt-2">
-                <img class="w-12 h-12 rounded-full object-cover" src="{{ $teamapp['appicon'] }}" alt="{{ $teamapp['app_name'] }}">
-
+                @if (isset($photo) && !empty ($photo->temporaryUrl()) )
+                <img class=" h-12 rounded-full object-cover" src="{{ $photo->temporaryUrl() }}" alt="{{ $teamapp['app_name'] }}">
+                @else
+                @if( !empty($teamapp['appicon']))
+                <img class=" h-12 rounded-full object-cover" src="{{ $teamapp['appicon'] }}" alt="{{ $teamapp['app_name'] }}">
+                @else
+                    No appicon Given                     
+                @endif
+                @endif
+                {{ $teamapp['appicon'] }}
+        
+                    <input type="file" wire:model="photo"  class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+ 
+                     @error('photo') <span class="error">{{ $message }}</span> @enderror
+ 
             </div>
         </div>
 
