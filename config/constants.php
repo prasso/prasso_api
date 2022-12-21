@@ -3,6 +3,7 @@
 return [
         'CLOUDFRONT_ASSET_URL' => 'https://d2bj0u1jhmvqgo.cloudfront.net/',
         'PROFILE_PHOTO_PATH' => 'prasso/-user-photos/',
+        'APP_LOGO_PATH' => 'prasso/-app-photos/',
         'BLANK_PHOTO_PATH' =>  'profile-photos/blankprofile.jpg',
         'TAB_DEFAULT_ID' => 0,
         'TAB_DEFAULT_SORT_ORDER' => 1, 

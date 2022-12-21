@@ -14,6 +14,7 @@ use App\Models\Tabs;
 use App\Models\Site;
 use App\Models\UserActiveApp;
 use App\Models\FlutterIcons;
+use Illuminate\Support\Facades\Storage;
 
 class TeamController extends Controller
 {
@@ -302,6 +303,28 @@ class TeamController extends Controller
         ->with('apptabs', $apptabs);
     }
 
+    public function uploadAppIcon($teamid, $appid, Request $request)
+    { 
+        info('saving an app image image. ');
+
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
+        ]);
+
+        $input = $request->all(); 
+
+        if($request->hasfile('image'))
+        {
+            $file = $request->file('image');
+            $imageName=time().$file->getClientOriginalName();
+            $filePath = config('constants.CLOUDFRONT_ASSET_URL') . config('constants.APP_LOGO_PATH') .'logos-'.$teamid.'/'. $imageName;
+            Storage::disk('s3')->put($filePath, file_get_contents($file));
+            $app = Apps::where('id',$appid)->first();
+            $app->appicon = $filePath;
+            $app->save();
+        return back()->with('success','The image has been uploaded')->with('user',$app);
+        }   
+    }
     
       /**
      * Set the app that will be used when this user 
