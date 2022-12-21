@@ -96,13 +96,6 @@ class Apps extends Model
     }
     public static function processUpdates( $appModel)
     {
-        info('id =>'. $appModel['id']. 
-        'team_id = > '. $appModel['team_id']. 
-        'appicon = > '. $appModel['appicon']. 
-        'app_name = > '. $appModel['app_name']. 
-        'page_title = > '. $appModel['page_title'].
-        'page_url = > '. $appModel['page_url'].
-        'sort_order = > '. $appModel['sort_order']);
         
         Apps::updateOrCreate(['id' => $appModel['id']] , 
         ['team_id' => $appModel['team_id'], 
