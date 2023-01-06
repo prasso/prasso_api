@@ -27,6 +27,7 @@ class Site extends Model
     protected $fillable = [
         'id',
         'site_name',
+        'description',
         'host',
         'main_color',
         'logo_image',

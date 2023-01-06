@@ -44,6 +44,7 @@ Route::group(['middleware'=> 'instructorusergroup'], function() {
     Route::post('/team/{teamid}/postmessages', 'TeamController@processTeamMessages')->name('team.postmessages');
 
     Route::get('/team/{teamid}/apps', 'TeamController@index')->name('apps.show');
+    Route::get('/team/{teamid}/apps/newsiteandapp', 'TeamController@newSiteAndApp')->name('apps.newsiteandapp');
     Route::get('/team/{teamid}/apps/{appid}', 'TeamController@editApp')->name('apps.edit');
     Route::get('/team/{teamid}/apps/{appid}/activate', 'TeamController@activateApp')->name('apps.activate');
     Route::get('/team/{teamid}/apps/{appid}/tabs/{tabid}', 'TeamController@editTab')->name('apps.edit-tab');

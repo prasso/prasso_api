@@ -45,7 +45,7 @@
 
         <div class="multiselect">
             <div class="selectBox" x-data="{ isShowing: false }" onclick="showRadios()">
-                <select>
+                <select  class='border-2 border-indigo-600/100 p-2'>
                     <option>Select an icon</option>
                 </select>
                 <div class="overSelect"></div>
@@ -110,7 +110,7 @@
     <div class="col-span-6 sm:col-span-4">
         <x-jet-label for="sort_order" value="{{ __('Sort Order') }}" />
         <div class="flex items-center mt-2">
-         <select name="sort_order" id="sort_order" class="mt-1 block w-full"  wire:model.defer="tabdata.sort_order" >
+         <select name="sort_order" id="sort_order" class="mt-1 block w-fullborder-2 border-indigo-600/100 p-2"  wire:model.defer="tabdata.sort_order" >
             @foreach(Session::get('sortorders') as $id) )
                 <option value="{{ json_encode($id) }}">{{ json_encode($id) }}</option>
             @endforeach
@@ -123,7 +123,7 @@
         <x-jet-label for="more_data" value="{{ __('Overflow/More') }}" />
         <div class="flex items-center mt-2">
 
-        <select name="more_data" id="more_data" class="mt-1 block w-full"  wire:model.defer="tabdata.parent" >
+        <select name="more_data" id="more_data" class="mt-1 block w-full border-2 border-indigo-600/100 p-2"  wire:model.defer="tabdata.parent" >
             @foreach(Session::get('moredata') as $id) )
                 <option value="{{ $id[0] }}">{{ $id[1] }}</option>
             @endforeach

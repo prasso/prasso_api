@@ -32,22 +32,24 @@ class AppInfoForm extends Component
         'teamapp.app_name' => 'required|min:6',
         'teamapp.page_title' => 'required|min:6',
         'teamapp.page_url' => 'required|min:6',
-        'teamapp.appicon' => 'required',
+        'teamapp.appicon' => 'required_without:photo',
         'teamapp.site_id' => 'required|min:1',
-        'teamapp.sort_order' => 'required'
+        'teamapp.sort_order' => 'required',
+        'photo' => 'required_without:teamapp.appicon|max:1024'
     ];
 
     public function updateApp()
     {
-        $this->validate([
-                  'photo' => 'image|max:1024', // 1MB Max
-             ]);
-        
+        $this->validate();
+
         // Execution doesn't reach here if validation fails.
-        // Store in the "photos" directory in a configured "s3" bucket.
-        //prassouploads/prasso/-app-photos/logos-1/
- $this->photo->store(config('constants.APP_LOGO_PATH') .'logos-'.$this->teamapp->team_id, 's3');
- $this->teamapp->appicon = config('constants.CLOUDFRONT_ASSET_URL') . config('constants.APP_LOGO_PATH') .'logos-'.$this->teamapp->team_id.'/'. $this->photo->hashName();
+        if (isset($this->photo))
+        {
+            // Store in the "photos" directory in a configured "s3" bucket.
+            //prassouploads/prasso/-app-photos/logos-1/
+            $this->photo->store(config('constants.APP_LOGO_PATH') .'logos-'.$this->teamapp->team_id, 's3');
+            $this->teamapp->appicon = config('constants.CLOUDFRONT_ASSET_URL') . config('constants.APP_LOGO_PATH') .'logos-'.$this->teamapp->team_id.'/'. $this->photo->hashName();
+        }
             
         Apps::processUpdates($this->teamapp->toArray()  );
         $this->show_success = true;
