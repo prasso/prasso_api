@@ -27,12 +27,16 @@ class CreateNewUser implements CreatesNewUsers
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => $this->passwordRules(),
+            'phone' => '',
+            'version' => ''
         ])->validate();
         return DB::transaction(function () use ($input) {
             return tap(User::create([
                 'name' => $input['name'],
                 'email' => $input['email'],
                 'password' => Hash::make($input['password']),
+                'phone' => '',
+                'version' => '',
             ]), function (User $user) use ($input) {
                 $this->createTeam($user);
                 Log::info('CreateNewUser- send mail to: ' . $user->email);
@@ -71,6 +75,7 @@ class CreateNewUser implements CreatesNewUsers
             'user_id' => $user->id,
             'name' => explode(' ', $user->name, 2)[0] . "'s Team",
             'personal_team' => true,
+            'phone' => $user->phone,
         ]));
     }
 }

@@ -57,7 +57,7 @@ class User extends Authenticatable {
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'profile_photo_path', 'firebase_uid', 'pn_token', 'enableMealReminders', 'reminderTimesJson', 'timeZone', 'version'
+        'name', 'email', 'password', 'profile_photo_path', 'firebase_uid', 'pn_token', 'enableMealReminders', 'reminderTimesJson', 'timeZone', 'version','phone'
     ];
 
     /**

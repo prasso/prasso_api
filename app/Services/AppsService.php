@@ -94,6 +94,7 @@ class AppsService
                 'user_id' => $user->id,
                 'name' => explode(' ', $user->name, 2)[0]."'s Team",
                 'personal_team' => true,
+                'phone' => $user->phone,
             ]));
             $user = $user->fresh();
            }

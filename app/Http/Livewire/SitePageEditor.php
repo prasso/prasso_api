@@ -20,7 +20,18 @@ class SitePageEditor extends Component
     
     public function mount( $siteid)
     {
-        $site = Site::where('id',$siteid)->first()->toArray();
+        if ($siteid == '0')
+        {
+            $site = new Site();
+            $site->site_name = 'New Site';
+            $site->id = 0;
+            $site->host = 'newsite';
+            $site->main_color = '#000000';
+            
+        }
+        else{
+            $site = Site::where('id',$siteid)->first()->toArray();
+        }
         $this->site = $site;
         $this->site_name = $site['site_name'];
         $this->siteid = $siteid;

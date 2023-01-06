@@ -55,7 +55,22 @@ class TeamController extends Controller
             ->with('team', $team)
             ->with('activeappid',$activeAppId);
     }
+    
+    /**
+     * create new site and app with a wizard
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function newSiteAndApp()
+    {
+        $user = Auth::user(); 
 
+        $team = Team::where('id',$user->current_team_id)->first();
+
+        return view('apps.new-site-wizard')
+            ->with('user', $user)
+            ->with('team', $team);
+    }
     
     public function editTeam($teamid)
     {
@@ -113,7 +128,7 @@ class TeamController extends Controller
     {
 
         $input = $request->all();
-    Log::info('In processTeamMessages: '.$input['emailselections']);
+        Log::info('In processTeamMessages: '.$input['emailselections']);
         $user = Auth::user();
 
         // MAKE THIS WORK TO EITHER SEND PUSH NOTIFICATIONS OR AN EMAIL
