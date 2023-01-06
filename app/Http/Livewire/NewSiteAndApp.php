@@ -7,6 +7,7 @@ use App\Models\Apps;
 use App\Models\Team;
 use Illuminate\Http\Request;
 
+
 use Livewire\Component;
  /**
   * A wizard component that allows the user to register if not already registered,
@@ -105,6 +106,8 @@ class NewSiteAndApp extends Component
     public function createSiteAndApp()
     {
         $validatedData = $this->validate();
+        //the code will not continue if it is not validated
+
         /**put the data into newSite and newApp*/
         $this->newApp->team_id = $this->team->id;
         $this->newApp->appicon = $this->logo_image;
@@ -121,7 +124,16 @@ class NewSiteAndApp extends Component
         $this->newSite->database = 'prasso';
         $this->newSite->favicon = 'favicon.ico';
 
-        $this->newSite::create($this->newSite);
-        $this->newApp::create($this->newApp);
+        //convert the objects to arrays
+        $newSite = $this->newSite->toArray();
+        $newApp = $this->newApp->toArray();
+
+        $this->newSite::create($newSite);
+        $this->newApp::create($newApp);
+        
+        $this->currentStep = 1;
+        session()->flash('message', 'App Created Successfully.');
+        redirect()->route('sites.show')
+            ->with('success', 'Site created successfully.');
     }
 }

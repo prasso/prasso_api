@@ -40,7 +40,7 @@
                         <td class="border px-4 py-2">
                         <button wire:click="edit({{ $site->id }})" class=" py-2 px-3 "> <i class="material-icons md-36">mode_edit</i></button>
                         <a href="/sitepages/{{ $site->id }}" ><i class="material-icons md-36 text-black ">list</i></a>
-                        <button wire:click="delete({{ $site->id }})" class="ml-3 py-2 px-3 rounded"><i class="material-icons md-36">delete_forever</i></button>
+                        <button onclick="return window.confirm('Are you sure you want to delete this site?')" wire:click="delete({{ $site->id }})" class="ml-3 py-2 px-3 rounded"><i class="material-icons md-36">delete_forever</i></button>
                         </td>
                     </tr>
                     @endforeach
