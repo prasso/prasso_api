@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use App\Services\AppsService;
 use App\Services\SitePageService;
 use App\Services\UserService;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends BaseController
 {
@@ -54,7 +55,13 @@ class AuthController extends BaseController
         $input['password'] = bcrypt($input['password']);
         $sendInvitation = false; //will send welcome email
         
-        $user = User::create($input);
+        //$user = User::create($input);
+        $user = User::create([
+            'name' => $input['name'],
+            'email' => $input['email'],
+            'password' => Hash::make($input['password']),
+            'phone' => '',
+            'version' => '']);
         $success_p1 = $this->userService->register($user,'user', $sendInvitation);
 
         $success_p2 = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);

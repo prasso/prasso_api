@@ -136,7 +136,7 @@ Txt Message<input  id="emailselections" name="emailselections" type="radio" clas
 
                             <div class="multiselect border">
                                 <div class="selectBox" onclick="showCheckboxes()">
-                                    <select>
+                                    <select  class='border-2 border-indigo-600/100 p-2'>
                                         <option>Select one or more recipients</option>
                                     </select>
                                     <div class="overSelect"></div>

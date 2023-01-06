@@ -170,6 +170,7 @@ info('addOrUpdateSubscription: '.json_encode($user));
               'user_id' => $user->id,
               'name' => explode(' ', $user->name, 2)[0]."'s Team",
               'personal_team' => true,
+              'phone' => $user->phone,
           ]));
           $user->refresh();
           TeamUser::addToTeam($user,$user->allTeams()->first()->id); 

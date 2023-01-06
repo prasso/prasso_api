@@ -9,19 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&subset=latin,cyrillic" rel="stylesheet">		
  <link href="/css/tilda-cc-projects-style-projectid-4017550.css" rel="stylesheet" media="screen">
 
-<script type="text/javascript"
-src="https://prasso.outseta.com/Scripts/client/dist/outseta.nocode.widget.min.js">
-</script>
-<script type="text/javascript"
-src="https://prasso.outseta.com/Scripts/client/dist/outseta.auth.widget.min.js"
-data-popup-selector="a[href^='https://prasso.outseta.com/widgets/auth']"
-defer>
-</script>
-<script type="text/javascript"
-src="https://prasso.outseta.com/Scripts/client/dist/outseta.profile.widget.min.js"
-data-popup-selector="a[href^='https://prasso.outseta.com/widgets/profile']"
-defer>
-</script>
+
  
 
 </head>
@@ -448,10 +436,10 @@ class='tn-atom'
         </div>      <div class="t017__title t-title t-title_xxs" field="title" style="">
             
             <H1>Start Now for Free</h1>
-            <script src="https://prasso.outseta.com/scripts/client/dist/outseta.auth.widget.min.js"
-            data-widget-mode="register"
-            data-plan-family-uid="DQ2DlMWV"
-            defer="defer"></script>
+           <button class="t-btn t-btn_xxs t-animate" onclick="window.location.href='./register';" style="color:#ffffff;background-color:#000000;border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;">
+            <span class="t-btn__wrapper t-valign_middle">
+              <span class="t-btn__text">Get Started</span>
+            </span>
         </div>          </div>
   </div>
 </div>
