@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\welcome_user;
 use App\Mail\contact_form;
-use App\Mail\user_needs_coach;
+use App\Mail\prasso_user_welcome;
 use Laravel\Cashier\Billable;
 use Twilio\Rest\Client;
 
@@ -214,7 +214,7 @@ class User extends Authenticatable {
         $user_app_info['teamapps'] = $user_app_info['team']->apps;
         
         $activeAppId = '0';
-        if (isset($activeApp->app_id))
+        if (isset($activeApp))
         {
             $activeAppId = $activeApp->app_id;
         }
@@ -265,13 +265,13 @@ class User extends Authenticatable {
     }
 
     public function sendWelcomeEmail() {
-        $emailbcc = 'info@optamize.app'; //because .env setting is not being read on prod server!
+        $emailbcc = 'info@faxt.com'; //because .env setting is not being read on prod server!
         Mail::to($this)->send(new welcome_user($this));
 
         try {
-            Mail::to($emailbcc, 'Optamize Sign Up')->send(new user_needs_coach($this));
+            Mail::to($emailbcc, 'Prasso Sign Up')->send(new prasso_user_welcome($this));
         } catch (\Throwable $err) {
-            Log::info('error sending coach email: ' . $err);
+            Log::info('error sending user welcome sent email: ' . $err);
         }
     }
 

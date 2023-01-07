@@ -19,9 +19,6 @@ Route::get('contact', function () {
     return view('contact');
 });
 
-//this will manually check for the correct header information.
-Route::post('subscription/qonversion_hook', 'SubscriptionController@qonversion_hook');
-
 Route::post('/send-email', 'EmailController@sendEmail')->name('send-email');
 Route::get('/page/faqs', 'SiteController@seeFaqs')->name('see-faqs');
 Route::post('/question', 'SiteController@processQuestion')->name('send-question');
