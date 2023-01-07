@@ -26,7 +26,7 @@ class UserService
       $this->instruc = $suser;
     }
 
-    // after qonversion processes a subscription, the app will post it here
+
     // create the instructor access and return success
     public function addOrUpdateSubscription($request, $user, $appsService, $site)
     {

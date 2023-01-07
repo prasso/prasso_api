@@ -49,7 +49,7 @@
   <!-- Step 2: Domain Name -->
   <div class="step  inset-0  ease-out duration-400" id="step-2">
     <h2>What would you like to use for your web site address?</h2>
-    <label for="domain-name">Domain Name: (example - yourbusinessname.prasso.io)</label>
+    <label for="domain-name">Domain Name: (example - one word no spaces - yourbusinessname) we will add prasso.io to this</label>
     <input  wire:model.defer='host' class='form-input rounded-md shadow-sm mt-1 block w-full' type="text" id="domain-name" name="domain-name">
     <br>
     <button type="button" wire:click="wizardProgress('PREV')" class="prev-button cursor-pointer ml-6 border p-2 rounded-xl">PREV</button>
@@ -98,7 +98,7 @@
     </x-jet-action-message>
 
     <x-jet-button wire:loading.remove>
-        {{ __('Save') }}
+        {{ __('Create Your Site and App') }}
     </x-jet-button>
 @endif
 </x-slot>

@@ -23,30 +23,7 @@ class SubscriptionController extends BaseController
         $this->appsService = $appsServ;
     }
 
-    // Qonversion posts transaction data to this endpoint
-    public function qonversion_hook(Request $request)
-    {
-
-        $data = $request->all();
-        $headers = collect($request->header())->transform(function ($item) {
-            return $item[0];
-        });
-        if (!isset($headers['authorization'])) {
-            return $this->sendError('Missing Authorization header'.json_encode($headers).':'.json_encode($data));
-        }
-        //log for now. will process this to save to db later
-
-        $subject = 'Qonversion Hook';
-        $body = json_encode($data);
-
-        $admin_user = \App\Models\User::where('email','bcp@faxt.com')->first();
-        $admin_user -> sendContactFormEmail($subject, $body);
-
-        //user is getting promoted to instructor
-      //  $userresponse = $this->userService->addOrUpdateSubscription($request, $user, $this->appsService, $this->site);
-       return $this->sendResponse('', 'ok');
-       
-    }
+  
     public function save_subscription(Request $request)
     {        
         $data = $request->all();
