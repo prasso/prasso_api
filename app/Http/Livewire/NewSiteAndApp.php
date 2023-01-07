@@ -6,6 +6,9 @@ use App\Models\Site;
 use App\Models\Apps;
 use App\Models\Team;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\site_needs_dns;
 
 
 use Livewire\Component;
@@ -92,8 +95,14 @@ class NewSiteAndApp extends Component
                 $this->step2 = false;
                 $this->step3 = true;
                 $this->step4 = false;
+
                 break;
             case 4:
+
+        $this->host =  $this->host.'.prasso.io'; //
+        $this->database = 'prasso';
+        $this->favicon = 'favicon.ico';
+
                 $this->step1 = false;
                 $this->step2 = false;
                 $this->step3 = false;
@@ -130,10 +139,17 @@ class NewSiteAndApp extends Component
 
         $this->newSite::create($newSite);
         $this->newApp::create($newApp);
+
+        //notify me that I need to finish this setup with DNS record
+        Log::info('send new site and app notification mail ');
+
+        Mail::to('info@prasso.io', 'Prasso Admin')->send(new site_needs_dns($this));
+ 
+                
         
         $this->currentStep = 1;
-        session()->flash('message', 'App Created Successfully.');
+        session()->flash('message', 'Site created successfully. Please wait for DNS setup to complete.');
         redirect()->route('sites.show')
-            ->with('success', 'Site created successfully.');
+            ->with('success', 'Site created successfully. Please wait for DNS setup to complete.');
     }
 }

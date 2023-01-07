@@ -16,8 +16,8 @@
                             @error('section') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
-                            <label for="main_colorInput" class="block text-gray-700 text-sm font-bold mb-2">Logo:</label>
-                            <input type="color" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="main_colorInput" placeholder="Enter Main Color"  wire:model="main_color" >
+                            <label for="main_colorInput" class="block text-gray-700 text-sm font-bold mb-2">Main Color:</label>
+                            <input type="color"  id="main_colorInput" placeholder="Enter Main Color"  wire:model="main_color" >
                             @error('main_color') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
