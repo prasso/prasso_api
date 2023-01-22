@@ -81,7 +81,6 @@ class InstructorAuthGuard implements Guard
    */
   public function validate(Array $credentials=[])
   {
-Log::info('InstructorAuthGuard validate: '.json_encode($credentials));
     if (empty($credentials['username']) || empty($credentials['password'])) {
       return false;
     }

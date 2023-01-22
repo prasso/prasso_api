@@ -33,7 +33,6 @@ class site_needs_dns extends Mailable
      */
     public function build()
     {
-        Log::info('send admin mail to: '.json_encode($this->to));
         return $this->subject(config('constants.SITE_SETUP_EMAIL'))
                 ->view('email.site_needs_dns')
                 ->with('user_email',$this->user->email)

@@ -25,7 +25,7 @@ class AppController extends BaseController
         try {
           $user = \Auth::user();
           $app_data = $this->appsService->getAppSettingsBySite($this->site, $user,$user->personalAccessToken->token);
-            Log::info('AppController::getAppSettings: '.$app_data);
+  
             return $app_data;
         } catch (\Throwable $e) {
             Log::info($e);

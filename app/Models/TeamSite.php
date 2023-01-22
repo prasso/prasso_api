@@ -9,7 +9,8 @@ class TeamSite extends Model
 {
     use HasFactory;
 
-
+    protected $table = 'team_site';
+    
     protected $fillable = [
         'team_id', 'site_id'
     ];

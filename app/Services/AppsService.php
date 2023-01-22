@@ -30,7 +30,6 @@ class AppsService
     //(instructor will have app management features. users will not)
     public function getAppSettingsBySite(Site $site, $user,$user_access_token) 
     {
-        Log::info('user in getAppSettingsBySite: '.json_encode($user));
         $returnval='';
       
         if ( !isset($user->roles) || 

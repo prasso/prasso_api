@@ -31,7 +31,6 @@ class prasso_user_welcome extends Mailable
      */
     public function build()
     {
-        Log::info('send user notification mail to: '.json_encode($this->to));
         return $this->subject(config('constants.PRASSO_USER_WELCOME_EMAIL'))
                 ->view('email.prasso_user_welcome')
                 ->with('user_email',$this->user->email)
