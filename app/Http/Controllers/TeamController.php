@@ -127,7 +127,6 @@ class TeamController extends Controller
     {
 
         $input = $request->all();
-        Log::info('In processTeamMessages: '.$input['emailselections']);
         $user = Auth::user();
 
         // MAKE THIS WORK TO EITHER SEND PUSH NOTIFICATIONS OR AN EMAIL
@@ -409,7 +408,6 @@ class TeamController extends Controller
         // Log::info('in getEditTab, $tabid: '.$tabid);
         if ($tabid == 'new')
         {
-            Log::info('set up for new tab');
             $tab_data = Tabs::make();
             $tab_data->id=$tabid ;
             $tab_data->app_id = $appid;  

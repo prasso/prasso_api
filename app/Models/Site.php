@@ -58,7 +58,6 @@ class Site extends Model
             'phone' => '',
         ]);
 
-        Log::info('new team'.json_encode($team));
         //and the teamsite table needs to be updated
         TeamSite::create([$team->id, $this->id]);
         return $team;

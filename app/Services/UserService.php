@@ -56,11 +56,9 @@ info('addOrUpdateSubscription: '.json_encode($user));
           // can't use this $user->fill($user_from_request); - reason is because some of the json tags don't match
           $user->fillFromAppjson($user_from_request);
 
-        Log::info('user to be saved: ' . json_encode($user));
           
           $updatedUser = $user->save();
 
-    Log::info('updated user: ' . json_encode($user));
           //put the updated user into the session
           \Auth::login($user);
         }

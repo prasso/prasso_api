@@ -28,7 +28,6 @@ class TeamUser extends Model
     {
         //put this person on the main team for us to welcome until we know who they will settle in with
         if ($team = Team::where('user_id',1)->get()) {
-            Log::info('team to add user to: '.json_encode($team));
             TeamUser::forceCreate([
                 'user_id' => $user->id,
                 'team_id' => 1,

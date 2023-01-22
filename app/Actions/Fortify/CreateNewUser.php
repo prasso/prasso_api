@@ -44,10 +44,8 @@ class CreateNewUser implements CreatesNewUsers
                 //get the site from the host
                 $host = request()->getHttpHost();
 
-                Log::info('CreateNewUser- host: ' . $host);
                 $site = Site::getClient($host);
 
-                Log::info('CreateNewUser- site: ' . json_encode($site));
                 //get the team from the site
                 if ($site->supports_registration) {
                     $teamsite = TeamSite::where('site_id', $site->id)->first();
@@ -64,7 +62,6 @@ class CreateNewUser implements CreatesNewUsers
                     $this->createTeam($user);
                 }
                 
-                Log::info('CreateNewUser- send mail to: ' . $user->email);
                 $user->sendWelcomeEmail();
                 ## BEGIN EDIT - if there's an invite, attach them accordingly ##
                 if (isset($input['invite'])) {

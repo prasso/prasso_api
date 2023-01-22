@@ -52,7 +52,6 @@ class NewSiteAndApp extends Component
     public function mount(User $user, Team $team, Request $request)
     {
 
-Log::info('In newSiteAndApp.mount, user: '.$user->id);
         //does this user have an admin role?
         $this->current_user = $user;
         $this->team = $team;
@@ -133,8 +132,6 @@ Log::info('In newSiteAndApp.mount, user: '.$user->id);
         $newSite = $this->newSite->toArray();
         $site = $this->newSite::create($newSite);
 
-        Log::info('current site'.json_encode($site));
-        Log::info('current user'.json_encode($this->current_user));
         if ($this->current_user == null)
         {
             $this->current_user = Auth::user();
@@ -154,7 +151,6 @@ Log::info('In newSiteAndApp.mount, user: '.$user->id);
         $this->newApp::create($newApp);
 
         //notify me that I need to finish this setup with DNS record
-        Log::info('send new site and app notification mail ');
 
         Mail::to('info@prasso.io', 'Prasso Admin')->send(new site_needs_dns($this));
  
