@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\site_needs_dns;
+use Auth;
 
 
 use Livewire\Component;
@@ -30,6 +31,7 @@ class NewSiteAndApp extends Component
     public $host; //
     public $main_color; //
     public $logo_image; //
+    public $supports_registration;//
 
     public $database;
     public $favicon;
@@ -49,6 +51,8 @@ class NewSiteAndApp extends Component
         
     public function mount(User $user, Team $team, Request $request)
     {
+
+Log::info('In newSiteAndApp.mount, user: '.$user->id);
         //does this user have an admin role?
         $this->current_user = $user;
         $this->team = $team;
@@ -117,14 +121,6 @@ class NewSiteAndApp extends Component
         $validatedData = $this->validate();
         //the code will not continue if it is not validated
 
-        /**put the data into newSite and newApp*/
-        $this->newApp->team_id = $this->team->id;
-        $this->newApp->appicon = $this->logo_image;
-        $this->newApp->app_name = $this->site_name;
-        $this->newApp->page_title = $this->site_name;
-        $this->newApp->page_url = $this->site_name;
-        $this->newApp->sort_order = '1';
-
         $this->newSite->site_name = $this->site_name; //
         $this->newSite->description = $this->description; //
         $this->newSite->host =  $this->host; //
@@ -132,12 +128,29 @@ class NewSiteAndApp extends Component
         $this->newSite->logo_image = $this->logo_image; //
         $this->newSite->database = 'prasso';
         $this->newSite->favicon = 'favicon.ico';
+        $this->newSite->supports_registration = $this->supports_registration;//
 
-        //convert the objects to arrays
         $newSite = $this->newSite->toArray();
-        $newApp = $this->newApp->toArray();
+        $site = $this->newSite::create($newSite);
 
-        $this->newSite::create($newSite);
+        Log::info('current site'.json_encode($site));
+        Log::info('current user'.json_encode($this->current_user));
+        if ($this->current_user == null)
+        {
+            $this->current_user = Auth::user();
+        }
+        
+        $team = $site->createTeam($this->current_user->id);
+
+        /**put the data into newSite and newApp*/
+        $this->newApp->team_id = $team->id;
+        $this->newApp->appicon = $this->logo_image;
+        $this->newApp->app_name = $this->site_name;
+        $this->newApp->page_title = $this->site_name;
+        $this->newApp->page_url = $this->site_name;
+        $this->newApp->sort_order = '1';
+
+        $newApp = $this->newApp->toArray();
         $this->newApp::create($newApp);
 
         //notify me that I need to finish this setup with DNS record

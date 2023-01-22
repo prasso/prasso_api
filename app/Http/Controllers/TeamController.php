@@ -64,7 +64,6 @@ class TeamController extends Controller
     public function newSiteAndApp()
     {
         $user = Auth::user(); 
-
         $team = Team::where('id',$user->current_team_id)->first();
 
         return view('apps.new-site-wizard')

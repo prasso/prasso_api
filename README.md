@@ -15,7 +15,8 @@ Definition
 ## Prasso Concept
 1. everything is based on a site.
     
-    a site is determined by it’s url
+    a site is determined by it’s url.
+    a site can support user registration
     
 2. Apps have an association to a site.
     1. an app is configured with tabs 

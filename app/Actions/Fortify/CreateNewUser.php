@@ -6,10 +6,13 @@ use App\Models\Invitation;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\TeamUser;
+use App\Models\Site;
+use App\Models\TeamSite;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
+use Laravel\Jetstream\Events\TeamMemberAdded;
 use Illuminate\Support\Facades\Log;
 
 class CreateNewUser implements CreatesNewUsers
@@ -38,7 +41,29 @@ class CreateNewUser implements CreatesNewUsers
                 'phone' => '',
                 'version' => '',
             ]), function (User $user) use ($input) {
-                $this->createTeam($user);
+                //get the site from the host
+                $host = request()->getHttpHost();
+
+                Log::info('CreateNewUser- host: ' . $host);
+                $site = Site::getClient($host);
+
+                Log::info('CreateNewUser- site: ' . json_encode($site));
+                //get the team from the site
+                if ($site->supports_registration) {
+                    $teamsite = TeamSite::where('site_id', $site->id)->first();
+                    $team = Team::where('id', $teamsite->team_id)->first();
+                    $team->users()->attach(
+                        $user,
+                        ['role' => 'user']
+                    );
+                    $user->current_team_id = $team->id;
+                    $user->save();
+                    TeamMemberAdded::dispatch($team, $user);
+                }
+                else{
+                    $this->createTeam($user);
+                }
+                
                 Log::info('CreateNewUser- send mail to: ' . $user->email);
                 $user->sendWelcomeEmail();
                 ## BEGIN EDIT - if there's an invite, attach them accordingly ##
@@ -58,7 +83,9 @@ class CreateNewUser implements CreatesNewUsers
                 }
                 else
                 {
-                    TeamUser::addToBaseTeam($user);
+                    if (!$site->supports_registration) {
+                        TeamUser::addToBaseTeam($user);
+                    }
                 }
               
             });

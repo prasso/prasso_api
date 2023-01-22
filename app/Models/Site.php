@@ -32,7 +32,8 @@ class Site extends Model
         'main_color',
         'logo_image',
         'database',
-        'favicon'
+        'favicon',
+        'supports_registration'
     ];
 
     public static function getClient( $host) 
@@ -47,5 +48,19 @@ class Site extends Model
             $id = $currentsite->id;
         }
         return $currentsite;
+    }
+
+    public function createTeam($userid){
+        $team = Team::forceCreate([
+            'name' => $this->site_name,
+            'user_id' => $userid,
+            'personal_team' => false,          
+            'phone' => '',
+        ]);
+
+        Log::info('new team'.json_encode($team));
+        //and the teamsite table needs to be updated
+        TeamSite::create([$team->id, $this->id]);
+        return $team;
     }
 }
