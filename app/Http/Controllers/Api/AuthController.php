@@ -51,7 +51,6 @@ class AuthController extends BaseController
    
         $input = $request->all();
 
-   Log::info('In register, input is: '.json_encode($input));
         $input['password'] = bcrypt($input['password']);
         $sendInvitation = false; //will send welcome email
         
@@ -68,7 +67,6 @@ class AuthController extends BaseController
 
         $success = array_merge($success_p1,$success_p2);
         $success['ShowIntro'] = 'SHOW';
-   Log::info('register returning: '.json_encode($success));
         return $this->sendResponse($success, 'User registered successfully.');
     }
 
@@ -122,7 +120,6 @@ class AuthController extends BaseController
                 
                 if ($push_token != '' && isset($push_token))
                 {
-                    Log::info('saving push token for user');
                     $user->pn_token = $push_token;
                 }
                 $user->save();
@@ -148,7 +145,6 @@ class AuthController extends BaseController
     {
         $email= $request->input('email');
         $password= $request->input('password');
-        Log::info('logging in: '.$email);
         if(Auth::attempt(['email' => $email, 'password' => $password])){ 
             $user = Auth::user(); 
             $user = $this->setUpUser($request,$user);
@@ -178,7 +174,6 @@ class AuthController extends BaseController
         //$this->userService->updateCommunityUser($user);
         $success = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);
         $success['ShowIntro'] = 'DONE';
-   Log::info('save enhanced profile returning: '.json_encode($success));
         return $this->sendResponse($success, 'User registered successfully.');
     }
 
@@ -220,11 +215,9 @@ class AuthController extends BaseController
 
             $accessToken = $request->user()->createToken(config('app.name'))->accessToken->token;
 
-Log::info('accesstoken empty but user is not. new access token: '.$accessToken);
         }
         if (isset($accessToken))
         {
-Log::info('in setUpUser -  accesstoken: '.$accessToken);
             $this->setAccessTokenCookie($accessToken);
             if ($user == null)
             {

@@ -4,13 +4,15 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\User;
+use App\Models\TeamSite;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Models\Site;
+use Auth;
 
 class SiteEditor extends Component
 {
-    public $sites, $site_id,$site_name, $host,$main_color,$logo_image, $database, $favicon;
+    public $sites, $site_id,$site_name, $host,$main_color,$logo_image, $database, $favicon, $supports_registration;
     public $current_user;
     public $isOpen = 0;
     
@@ -65,6 +67,7 @@ class SiteEditor extends Component
         $this->database = '';
         $this->favicon = '';
         $this->site_id = '';
+        $this->supports_registration = false;
     }
      
     /**
@@ -83,19 +86,31 @@ class SiteEditor extends Component
             'database' => 'required',
             'favicon' => 'required'
         ]);
+        $newsite=false;
         if (empty($this->site_id))
         {
             $this->site_id = 0;
+            $newsite=true;
         }
-        Site::updateOrCreate(['id' => $this->site_id], [
+        $site = Site::updateOrCreate(['id' => $this->site_id], [
             'site_name' => $this->site_name,
             'host' => $this->host,
             'main_color' => $this->main_color,
             'logo_image' => $this->logo_image,
             'database' => $this->database,
             'favicon' => $this->favicon,
+            'supports_registration' => $this->supports_registration,
         ]);
   
+        // new sites need new team
+        if ($newsite)
+        {
+            if ($this->current_user == null)
+            {
+                $this->current_user = Auth::user();
+            }
+            $site->createTeam($this->current_user->id);
+        }
         session()->flash('message', 
             $this->site_id ? 'Site Updated Successfully.' : 'Site Created Successfully.');
   
@@ -118,6 +133,7 @@ class SiteEditor extends Component
         $this->logo_image = $site->logo_image;
         $this->database = $site->database;
         $this->favicon = $site->favicon;
+        $this->supports_registration = $site->supports_registration;
 
         $this->openModal();
     }

@@ -3,7 +3,7 @@
     <x-slot name="title">Register</x-slot>
     <x-jet-authentication-card>
         <x-slot name="logo">
-            <img src="{{ $site->logo_image }}" />
+            <img style='max-width:150px' src="{{ $site->logo_image }}" />
         </x-slot>
 
         <x-jet-validation-errors class="mb-4" />

@@ -79,7 +79,6 @@ class TabInfoForm extends Component
     {
       //  $this->validate();
 
-      Log::info("updateTab data: ".json_encode($this->tabdata));
         // Execution doesn't reach here if validation fails.
         $this->tabdata = Tabs::processUpdates($this->tabdata );      
         $this->showsuccess = true;

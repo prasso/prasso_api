@@ -44,7 +44,6 @@ class AddTeamMember implements AddsTeamMembers
             TeamMemberAdded::dispatch($team, $newTeamMember);
             ##  - Send invite if user is not in the system ##
         } else {
-            Log::info('inviting the user');
             $invitation = Invitation::create([
                 'user_id' => $user->id,
                 'team_id' => $team->id,

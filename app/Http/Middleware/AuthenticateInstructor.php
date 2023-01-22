@@ -25,7 +25,6 @@ class AuthenticateInstructor
       if ($guard->check()) 
       {
         $user = \Auth::user();
-        Log::info('in AuthenticateInstructor, handle, after guard->check: ' . json_encode($user));
 
         //double check because this guard/provider isn't plugged in properly yet
         $instructoruser = $this->instruc->fetchUserByCredentials($user->email);
