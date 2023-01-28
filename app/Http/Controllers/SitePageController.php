@@ -27,11 +27,28 @@ class SitePageController extends Controller
     public function index()
     {
         $welcomepage = null;
-
+Log::info('index dashboard');
         $user = Auth::user();
         if ($user != null)
         {
-            return redirect(RouteServiceProvider::HOME);
+            if ($user->current_team_id == null) {
+                 $user->current_team_id = $user->teams[0]->id;
+                 $user->save(); 
+            }
+            
+            // if the site supports registration, check to see if the site has a DASHBOARD site_page
+            if ( $this->site != null && strcmp($this->site->site_name, config('app.name')) != 0)
+            {
+                $dashboardpage = SitePages::where('fk_site_id',$this->site->id)->where('section','Dashboard')->first();
+                if ($dashboardpage != null)
+                {           
+                    return view('sitepage.masterpage')
+                    ->with('sitePage',$dashboardpage);
+                }
+            }
+            
+            // if not, show the dashboard
+            return view('dashboard');
         }
         
         if ( $this->site != null && strcmp($this->site->site_name, config('app.name')) != 0)

@@ -28,9 +28,7 @@ Route::get('/confirm_newsletter_subscription', 'EmailController@confirm_newslett
 
 Route::get('/page/{section}','SitePageController@viewSitePage');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+Route::get('/dashboard', 'SitePageController@index')->name('dashboard');
 
 
 Route::group(['middleware'=> 'instructorusergroup'], function() {
