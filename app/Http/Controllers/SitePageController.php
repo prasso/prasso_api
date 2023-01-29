@@ -27,7 +27,7 @@ class SitePageController extends Controller
     public function index()
     {
         $welcomepage = null;
-Log::info('index dashboard');
+        
         $user = Auth::user();
         if ($user != null)
         {
