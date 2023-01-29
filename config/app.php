@@ -6,8 +6,8 @@ return [
     'name' => env('APP_NAME', 'Prasso'),
     'env' => env('APP_ENV', 'production'),
     'debug' => (bool) env('APP_DEBUG', false),
-    'url' => env('APP_URL', 'http://localhost'),
-    'photo_url' => env('AWS_URL', 'http://localhost'),
+    'url' => env('APP_URL', ''), ////used in the mail::header
+    'photo_url' => env('AWS_URL', ''), //used for favicons
     'resize_photo_url' =>'https://ata1636khe.execute-api.us-east-1.amazonaws.com/production/image-resize',
     'asset_url' => env('ASSET_URL', null),
     'timezone' => 'UTC',
