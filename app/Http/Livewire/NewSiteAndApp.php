@@ -151,9 +151,11 @@ class NewSiteAndApp extends Component
         $this->newApp::create($newApp);
 
         //notify me that I need to finish this setup with DNS record
-
-        Mail::to('info@prasso.io', 'Prasso Admin')->send(new site_needs_dns($this));
- 
+        try{
+            Mail::to('info@prasso.io', 'Prasso Admin')->send(new site_needs_dns($this));
+        }catch(\Throwable $e){
+            Log::info($e);
+        }
                 
         
         $this->currentStep = 1;
