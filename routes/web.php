@@ -15,10 +15,10 @@ Route::get('terms', function () {
 Route::get('privacy', function () {
     return view('privacy');
 });
-Route::get('contact', function () {
+/* Route::get('contact', function () {
     return view('contact');
 });
-
+ */
 Route::post('/send-email', 'EmailController@sendEmail')->name('send-email');
 Route::get('/page/faqs', 'SiteController@seeFaqs')->name('see-faqs');
 Route::post('/question', 'SiteController@processQuestion')->name('send-question');
