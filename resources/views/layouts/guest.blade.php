@@ -7,9 +7,9 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="description" content=""> 
         <meta name="author" content="">
-        
+         @if (isset($site))
         <title>{{ $site->site_name ." - " }}{{ $title }}</title>
-
+         @endif
         <script src="/js/jquery1.10.0.min.js"></script> 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,8 +27,9 @@
         <script src="{{ asset('/js/app.js') }}" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
         
-        
+         @if (isset($site))
         <link rel="shortcut icon" type="image/png" href="{{ config('app.photo_url').$site->image_folder}}favicon.ico">
+      
         <link rel="icon" type="image/png" href="{{ config('app.photo_url').$site->image_folder}}favicon-16x16.png" sizes="16x16">
         <link rel="icon" type="image/png" href="{{ config('app.photo_url').$site->image_folder}}favicon-32x32.png" sizes="32x32">
         <link rel="icon" sizes="192x192" href="{{ config('app.photo_url').$site->image_folder}}android-chrome-192x192.png">
@@ -36,7 +37,7 @@
         <link rel="apple-touch-icon" href="{{ config('app.photo_url').$site->image_folder}}apple-touch-icon.png">
     
         <style>{{$site->app_specific_css}}</style>
-
+@endif
     </head>
     <body>
         <div class="font-sans text-gray-900 antialiased">
