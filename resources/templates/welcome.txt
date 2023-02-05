@@ -1,0 +1,90 @@
+
+      <nav>
+         <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#testimonials">Testimonials</a></li>
+            <li><a href="/register">Sign Up/Sign In</a></li>
+         </ul>
+      </nav>
+      <div class="hero">
+         <header>
+            <img src="SITE_LOGO_FILE" alt="SITE_NAME">      
+            <h1>SITE_NAME</h1>
+         </header>
+         <h1>Welcome</h1>
+         <p>SITE_DESCRIPTION</p>
+      </div>
+      <main>
+         <section id="about">
+            <h2>About Our Service</h2>
+            <p>This description of our services will enable visitors to recognize the usefulness of our site.</p>
+            <p>This description of our special features will show visitors how they can use our help.</p>
+         </section>
+         <section id="features">
+            <h2>Key Features</h2>
+            <ul>
+               <li>Feature</li>
+               <li>Benefit</li>
+               <li>Feature too</li>
+               <li>Benefit too</li>
+               <li>Features galore</li>
+            </ul>
+         </section>
+         <section id="pricing">
+            <h2>Pricing</h2>
+            <table>
+               <tr>
+                  <th>Plan</th>
+                  <th>Price per Month</th>
+                  <th>Number of Deliveries</th>
+               </tr>
+               <tr>
+                  <td>Basic</td>
+                  <td>$50</td>
+                  <td>Up to 100</td>
+               </tr>
+               <tr>
+                  <td>Standard</td>
+                  <td>$100</td>
+                  <td>Up to 500</td>
+               </tr>
+               <tr>
+                  <td>Premium</td>
+                  <td>$200</td>
+                  <td>Unlimited</td>
+               </tr>
+            </table>
+         </section>
+         <section id="testimonials">
+            <h2>What Our Customers Are Saying</h2>
+            <div class="testimonials">
+               <div class="testimonial">
+                  <p>"I can't believe how much easier our delivery scheduling has become since we started using this service. It's a game changer for our business!"</p>
+                  <p>- John Smith, XYZ Company</p>
+               </div>
+               <div class="testimonial">
+                  <p>"This service has saved us so much time and headache. We highly recommend it to any business that needs to manage deliveries."</p>
+                  <p>- Jane Doe, ABC Company</p>
+               </div>
+            </div>
+            <div class="testimonial">
+               <p>"I can't believe how much easier our delivery scheduling has become since we started using this service. It's a game changer for our business!"</p>
+               <p>- John Smith, XYZ Company</p>
+            </div>
+            <div class="testimonial">
+               <p>"This service has saved us so much time and headache. We highly recommend it to any business that needs to manage deliveries."</p>
+               <p>- Jane Doe, ABC Company</p>
+            </div>
+            </div>   
+         </section>
+         <section id="signup">
+            <h2>Sign Up Now</h2>
+            <p>Ready to give our service a try? Sign up now and start benefiting.</p>
+            <form>       <label for="name">Name:</label><br>       <input type="text" id="name" name="name"><br>       <label for="email">Email:</label><br>       <input type="email" id="email" name="email"><br>       <label for="company">Company:</label><br>       <input type="text" id="company" name="company"><br><br>       <input type="submit" value="Sign Up">     </form>
+         </section>
+      </main>
+      <footer>
+         <p>Copyright 2023</p>
+      </footer>

@@ -62,4 +62,24 @@ class Site extends Model
         TeamSite::create([$team->id, $this->id]);
         return $team;
     }
+
+    public function addDefaultSitePages(){
+        //two templates, welcome.txt and dashboard.txt
+        $content = file_get_contents(resource_path() . '/templates/welcome.txt');
+        $content = str_replace('SITE_NAME', $this->site_name, $content);
+        $content = str_replace('SITE_LOGO_FILE', $this->logo_image, $content);
+        $content = str_replace('SITE_FAVICON_FILE', $this->favicon, $content);
+        $content = str_replace('SITE_DESCRIPTION', $this->description, $content);
+        $welcomepage = SitePages::firstOrCreate(['fk_site_id'=>$this->id,'section'=>'Welcome'],
+            ['description'=>$content,  'title'=>'Welcome','url'=>'html']);
+        $welcomepage->save();
+
+        //dashboard page
+        $content = file_get_contents(resource_path() . '/templates/dashboard.txt');
+        $dashboardpage = SitePages::firstOrCreate(['fk_site_id'=>$this->id,'section'=>'Dashboard'],
+            ['description'=>$content,  'title'=>'Dashboard','url'=>'html']);
+        $dashboardpage->save();
+
+       
+    }
 }

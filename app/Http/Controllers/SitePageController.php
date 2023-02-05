@@ -40,8 +40,14 @@ class SitePageController extends Controller
             if ( $this->site != null && strcmp($this->site->site_name, config('app.name')) != 0)
             {
                 $dashboardpage = SitePages::where('fk_site_id',$this->site->id)->where('section','Dashboard')->first();
+
                 if ($dashboardpage != null)
-                {           
+                {    
+                    //put in the csrf token
+                    $dashboardpage->description = str_replace('CSRF_TOKEN', csrf_token(), $dashboardpage->description);
+                    $dashboardpage->description = str_replace('USER_NAME', $user->name, $dashboardpage->description);
+                    $dashboardpage->description = str_replace('USER_EMAIL', $user->email, $dashboardpage->description);
+                       
                     return view('sitepage.masterpage')
                     ->with('sitePage',$dashboardpage);
                 }
