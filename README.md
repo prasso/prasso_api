@@ -37,6 +37,8 @@ Definition
 * team
   * users
      * roles
+        Three tiers of user roles exist (three are planned).
+        Super-Admin , Site Admin, and App User
   * sites
     * apps
       * tabs
@@ -67,7 +69,6 @@ This allows for prototypes to be ran on mobile immediately, when the web page ha
 
 
 # Overview of functionality
-
 
 A Prasso site is both business information site and Prasso api site. The api serves the Prasso apps. Apps can be assembled/ built at a Prasso site using the admin tools. And then when a user with an assigned team and app logs into the mobile app, the assembled presentation becomes their personalized mobile app.
 
@@ -101,9 +102,17 @@ Firebase is required for the Prasso app, since users are authenticated at Fireba
 - Enable Authentication for email/password
 - Create a Cloud Firestore database.
 
+### Help to configure the setup for dns configuration
 
-Three tiers of user roles exist (three are planned).
-Super-Admin , Site Admin, and App User
+the command is
+
+```jsx
+php artisan setup:dns sitename
+```
+
+- install and setup the aws cli
+    - at aws you will need to obtain an iam key with access to arn:aws:route53:::hostedzone/Z05231071JDWEVVYAI5HR because no identity-based policy allows the route53:ChangeResourceRecordSets action
+    
 
 ## Admin Site
 ### Sites

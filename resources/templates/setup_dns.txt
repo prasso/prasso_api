@@ -1,0 +1,20 @@
+aws route53 change-resource-record-sets --hosted-zone-id {$zone_id} --change-batch ' 
+                { 
+                    "Comment": "Update record to add new CNAME record", 
+                    "Changes": [ 
+                        { 
+                            "Action": "UPSERT", 
+                            "ResourceRecordSet": { 
+                                "Name": "{$sitename}.", 
+                                "Type": "CNAME", 
+                                "TTL": 300, 
+                                "ResourceRecords": [ 
+                                    { 
+                                        "Value": "prasso.io" 
+                                    } 
+                                ] 
+                            } 
+                        } 
+                    ] 
+                } '
+                

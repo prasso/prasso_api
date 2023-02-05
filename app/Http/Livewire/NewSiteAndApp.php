@@ -8,8 +8,9 @@ use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\site_needs_dns;
+use App\Mail\new_site_notification;
 use Auth;
+use Illuminate\Support\Facades\Artisan;
 
 
 use Livewire\Component;
@@ -149,15 +150,21 @@ class NewSiteAndApp extends Component
 
         $newApp = $this->newApp->toArray();
         $this->newApp::create($newApp);
-
-        //notify me that I need to finish this setup with DNS record
+        $dns_command = "artisan dns:setup {$this->host}";
+        
+        Artisan::call("dns:setup", [
+            'site' => $this->host
+        ]);
+        //notify me new site and app
         try{
-            Mail::to('info@prasso.io', 'Prasso Admin')->send(new site_needs_dns($this));
+            Mail::to('info@prasso.io', 'Prasso Admin')->send(new new_site_notification($this));
         }catch(\Throwable $e){
             Log::info($e);
         }
                 
-        
+        //add the two site pages, welcome and dashboard
+        $site->addDefaultSitePages();
+
         $this->currentStep = 1;
         session()->flash('message', 'Site created successfully. Please wait for DNS setup to complete.');
         redirect()->route('sites.show')
