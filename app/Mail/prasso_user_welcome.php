@@ -34,6 +34,7 @@ class prasso_user_welcome extends Mailable
         return $this->subject(config('constants.PRASSO_USER_WELCOME_EMAIL'))
                 ->view('email.prasso_user_welcome')
                 ->with('user_email',$this->user->email)
-                ->with('user_current_team_id', 1); // this is me for now. will change to the current coach
+                ->with('user_current_team_id', $this->user->current_team_id); 
+                
     }
 }
