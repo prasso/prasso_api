@@ -3,7 +3,7 @@
                     <div class="mb-4">
                             <label for="hostInput" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
                             <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nameInput" placeholder="Enter Name" wire:model="site_name">
-                            @error('section') <span class="text-red-500">{{ $message }}</span>@enderror
+                            @error('site_name') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
                             <label for="descriptionInput" class="block text-gray-700 text-sm font-bold mb-2">Description: </label>
@@ -13,7 +13,7 @@
                         <div class="mb-4">
                             <label for="hostInput" class="block text-gray-700 text-sm font-bold mb-2">Host:</label>
                             <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="hostInput" placeholder="Enter Host" wire:model="host">
-                            @error('section') <span class="text-red-500">{{ $message }}</span>@enderror
+                            @error('host') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
                             <label for="main_colorInput" class="block text-gray-700 text-sm font-bold mb-2">Main Color:</label>
