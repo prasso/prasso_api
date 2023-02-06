@@ -42,8 +42,8 @@ class NewSiteAndApp extends Component
     public $step1, $step2, $step3, $step4 = false;
 
     protected $rules = [
-            'site_name' => 'required|string|max:200',
-            'host' => 'required|string|max:200',
+            'site_name' => 'required|string|max:200|unique:sites',
+            'host' => 'required|string|max:200|unique:sites',
             'main_color' => 'required|string|min:6',
             'business_type' => 'required',
             'description' => 'required',
@@ -150,8 +150,7 @@ class NewSiteAndApp extends Component
 
         $newApp = $this->newApp->toArray();
         $this->newApp::create($newApp);
-        $dns_command = "artisan dns:setup {$this->host}";
-        
+
         Artisan::call("dns:setup", [
             'site' => $this->host
         ]);
@@ -159,6 +158,7 @@ class NewSiteAndApp extends Component
         try{
             Mail::to('info@prasso.io', 'Prasso Admin')->send(new new_site_notification($this));
         }catch(\Throwable $e){
+            Log::info("Error sending email: {$site->host}");
             Log::info($e);
         }
                 

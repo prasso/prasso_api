@@ -65,7 +65,14 @@ class Site extends Model
 
     public function addDefaultSitePages(){
         //two templates, welcome.txt and dashboard.txt
-        $content = file_get_contents(resource_path() . '/templates/welcome.txt');
+        $content = '';
+        if ($this->supports_registration)
+        {
+            $content = file_get_contents(resource_path() . '/templates/welcome.txt');
+        }
+        else{
+            $content = file_get_contents(resource_path() . '/templates/welcome_no_register.txt');
+        }
         $content = str_replace('SITE_NAME', $this->site_name, $content);
         $content = str_replace('SITE_LOGO_FILE', $this->logo_image, $content);
         $content = str_replace('SITE_FAVICON_FILE', $this->favicon, $content);
@@ -74,11 +81,15 @@ class Site extends Model
             ['description'=>$content,  'title'=>'Welcome','url'=>'html']);
         $welcomepage->save();
 
-        //dashboard page
-        $content = file_get_contents(resource_path() . '/templates/dashboard.txt');
-        $dashboardpage = SitePages::firstOrCreate(['fk_site_id'=>$this->id,'section'=>'Dashboard'],
-            ['description'=>$content,  'title'=>'Dashboard','url'=>'html']);
-        $dashboardpage->save();
+        //if this site supports registration, then create a dashboard page
+        if ($this->supports_registration)
+        {
+            $content = file_get_contents(resource_path() . '/templates/dashboard.txt');
+            $dashboardpage = SitePages::firstOrCreate(['fk_site_id'=>$this->id,'section'=>'Dashboard'],
+                ['description'=>$content,  'title'=>'Dashboard','url'=>'html']);
+            $dashboardpage->save();
+        }
+        
 
        
     }
