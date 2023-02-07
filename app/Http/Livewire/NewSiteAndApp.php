@@ -129,6 +129,7 @@ class NewSiteAndApp extends Component
         $this->newSite->database = 'prasso';
         $this->newSite->favicon = 'favicon.ico';
         $this->newSite->supports_registration = $this->supports_registration;//
+        $this->newSite->app_specific_css = ".teambutton {background-color: {$this->main_color};}";
 
         $newSite = $this->newSite->toArray();
         $site = $this->newSite::create($newSite);
