@@ -45,10 +45,19 @@ class CreateNewUser implements CreatesNewUsers
                 $host = request()->getHttpHost();
 
                 $site = Site::getClient($host);
-
+                if ($site == null)
+                {
+                    Log::error('Site not found for host: ' . $host);
+                    $site = Site::getClient( 'prasso.io');
+                }
                 //get the team from the site
                 if ($site->supports_registration) {
                     $teamsite = TeamSite::where('site_id', $site->id)->first();
+                    if ($teamsite == null)
+                    {
+                        Log::error('TeamSite not found for site: ' . $site->id);
+                        $teamsite = TeamSite::where('site_id', 1)->first();
+                    }
                     $team = Team::where('id', $teamsite->team_id)->first();
                     $team->users()->attach(
                         $user,
