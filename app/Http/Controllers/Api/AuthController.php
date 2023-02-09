@@ -248,33 +248,6 @@ class AuthController extends BaseController
         } 
     }
  
-    public function uploadFoodImageApi(Request $request)
-    {
-
-        info('saving a food image. ');
-        $user = $this->setUpUser($request,null);
-        if ($user == null)
-        {
-            return $this->sendToUnauthorized();
-        }
-        $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
-        ]);
-        $filePath = $this->uploadImage($request, config('constants.PROFILE_PHOTO_PATH') .'photos-', $user->id); 
-        if ($filePath != '')
-        {
-            $success['foodImageUrl'] = $filePath;
-            info('file uploaded: '.$filePath);
-            return $this->sendResponse($success, 'Image uploaded successfully.');
-        }
-        else
-        {
-            $success['foodImageUrl'] = 'image upload failed';
-            return $this->sendError($success, 'error');
-        }
-
-    }
-
     public function uploadProfileImageApi(Request $request)
     {
 

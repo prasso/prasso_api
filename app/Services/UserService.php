@@ -7,10 +7,11 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Invitation;
 use App\Models\Team;
 use App\Models\TeamUser;
+use App\Models\TeamSite;
 use App\Models\CommunityUser;
 use App\Models\Instructor;
 use App\Models\User;
-use App\Models\ThirdPartyToken;
+use App\Models\Site;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\newsletter_signup;
 use Str;
@@ -26,6 +27,42 @@ class UserService
       $this->instruc = $suser;
     }
 
+    public function isUserOnTeam($user)
+    {
+      //if the user is super admin he can log into any site ( that's me for now)
+      if ($user->hasRole(config('constants.SUPER_ADMIN')))
+      {
+        return true;
+      }
+      $host = request()->getHttpHost();
+
+      $site = Site::getClient($host);
+      if ($site == null)
+      {
+          Log::error('Site not found for host: ' . $host);
+          $site = Site::getClient( 'prasso.io');
+          Log::info('site: ' . $site->name . ' is the default site from host: '. $host);
+      }
+      //get the team from the site
+      if (!$site->supports_registration) {
+        return false;
+      }
+      $teamsite = TeamSite::where('site_id', $site->id)->first();
+      if ($teamsite == null)
+      {
+          Log::error('TeamSite not found for site: ' . $site->id);
+          $teamsite = TeamSite::where('site_id', 1)->first();
+      }
+      $team = Team::where('id', $teamsite->team_id)->first();
+  
+      $teamuser = TeamUser::where('user_id', $user->id)->where('team_id', $team->id)->first();
+      Log::info('teamuser: ' . $teamuser);
+      if ($teamuser != null)
+      {
+        return true;
+      }
+      return false;
+    }
 
     // create the instructor access and return success
     public function addOrUpdateSubscription($request, $user, $appsService, $site)

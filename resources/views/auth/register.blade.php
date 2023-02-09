@@ -7,7 +7,13 @@
         </x-slot>
 
         <x-jet-validation-errors class="mb-4" />
-
+        @if(Session::get('message'))
+        <div class="relative px-3 py-3 mb-4 border rounded text-teal-800 border-teal-900 bg-teal-300">
+                <ul>
+                    <li>{{Session::get('message')}}</li>
+                </ul>
+            </div>
+        @endif
         <form method="POST" action="{{ route('register') }}">
             @csrf
 
@@ -39,8 +45,8 @@
                 <x-jet-input class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
             </div>
 
-            <div class="flex items-center justify-end mt-4 mr-4">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
+            <div class="flex items-center justify-end mt-4">
+                <a class="underline text-sm text-gray-600 hover:text-gray-900 mr-4" href="{{ route('login') }}">
                     {{ __('Already registered?') }}
                 </a>
 
