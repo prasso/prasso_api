@@ -26,6 +26,10 @@ const btnMute = document.getElementById("mute");
 const btnSettings = document.getElementById("settings");
 const settingsMenu = document.getElementById("settings-menu");
 
+
+  // Initialize player
+  const player = IVSPlayer.create();
+
 // Btn icons
 let setBtnPaused = function(){
   btnPlay.classList.remove("btn--play");
@@ -52,8 +56,6 @@ let setBtnUnmute = function(){
   const PlayerState = IVSPlayer.PlayerState;
   const PlayerEventType = IVSPlayer.PlayerEventType;
 
-  // Initialize player
-  const player = IVSPlayer.create();
   player.attachHTMLVideoElement(videoPlayer);
 
   // Attach event listeners
