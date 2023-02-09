@@ -47,7 +47,7 @@ class CreateNewUser implements CreatesNewUsers
                 $site = Site::getClient($host);
                 if ($site == null)
                 {
-                    Log::error('Site not found for host: ' . $host);
+                    Log::error('create new user - Site not found for host: ' . $host. ' using prasso.io');
                     $site = Site::getClient( 'prasso.io');
                 }
                 //get the team from the site
