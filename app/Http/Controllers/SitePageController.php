@@ -53,13 +53,7 @@ class SitePageController extends Controller
 
                 if ($dashboardpage != null)
                 {    
-                    //put in the csrf token
-                    $dashboardpage->description = str_replace('CSRF_TOKEN', csrf_token(), $dashboardpage->description);
-                    $dashboardpage->description = str_replace('USER_NAME', $user->name, $dashboardpage->description);
-                    $dashboardpage->description = str_replace('USER_EMAIL', $user->email, $dashboardpage->description);
-                    $dashboardpage->description = str_replace('USER_PROFILE_PHOTO', $user->getProfilePhoto(), $dashboardpage->description);
-                    
-                       
+                    $dashboardpage->description = $this->prepareTemplate($dashboardpage->description);
                     return view('sitepage.masterpage')
                     ->with('sitePage',$dashboardpage);
                 }
@@ -77,9 +71,29 @@ class SitePageController extends Controller
         {
             return view('welcome');
         }
-        
-        return view('sitepage.masterpage')
+        $welcomepage->description = $this->prepareTemplate($welcomepage->description);
+        return view('sitepage.blankpage')
             ->with('sitePage',$welcomepage);
+    }
+
+    private function prepareTemplate($page_content){
+
+        $user = Auth::user() ?? null;
+        if ($user == null) return $page_content;
+
+        //replace the tokens in the dashboard page with the user's name, email, and profile photo
+        $page_content = str_replace('CSRF_TOKEN', csrf_token(), $page_content);
+        $page_content = str_replace('MAIN_SITE_COLOR', $this->site->main_color, $page_content);
+        $page_content = str_replace('USER_NAME', $user->name, $page_content);
+        $page_content = str_replace('USER_EMAIL', $user->email, $page_content);
+        $page_content = str_replace('USER_PROFILE_PHOTO', $user->getProfilePhoto(), $page_content);
+        $page_content = str_replace('SITE_MAP', $this->site->getSiteMapList(), $page_content);
+        $page_content = str_replace('SITE_NAME', $this->site->site_name, $page_content);
+        $page_content = str_replace('SITE_LOGO_FILE', $this->site->logo_image, $page_content);
+        $page_content = str_replace('SITE_FAVICON_FILE', $this->site->favicon, $page_content);
+        $page_content = str_replace('SITE_DESCRIPTION', $this->site->description, $page_content);
+  
+        return $page_content;      
     }
     /**
      * return welcome page
@@ -88,12 +102,16 @@ class SitePageController extends Controller
      */
     public function viewSitePage($section)
     {
+        $user = Auth::user() ?? null;
+        if ($user == null) return redirect('/login');
+        
         $sitepage = SitePages::where('fk_site_id',$this->site->id)->where('section',$section)->first();
 
         if ($sitepage == null)
         {
             return view('welcome');
         }
+        $sitepage->description = $this->prepareTemplate($sitepage->description);
         return view('sitepage.masterpage')
             ->with('sitePage',$sitepage);
     }

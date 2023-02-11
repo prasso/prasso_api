@@ -73,10 +73,6 @@ class Site extends Model
         else{
             $content = file_get_contents(resource_path() . '/templates/welcome_no_register.txt');
         }
-        $content = str_replace('SITE_NAME', $this->site_name, $content);
-        $content = str_replace('SITE_LOGO_FILE', $this->logo_image, $content);
-        $content = str_replace('SITE_FAVICON_FILE', $this->favicon, $content);
-        $content = str_replace('SITE_DESCRIPTION', $this->description, $content);
         $welcomepage = SitePages::firstOrCreate(['fk_site_id'=>$this->id,'section'=>'Welcome'],
             ['description'=>$content,  'title'=>'Welcome','url'=>'html']);
         $welcomepage->save();
@@ -89,8 +85,78 @@ class Site extends Model
                 ['description'=>$content,  'title'=>'Dashboard','url'=>'html']);
             $dashboardpage->save();
         }
-        
+    }
+    // a function to get the site pages for this site
+    public function getSitePages()
+    {
+        $sitepages = SitePages::where('fk_site_id',$this->id)->get();
+        return $sitepages;
+    }
 
-       
+    public function getSiteMapList()
+    {
+        $sitepages = $this->getSitePages();
+        $sitemap = array();
+        foreach ($sitepages as $page)
+        {
+            $sitemap[$page->section] = $page->title;
+        }
+        //format $sitemap into a list of LIs
+        $list = '';
+        foreach ($sitemap as $key => $value)
+        {
+            $list .= '<li><a href="/page/' . $key . '">' . $value . '</a></li>';
+        }
+        return $list;
+    }
+
+    public function getDarkFontColorFromMainColor(){
+        // write code here that looks at the site main color and returns a border color which is a shade darker
+        // first create a color from the main color
+        $color = $this->adjustBrightness($this->main_color,-10);
+        return $color;
+
+
+    }
+    
+    public function getNavBackgroundFromMainColor(){
+        // write code here that looks at the site main color and returns a border color which is a shade darker
+        // first create a color from the main color
+        $color = $this->adjustBrightness($this->main_color,100);
+        return $color;
+
+
+    }
+    
+    public function getBorderColorFromMainColor(){
+        // write code here that looks at the site main color and returns a border color which is a shade darker
+        // first create a color from the main color
+        $color = $this->adjustBrightness($this->main_color,-1);
+        return $color;
+
+
+    }
+    
+    function adjustBrightness($hex, $steps) {
+        // Steps should be between -255 and 255. Negative = darker, positive = lighter
+        $steps = max(-255, min(255, $steps));
+    
+        // Normalize into a six character long hex string
+        $hex = str_replace('#', '', $hex);
+        if (strlen($hex) == 3) {
+            $hex = str_repeat(substr($hex,0,1), 2).str_repeat(substr($hex,1,1), 2).str_repeat(substr($hex,2,1), 2);
+        }
+    
+        // Split into three parts: R, G and B
+        $color_parts = str_split($hex, 2);
+        $return = '#';
+    
+        foreach ($color_parts as $color) {
+            $color   = hexdec($color); // Convert to decimal
+            $color   = max(0,min(255,$color + $steps)); // Adjust color
+            $return .= str_pad(dechex($color), 2, '0', STR_PAD_LEFT); // Make two char hex code
+        }
+    
+        return $return;
     }
 }

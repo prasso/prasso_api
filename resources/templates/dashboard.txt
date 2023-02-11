@@ -1,96 +1,18 @@
-<style>
-  body {
-  font-family: 'Open Sans', sans-serif;
-  color: #333;
-  background-color: #f1f1f1;
-  line-height: 1.5;
-  margin:20px;
-  }
-    .testimonial {
-  border: 1px solid #ccc;
-  padding: 20px;
-  margin: 20px 0;
-}
 
-.testimonial p:first-of-type {
-  font-style: italic;
-}
-
-.testimonial p:last-of-type {
-  font-size: 0.8em;
-  color: #666;
-}
-header {  align-items: center;}
-
-header img {
-  float: left;
-  position: relative;
-  left:50px;
-  top: -120px;
-  margin: 20px;
-}
-
-header h1 {
-  font-size: 2em;
-}
-.hero {
-  background-color: #aaa;
-  color: #fff;
-  padding: 150px 0;
-  text-align: center;
-}
-.hero h1 {
-  font-size: 48px;
-  margin: 0;
-}
-.hero p {
-  font-size: 24px;
-  margin: 0;
-  text-align: center;
-  color:#184594;
-  max-width: 100%;
-}
-p {
-  font-size: 18px;
-  padding: 2%;
-  text-align:center;
-
-}
-nav ul li {float:right; padding:10px;font-weight: 900;}
-nav {height: 50px;margin:0; padding:3px; background: #ddd;}
-section {clear:both; border-bottom: solid 1px #184594; padding: 20px; margin: 20px 0;}
-section h2 {color:#03b258;font-size: 36px; text-align:center; margin: 0; padding: 5px;}
-section ul{text-align:center;}
-section table{text-align:center;  margin-left: auto;
-  margin-right: auto;}
-#about {background-color: #fff;}
-#features {background-color: #fff;}
-#pricing {background-color: #fff;}
-#testimonials {background-color: #fff;}
-#signup {background-color: #fff;}
-</style>
 <div class="shadow overflow-hidden sm:rounded-md">
      <div class="p-12 bg-white col-span-12 items-center ">
         <div class="max-w-xs p-0 m-auto">
-            <div class="flex px-4">
-                <div class="flex-shrink-0">
-                    <img class="h-10 w-10 rounded-full" src="USER_PROFILE_PHOTO" alt="USER_NAME" />
-                </div>
-
-                <div class="ml-3">
-                    <div class="font-medium text-base text-gray-800">USER_NAME</div>
-                    <div class="font-medium text-sm text-gray-500">USER_EMAIL</div>
-                </div>
-            </div>
-            
-                <div class="border-t border-gray-200"></div>
-
-                <div class="m-auto text-center">
-                    <form method="POST" action="/logout">
-                        <input type="hidden" name="_token" value="CSRF_TOKEN" />
-                        <input type="submit" value="logout" />
-                    </form>
-                </div>
+            <nav>
+              <ul>
+                  SITE_MAP
+              </ul>
+            </nav>
+            <div class="border-t border-gray-200"></div>
+            <div class="m-auto text-center">
+                <form method="POST" action="/logout">
+                    <input type="hidden" name="_token" value="CSRF_TOKEN" />
+                    <input type="submit" value="logout" />
+                </form>
             </div>
         </div>
     </div>
