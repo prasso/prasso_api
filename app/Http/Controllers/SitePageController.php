@@ -79,19 +79,20 @@ class SitePageController extends Controller
     private function prepareTemplate($page_content){
 
         $user = Auth::user() ?? null;
-        if ($user == null) return $page_content;
 
         //replace the tokens in the dashboard page with the user's name, email, and profile photo
         $page_content = str_replace('CSRF_TOKEN', csrf_token(), $page_content);
         $page_content = str_replace('MAIN_SITE_COLOR', $this->site->main_color, $page_content);
-        $page_content = str_replace('USER_NAME', $user->name, $page_content);
-        $page_content = str_replace('USER_EMAIL', $user->email, $page_content);
-        $page_content = str_replace('USER_PROFILE_PHOTO', $user->getProfilePhoto(), $page_content);
         $page_content = str_replace('SITE_MAP', $this->site->getSiteMapList(), $page_content);
         $page_content = str_replace('SITE_NAME', $this->site->site_name, $page_content);
         $page_content = str_replace('SITE_LOGO_FILE', $this->site->logo_image, $page_content);
         $page_content = str_replace('SITE_FAVICON_FILE', $this->site->favicon, $page_content);
         $page_content = str_replace('SITE_DESCRIPTION', $this->site->description, $page_content);
+        if ($user != null){
+            $page_content = str_replace('USER_NAME', $user->name, $page_content);
+            $page_content = str_replace('USER_EMAIL', $user->email, $page_content);
+            $page_content = str_replace('USER_PROFILE_PHOTO', $user->getProfilePhoto(), $page_content);
+        }
   
         return $page_content;      
     }
