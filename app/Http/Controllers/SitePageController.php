@@ -88,6 +88,7 @@ class SitePageController extends Controller
         $page_content = str_replace('SITE_LOGO_FILE', $this->site->logo_image, $page_content);
         $page_content = str_replace('SITE_FAVICON_FILE', $this->site->favicon, $page_content);
         $page_content = str_replace('SITE_DESCRIPTION', $this->site->description, $page_content);
+
         if ($user != null){
             $page_content = str_replace('USER_NAME', $user->name, $page_content);
             $page_content = str_replace('USER_EMAIL', $user->email, $page_content);
