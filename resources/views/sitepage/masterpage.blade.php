@@ -24,6 +24,7 @@
         <!-- Scripts -->
         <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.2.1/dist/alpine.js" defer></script>
         <link rel="icon" type="image/png" href="{{$site->favicon??''}}" />
+
         <style>
             body {
             font-family: 'Open Sans', sans-serif;
