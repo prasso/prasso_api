@@ -7,6 +7,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
+use App\Models\Site;
 
 class welcome_user extends Mailable
 {
@@ -25,7 +27,16 @@ class welcome_user extends Mailable
      */
     public function build()
     {
-        //Log::info('send mail to: '.json_encode($this->to));
-        return $this->subject(config('constants.WELCOME_EMAIL_SUBJECT'))->view('email.welcome_user')->with('user_email',$this->user->email);
+        $host = request()->getHttpHost();
+        $site = Site::getClient($host);
+        if ($site == null)
+        {
+            $site = Site::getClient( 'prasso.io');
+        }
+
+        $subject = 'Welcome to '.$site->site_name;
+
+        return $this->subject($subject)->view('email.welcome_user')
+                    ->with('site',$site)->with('user_email',$this->user->email);
     }
 }
