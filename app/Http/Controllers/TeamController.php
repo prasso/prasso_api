@@ -174,8 +174,7 @@ class TeamController extends Controller
             }
         }
         
-       // $this->processCalendar($sendto);
-
+      
             foreach($sendto as $userid)
             {
                 if ($is_pn_request)
@@ -186,7 +185,6 @@ class TeamController extends Controller
                 }
                 else {
                      //ship this off to the logic that processes emails
-                   // info('sending an email: '.$userid);
                    $receipient_user = \App\Models\User::where('id',$userid)->first();
                     
                     if ($is_email_request)
@@ -222,68 +220,7 @@ class TeamController extends Controller
         return redirect()->back();
     }
 
-    private function processCalendar($sendTo){
-        //sendto is the list of users to send to
-        //start with a blank calendar
-        //loop through the list of users
-        //each user gets assigned a day a week after the previous user
-        //print the user's name and the day they are assigned
-        //when the end of the user list is reached, start over at the beginning
-        //until a year is filled
-
-        //order sendto by id
-        $sendTo = collect($sendTo)->sort()->toArray();
-        foreach($sendTo as $userid)
-        {
-            info('sending an email: '.$userid);
-        }
-        $calendar = [];
-        $day = 0;
-        $week = 0;
-        $year = 0;
-        $usercount = count($sendTo);
-        $userindex = 0;
-       
-
-        //set a variable equal to today's date
-        $today = new \DateTime();
-        $user = \App\Models\User::where('id',$sendTo[$userindex])->first();
-        $today_str = $today->format('Y-m-d');
-        $calendar[$year][$week][$day] = $today_str.$user->name;
-        info( $today_str.':'.$user->name);
-        $userindex++;
-        
     
-        //increment that date by one week
-        $today->add(new \DateInterval('P7D'));
-        
-
-        while ($week < 52)
-        {
-            while ($day < 7)
-            {
-                if ($day ==6)
-                {
-                    if ($userindex >= $usercount)
-                    {
-                        $userindex = 0;
-                    }
-                    $user = \App\Models\User::where('id',$sendTo[$userindex])->first();
-                    $today_str = $today->format('Y-m-d');
-                    $calendar[$year][$week][$day] = $today_str.$user->name;
-                    info( $today_str.':'.$user->name);
-                    $userindex++;
-                }
-                $day++;
-            }
-
-            $day = 0;
-            $week++;
-
-            $today->add(new \DateInterval('P7D'));
-        }
-        return $calendar;
-    }
 
     /**
      * Show the app edit form 

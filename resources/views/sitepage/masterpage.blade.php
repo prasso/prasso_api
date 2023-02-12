@@ -99,7 +99,7 @@
             #pricing {background-color: #fff;}
             #testimonials {background-color: #fff;}
             #signup {background-color: #fff;}
-            button, [type="button"], [type="reset"], [type="submit"]{color:#f1f1f1;background-color:{{ $site->main_color }}; padding: 6px 3px 6px 3px ;border-radius: 5px;margin: 20px;}
+            teambutton, button, [type="button"], [type="reset"], [type="submit"]{color:#f1f1f1;background-color:{{ $site->main_color }}; padding: 6px 3px 6px 3px ;border-radius: 5px;margin: 20px;}
             </style>
         @if (isset($site->app_specific_css) && str_starts_with($site->app_specific_css, 'http') )
             <link rel="stylesheet" href="{{$site->app_specific_css}}">
@@ -116,6 +116,11 @@
     <body>
         <div class="p-12 bg-white col-span-12 items-center ">
             <header class="flex justify-between items-center">
+                <div class="relative col-span-3 left-0">
+                @if ($site->logo_image)
+                    <img src="{{ $site->logo_image }}" alt="{{ $site->site_name }}"  class="block h-9 w-auto" />
+                @endif
+                </div>
                 <div class="max-w-xs p-0 m-auto">
                 @if ($sitePage->section != "Dashboard")
                     <nav>
