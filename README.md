@@ -1,16 +1,10 @@
 
-## About Prasso, Rapid Prototype Tool
+## About Prasso
+Prasso is a platform that streamlines the app prototype process for owners by providing a wizard-like framework for gathering the necessary details and building custom mobile and web apps.
 
-A Laravel team site, used to feed application structure information to a Prasso app. Prasso app is a rapid prototyping tool that is configured with this api.
-### Prasso Definition·
-Definition
-- to exercise, practise, to be busy with, carry on
-- to undertake, to do
-- to accomplish, perform
-- to commit, perpetrate
-- to manage public affairs, transact public business
-- to exact tribute, revenue, debts
-- to act
+With Prasso you can create both your app api backend and your web site with one setup form. And then with the admin tools customize those to add branding and content.
+
+This API backend is based on the Laravel framework. It is used to feed application structure information to a Prasso app and site. Prasso app is a rapid prototyping tool that is configured with this api.
 
 ## Prasso Concept
 1. everything is based on a site.

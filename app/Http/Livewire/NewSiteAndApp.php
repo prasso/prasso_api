@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\new_site_notification;
 use Auth;
 use Illuminate\Support\Facades\Artisan;
+use Livewire\WithFileUploads;
 
 
 use Livewire\Component;
@@ -22,6 +23,8 @@ use Livewire\Component;
   */
 class NewSiteAndApp extends Component
 {
+    use WithFileUploads;
+
     public $business_type;
 
     public $newApp;
@@ -41,13 +44,16 @@ class NewSiteAndApp extends Component
     public $currentStep = 1;
     public $step1, $step2, $step3, $step4 = false;
 
+    public $photo;
+
     protected $rules = [
             'site_name' => 'required|string|max:200|unique:sites',
             'host' => 'required|string|max:200|unique:sites',
             'main_color' => 'required|string|min:6',
             'business_type' => 'required',
             'description' => 'required',
-            'logo_image' => 'required',
+            'logo_image' => 'required_without:photo|starts_with:http',
+            'photo' => 'required_without:logo_image|max:1024'
            ];
         
     public function mount(User $user, Team $team, Request $request)
@@ -125,7 +131,7 @@ class NewSiteAndApp extends Component
         $this->newSite->description = $this->description; //
         $this->newSite->host =  $this->host; //
         $this->newSite->main_color = $this->main_color; //
-        $this->newSite->logo_image = $this->logo_image; //
+        $this->newSite->logo_image = $this->logo_image??'pending upload'; //
         $this->newSite->database = 'prasso';
         $this->newSite->favicon = 'favicon.ico';
         $this->newSite->supports_registration = $this->supports_registration;//
@@ -140,6 +146,13 @@ class NewSiteAndApp extends Component
         }
         
         $team = $site->createTeam($this->current_user->id);
+
+        //upload the image if present
+        if ($this->photo){
+            $this->logo_image = $site->uploadImage($this->photo);
+            $site->logo_image = $this->logo_image;
+            $site->save();
+        }
 
         /**put the data into newSite and newApp*/
         $this->newApp->team_id = $team->id;

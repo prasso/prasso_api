@@ -4,6 +4,9 @@
     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
 @endif
                     <div class="">
+                    @if($errors->any())
+                        {!! implode('', $errors->all('<div>:message</div>')) !!}
+                    @endif
                     <div class="mb-4">
                             <label for="hostInput" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
                             <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nameInput" placeholder="Enter Name" wire:model="site_name">
@@ -24,15 +27,25 @@
                             <input type="color"  id="main_colorInput" placeholder="Enter Main Color"  wire:model="main_color" >
                             @error('main_color') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
-                        <div class="mb-4">
-                            <label for="logo_imageInput" class="block text-gray-700 text-sm font-bold mb-2">logo_image: (enter html if this is a page of the site)</label>
-                            <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="logo_imageInput" wire:model="logo_image" placeholder="Enter Logo Url"></textarea>
-                            @error('logo_image') <span class="text-red-500">{{ $message }}</span>@enderror
-                        </div>
-                        <div class="mb-4">
-                            <label for="databaseInput" class="block text-gray-700 text-sm font-bold mb-2">database: </label>
-                            <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="databaseInput" placeholder="Enter database" wire:model="database">
-                            @error('database') <span class="text-red-500">{{ $message }}</span>@enderror
+                        <div class="col-span-6">
+                            <x-jet-label value="{{ __('Logo Image') }}" />
+                            <div class="flex items-center mt-2">
+                                @if (isset($photo) && !empty ($photo->temporaryUrl()) )
+                                <img class=" h-12 rounded-full object-cover" src="{{ $photo->temporaryUrl() }}" alt="{{ $site_name }}">
+                                @else
+                                    @if( !empty($logo_image))
+                                    <img class=" h-12 rounded-full object-cover" src="{{ $logo_image }}" alt="{{ $site_name }}">
+                                    @else
+                                        No logo supplied                    
+                                    @endif
+                                @endif
+                                {{ $logo_image }}
+                        
+                                    <input type="file" wire:model="photo"  class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+                
+                                    @error('photo') <span class="error">{{ $message }}</span> @enderror
+                
+                            </div>
                         </div>
                         <div class="mb-4">
                             <label for="faviconInput" class="block text-gray-700 text-sm font-bold mb-2">favicon: </label>
