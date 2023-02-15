@@ -126,8 +126,6 @@ class Site extends Model
         // first create a color from the main color
         $color = $this->adjustBrightness($this->main_color,-10);
         return $color;
-
-
     }
     
     public function getNavBackgroundFromMainColor(){
@@ -135,8 +133,6 @@ class Site extends Model
         // first create a color from the main color
         $color = $this->adjustBrightness($this->main_color,100);
         return $color;
-
-
     }
     
     public function getBorderColorFromMainColor(){
@@ -144,8 +140,6 @@ class Site extends Model
         // first create a color from the main color
         $color = $this->adjustBrightness($this->main_color,-1);
         return $color;
-
-
     }
     
     function adjustBrightness($hex, $steps) {
@@ -169,5 +163,16 @@ class Site extends Model
         }
     
         return $return;
+    }
+
+    /**
+     * Uploads an image for the site
+     * @param photo
+     * @return string
+     */
+    public function uploadImage($photo){
+        $photo->store(config('constants.APP_LOGO_PATH') .'logos-'.$this->id, 's3');
+        $logo_image = config('constants.CLOUDFRONT_ASSET_URL') . config('constants.APP_LOGO_PATH') .'logos-'.$this->id.'/'. $photo->hashName();
+        return $logo_image;
     }
 }
