@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use Auth;
 /**
  * Class Site.
  *
@@ -33,7 +34,9 @@ class Site extends Model
         'logo_image',
         'database',
         'favicon',
-        'supports_registration'
+        'supports_registration',
+        'app_specific_js',
+        'app_specific_css'
     ];
 
     public static function getClient( $host) 
@@ -107,6 +110,14 @@ class Site extends Model
         {
             $list .= '<li><a href="/page/' . $key . '">' . $value . '</a></li>';
         }
+        
+        // if this user is an admin then add the site editor
+        if (Auth::user() !=null && Auth::user()->isInstructor())
+        {
+            $list .= '<li><a href="/site/edit">Site Editor</a></li>';
+        }
+
+    
         return $list;
     }
 

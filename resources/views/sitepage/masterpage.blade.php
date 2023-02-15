@@ -135,12 +135,13 @@
                         <img class="h-10 w-10 rounded-full" src="{{ Auth::user()->getProfilePhoto() }}" alt="{{ Auth::user()->name }}" />
                         </div>
                         <div class="ml-3">
-                            <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
+                            <div class="font-medium text-base text-gray-800"><a href="/user/profile">{{ Auth::user()->name }}</a></div>
                             <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
                         </div>
                     </div>
             </header>
             <div class="font-sans text-gray-900 antialiased">
+                {{Session::get('message')}}
                 {!!  $sitePage->description !!}
             </div>
         
