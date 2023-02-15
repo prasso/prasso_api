@@ -1,4 +1,8 @@
-<div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+@if( !isset($show_modal) || $show_modal)
+    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+@else
+    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+@endif
                     <div class="">
                     <div class="mb-4">
                             <label for="hostInput" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
@@ -34,6 +38,16 @@
                             <label for="faviconInput" class="block text-gray-700 text-sm font-bold mb-2">favicon: </label>
                             <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="faviconInput" placeholder="Enter favicon" wire:model="favicon">
                             @error('favicon') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="app_specific_jsInput" class="block text-gray-700 text-sm font-bold mb-2">Custom Script:<br><sm>(file location or code)</sm> </label>
+                            <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="app_specific_jsInput" placeholder="Enter app_specific_js" wire:model="app_specific_js">
+                            @error('app_specific_js') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="app_specific_cssInput" class="block text-gray-700 text-sm font-bold mb-2">Custom CSS:<br><sm>(file location or code)</sm></label>
+                            <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="app_specific_cssInput" placeholder="Enter app_specific_css" wire:model="app_specific_css">
+                            @error('app_specific_css') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
                             <label for="supports_registrationInput" class="block text-gray-700 text-sm font-bold mb-2">New users can register: </label>

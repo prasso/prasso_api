@@ -51,6 +51,8 @@ Route::group(['middleware'=> 'instructorusergroup'], function() {
     Route::get('/profile/prasso_profile','User2Controller@prasso_profile')->name('prasso.profile');
     Route::post('/profile/profile_update_image','User2Controller@uploadProfileImage')->name('upload.post.image');
     
+    
+    Route::get('/site/edit', 'MySiteController@editMySite')->name('site.edit.mysite');
 
 });
 
