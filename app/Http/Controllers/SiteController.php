@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Site;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller as BaseController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use App\Models\faqs_storage;
+use Auth;
+use App\Http\Requests\SiteRequest;
 
 class SiteController extends BaseController
 {
-    public function __construct(Request $request)
+    public function __construct(SiteRequest $request)
     {
         parent::__construct( $request);
         $this->middleware('superadmin');
@@ -93,7 +94,7 @@ class SiteController extends BaseController
      */
     public function create()
     {
-        return view('sites.create');
+        return view('sites.create-or-edit');
     }
 
     /**
@@ -102,15 +103,9 @@ class SiteController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SiteRequest $request)
     {
-        $request->validate([
-            'host' => 'required',
-            'logo_image' => 'required',
-            'main_color' => 'required',
-            'database' => 'required' ,
-            'favicon' => 'required'
-        ]);
+        $request->validated();
 
         Site::create($request->all());
 
@@ -136,15 +131,9 @@ class SiteController extends BaseController
      * @param  \App\Models\Site  $site
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Site $site)
+    public function update(SiteRequest $request, Site $site)
     {
-        $request->validate([
-            'host' => 'required',
-            'logo_image' => 'required',
-            'main_color' => 'required',
-            'database' => 'required',
-            'favicon' => 'required'
-        ]);
+        $request->validated();
         $site->update($request->all());
 
         return redirect()->route('sites.index')
@@ -164,6 +153,20 @@ class SiteController extends BaseController
         return redirect()->route('sites.index')
             ->with('success', 'Site deleted successfully');
     }
+
+    /**
+     * Show the form for editing the logged in user's site.
+     *
+     * @param  \App\Models\Site  $site
+     * @return \Illuminate\Http\Response
+     */
+    public function editMySite(Request $request, Site $site)
+    {
+        info('editMySite()');
+        $host = request()->getHttpHost();
+        $mysite = Site::getClient($host);
+        return view('sites.my-site-editor')->with('site', $mysite)->with('user', Auth::user())->with('team', Auth::user()->currentTeam);
+    }   
 
 
 }

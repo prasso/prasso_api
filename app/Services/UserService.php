@@ -56,7 +56,7 @@ class UserService
       $team = Team::where('id', $teamsite->team_id)->first();
   
       $teamuser = TeamUser::where('user_id', $user->id)->where('team_id', $team->id)->first();
-      Log::info('teamuser: ' . $teamuser);
+
       if ($teamuser != null)
       {
         return true;

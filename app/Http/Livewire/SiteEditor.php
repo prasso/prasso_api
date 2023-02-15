@@ -6,19 +6,19 @@ use Livewire\Component;
 use App\Models\User;
 use App\Models\TeamSite;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Request;
+use App\Http\Requests\SiteRequest;
 use App\Models\Site;
 use Auth;
 
 class SiteEditor extends Component
 {
-    public $sites, $site_id,$site_name, $host,$main_color,$logo_image, $database, $favicon, $supports_registration;
+    public $sites, $site_id,$site_name, $host,$main_color,$logo_image, $database, $favicon, $supports_registration, $app_specific_js, $app_specific_css;
     public $current_user;
     public $isOpen = 0;
+
     
-    public function mount(User $user, Request $request)
+    public function mount(User $user)
     {
-        //does this user have an admin role?
         $this->current_user = $user;
     }
 
@@ -68,6 +68,8 @@ class SiteEditor extends Component
         $this->favicon = '';
         $this->site_id = '';
         $this->supports_registration = false;
+        $this->app_specific_js ='';
+        $this->app_specific_css = '';
     }
      
     /**
@@ -77,15 +79,10 @@ class SiteEditor extends Component
      */
     public function store()
     {
+        $siteRequest = new SiteRequest();
+        $this->validate($siteRequest->rules());
 
-        $this->validate([
-            'site_name' => 'required',
-            'host' => 'required',
-            'main_color' => 'required',
-            'logo_image' => 'required',
-            'database' => 'required',
-            'favicon' => 'required'
-        ]);
+        
         $newsite=false;
         if (empty($this->site_id))
         {
@@ -100,6 +97,8 @@ class SiteEditor extends Component
             'database' => $this->database,
             'favicon' => $this->favicon,
             'supports_registration' => $this->supports_registration,
+            'app_specific_js' => $this->app_specific_js,
+            'app_specific_css' => $this->app_specific_css,
         ]);
   
         // new sites need new team
@@ -134,6 +133,8 @@ class SiteEditor extends Component
         $this->database = $site->database;
         $this->favicon = $site->favicon;
         $this->supports_registration = $site->supports_registration;
+        $this->app_specific_js = $site->app_specific_js;
+        $this->app_specific_css = $site->app_specific_css;
 
         $this->openModal();
     }
