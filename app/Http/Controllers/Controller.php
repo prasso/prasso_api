@@ -19,9 +19,8 @@ class Controller extends BaseController
 
     public function __construct(Request $request)
     {
-        $host = $request->getHost();
-
-        $site = Site::getClient($host);
+        
+        $site = Controller::getClientFromHost();
         $this->site = $site;
 
         View::share('site', $site);
@@ -61,4 +60,23 @@ class Controller extends BaseController
 
         return response()->json($response, $code);
     }
+
+    /**
+     * find the client from the host.
+     * if no client for this host, send to the default 404.
+     *
+     */
+    public static function getClientFromHost()
+    {
+        $host = request()->getHttpHost();
+            
+        $site = Site::getClient($host);
+        if ($site == null || !isset($site) )
+        {
+            abort(404);
+            return null;
+        }
+        return $site;
+    }
+
 }

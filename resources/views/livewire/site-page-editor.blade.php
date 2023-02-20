@@ -17,7 +17,7 @@
             @endif
             <button wire:click="create()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-3">Create New Site Page</button>
             @if($isOpen)
-                @include('sitepage.create')
+                @include('sitepage.create-or-edit')
             @endif          
             @if($isVisualEditorOpen)
                 @include('sitepage.visual-editor')

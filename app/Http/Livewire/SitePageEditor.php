@@ -4,13 +4,14 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\SitePages;
+use App\Models\MasterPage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Models\Site;
 
 class SitePageEditor extends Component
 {
-    public $sitePages,$site_name,$fk_site_id, $section, $title, $description, $url, $sitePage_id;
+    public $sitePages,$site_name,$fk_site_id, $section, $title, $description, $url, $sitePage_id, $masterpage;
     
     public $isOpen = 0;
     public $isVisualEditorOpen = 0;
@@ -35,12 +36,23 @@ class SitePageEditor extends Component
         $this->site = $site;
         $this->site_name = $site['site_name'];
         $this->siteid = $siteid;
+    }/**
+     * 
+    public function render()
+    {   
+        return view('livewire.user-management')
+            ->withUsers(User::orderBy('name')->get());
     }
+
+     */
+
 
     public function render()
     {
+        $masterpage_recs = MasterPage::orderBy('pagename')->get();
         $this->sitePages = SitePages::where('fk_site_id', $this->siteid)->get();
-        return view('livewire.site-page-editor');
+        return view('livewire.site-page-editor')
+            ->with('masterpage_recs', $masterpage_recs);
     }
 
     public function create()
@@ -92,6 +104,7 @@ class SitePageEditor extends Component
         $this->description = '';
         $this->url = '';
         $this->sitePage_id = '';
+        $this->masterpage = '';
         
     }
      
@@ -102,20 +115,22 @@ class SitePageEditor extends Component
      */
     public function store()
     {
-
+        $this->section = preg_replace('/\s+/', '', $this->section??'');
         $this->validate([
-            'section' => 'required',
+            'section' => "required|unique:site_pages,section,{{ $this->sitePage_id }},id,fk_site_id,{{ $this->siteid }}",
             'title' => 'required',
             'description' => 'required',
             'url' => 'required',
+            'masterpage' => 'required',
         ]);
-        
+        Log::info('sitepageeditor store() '.$this->sitePage_id.' '.$this->siteid.' '.$this->section.' '.$this->title.' '.$this->url.' '.$this->masterpage);
         SitePages::updateOrCreate(['id' => $this->sitePage_id], [
-            'fk_site_id' => $this->site['id'],
+            'fk_site_id' => $this->siteid,
             'section' => $this->section,
             'title' => $this->title,
             'description' => $this->description,
             'url' => $this->url,
+            'masterpage' => $this->masterpage,
         ]);
   
         session()->flash('message', 
@@ -139,6 +154,7 @@ class SitePageEditor extends Component
         $this->title = $sitePage->title;
         $this->description = $sitePage->description;
         $this->url = $sitePage->url;
+        $this->masterpage = $sitePage->masterpage;
 
         $this->openModal();
     }
@@ -158,6 +174,7 @@ class SitePageEditor extends Component
         $this->title = $sitePage->title;
         $this->description = $sitePage->description;
         $this->url = $sitePage->url;
+        $this->masterpage = $sitePage->masterpage;
 
         $this->openVisualModal();
     }

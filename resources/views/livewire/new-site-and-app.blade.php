@@ -1,8 +1,8 @@
 <div>
 <x-slot name="header">
 
-    <x-jet-dropdown-link href="{{ route('apps.show', Auth::user()->allTeams()->first()->id)  }}">
-                {{ __('Return to Apps') }}
+    <x-jet-dropdown-link href="{{ route('dashboard')  }}">
+                {{ __('Return to Dashboard') }}
             </x-jet-responsive-nav-link>
 </x-slot>
 
@@ -17,11 +17,12 @@
     
 <x-slot name="form" >
 
-    <div wire:loading>
-        Creating your site...
+  <div class="col-span-6 sm:col-span-6 prose">
+  <div wire:loading>
+      <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+          Creating your site...
+      </div>
     </div>
-<div class="col-span-6 sm:col-span-6">
-
 
 @if ($step1)
   <!-- Step 1: Business Information -->
@@ -60,10 +61,8 @@
   @if ($step3)
   <!-- Step 3: Branding -->
   <div class="step  inset-0  ease-out duration-400" id="step-3">
-    <h2>Branding</h2>
-    <label for="logo-url">Logo URL:</label>
-    <input wire:model.defer='logo_image' class='form-input rounded-md shadow-sm mt-1 block w-full' type="text" id="logo-url" name="logo-url">
-    <br>
+    <h2>Your main primary color:</h2>
+   
     <label for="primary-color">Primary Color:</label>
     <input wire:model.defer='main_color' class='rounded-md shadow-sm  block' type="color" id="primary-color" name="primary-color">
     <br>
@@ -92,14 +91,19 @@
 </x-slot>
 
 <x-slot name="actions">
-@if($step4)
+@if($step4 )
     <x-jet-action-message class="mr-3" on="saved">
         {{ __('Saved.') }}
     </x-jet-action-message>
-
-    <x-jet-button wire:loading.remove>
+    <x-jet-button wire:loading.remove wire:processing.attr="disabled" >
+      <i wire:loading wire:target='submitForm' class="fas fa-spin fa-spinner mr-2"></i> 
         {{ __('Create Your Site and App') }}
     </x-jet-button>
+    <div wire:loading>
+      <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+          Creating your site...
+      </div>
+    </div>
 @endif
 </x-slot>
 </x-jet-form-section>

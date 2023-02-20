@@ -3,12 +3,10 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Request;
-use App\Models\Site;
+use App\Http\Controllers\Controller;
 
 class welcome_user extends Mailable
 {
@@ -27,12 +25,7 @@ class welcome_user extends Mailable
      */
     public function build()
     {
-        $host = request()->getHttpHost();
-        $site = Site::getClient($host);
-        if ($site == null)
-        {
-            $site = Site::getClient( 'prasso.io');
-        }
+        $site=Controller::getClientFromHost();
 
         $subject = 'Welcome to '.$site->site_name;
 

@@ -12,19 +12,32 @@
                     <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
                 </div>
             </div>
-            <x-jet-responsive-nav-link href="{{ route('apps.newsiteandapp', Auth::user()->current_team_id)  }}">
-                <div class="text-center bg-gray-50 border-2 border-indigo-600/100">
-                <div class="font-sans  text-lg font-semibold text-gray-600">
-                    {{ __('New Site and App') }}
+            @if (Auth::user()->isSuperAdmin() || Auth::user()->getSiteCount() == 0)
+                <x-jet-responsive-nav-link href="{{ route('apps.newsiteandapp', Auth::user()->current_team_id)  }}">
+                    <div class="text-center bg-gray-50 border-2 border-indigo-600/100">
+                    <div class="font-sans  text-lg font-semibold text-gray-600">
+                        {{ __('New Site and App') }}
+                    </div>
                 </div>
-            </div>
-            </x-jet-responsive-nav-link>
+                </x-jet-responsive-nav-link>
+            @else
+                <!-- a link to this user's site dashboard -->
+                <x-jet-responsive-nav-link href="{{  Auth::user()->getUserSiteUrl()  }}">
+                    <div class="mt-3 space-y-1">
+                    <div class="font-sanstext-gray-600">
+                        {{ __('My Site Dashboard') }}
+                    </div>
+                    </div>
+                </x-jet-responsive-nav-link>
+            @endif
+            
             <div class="mt-3 space-y-1">
                 <!-- Account Management -->
                 <x-jet-responsive-nav-link href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')">
                     {{ __('Profile') }}
                 </x-jet-responsive-nav-link>
                 <div class="border-t border-gray-200 mt-2"></div>
+</div>
                 @if (Auth::user()->isSuperAdmin())
                 <div class="font-sans block px-4 py-2 text-lg font-semibold text-gray-600">
                     {{ __('Manage Apps') }}
@@ -73,7 +86,7 @@
                 @endif
                 @endif
 
-                <div class="m-auto text-center">
+                <div class="m-auto mt-2">
                     <!-- Authentication -->
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf

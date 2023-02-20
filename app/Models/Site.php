@@ -41,28 +41,63 @@ class Site extends Model
 
     public static function getClient( $host) 
     {
-        $host = $host;
-
-        $currentsite =  self::where('host' ,  $host )
-                ->orWhere('host', 'like', '%' . $host . '%')->get()->first();
-
-        if ($currentsite != null)
+        if ($host == null)
         {
-            $id = $currentsite->id;
+            Log::info('Site get client failed for null host: ');
+            abort(404);
+            return null;
         }
-        return $currentsite;
+    try{
+        $currentsite = Site::where('host' ,  $host )
+                ->orWhere('host', 'like', '%' . $host . '%')->get();
+
+        if ($currentsite == null)
+        {
+            Log::info('Site get client failed for host: ');
+            return null;
+        }
+        
+        return $currentsite[0];
+    }
+    catch(\Exception $e){
+        Log::info('Site get client failed for host: ' . $host . ' with error: ' . $e->getMessage());
+        return null;
+    }
+    return null;
     }
 
-    public function createTeam($userid){
+    public function assignToUserTeam($current_user_id){
+        //team is the first team of the user that isn't prasso
+        $team = Team::where('user_id', $current_user_id)->where('id', '!=', 1)->first();
+        if ($team == null)
+        {
+            $team = $this->createTeam($current_user_id);
+        }
+        Auth::user()->switchTeam($team);
+        Auth::user()->save();
+
+         //and the teamsite table needs to be updated
+         TeamSite::create(['team_id' => $team->id, 'site_id' => $this->id]);
+         $team->refresh();
+         return $team;
+    }
+
+    private function createTeam($userid){
+        if ($this->id == null || $userid == null)
+        {
+            throw Exception('Site or user id is null in Site::createTeam');
+        }
         $team = Team::forceCreate([
             'name' => $this->site_name,
             'user_id' => $userid,
             'personal_team' => false,          
             'phone' => '',
         ]);
-
-        //and the teamsite table needs to be updated
-        TeamSite::create([$team->id, $this->id]);
+        if ($team->id == null)
+        {
+            throw Exception('Team id is null in Site::createTeam');
+        }
+        
         return $team;
     }
 
