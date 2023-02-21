@@ -5,7 +5,9 @@
 @endif
                     <div class="">
                     @if($errors->any())
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                         {!! implode('', $errors->all('<div>:message</div>')) !!}
+                    </div>
                     @endif
                     <div class="mb-4">
                             <label for="hostInput" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
@@ -43,7 +45,7 @@
                         
                                     <input type="file" wire:model="photo"  class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
                 
-                                    @error('photo') <span class="error">{{ $message }}</span> @enderror
+                                    @error('photo') <span class="text-red-500">{{ $message }}</span> @enderror
                 
                             </div>
                         </div>

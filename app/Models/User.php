@@ -119,7 +119,7 @@ class User extends Authenticatable {
 
     public function teams() {
         return $this->hasMany(Team::class, 'user_id', 'id')
-            ->with('apps');
+            ->with('apps')->with('site');
     }
 
     public function team_member() {
@@ -241,13 +241,7 @@ class User extends Authenticatable {
         }
         $this->email = $user_from_app['email'];
         $this->profile_photo_path = $user_from_app['photoURL'];
-        $this->enableMealReminders = $user_from_app['enableMealReminders'] ? str_replace('\\', '', $user_from_app['enableMealReminders']) : '0';
-
-        if ($this->enableMealReminders = '1') {
-            $this->reminderTimesJson = $user_from_app['reminderTimesFromJson'] ?? config('constants.REMINDER_TIMES');
-        }
-
-
+        
         if (isset($user_from_app['appName']))
         {
             //does this user have a matching app? if not, set it up for them
@@ -262,6 +256,41 @@ class User extends Authenticatable {
                 UserActiveApp::processUpdates($this->id, $teamapp->id);
             }
         }
+    }
+    public function getSiteCount() {
+
+        $teams = $this->teams->toArray();
+        
+        $site_count = 0;
+        foreach($teams as $team)
+        {
+            $site_count += count($team['site']);
+        }
+        return $site_count;
+    }
+
+    public function getUserSiteUrl(){
+        $teams = $this->teams->toArray();
+
+        if($this->current_team_id == 1)
+        {
+            foreach($teams as $team)
+            {
+                if ($team['id'] != 1)
+                {
+                    $this->current_team_id = $team['id'];
+                }
+                break;
+            }
+        }
+        
+        $teamsite = TeamSite::where('team_id', $this->current_team_id)->first();
+        $site = Site::where('id', $teamsite->site_id)->first();
+        
+        $site_url = $site['host'];
+        
+        
+        return "https://$site_url";
     }
 
     public function sendWelcomeEmail() {

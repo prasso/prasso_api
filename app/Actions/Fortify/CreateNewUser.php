@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Jetstream\Events\TeamMemberAdded;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -41,15 +42,9 @@ class CreateNewUser implements CreatesNewUsers
                 'phone' => '',
                 'version' => '',
             ]), function (User $user) use ($input) {
-                //get the site from the host
-                $host = request()->getHttpHost();
 
-                $site = Site::getClient($host);
-                if ($site == null)
-                {
-                    Log::error('create new user - Site not found for host: ' . $host. ' using prasso.io');
-                    $site = Site::getClient( 'prasso.io');
-                }
+                $site = Controller::getClientFromHost();
+
                 //get the team from the site
                 if ($site->supports_registration) {
                     $teamsite = TeamSite::where('site_id', $site->id)->first();
@@ -68,7 +63,7 @@ class CreateNewUser implements CreatesNewUsers
                     TeamMemberAdded::dispatch($team, $user);
                 }
                 else{
-                    $this->createTeam($user);
+                    $this->createTeam($user,$site);
                 }
                 
                 $user->sendWelcomeEmail();

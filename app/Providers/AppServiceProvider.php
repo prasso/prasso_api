@@ -8,6 +8,7 @@ use App\Models\Site;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
+use App\Http\Controllers\Controller;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -36,8 +37,7 @@ class AppServiceProvider extends ServiceProvider
       $site = $site;
       if ($site->host == '')
       {
-        $host = $request->getHost();
-        $site = Site::getClient($host);         
+        $site = Controller::getClientFromHost();        
       }
 
 

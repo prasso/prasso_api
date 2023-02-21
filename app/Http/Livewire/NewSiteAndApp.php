@@ -12,6 +12,9 @@ use App\Mail\new_site_notification;
 use Auth;
 use Illuminate\Support\Facades\Artisan;
 use Livewire\WithFileUploads;
+use App\Http\Requests\SiteRequest;
+
+use Illuminate\Support\Facades\Validator;
 
 
 use Livewire\Component;
@@ -26,9 +29,7 @@ class NewSiteAndApp extends Component
     use WithFileUploads;
 
     public $business_type;
-
     public $newApp;
-
     public $newSite;
     public $site_name; //
     public $description; //
@@ -44,17 +45,8 @@ class NewSiteAndApp extends Component
     public $currentStep = 1;
     public $step1, $step2, $step3, $step4 = false;
 
-    public $photo;
 
-    protected $rules = [
-            'site_name' => 'required|string|max:200|unique:sites',
-            'host' => 'required|string|max:200|unique:sites',
-            'main_color' => 'required|string|min:6',
-            'business_type' => 'required',
-            'description' => 'required',
-            'logo_image' => 'required_without:photo|starts_with:http',
-            'photo' => 'required_without:logo_image|max:1024'
-           ];
+    public $photo;
         
     public function mount(User $user, Team $team, Request $request)
     {
@@ -76,7 +68,13 @@ class NewSiteAndApp extends Component
 
     public function updated($propertyName)
     {
-        $this->validateOnly($propertyName);
+        if ($propertyName == 'host') $this->checkhost();
+        $siteRequest = new SiteRequest();
+        $this->resetErrorBag($propertyName);
+     
+        $this->validateOnly($propertyName, $siteRequest->rules());
+         
+
     }    
 
     public function wizardProgress($direction){
@@ -108,10 +106,9 @@ class NewSiteAndApp extends Component
 
                 break;
             case 4:
-
-        $this->host =  $this->host.'.prasso.io'; //
-        $this->database = 'prasso';
-        $this->favicon = 'favicon.ico';
+                $this->checkhost();
+                $this->database = 'prasso';
+                $this->favicon = 'favicon.ico';
 
                 $this->step1 = false;
                 $this->step2 = false;
@@ -121,11 +118,17 @@ class NewSiteAndApp extends Component
 
         }
     }
+    private function checkhost(){
+        $this->host = str_replace(' ', '', $this->host);
+        if ( !str_ends_with($this->host,  'prasso.io')){
+             $this->host =  $this->host.'.prasso.io';
+        }
+    }
 
     public function createSiteAndApp()
     {
-        $validatedData = $this->validate();
-        //the code will not continue if it is not validated
+        $siteRequest = new SiteRequest();
+        $this->validate($siteRequest->rules());
 
         $this->newSite->site_name = $this->site_name; //
         $this->newSite->description = $this->description; //
@@ -135,17 +138,13 @@ class NewSiteAndApp extends Component
         $this->newSite->database = 'prasso';
         $this->newSite->favicon = 'favicon.ico';
         $this->newSite->supports_registration = $this->supports_registration;//
-        $this->newSite->app_specific_css = ".teambutton {background-color: {$this->main_color};}";
+        $this->newSite->app_specific_css = ".teambutton {color:#f1f1f1;background-color: {$this->main_color};}";
 
         $newSite = $this->newSite->toArray();
         $site = $this->newSite::create($newSite);
 
-        if ($this->current_user == null)
-        {
-            $this->current_user = Auth::user();
-        }
-        
-        $team = $site->createTeam($this->current_user->id);
+        $this->current_user = Auth::user();
+        $team = $site->assignToUserTeam($this->current_user->id);
 
         //upload the image if present
         if ($this->photo){
@@ -181,7 +180,7 @@ class NewSiteAndApp extends Component
 
         $this->currentStep = 1;
         session()->flash('message', 'Site created successfully. Please wait for DNS setup to complete.');
-        redirect()->route('sites.show')
+        redirect()->route('dashboard')
             ->with('success', 'Site created successfully. Please wait for DNS setup to complete.');
     }
 }
