@@ -10,7 +10,7 @@ use App\Services\UserService;
 use App\Models\Instructor;
 use Auth;
 
-class MySiteController extends BaseController
+class MySiteController extends Controller
 {
 
     protected $userService;
@@ -32,10 +32,10 @@ class MySiteController extends BaseController
      * @param  \App\Models\Site  $site
      * @return \Illuminate\Http\Response
      */
-    public function editMySite(Request $request, Site $site)
+    public function editMySite(Request $request)
     {
-        $host = request()->getHttpHost();
-        $mysite = Site::getClient($host);
+        $mysite = Controller::getClientFromHost();
+
         //does the current user have access to this site?
 
         // a user can edit a site if they belong to the sites team and have instructor permissions

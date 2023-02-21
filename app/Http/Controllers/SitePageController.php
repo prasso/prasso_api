@@ -46,6 +46,7 @@ class SitePageController extends Controller
                 session()->flash('status','You are not a member of this site.');
                 return redirect('/login');
             }
+            
             // if the site supports registration, check to see if the site has a DASHBOARD site_page
             if ( $this->site != null && strcmp($this->site->site_name, config('app.name')) != 0)
             {
@@ -54,7 +55,7 @@ class SitePageController extends Controller
                 if ($dashboardpage != null)
                 {    
                     $dashboardpage->description = $this->prepareTemplate($dashboardpage->description);
-                    return view('sitepage.masterpage')
+                    return view($dashboardpage->masterpage)  
                     ->with('sitePage',$dashboardpage);
                 }
             }
@@ -72,7 +73,7 @@ class SitePageController extends Controller
             return view('welcome');
         }
         $welcomepage->description = $this->prepareTemplate($welcomepage->description);
-        return view('sitepage.blankpage')
+        return view('sitepage.templates.blankpage')
             ->with('sitePage',$welcomepage);
     }
 
@@ -105,7 +106,7 @@ class SitePageController extends Controller
     public function viewSitePage($section)
     {
         $user = Auth::user() ?? null;
-        if ($user == null) return redirect('/login');
+        if ($user == null) return redirect('login');
         
         $sitepage = SitePages::where('fk_site_id',$this->site->id)->where('section',$section)->first();
 
@@ -114,7 +115,7 @@ class SitePageController extends Controller
             return view('welcome');
         }
         $sitepage->description = $this->prepareTemplate($sitepage->description);
-        return view('sitepage.masterpage')
+        return view($sitepage->masterpage)//use the template here
             ->with('sitePage',$sitepage);
     }
      /**

@@ -162,9 +162,7 @@ class SiteController extends BaseController
      */
     public function editMySite(Request $request, Site $site)
     {
-        info('editMySite()');
-        $host = request()->getHttpHost();
-        $mysite = Site::getClient($host);
+        $mysite = Controller::getClientFromHost();
         return view('sites.my-site-editor')->with('site', $mysite)->with('user', Auth::user())->with('team', Auth::user()->currentTeam);
     }   
 

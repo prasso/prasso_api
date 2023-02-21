@@ -65,7 +65,9 @@ class TeamController extends Controller
     {
         $user = Auth::user(); 
         $team = Team::where('id',$user->current_team_id)->first();
-
+        if ($team == null){
+            throw new \Exception('newSiteAndApp: Team not found in current_team_id');
+        }
         return view('apps.new-site-wizard')
             ->with('user', $user)
             ->with('team', $team);

@@ -35,7 +35,7 @@ class CreateOrEdit extends Component
         
     public function mount(Site $site, User $user, Team $team, $show_modal)
     {
-        if ($site == null) $site = new Site();
+        if ($site == null) return;
         $this->show_modal = $show_modal;
 
         //does this user have an admin role?
@@ -74,7 +74,6 @@ class CreateOrEdit extends Component
     {
         $siteRequest = new SiteRequest();
         $this->validate($siteRequest->rules());
-log::info("CreateOrEdit store site 1");
         if (empty($this->id))
         {
             $this->id = 0;
@@ -82,7 +81,6 @@ log::info("CreateOrEdit store site 1");
         
         $site = $this->save();
 
-log::info("CreateOrEdit store site 2");
         if (isset($this->photo))
         {
             $this->siteid = $site->id;
@@ -91,7 +89,6 @@ log::info("CreateOrEdit store site 2");
             $this->save();
         }
 
-log::info("CreateOrEdit store site 3");
         return redirect()->route('site.edit.mysite')
             ->with('success', 'Site edit successful.');
     }

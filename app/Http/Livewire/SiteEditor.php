@@ -87,22 +87,20 @@ class SiteEditor extends Component
     public function store()
     {
 
-log::info("SiteEditor store site 0");
-
-if (empty($this->database))
-{
-$this->database = 'prasso';
-}
+        if (empty($this->database))
+        {
+            $this->database = 'prasso';
+        }
         $siteRequest = new SiteRequest();
         $this->validate($siteRequest->rules());
-log::info("SiteEditor store site 1");
+
         $newsite=false;
         if (empty($this->site_id))
         {
             $this->site_id = 0;
             $newsite=true;
         }
-        log::info("SiteEditor store site 2");
+        
         $site = Site::updateOrCreate(['id' => $this->site_id], [
             'site_name' => $this->site_name,
             'description' => $this->description,
@@ -116,8 +114,6 @@ log::info("SiteEditor store site 1");
             'app_specific_css' => $this->app_specific_css,
         ]);
   
-
-log::info("SiteEditor store site 3");
         // new sites need a new team for their users
         if ($newsite)
         {
@@ -126,7 +122,6 @@ log::info("SiteEditor store site 3");
             $site->createTeam($this->current_user->id);
         }
 
-        log::info("SiteEditor store site 4");
         //upload the image if present
         if ($this->photo){
             $this->logo_image = $site->uploadImage($this->photo);
@@ -134,7 +129,6 @@ log::info("SiteEditor store site 3");
             $site->save();
         }
 
-        log::info("SiteEditor store site 5");
         session()->flash('message', 
             $this->site_id ? 'Site Updated Successfully.' : 'Site Created Successfully.');
   

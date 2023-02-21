@@ -11,12 +11,11 @@ use App\Models\TeamSite;
 use App\Models\CommunityUser;
 use App\Models\Instructor;
 use App\Models\User;
-use App\Models\Site;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\newsletter_signup;
 use Str;
-use App\Jobs\ObtainThirdPartyToken;
-use App\Models\UserRole;
+use App\Http\Controllers\Controller;
+
 
 class UserService 
 {
@@ -34,15 +33,8 @@ class UserService
       {
         return true;
       }
-      $host = request()->getHttpHost();
+      $site = Controller::getClientFromHost();
 
-      $site = Site::getClient($host);
-      if ($site == null)
-      {
-          Log::error('Site not found for host: ' . $host);
-          $site = Site::getClient( 'prasso.io');
-          Log::info('site: ' . $site->name . ' is the default site from host: '. $host);
-      }
       //get the team from the site
       if (!$site->supports_registration) {
         return false;
