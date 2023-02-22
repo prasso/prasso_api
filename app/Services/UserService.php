@@ -26,6 +26,11 @@ class UserService
       $this->instruc = $suser;
     }
 
+    /**
+     *       special rules for site access if it's the base, prasso.io site
+     *       1. users that are registered through prasso.io can log in there, 
+     *          even if they have created another site
+     */
     public function isUserOnTeam($user)
     {
       //if the user is super admin he can log into any site ( that's me for now)
@@ -33,12 +38,14 @@ class UserService
       {
         return true;
       }
-      $site = Controller::getClientFromHost();
 
-      //get the team from the site
-      if (!$site->supports_registration) {
+      $site = Controller::getClientFromHost();
+      if ($site == null)
+      {
         return false;
       }
+
+      //get the team from the site
       $teamsite = TeamSite::where('site_id', $site->id)->first();
       if ($teamsite == null)
       {
@@ -193,14 +200,14 @@ info('addOrUpdateSubscription: '.json_encode($user));
         }
         else
         {
-          $user->ownedTeams()->save(Team::forceCreate([
+          $new_team = $user->ownedTeams()->save(Team::forceCreate([
               'user_id' => $user->id,
               'name' => explode(' ', $user->name, 2)[0]."'s Team",
               'personal_team' => true,
               'phone' => $user->phone,
           ]));
           $user->refresh();
-          TeamUser::addToTeam($user,$user->allTeams()->first()->id); 
+          TeamUser::addToTeam($user,$new_team->id); 
         }
         $user->save();
 

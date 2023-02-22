@@ -52,16 +52,19 @@ class TeamUser extends Model
 
     public static function addToTeam($user, $team_id)
     {
-        //put this person on the specified team
-        $team = Team::where('id',$team_id)->get() ;
-        TeamUser::forceCreate([
-            'user_id' => $user->id,
-            'team_id' => $team_id,
-            'role' => config('constants.TEAM_USER_ROLE')
-        ]);
-        
+        //put this person on the specified team if not already on it
+        $team_member = TeamUser::where('user_id',$user->id)->where('team_id', $team_id)->first();
+        if ($team_member == null)
+        {
+            TeamUser::forceCreate([
+                'user_id' => $user->id,
+                'team_id' => $team_id,
+                'role' => config('constants.TEAM_USER_ROLE')
+            ]);
+        }
         $user->current_team_id = $team_id;
         $user->save();
+        $team = Team::where('team_id',$team_id)->get();
         TeamMemberAdded::dispatch($team, $user);
 
     }

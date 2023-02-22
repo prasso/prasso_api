@@ -23,6 +23,7 @@ class SitePageController extends Controller
         $this->sitePageService = $sitePageService;
         $this->userService = $userServ;
     }
+
     /**
      * return welcome page if one is defined for this site
      *
@@ -35,33 +36,7 @@ class SitePageController extends Controller
         $user = Auth::user() ?? null;
         if ($user != null)
         {
-            if ($user->current_team_id == null) {
-                 $user->current_team_id = $user->teams[0]->id;
-                 $user->save(); 
-            }
-            //verify that the user is a member of the current site's team
-            if (!$this->userService->isUserOnTeam($user))
-            {
-                Auth::logout();
-                session()->flash('status','You are not a member of this site.');
-                return redirect('/login');
-            }
-            
-            // if the site supports registration, check to see if the site has a DASHBOARD site_page
-            if ( $this->site != null && strcmp($this->site->site_name, config('app.name')) != 0)
-            {
-                $dashboardpage = SitePages::where('fk_site_id',$this->site->id)->where('section','Dashboard')->first();
-
-                if ($dashboardpage != null)
-                {    
-                    $dashboardpage->description = $this->prepareTemplate($dashboardpage->description);
-                    return view($dashboardpage->masterpage)  
-                    ->with('sitePage',$dashboardpage);
-                }
-            }
-            
-            // if not, show the dashboard
-            return view('dashboard');
+            return $this->getDashboardForCurrentSite($user);
         }
         
         if ( $this->site != null && strcmp($this->site->site_name, config('app.name')) != 0)
@@ -75,6 +50,37 @@ class SitePageController extends Controller
         $welcomepage->description = $this->prepareTemplate($welcomepage->description);
         return view('sitepage.templates.blankpage')
             ->with('sitePage',$welcomepage);
+    }
+
+    /**
+     * this code verifies that the user is a member of the current site's team
+     * loads up the dashboard if the user is logged in and belongs to this site's team
+     */
+    private function getDashboardForCurrentSite($user){
+        
+        $user->setCurrentTeam();
+       
+        if ( !$this->userService->isUserOnTeam($user) )
+        {
+            Auth::logout();
+            session()->flash('status','You are not a member of this site.');
+            return redirect('/login');
+        }
+        
+        // if the site supports registration, check to see if the site has a DASHBOARD site_page
+        if ( $this->site != null && strcmp($this->site->site_name, config('app.name')) != 0)
+        {
+            $dashboardpage = SitePages::where('fk_site_id',$this->site->id)->where('section','Dashboard')->first();
+            if ($dashboardpage != null)
+            {    
+                $dashboardpage->description = $this->prepareTemplate($dashboardpage->description);
+                return view($dashboardpage->masterpage)  
+                ->with('sitePage',$dashboardpage);
+            }
+        }
+        
+        // if not, show the dashboard
+        return view('dashboard');
     }
 
     private function prepareTemplate($page_content){
@@ -98,6 +104,7 @@ class SitePageController extends Controller
   
         return $page_content;      
     }
+
     /**
      * return welcome page
      *
@@ -106,18 +113,25 @@ class SitePageController extends Controller
     public function viewSitePage($section)
     {
         $user = Auth::user() ?? null;
-        if ($user == null) return redirect('login');
-        
         $sitepage = SitePages::where('fk_site_id',$this->site->id)->where('section',$section)->first();
 
         if ($sitepage == null)
         {
             return view('welcome');
         }
+        if ( ($sitepage->requiresAuthentication() && $user == null ) ||
+                ($user != null && !$this->userService->isUserOnTeam($user)))
+        {
+            Auth::logout();
+            session()->flash('status','You are not a member of this site.');
+            return redirect('/login');
+        }
+
         $sitepage->description = $this->prepareTemplate($sitepage->description);
         return view($sitepage->masterpage)//use the template here
             ->with('sitePage',$sitepage);
     }
+
      /**
      * Show the app edit form 
      *
