@@ -260,7 +260,7 @@ class User extends Authenticatable {
     public function getSiteCount() {
 
         $teams = $this->teams->toArray();
-        
+
         $site_count = 0;
         foreach($teams as $team)
         {
@@ -269,20 +269,36 @@ class User extends Authenticatable {
         return $site_count;
     }
 
-    public function getUserSiteUrl(){
-        $teams = $this->teams->toArray();
+    /**
+     * Get/Set the user's current team. This is the first team that is owned by the user
+     * at the time of this writing, only one team per user that is not a super admin is allowed
+     */
+    public function setCurrentTeam(){
 
+        $teams = $this->teams->toArray();
+        if ($this->current_team_id == null) {
+            $this->current_team_id = 1;
+        }
         if($this->current_team_id == 1)
         {
             foreach($teams as $team)
             {
-                if ($team['id'] != 1)
+                if ($team['user_id'] == $this->id)
                 {
                     $this->current_team_id = $team['id'];
+                    $this->save(); 
                 }
                 break;
             }
         }
+    }
+
+    /**
+     * Get the user's site url. This is the first team that is owned by the user
+     * at the time of this writing, only one team per user that is not a super admin is allowed
+     */
+    public function getUserSiteUrl(){
+        $this->setCurrentTeam();
         
         $teamsite = TeamSite::where('team_id', $this->current_team_id)->first();
         $site = Site::where('id', $teamsite->site_id)->first();
@@ -291,6 +307,22 @@ class User extends Authenticatable {
         
         
         return "https://$site_url";
+    }
+
+    public function isThisSiteTeamOwner($site_id) {
+        $teams = $this->teams->toArray();
+        foreach($teams as $team)
+        {
+            if ($team['user_id'] == $this->id)
+            {
+                $teamsite = TeamSite::where('team_id', $team['id'])->where('site_id', $site_id)->first();
+                if ($teamsite != null)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public function sendWelcomeEmail() {

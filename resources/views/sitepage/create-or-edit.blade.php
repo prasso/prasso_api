@@ -40,12 +40,18 @@
                             <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="urlInput" placeholder="Enter Url" wire:model="url">
                             @error('url') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
-                      
+                        <div class="mb-4">
+                            <label for="login_requiredInput" class="block text-gray-700 text-sm font-bold mb-2">Requires Authentication: </label>
+                            <input type="radio"  name="login_requiredInput" id="login_requiredInput" wire:model.defer="login_required" value="1"  />Yes
+                            <input type="radio"  name="login_requiredInput" id="login_requiredInput" wire:model.defer="login_required" value="0" />No
+                
+                            @error('login_required') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
                     </div>
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-                        <button wire:click.prevent="store()" type="button" class="teambutton inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+                        <button wire:click.prevent="store()"  wire:loading.remove wire:processing.attr="disabled"  type="button" class="teambutton inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5">
                         Save
                         </button>
                     </span>

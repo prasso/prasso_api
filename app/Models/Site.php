@@ -73,8 +73,7 @@ class Site extends Model
         {
             $team = $this->createTeam($current_user_id);
         }
-        Auth::user()->switchTeam($team);
-        Auth::user()->save();
+        Auth::user()->setCurrentTeam();
 
          //and the teamsite table needs to be updated
          TeamSite::create(['team_id' => $team->id, 'site_id' => $this->id]);
@@ -112,7 +111,7 @@ class Site extends Model
             $content = file_get_contents(resource_path() . '/templates/welcome_no_register.txt');
         }
         $welcomepage = SitePages::firstOrCreate(['fk_site_id'=>$this->id,'section'=>'Welcome'],
-            ['description'=>$content,  'title'=>'Welcome','url'=>'html']);
+            ['description'=>$content,  'title'=>'Welcome','url'=>'html','login_required'=>false,'headers'=>'','masterpage'=>'sitepage.templates.blankpage']);
         $welcomepage->save();
 
         //if this site supports registration, then create a dashboard page
@@ -146,8 +145,9 @@ class Site extends Model
             $list .= '<li><a href="/page/' . $key . '">' . $value . '</a></li>';
         }
         
-        // if this user is an admin then add the site editor
-        if (Auth::user() !=null && Auth::user()->isInstructor())
+        // if this user is an admin or a team owner then add the site editor
+        if ( Auth::user() !=null && 
+            ( Auth::user()->isInstructor() || Auth::user()->isThisSiteTeamOwner($this->id) ) )
         {
             $list .= '<li><a href="/site/edit">Site Editor</a></li>';
         }
