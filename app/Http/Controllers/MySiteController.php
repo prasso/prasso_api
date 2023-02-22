@@ -28,6 +28,9 @@ class MySiteController extends Controller
 
     /**
      * Show the form for editing the logged in user's site.
+     * check first these things:
+     *   does the current user have access to this site?
+     *      a user can edit a site if they belong to the sites team and have instructor permissions
      *
      * @param  \App\Models\Site  $site
      * @return \Illuminate\Http\Response
@@ -35,11 +38,12 @@ class MySiteController extends Controller
     public function editMySite(Request $request)
     {
         $mysite = Controller::getClientFromHost();
+        if ($mysite == null)
+        {
+           session()->flash('status','Unknown site, if just created wait a bit for the Internet to realize it exists.');
+           return redirect('/login');
+        }
 
-        //does the current user have access to this site?
-
-        // a user can edit a site if they belong to the sites team and have instructor permissions
-        //does the current user have access to this site?
         if (!$this->userService->isUserOnTeam(Auth::user()))
         {
             Auth::logout();

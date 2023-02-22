@@ -11,7 +11,7 @@ use App\Models\Site;
 
 class SitePageEditor extends Component
 {
-    public $sitePages,$site_name,$fk_site_id, $section, $title, $description, $url, $sitePage_id, $masterpage;
+    public $sitePages,$site_name,$fk_site_id, $section, $title, $description, $url, $sitePage_id, $masterpage, $login_required;
     
     public $isOpen = 0;
     public $isVisualEditorOpen = 0;
@@ -36,21 +36,13 @@ class SitePageEditor extends Component
         $this->site = $site;
         $this->site_name = $site['site_name'];
         $this->siteid = $siteid;
-    }/**
-     * 
-    public function render()
-    {   
-        return view('livewire.user-management')
-            ->withUsers(User::orderBy('name')->get());
     }
-
-     */
-
 
     public function render()
     {
         $masterpage_recs = MasterPage::orderBy('pagename')->get();
         $this->sitePages = SitePages::where('fk_site_id', $this->siteid)->get();
+
         return view('livewire.site-page-editor')
             ->with('masterpage_recs', $masterpage_recs);
     }
@@ -105,11 +97,12 @@ class SitePageEditor extends Component
         $this->url = '';
         $this->sitePage_id = '';
         $this->masterpage = '';
+        $this->login_required = false;
         
     }
-     
+
     /**
-     * The attributes that are mass assignable.
+     * 
      *
      * @var array
      */
@@ -122,15 +115,16 @@ class SitePageEditor extends Component
             'description' => 'required',
             'url' => 'required',
             'masterpage' => 'required',
+            'login_required' => 'required',
         ]);
-        Log::info('sitepageeditor store() '.$this->sitePage_id.' '.$this->siteid.' '.$this->section.' '.$this->title.' '.$this->url.' '.$this->masterpage);
-        SitePages::updateOrCreate(['id' => $this->sitePage_id], [
+       SitePages::updateOrCreate(['id' => $this->sitePage_id], [
             'fk_site_id' => $this->siteid,
             'section' => $this->section,
             'title' => $this->title,
             'description' => $this->description,
             'url' => $this->url,
             'masterpage' => $this->masterpage,
+            'login_required' => $this->login_required,
         ]);
   
         session()->flash('message', 
@@ -155,6 +149,7 @@ class SitePageEditor extends Component
         $this->description = $sitePage->description;
         $this->url = $sitePage->url;
         $this->masterpage = $sitePage->masterpage;
+        $this->login_required = $sitePage->login_required;
 
         $this->openModal();
     }
@@ -175,6 +170,7 @@ class SitePageEditor extends Component
         $this->description = $sitePage->description;
         $this->url = $sitePage->url;
         $this->masterpage = $sitePage->masterpage;
+        $this->login_required = $sitePage->login_required;
 
         $this->openVisualModal();
     }
