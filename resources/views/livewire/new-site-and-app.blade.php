@@ -19,9 +19,11 @@
 
   <div class="col-span-6 sm:col-span-6 prose">
   <div wire:loading>
+      @if($step4 )
       <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
           Creating your site...
       </div>
+      @endif
     </div>
 
 @if ($step1)
