@@ -1,7 +1,7 @@
 <?php
 
 return [
-        'CLOUDFRONT_ASSET_URL' => 'https://d2bj0u1jhmvqgo.cloudfront.net/',
+        'CLOUDFRONT_ASSET_URL' => 'https://images.prasso.io/',
         'PROFILE_PHOTO_PATH' => 'prasso/-user-photos/',
         'APP_LOGO_PATH' => 'prasso/-app-photos/',
         'BLANK_PHOTO_PATH' =>  'profile-photos/blankprofile.jpg',
