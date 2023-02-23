@@ -47,8 +47,8 @@ class SitePageController extends Controller
         {
             return view('welcome');
         }
-        $welcomepage->description = $this->prepareTemplate($welcomepage->description);
-        return view('sitepage.templates.blankpage')
+        $welcomepage->description = $this->prepareTemplate($welcomepage);
+        return view($welcomepage->masterpage) 
             ->with('sitePage',$welcomepage);
     }
 
@@ -73,7 +73,7 @@ class SitePageController extends Controller
             $dashboardpage = SitePages::where('fk_site_id',$this->site->id)->where('section','Dashboard')->first();
             if ($dashboardpage != null)
             {    
-                $dashboardpage->description = $this->prepareTemplate($dashboardpage->description);
+                $dashboardpage->description = $this->prepareTemplate($dashboardpage);
                 return view($dashboardpage->masterpage)  
                 ->with('sitePage',$dashboardpage);
             }
@@ -83,8 +83,8 @@ class SitePageController extends Controller
         return view('dashboard');
     }
 
-    private function prepareTemplate($page_content){
-
+    private function prepareTemplate($dashboardpage){
+        $page_content = $dashboardpage->description;
         $user = Auth::user() ?? null;
 
         //replace the tokens in the dashboard page with the user's name, email, and profile photo
@@ -95,6 +95,8 @@ class SitePageController extends Controller
         $page_content = str_replace('SITE_LOGO_FILE', $this->site->logo_image, $page_content);
         $page_content = str_replace('SITE_FAVICON_FILE', $this->site->favicon, $page_content);
         $page_content = str_replace('SITE_DESCRIPTION', $this->site->description, $page_content);
+        $page_content = str_replace('PAGE_NAME', $dashboardpage->title, $page_content);
+        $page_content = str_replace('PAGE_SLUG', $dashboardpage->section, $page_content);
 
         if ($user != null){
             $page_content = str_replace('USER_NAME', $user->name, $page_content);
@@ -117,6 +119,7 @@ class SitePageController extends Controller
 
         if ($sitepage == null)
         {
+Log::info('using system welcome: ');   
             return view('welcome');
         }
         if ( ($sitepage->requiresAuthentication() && $user == null ) ||
@@ -127,7 +130,9 @@ class SitePageController extends Controller
             return redirect('/login');
         }
 
-        $sitepage->description = $this->prepareTemplate($sitepage->description);
+        $sitepage->description = $this->prepareTemplate($sitepage);
+ 
+Log::info('using masterpage: '.$sitepage->masterpage);       
         return view($sitepage->masterpage)//use the template here
             ->with('sitePage',$sitepage);
     }
