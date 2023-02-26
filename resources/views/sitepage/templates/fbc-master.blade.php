@@ -145,48 +145,60 @@
             </button>
             <ul>
                <li class=" first landing">
-                  <a href="https://faithlakecity.prasso.io/page/Welcome">
+                  <a href="/page/Welcome">
                   <span>Home</span>
                   </a>
                </li>
                <li class=" has-sub">
-                  <a href="https://faithlakecity.prasso.io/page/About">
+                  <a href="/page/About">
                   <span>About</span>
                   <i></i>
                   </a>
                   <ul class="sub-navigation">
                      <li class="">
-                        <a href="https://faithlakecity.prasso.io/page/About"><span>Worship Services</span></a>
+                        <a href="/page/About"><span>Worship Services</span></a>
                      </li>
                      <li class="">
-                        <a href="https://faithlakecity.prasso.io/page/WhatWeBelieve"><span>What We Believe</span></a>
+                        <a href="/page/WhatWeBelieve"><span>What We Believe</span></a>
                      </li>
                      <li class="">
-                        <a href="https://faithlakecity.prasso.io/page/OurPastors"><span>Our Pastors</span></a>
+                        <a href="/page/OurPastors"><span>Our Pastors</span></a>
                      </li>
                   </ul>
                </li>
                <li class=" has-sub">
-                  <a href="https://faithlakecity.prasso.io/page/Connect">
+                  <a href="/page/Connect">
                   <span>Connect</span>
                   <i></i>
                   </a>
                   <ul class="sub-navigation">
                      <li class="">
-                        <a href="https://faithlakecity.prasso.io/page/Connect"><span>Find Us</span></a>
+                        <a href="/page/Connect"><span>Find Us</span></a>
                      </li>
                      <li class="">
-                        <a href="https://faithlakecity.prasso.io/page/ContactUs"><span>Contact Us</span></a>
+                        <a href="/page/ContactUs"><span>Contact Us</span></a>
                      </li>
                   </ul>
                </li>
-               <li class="selected landing current">
-                  <a href="https://faithlakecity.prasso.io/page/Sermons">
+               <li class=" has-sub">
+                  <a href="/page/Sermons">
                   <span>Sermons</span>
                   </a>
+                  <ul class="sub-navigation">
+                     <li class="">
+                        <a href="/page/Livestream"><span>Live Services</span></a>
+                     </li>
+                     <li class="">
+                        <a href="/page/Sermons"><span>Recent Sermons</span></a>
+                     </li>
+                     <li class="">
+                        <a href="/page/Sermons"><span>More Sermons</span></a>
+                     </li>
+                     
+                  </ul>
                </li>
                <li class=" last landing">
-                  <a href="https://faithlakecity.prasso.io/page/Donate">
+                  <a href="/page/Donate">
                   <span>Give</span>
                   </a>
                </li>
@@ -208,40 +220,53 @@
                <nav id="main-navigation" class="main-navigation clearfix">
                   <ul>
                      <li class="landing first">
-                        <a href="https://faithlakecity.prasso.io/page/Welcome"><span>Home</span></a>
+                        <a href="/page/Welcome"><span>Home</span></a>
                      </li>
                      <li class=" has-sub">
-                        <a href="https://faithlakecity.prasso.io/page/About"><span>About</span></a>
+                        <a href="/page/About"><span>About</span></a>
                         <ul class="sub-navigation">
                            <li>
-                              <a href="https://faithlakecity.prasso.io/page/About"><span>Worship Services</span></a>
+                              <a href="/page/About"><span>Worship Services</span></a>
                            </li>
                            <li>
-                              <a href="https://faithlakecity.prasso.io/page/WhatWeBelieve"><span>What We Believe</span></a>
+                              <a href="/page/WhatWeBelieve"><span>What We Believe</span></a>
                            </li>
                            <li>
-                              <a href="https://faithlakecity.prasso.io/page/OurPastors"><span>Our Pastors</span></a>
+                              <a href="/page/OurPastors"><span>Our Pastors</span></a>
                            </li>
                         </ul>
                         <i></i>
                      </li>
                      <li class=" has-sub">
-                        <a href="https://faithlakecity.prasso.io/page/Connect"><span>Connect</span></a>
+                        <a href="/page/Connect"><span>Connect</span></a>
                         <ul class="sub-navigation">
                            <li>
-                              <a href="https://faithlakecity.prasso.io/page/Connect"><span>Find Us</span></a>
+                              <a href="/page/Connect"><span>Find Us</span></a>
                            </li>
                            <li>
-                              <a href="https://faithlakecity.prasso.io/page/ContactUs"><span>Contact Us</span></a>
+                              <a href="/page/ContactUs"><span>Contact Us</span></a>
                            </li>
                         </ul>
                         <i></i>
                      </li>
-                     <li class="selected landing current">
-                        <a href="https://faithlakecity.prasso.io/page/Sermons"><span>Sermons</span></a>
+                     <li class=" has-sub">
+                        <a href="/page/Sermons">
+                        <span>Sermons</span>
+                        </a>
+                        <ul class="sub-navigation">
+                        <li class="">
+                        <a href="/page/Livestream"><span>Live Services</span></a>
+                     </li>
+                     <li class="">
+                        <a href="/page/RecentSermons"><span>Recent Sermons</span></a>
+                     </li>
+                     <li class="">
+                        <a href="/page/Sermons"><span>More Sermons</span></a>
+                     </li>
+                        </ul>
                      </li>
                      <li class="landing last">
-                        <a href="https://faithlakecity.prasso.io/page/Donate"><span>Give</span></a>
+                        <a href="/page/Donate"><span>Give</span></a>
                      </li>
                   </ul>
                </nav>
@@ -266,7 +291,7 @@
                   <div class="text-content text-1 editable" data-id="155629" data-category="text">
                      <div>
                         <p style="font-weight: 700; font-size: 1.6277em;">Faith Baptist Church  ~  Lake City, Florida</p>
-                        <p style="font-weight: 400; font-size: 1.3885em;">Visit us on Faith Road behind The Home Depot, Aldi\'s, and Ashley Furniture</p>
+                        <p style="font-weight: 400; font-size: 1.3885em;">Visit us on Faith Road behind The Home Depot, Aldi's, and Ashley Furniture</p>
                         <p style="font-weight: 400; font-size: 1.3885em;"><a href="https://www.facebook.com/FaithLakeCity" data-location="external" data-detail="https://www.facebook.com/FaithLakeCity/" data-category="link" target="_blank" class="cloverlinks"><span data-socialicon="roundedfacebook"><span class="socialIconSymbol" aria-hidden="true"></span><span class="sr-only">roundedfacebook</span></span></a>   <span data-socialicon="roundedinstagram"><span class="socialIconSymbol" aria-hidden="true"></span><span class="sr-only">roundedinstagram</span></span>   <span data-socialicon="roundeditunes"><span class="socialIconSymbol" aria-hidden="true"></span><span class="sr-only">roundeditunes</span></span>  
                            <a href="https://www.youtube.com/channel/UChYu0xZ0ZSQC2Y8CM4jv0ow/" data-location="external" data-detail="https://www.youtube.com/channel/UChYu0xZ0ZSQC2Y8CM4jv0ow/" data-category="link" target="_blank" class="cloverlinks"><span data-socialicon="roundedyoutube"><span class="socialIconSymbol" aria-hidden="true"></span><span class="sr-only">roundedyoutube</span></span></a> </p>
                      </div>
