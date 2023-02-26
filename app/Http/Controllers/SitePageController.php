@@ -131,8 +131,7 @@ Log::info('using system welcome: ');
         }
 
         $sitepage->description = $this->prepareTemplate($sitepage);
- 
-Log::info('using masterpage: '.$sitepage->masterpage);       
+      
         return view($sitepage->masterpage)//use the template here
             ->with('sitePage',$sitepage);
     }
@@ -150,6 +149,12 @@ Log::info('using masterpage: '.$sitepage->masterpage);
     public function visualEditor($pageid)
     {
         $pageToEdit = SitePages::where('id',$pageid)->first();
+        
+        if ($pageToEdit == null)
+        {
+            session()->flash('status','Page not found.');
+            return redirect()->back();
+        }
         return view('sitepage.grapes')->with('sitePage', $pageToEdit);
     }
 
