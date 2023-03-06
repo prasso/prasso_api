@@ -127,7 +127,7 @@ Txt Message<input  id="emailselections" name="emailselections" type="radio" clas
                         </div>
                         <div class="col-span-6 sm:col-span-4 p-5 ">
                             <x-jet-label for="body" value="{{ __('Message Body') }}" />
-                            <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="body" name="body" value="{{old('body') ?? $formdata['notifications']->body}}" placeholder="Enter Body"></textarea>
+                            <textarea rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="body" name="body" value="{{old('body') ?? $formdata['notifications']->body}}" placeholder="Enter Body"></textarea>
                             @error('body') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                        

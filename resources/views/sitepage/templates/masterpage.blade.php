@@ -109,7 +109,7 @@
         @if (isset($site->app_specific_js) && str_starts_with($site->app_specific_js, 'http') )
             <script src="{{$site->app_specific_js}}"></script>
         @else
-            <script>{{$site->app_specific_js}}</script>
+            <script  type="text/javascript">{{$site->app_specific_js}}</script>
         @endif
 
     </head>
