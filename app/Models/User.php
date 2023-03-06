@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\welcome_user;
 use App\Mail\contact_form;
 use App\Mail\prasso_user_welcome;
+use App\Mail\livestream_notification;
 use Laravel\Cashier\Billable;
 use Twilio\Rest\Client;
 
@@ -345,6 +346,11 @@ class User extends Authenticatable {
     public function sendCoachEmail($subject, $body, $fromemail, $fromname) {
 
         Mail::to($this)->send(new coach_message($this, $subject, $body, $fromemail, $fromname));
+    }
+
+    public function sendLivestreamNotification($subject, $body, $fromemail, $fromname) {
+
+        Mail::to($this)->send(new livestream_notification($this, $subject, $body, $fromemail, $fromname));
     }
 
     // the user here is the receiver of the email. the email from came from the logged in user

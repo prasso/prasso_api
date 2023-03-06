@@ -37,7 +37,7 @@
   </div>
   <div class="flex flex-col mt-4">
     <label class="text-lg mb-2">Details</label>
-    <textarea class="bg-gray-200 p-2 rounded-md" name="details"></textarea>
+    <textarea rows="5" class="bg-gray-200 p-2 rounded-md" name="details"></textarea>
   </div>
   <button class="bg-green-500 text-white p-2 rounded-md mt-4">Submit</button>
 </form>
