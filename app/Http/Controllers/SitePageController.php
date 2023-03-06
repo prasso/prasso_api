@@ -163,4 +163,19 @@ Log::info('using system welcome: ');
         $this->sitePageService->saveSitePage($request);
         return redirect()->back();
     }
+
+
+    /**
+     * Livestream activity from AWS EventStream
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function livestream_activity(Request $request){
+        //ship this off to the logic that processes emails
+        $receipient_user = \App\Models\User::where('id',1)->first();
+        $receipient_user->sendLivestreamNotification('Livestream Notification', $request['body'], $receipient_user->email, $receipient_user->name);
+        
+    }
+
 }
