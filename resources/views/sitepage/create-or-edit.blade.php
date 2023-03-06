@@ -32,7 +32,7 @@
                         </div>
                         <div class="mb-4">
                             <label for="descriptionInput" class="min-h-[10%] block text-gray-700 text-sm font-bold mb-2">Description: (enter html if this is a page of the site)</label>
-                            <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="descriptionInput" wire:model="description" placeholder="Enter Description"></textarea>
+                            <textarea rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="descriptionInput" wire:model.defer="description" placeholder="Enter Description"></textarea>
                             @error('description') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">

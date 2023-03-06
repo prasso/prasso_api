@@ -28,7 +28,7 @@ body {
   display: grid;
   place-items: center;
 }
-
+/*
 .player-wrapper {
   width: 90%;
   position: relative;
@@ -195,8 +195,8 @@ body {
   background: #000;
   border-radius: var(--radius);
 }
-
-/* Utility - Position */
+*/
+/* Utility - Position 
 .pos-absolute {
   position: absolute !important;
 }
@@ -211,7 +211,7 @@ body {
 }
 .bottom-0 {
   bottom: 0 !important;
-}
+}*/
 
 /* Utility - Width/Height */
 .full-width {

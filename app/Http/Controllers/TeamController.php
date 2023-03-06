@@ -105,6 +105,10 @@ class TeamController extends Controller
         {
             $recipients = $team->users->sortBy('name');
         }
+        else
+        {
+            $recipients = [];
+        }
         $user_email='';
         if (isset($request->user_email))
         {

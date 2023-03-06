@@ -183,7 +183,7 @@
       var livewirestyles = document.getElementById("livewirecss");
 
       var editor  = grapesjs.init({
-        storageManager: {autoload: true},//{ type: null },
+        storageManager: {autoload: false},
         avoidInlineStyle: 1,
         height: '100%',
         container : '#gjs',
