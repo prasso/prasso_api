@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <head>
    <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="csrf-token" content="CSRF_TOKEN">
+
    <title>Faith Baptist Church, Lake City, Florida | PAGE_SLUG</title>
    <meta name="description" content="PAGE_NAME" />
    <meta property="og:title" content="Faith Baptist Church, Lake City, Florida | PAGE_SLUG" />
@@ -12,7 +15,6 @@
    <meta name="twitter:title" content="Faith Baptist Church, Lake City, Florida | PAGE_SLUG" />
    <meta name="twitter:description" content="PAGE_NAME" />
    <meta name="twitter:image" content="https://i3.ytimg.com/vi/mP0ME5J32nA/mqdefault.jpg" />
-   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
    <link rel="shortcut icon" type="image/x-icon" href="SITE_FAVICON_FILE">
    <link rel="stylesheet" media="all" href="https://images.prasso.io/fbc/cdn.files/production/websites/application-2d3ea95936f79d8cf68c4a91238720210c7d217a5301ad14816159e44f1ae032.css" data_turbolinks_track="true" debug="false" />
    <link rel="stylesheet" media="all" href="https://images.prasso.io/fbc/cdn.files/production/websites/designs/dusk/base-9c40b38ce0ba7fbd608fa6f1889f31185b652733c22bdf7fa828349f50411476.css" debug="false" />
@@ -31,15 +33,11 @@
    <script src="https://images.prasso.io/fbc/cdn.files/js/2-a38190a685725a895f06.chunk.js"></script>
    <script src="https://images.prasso.io/fbc/cdn.files/js/media-1ab6fa2937934576a72f.chunk.js"></script>
    <link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<!--   <link rel="stylesheet" media="screen" href="https://assets.cloversites.com/fonts/picker/playfairdisplay/playfairdisplaysc.css" class="clover" />
-   -->
-<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
    <link rel="stylesheet" media="all" href="https://images.prasso.io/fbc/cdn.files/_user_generated_stylesheets/published_colors_1210c48d-3bc6-4059-b211-ccceae4a8d6a_ed24284b336f402eb0e12db92f9ba0e5.css" id="color-css" />
    <link rel="stylesheet" media="all" href="https://images.prasso.io/fbc/cdn.files/_user_generated_stylesheets/published_fonts_1210c48d-3bc6-4059-b211-ccceae4a8d6a_275370be77490640d1a637c4ba2f42bf.css" id="font-css" />
    <link rel="stylesheet" media="all" href="https://images.prasso.io/fbc/cdn.files/_user_generated_stylesheets/published_tweaks_1210c48d-3bc6-4059-b211-ccceae4a8d6a_74e0c2dd5e4fed4f834f88c72f6ba20d.css" id="tweak-css" />
-   <meta name="csrf-param" content="authenticity_token" />
-   <meta name="csrf-token" content="OaAP3gpblg1BvowQ92s/EI+n7V1Fu5NEbP1bUgnPLfv+5X6iCoxwv4mwoBR9rAf95tV6ENU7P+y63u4kcd9wew==" />
    <script data-turbolinks-eval="false">
       //<![CDATA[
       

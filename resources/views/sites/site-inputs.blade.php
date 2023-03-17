@@ -10,7 +10,7 @@
                     </div>
                     @endif
                     <div class="mb-4">
-                            <label for="hostInput" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
+                            <label for="nameInput" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
                             <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nameInput" placeholder="Enter Name" wire:model="site_name">
                             @error('site_name') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
@@ -29,7 +29,7 @@
                             <input type="color"  id="main_colorInput" placeholder="Enter Main Color"  wire:model="main_color" >
                             @error('main_color') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
-                        <div class="col-span-6">
+                        <div class="mb-4">
                             <x-jet-label value="{{ __('Logo Image') }}" />
                             <div class="flex items-center mt-2">
                                 @if (isset($photo) && !empty ($photo->temporaryUrl()) )
@@ -41,12 +41,12 @@
                                         No logo supplied                    
                                     @endif
                                 @endif
-                                {{ $logo_image }}
-                        
+                                <div class="text-xs">{{ $logo_image }}</div>
+                                <div>
                                     <input type="file" wire:model="photo"  class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
                 
                                     @error('photo') <span class="text-red-500">{{ $message }}</span> @enderror
-                
+                                </div>
                             </div>
                         </div>
                         <div class="mb-4">
@@ -71,6 +71,12 @@
                 
                             @error('supports_registration') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
-                        
+                        <div class="mb-4">
+                            <label for="does_livestreamingInput" class="block text-gray-700 text-sm font-bold mb-2">Site hosts a live stream: </label>
+                            <input type="radio" name="does_livestreamingInput" id="does_livestreamingInput" wire:model.defer="does_livestreaming" value="1"  />Yes
+                            <input type="radio" name="does_livestreamingInput" id="does_livestreamingInput" wire:model.defer="does_livestreaming" value="0" />No
+                
+                            @error('does_livestreaming') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
                     </div>
                 </div>

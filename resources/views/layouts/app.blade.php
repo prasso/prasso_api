@@ -54,6 +54,13 @@
         </header>
         @endif
         <!-- Page Content -->
+        @if (session()->has('message'))
+        <div class="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md my-3 mb-0" role="alert">
+            <div>
+                <p class="m-auto text-center text-sm">{{ session('message') }}</p>
+            </div>
+        </div>
+        @endif
         <main>
             {{ $slot }}
         </main>

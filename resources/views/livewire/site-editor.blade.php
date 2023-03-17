@@ -6,15 +6,7 @@
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg px-4 py-4">
-            @if (session()->has('message'))
-                <div class="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md my-3" role="alert">
-                  <div class="flex">
-                    <div>
-                      <p class="text-sm">{{ session('message') }}</p>
-                    </div>
-                  </div>
-                </div>
-            @endif
+
             <button wire:click="create()" class="teambutton text-white font-bold py-2 px-4 rounded my-3">Create New Site</button>
             @if($isOpen)
                 @include('sites.create-or-edit')
@@ -41,7 +33,10 @@
                         <button wire:click="edit({{ $site->id }})" class=" py-2 px-3 "> <i class="material-icons md-36">mode_edit</i></button>
                         <a href="/sitepages/{{ $site->id }}" ><i class="material-icons md-36 text-black ">list</i></a>
                         <button onclick="return window.confirm('Are you sure you want to delete this site?')" wire:click="delete({{ $site->id }})" class="ml-3 py-2 px-3 rounded"><i class="material-icons md-36">delete_forever</i></button>
-                        </td>
+                        @if ($site->livestream_settings != null)
+                        <a href="/site/{{ $site->id }}/livestream-mtce" class="ml-3 py-2 px-3 rounded"><i class="material-icons md-36">live_tv</i></a>
+                        @endif
+                    </td>
                     </tr>
                     @endforeach
                 </tbody>
