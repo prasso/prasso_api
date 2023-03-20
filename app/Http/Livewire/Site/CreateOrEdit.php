@@ -22,6 +22,7 @@ class CreateOrEdit extends Component
     public $main_color; //
     public $logo_image; //
     public $supports_registration;//
+    public $does_livestreaming; //
     public $database;
     public $favicon;
     public $app_specific_js;
@@ -48,6 +49,7 @@ class CreateOrEdit extends Component
         $this->main_color = $site->main_color;
         $this->logo_image = $site->logo_image;
         $this->supports_registration = $site->supports_registration;
+        $this->does_livestreaming = $site->livestream_settings() != null;
         $this->database = $site->database;
         $this->favicon = $site->favicon;
         $this->app_specific_js = $site->app_specific_js;
@@ -72,7 +74,8 @@ class CreateOrEdit extends Component
      */
     public function store()
     {
-        $siteRequest = new SiteRequest();
+        $siteRequest = new SiteRequest($this->siteid);
+        info('createoredit site id is: ' . $this->siteid);
         $this->validate($siteRequest->rules());
         if (empty($this->id))
         {

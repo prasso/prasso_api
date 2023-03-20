@@ -94,15 +94,7 @@
         <x-slot name="title"> {{ __('Team Communications') }}</x-slot>
         <x-slot name="description">{{ __('Create and Schedule Team Communications') }}</x-slot>
     </x-jet-section-title>
-    @if (session()->has('message'))
-    <div class="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md my-3" role="alert">
-        <div class="flex">
-            <div>
-                <p class="text-sm">{{ session('message') }}</p>
-            </div>
-        </div>
-    </div>
-    @endif
+
     <div class="mt-5 md:mt-0 md:col-span-2">
         <form id="teamMessages" method="post" action="{{ route('team.postmessages', Auth::user()->currentTeam->id)}}">
         <input type="hidden" name="csrf-token" value="{{ csrf_token() }}" />

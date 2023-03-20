@@ -2,6 +2,8 @@
 
 return [
         'CLOUDFRONT_ASSET_URL' => 'https://images.prasso.io/',
+        'CLOUDFRONT_MEDIA_URL' => 'https://media.prasso.io/',
+        'CLOUDFRONT_MEDIA_BASE_PATH' => 'hls/',
         'PROFILE_PHOTO_PATH' => 'prasso/-user-photos/',
         'APP_LOGO_PATH' => 'prasso/-app-photos/',
         'BLANK_PHOTO_PATH' =>  'profile-photos/blankprofile.jpg',

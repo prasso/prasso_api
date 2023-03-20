@@ -1,8 +1,6 @@
 <?php
 
-use App\Http\Livewire\Prasso\Dashboard;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\User2Controller;
 
 Route::get('logout', function () {
     return redirect('/login');
@@ -33,7 +31,6 @@ Route::get('/dashboard', 'SitePageController@index')->name('dashboard');
 
 Route::group(['middleware'=> 'instructorusergroup'], function() {
 
-    Route::get('/prasso/dashboard', [Dashboard::class, '__invoke']);
     Route::get('/team/{teamid}', 'TeamController@editTeam')->name('team.edit');
     Route::get('/team/{teamid}/messages', 'TeamController@setupForTeamMessages')->name('team.getmessages');
     Route::post('/team/{teamid}/postmessages', 'TeamController@processTeamMessages')->name('team.postmessages');
@@ -53,7 +50,9 @@ Route::group(['middleware'=> 'instructorusergroup'], function() {
     
     
     Route::get('/site/edit', 'MySiteController@editMySite')->name('site.edit.mysite');
-
+    Route::get('/site/{siteid}/livestream-mtce', 'AdminController@livestreamMtce')->name('site.mtce.livestream');
+    Route::get('/site/{siteid}/livestream-mtce/{sitemediaid}', 'SiteMediaController@siteMediaEdit')->name('site.mtce.media.edit');
+    Route::post('/site/{siteid}/livestream-mtce/move-to-permanent-storage', 'SiteMediaController@siteMediaCreate')->name('site.mtce.media.create');
 });
 
 Route::group(['middleware'=> 'superadmin'], function() {
