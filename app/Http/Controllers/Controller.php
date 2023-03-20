@@ -79,4 +79,26 @@ class Controller extends BaseController
         return $site;
     }
 
+    /**
+     * check if the user is on the team for the site.
+     * This code uses the HOST to determine the site. NOT the site id in the url.
+     * if not, log them out and send them to the login page.
+     *
+     */
+    public static function userOkToViewPageByHost($userService)
+    {
+        $site = Controller::getClientFromHost();
+        if ($site == null)
+        {
+           session()->flash('status','Unknown site, if just created wait a bit for the Internet to realize it exists.');
+           return false;
+        }
+
+        if (!$userService->isUserOnTeam(\Auth::user()))
+        {
+            \Auth::logout();
+            session()->flash('status','You are not a member of this site.');
+            return false;
+        }
+    }
 }

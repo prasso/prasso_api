@@ -39,17 +39,27 @@ class Site extends Model
         'app_specific_css'
     ];
 
+    public function livestream_settings()
+    {
+        return $this->hasOne(\App\Models\LivestreamSettings::class, "fk_site_id", "id");
+    }
+    public function media(){
+        return $this->hasMany(\App\Models\SiteMedia::class, "fk_site_id", "id");
+    }
+
     public static function getClient( $host) 
     {
         if ($host == null)
         {
-            Log::info('Site get client failed for null host: ');
+            Log::info('Site get client failed for null host');
             abort(404);
             return null;
         }
     try{
         $currentsite = Site::where('host' ,  $host )
-                ->orWhere('host', 'like', '%' . $host . '%')->get();
+                ->orWhere('host', 'like', '%' . $host . '%')
+                ->with('livestream_settings')
+                ->get();
 
         if ($currentsite == null)
         {

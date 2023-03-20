@@ -4,7 +4,7 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\User;
-use App\Models\TeamSite;
+use App\Models\LivestreamSettings;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\SiteRequest;
 use App\Models\Site;
@@ -15,7 +15,9 @@ class SiteEditor extends Component
 {
     use WithFileUploads;
 
-    public $sites, $site_id,$site_name,$description, $host,$main_color,$logo_image, $database, $favicon, $supports_registration, $app_specific_js, $app_specific_css;
+    public $sites, $site_id,$site_name,$description, $host,$main_color,$logo_image, 
+            $database, $favicon, $supports_registration, $app_specific_js, $app_specific_css,
+            $does_livestreaming;
     public $current_user;
     public $isOpen = 0;
 
@@ -74,6 +76,7 @@ class SiteEditor extends Component
         $this->favicon = '';
         $this->site_id = '';
         $this->supports_registration = false;
+        $this->does_livestreaming = false;
         $this->app_specific_js ='';
         $this->app_specific_css = '';
         $this->photo = null;
@@ -91,7 +94,7 @@ class SiteEditor extends Component
         {
             $this->database = 'prasso';
         }
-        $siteRequest = new SiteRequest();
+        $siteRequest = new SiteRequest($this->site_id);
         $this->validate($siteRequest->rules());
 
         $newsite=false;
@@ -128,7 +131,9 @@ class SiteEditor extends Component
             $site->logo_image = $this->logo_image;
             $site->save();
         }
-
+        if ($this->does_livestreaming){
+            LivestreamSettings::addOrUpdate($site);
+        }
         session()->flash('message', 
             $this->site_id ? 'Site Updated Successfully.' : 'Site Created Successfully.');
   

@@ -31,27 +31,21 @@ class MySiteController extends Controller
      * check first these things:
      *   does the current user have access to this site?
      *      a user can edit a site if they belong to the sites team and have instructor permissions
-     *
+     *      livestreams are a paid feature and can be added to the site if the site has a paid subscription
      * @param  \App\Models\Site  $site
      * @return \Illuminate\Http\Response
      */
     public function editMySite(Request $request)
     {
-        $mysite = Controller::getClientFromHost();
-        if ($mysite == null)
+        if (!Controller::userOkToViewPageByHost($this->userService))
         {
-           session()->flash('status','Unknown site, if just created wait a bit for the Internet to realize it exists.');
-           return redirect('/login');
-        }
-
-        if (!$this->userService->isUserOnTeam(Auth::user()))
-        {
-            Auth::logout();
-            session()->flash('status','You are not a member of this site.');
             return redirect('/login');
         }
+        $mysite = Controller::getClientFromHost();
+        $user = Auth::user();
+        
        
-        return view('sites.my-site-editor')->with('site', $mysite)->with('user', Auth::user())->with('team', Auth::user()->currentTeam);
+        return view('sites.my-site-editor')->with('site', $mysite)->with('user', $user)->with('team', $user->currentTeam);
     }   
 
 
