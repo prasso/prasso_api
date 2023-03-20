@@ -17,6 +17,27 @@ class Instructor extends User
         parent::__construct($attributes);
      }
  
+     public static function canAccessSite($instructor, $site){
+
+        if ($site == null){
+            return false;
+        }
+        if ($instructor->isSuperAdmin()){
+
+            return true;
+        }
+
+        $team = $site->team;
+        if ($team == null){
+            return false;
+        }
+        $teamUser = TeamUser::where('team_id', $team->id)->where('user_id', $instructor->id)->first();
+        if ($teamUser == null){
+            return false;
+        }
+        return true;
+     }
+
      public function setupAsInstructor($user)
      {
          $userExistingInstructorRole = $user->roles()->where('name', 'instructor')->first();

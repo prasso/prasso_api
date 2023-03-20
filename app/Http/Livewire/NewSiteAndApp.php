@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Models\Site;
 use App\Models\Apps;
 use App\Models\Team;
+use App\Models\LivestreamSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -37,6 +38,7 @@ class NewSiteAndApp extends Component
     public $main_color; //
     public $logo_image; //
     public $supports_registration;//
+    public $does_livestreaming; //
 
     public $database;
     public $favicon;
@@ -151,6 +153,9 @@ class NewSiteAndApp extends Component
             $this->logo_image = $site->uploadImage($this->photo);
             $site->logo_image = $this->logo_image;
             $site->save();
+        }
+        if ($this->does_livestreaming){
+            LivestreamSettings::addOrUpdate($site);
         }
 
         /**put the data into newSite and newApp*/

@@ -173,8 +173,9 @@ Log::info('using system welcome: ');
      */
     public function livestream_activity(Request $request){
         //ship this off to the logic that processes emails
+        info('Livestream Activity: ' . $request['detail']['event_name']);
         $receipient_user = \App\Models\User::where('id',1)->first();
-        $receipient_user->sendLivestreamNotification('Livestream Notification', $request['body'], $receipient_user->email, $receipient_user->name);
+        $receipient_user->sendLivestreamNotification('Livestream Notification', $request['detail']['event_name'], $receipient_user->email, $receipient_user->name);
         
     }
 

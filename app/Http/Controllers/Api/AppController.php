@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 class AppController extends BaseController
 {
     protected $appsService;
-    protected $site;
 
     public function __construct(Request $request, AppsService $appSPe)
     {

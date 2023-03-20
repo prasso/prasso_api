@@ -19,8 +19,6 @@ class CreateSiteMediaTable extends Migration
             $table->string('s3media_url', 5000);
             $table->string('thumb_url', 500)->default('');
             $table->string('video_duration', 10)->nullable();
-            $table->string('device_type', 191)->nullable();
-            $table->string('device_name', 191)->nullable();
             $table->text('dimensions')->nullable();
 
             $table->timestamps();
