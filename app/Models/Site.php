@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Auth;
+use Schema;
 /**
  * Class Site.
  *
@@ -56,11 +57,21 @@ class Site extends Model
             return null;
         }
     try{
-        $currentsite = Site::where('host' ,  $host )
+        $currentsite = null;
+        if (Schema::hasTable('livestream_settings')) {
+           
+            $currentsite = Site::where('host' ,  $host )
                 ->orWhere('host', 'like', '%' . $host . '%')
                 ->with('livestream_settings')
                 ->get();
+        }
+        else
+        {
+            $currentsite = Site::where('host' ,  $host )
+                ->orWhere('host', 'like', '%' . $host . '%')
+                ->get();
 
+        }
         if ($currentsite == null)
         {
             Log::info('Site get client failed for host: ');
