@@ -58,7 +58,7 @@
                     <td><img class="max-w-sm" src="{{ $item->thumb_url }}" ></td>
                     <td>{{ $item->duration }}</td>
                     <td>
-                        <a class="teambutton text-white m-2 py-2 px-4 rounded my-3" href="/site/{{ $site->id }}/livestream-mtce/{{ $item->id }}">Edit</a>
+                        <a class="py-2 px-4 rounded" href="/site/{{ $site->id }}/livestream-mtce/{{ $item->id }}"> <i class="material-icons md-36">mode_edit</i></a>
                     </td>
                 </tr>
             @endforeach

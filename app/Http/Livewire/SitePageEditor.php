@@ -5,13 +5,14 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\SitePages;
 use App\Models\MasterPage;
+use App\Models\SitePageTemplate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Models\Site;
 
 class SitePageEditor extends Component
 {
-    public $sitePages,$site_name,$fk_site_id, $section, $title, $description, $url, $sitePage_id, $masterpage, $login_required;
+    public $sitePages,$site_name,$fk_site_id, $section, $title, $description, $url, $sitePage_id, $masterpage,$template, $login_required;
     
     public $isOpen = 0;
     public $isVisualEditorOpen = 0;
@@ -41,10 +42,12 @@ class SitePageEditor extends Component
     public function render()
     {
         $masterpage_recs = MasterPage::orderBy('pagename')->get();
+        $template_recs = SitePageTemplate::orderBy('templatename')->get();
         $this->sitePages = SitePages::where('fk_site_id', $this->siteid)->get();
 
         return view('livewire.site-page-editor')
-            ->with('masterpage_recs', $masterpage_recs);
+            ->with('masterpage_recs', $masterpage_recs)
+            ->with('template_recs', $template_recs);
     }
 
     public function create()
