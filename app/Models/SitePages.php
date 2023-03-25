@@ -15,7 +15,7 @@ class SitePages extends Model
      * @var array
     */
     protected $fillable = [
-        'fk_site_id', 'section', 'title', 'description', 'url','headers','masterpage','login_required'
+        'fk_site_id', 'section', 'title', 'description', 'url','headers','masterpage','template','login_required'
     ];
 
     public function requiresAuthentication()
