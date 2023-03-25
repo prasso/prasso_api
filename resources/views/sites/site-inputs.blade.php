@@ -31,7 +31,7 @@
                         </div>
                         <div class="mb-4">
                             <x-jet-label value="{{ __('Logo Image') }}" />
-                            <div class="flex items-center mt-2">
+                            <div class=" items-center mt-2"   style="max-width:400px;">
                                 @if (isset($photo) && !empty ($photo->temporaryUrl()) )
                                 <img class=" h-12 rounded-full object-cover" src="{{ $photo->temporaryUrl() }}" alt="{{ $site_name }}">
                                 @else
@@ -49,7 +49,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="mb-4">
+                        <div class="mb-4 ">
                             <label for="faviconInput" class="block text-gray-700 text-sm font-bold mb-2">favicon: </label>
                             <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="faviconInput" placeholder="Enter favicon" wire:model="favicon">
                             @error('favicon') <span class="text-red-500">{{ $message }}</span>@enderror

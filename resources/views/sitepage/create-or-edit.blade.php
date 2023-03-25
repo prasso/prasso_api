@@ -30,8 +30,21 @@
                         </select>
                         @error('masterpage') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
+                      
+                        <div x-data="{ open: false}" class="mb-4">
+                        <i x-show="true" wire:ignore  x-on:click="open = !open"  class="float-right material-icons text-gray-600">info</i><label for="templateInput" class="block text-gray-700 text-sm font-bold mb-2">Template : </label>
+                                <div x-show="open" ><b>Template or custom. if template then the template name is in a field of sitepage and the html value is used to fill in placeholders in the template
+                        if custom then html=html</b></div>
+                            <select wire:model="template" name="templateInput" id="templateInput" class="mt-1 block w-full border-2 border-indigo-600/100 p-2" >
+                                <option value="null" >Custom</option>
+                            @foreach($template_recs as $g)
+                                <option value="{{$g->pagename}}" @if($template==$g->pagename) selected="selected" @endif >{{$g->title}}</option>
+                            @endforeach
+                        </select>
+                        @error('template') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
                         <div class="mb-4">
-                            <label for="descriptionInput" class="min-h-[10%] block text-gray-700 text-sm font-bold mb-2">Description: (enter html if this is a page of the site)</label>
+                            <label for="descriptionInput" class="min-h-[10%] block text-gray-700 text-sm font-bold mb-2">Description: (enter html if template is custom)</label>
                             <textarea rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="descriptionInput" wire:model.defer="description" placeholder="Enter Description"></textarea>
                             @error('description') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
