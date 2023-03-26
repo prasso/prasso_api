@@ -179,4 +179,9 @@ Log::info('using system welcome: ');
         
     }
 
+    public function giveToDonate(){
+        
+        return redirect()->to('/page/donate');
+    }
+
 }
