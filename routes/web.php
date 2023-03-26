@@ -25,6 +25,7 @@ Route::get('/confirm_newsletter_subscription', 'EmailController@confirm_newslett
 
 
 Route::get('/page/{section}','SitePageController@viewSitePage');
+Route::get('/give','SitePageController@giveToDonate');
 
 Route::get('/dashboard', 'SitePageController@index')->name('dashboard');
 
