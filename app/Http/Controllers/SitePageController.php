@@ -49,7 +49,9 @@ class SitePageController extends Controller
         }
         $welcomepage->description = $this->prepareTemplate($welcomepage);
         return view($welcomepage->masterpage) 
-            ->with('sitePage',$welcomepage);
+            ->with('sitePage',$welcomepage)            
+            ->with('site',$this->site)
+            ->with('page_short_url','/');
     }
 
     /**
@@ -75,7 +77,9 @@ class SitePageController extends Controller
             {    
                 $dashboardpage->description = $this->prepareTemplate($dashboardpage);
                 return view($dashboardpage->masterpage)  
-                ->with('sitePage',$dashboardpage);
+                ->with('sitePage',$dashboardpage)
+                ->with('site',$this->site)
+                ->with('page_short_url','/');
             }
         }
         
