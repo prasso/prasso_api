@@ -1,0 +1,77 @@
+/*
+
+
+The placeholders for the text content are:
+
+{{article_id}}: ID of the article
+{{section_class}}: CSS class for the article section
+{{extra_classes}}: Any extra CSS classes for the article section
+{{data_id}}: Data ID for the article section
+{{data_category}}: Data category for the article section
+{% if has_photo %}: Conditional block for photo content
+{{photo_id}}: ID of the photo
+{{photo_width}}: Width of the photo
+{{photo_height}}: Height of the photo
+{{photo_aspect_ratio}}: Aspect ratio of the photo
+{% if photo_link %}: Conditional block for photo link
+{{photo_link}}: URL for the photo link
+{{photo_location}}: Data location for the photo link
+{{photo_detail}}: Data detail for the photo link
+{{photo_url}}: URL for the photo link
+{{photo_srcset}}: Source set for the photo
+{% endif %}: End of photo link conditional block
+{% if has_secondary_title %}: Conditional block for secondary title content
+{{secondary_title_id}}: ID of the secondary title
+{{secondary_title_text}}: Text content of the secondary title
+{% endif %}: End of secondary title conditional block
+{% if has_title %}: Conditional block for title content
+{{title_id}}: ID
+
+
+*/
+<article id="{{article_id}}" class="site-section {{section_class}} text editable {{extra_classes}}" data-id="{{data_id}}" data-category="{{data_category}}">
+   <div class="bg-helper">
+      <div class="bg-opacity" style="opacity: 0.0"></div>
+   </div>
+   <div class="content-wrapper clearfix">
+      <div class="group group-0">
+         {% if has_photo %}
+         <div class="photo-content editable photo-0 " data-id="{{photo_id}}" data-category="photo" data-width="{{photo_width}}" data-height="{{photo_height}}">
+            <div class="aspect-helper" style="padding-top:{{photo_aspect_ratio}}%"></div>
+            <div class="photo-container">
+               {% if photo_link %}
+               <a href="{{photo_link}}" data-category="link" data-location="{{photo_location}}" data-detail="{{photo_detail}}" data-url="{{photo_url}}">
+                  {% endif %}
+                  <img srcset="{{photo_srcset}}" border="0">
+                  {% if photo_link %}
+               </a>
+               {% endif %}
+            </div>
+         </div>
+         {% endif %}
+      </div>
+      <div class="group group-1">
+         {% if has_secondary_title %}
+         <header class="text-content text-0 secondary-title editable" data-id="{{secondary_title_id}}" data-category="text">
+            <div>
+               <p>{{secondary_title_text}}</p>
+            </div>
+         </header>
+         {% endif %}
+         {% if has_title %}
+         <header class="text-content text-1 title-text editable" data-id="{{title_id}}" data-category="text">
+            <div>
+               <p>{{title_text}}</p>
+            </div>
+         </header>
+         {% endif %}
+         {% if has_content %}
+         <div class="text-content text-2 editable" data-id="{{content_id}}" data-category="text">
+            <div>
+               <p>{{content_text}}</p>
+            </div>
+         </div>
+         {% endif %}
+      </div>
+   </div>
+</article>
