@@ -133,7 +133,9 @@ Log::info('using system welcome: ');
         $sitepage->description = $this->prepareTemplate($sitepage);
       
         return view($sitepage->masterpage)//use the template here
-            ->with('sitePage',$sitepage);
+            ->with('sitePage',$sitepage)
+            ->with('site',$this->site)
+            ->with('page_short_url','/page/'.$section);
     }
 
      /**

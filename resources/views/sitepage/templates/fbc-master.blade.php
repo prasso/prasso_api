@@ -2,20 +2,20 @@
 <head>
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1">
-   <meta name="csrf-token" content="CSRF_TOKEN">
+   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-   <title>Faith Baptist Church, Lake City, Florida | PAGE_SLUG</title>
-   <meta name="description" content="PAGE_NAME" />
-   <meta property="og:title" content="Faith Baptist Church, Lake City, Florida | PAGE_SLUG" />
-   <meta property="og:description" content="PAGE_NAME" />
+   <title>{{ $site->site_name }} - {{ $title??'' }}</title>
+   <meta name="description" content="{{ $title??'' }}" />
+   <meta property="og:title" content="{{ $site->site_name }} - {{ $title??'' }}" />
+   <meta property="og:description" content="{{ $title??'' }}" />
    <meta property="og:type" content="website" />
-   <meta property="og:url" content="sermons.html" />
-   <meta property="og:image" content="https://i3.ytimg.com/vi/mP0ME5J32nA/mqdefault.jpg" />
+   <meta property="og:url" content="{{ $page_short_url }}" />
+   <meta property="og:image" content="{{ $site->logo_image }}" />
    <meta name="twitter:card" content="summary_large_image" />
-   <meta name="twitter:title" content="Faith Baptist Church, Lake City, Florida | PAGE_SLUG" />
-   <meta name="twitter:description" content="PAGE_NAME" />
-   <meta name="twitter:image" content="https://i3.ytimg.com/vi/mP0ME5J32nA/mqdefault.jpg" />
-   <link rel="shortcut icon" type="image/x-icon" href="SITE_FAVICON_FILE">
+   <meta name="twitter:title" content="{{ $site->site_name }} - {{ $title??'' }}" />
+   <meta name="twitter:description" content="{{ $title??'' }}" />
+   <meta name="twitter:image" content="{{ $site->logo_image }}" />
+   <link rel="shortcut icon" type="image/x-icon" href="{{ $site->favicon }}">
    <link rel="stylesheet" media="all" href="https://images.prasso.io/fbc/cdn.files/production/websites/application-2d3ea95936f79d8cf68c4a91238720210c7d217a5301ad14816159e44f1ae032.css" data_turbolinks_track="true" debug="false" />
    <link rel="stylesheet" media="all" href="https://images.prasso.io/fbc/cdn.files/production/websites/designs/dusk/base-9c40b38ce0ba7fbd608fa6f1889f31185b652733c22bdf7fa828349f50411476.css" debug="false" />
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
