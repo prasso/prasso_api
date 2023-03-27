@@ -187,7 +187,7 @@
                         <a href="/page/Livestream"><span>Live Services</span></a>
                      </li>
                      <li class="">
-                        <a href="/page/Sermons"><span>Recent Sermons</span></a>
+                        <a href="/page/RecentSermons"><span>Recent Sermons</span></a>
                      </li>
                      <li class="">
                         <a href="/page/Sermons"><span>More Sermons</span></a>
