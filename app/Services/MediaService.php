@@ -125,15 +125,25 @@ class MediaService
 
       $storage = $this->createDrive($bucket);
       $livestreams = $storage->AllFiles('ivs');
+      // Remove 'ivs-check' from the array
+      $livestreams = array_filter($livestreams, function($filename) {
+          return $filename !== 'ivs/ivs-check';
+      });
+
       $livestreams = array_map(function($item) use ($file_path) {
-        $otheritem = "/".str_replace("\/","/",$item);
-        return str_replace($file_path,'', $otheritem);
+          $otheritem = "/".str_replace("\/","/",$item);
+          return str_replace($file_path,'', $otheritem);
       }, $livestreams);
-      
+
       $livestreams = array_unique(array_map(function($item) {
-        $parts = explode('/',$item);
-        return $parts[0] . '/' . $parts[1] . '/' . $parts[2];
+          $parts = explode('/',$item);
+          if (count($parts) < 3) {
+              return null; // ignore this filename
+          }
+          return $parts[0] . '/' . $parts[1] . '/' . $parts[2];
       }, $livestreams));
+
+
 
       return $livestreams;
   }
