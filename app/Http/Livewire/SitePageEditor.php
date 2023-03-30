@@ -116,7 +116,6 @@ class SitePageEditor extends Component
             'section' => "required|unique:site_pages,section,{{ $this->sitePage_id }},id,fk_site_id,{{ $this->siteid }}",
             'title' => 'required',
             'description' => 'required',
-            'url' => 'required',
             'masterpage' => 'required',
             'login_required' => 'required',
         ]);
