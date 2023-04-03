@@ -94,11 +94,12 @@ class Controller extends BaseController
            return false;
         }
 
-        if (!$userService->isUserOnTeam(\Auth::user()))
+        if (\Auth::user()==null || !$userService->isUserOnTeam(\Auth::user()))
         {
             \Auth::logout();
             session()->flash('status','You are not a member of this site.');
             return false;
         }
+        return true;
     }
 }

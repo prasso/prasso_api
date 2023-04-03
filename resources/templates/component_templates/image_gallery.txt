@@ -1,0 +1,178 @@
+
+<article id="gallery-[GALLERY_ID]" class="site-section subpalette1 gallery editable gallery-layout  first" data-id="[GALLERY_ID]" data-category="gallery">
+   <div class="bg-helper">
+      <div class="bg-opacity" style="opacity: 0.0"></div>
+   </div>
+   <div class="content-wrapper clearfix">
+      <div class="slides-container">
+         <div class="slick-container" data-slick-settings="{&quot;autoplay&quot;:true,&quot;autoplaySpeed&quot;:2500.0,&quot;dots&quot;:true,&quot;arrows&quot;:true,&quot;infinite&quot;:true,&quot;fade&quot;:false,&quot;speed&quot;:500.0}" data-settings="{&quot;gallery&quot;:{&quot;max_width&quot;:2280,&quot;max_height&quot;:1200,&quot;arrows&quot;:true,&quot;markers&quot;:true,&quot;autoplay&quot;:true,&quot;transition&quot;:&quot;Slide&quot;,&quot;slide_duration&quot;:&quot;2.5&quot;,&quot;transition_duration&quot;:&quot;0.5&quot;}}" data-id="[GALLERY_ID]" data-category="gallery">
+            <ul class="slick">
+               <li>
+                  <picture>
+                     <source srcset="[IMAGE_1_SRCSET]" media="(min-width: 769px)" />
+                     <source srcset="[IMAGE_1_MOBILE_SRCSET]" media="(min-width: 600px)" />
+                     <source srcset="[IMAGE_1_MOBILE_SRC]" />
+                     <img class="image" />
+                  </picture>
+               </li>
+               <li>
+                  <picture>
+                     <source srcset="[IMAGE_2_SRCSET]" media="(min-width: 769px)" />
+                     <source srcset="[IMAGE_2_MOBILE_SRCSET]" media="(min-width: 600px)" />
+                     <source srcset="[IMAGE_2_MOBILE_SRC]" />
+                     <img class="image" />
+                  </picture>
+               </li>
+               <li>
+                  <picture>
+                     <source srcset="[IMAGE_3_SRCSET]" media="(min-width: 769px)" />
+                     <source srcset="[IMAGE_3_MOBILE_SRCSET]" media="(min-width: 600px)" />
+                     <source srcset="[IMAGE_3_MOBILE_SRC]" />
+                     <img class="image" />
+                  </picture>
+               </li>
+               <li>
+                  <picture>
+                     <source srcset="[IMAGE_4_SRCSET]" media="(min-width: 769px)" />
+                     <source srcset="[IMAGE_4_MOBILE_SRCSET]" media="(min-width: 600px)" />
+                     <source srcset="[IMAGE_4_MOBILE_SRC]" />
+                     <img class="image" />
+                  </picture>
+               </li>
+            </ul>
+         </div>
+      </div>
+   </div>
+</article>
+<script>
+function fillFormWithJson(json) {
+  const data = JSON.parse(json);
+
+  // Fill in the input fields with the corresponding data
+  document.querySelector('input[name="gallery_id"]').value = data.gallery_id;
+  document.querySelector('input[name="image_1_srcset"]').value = data.image_1_srcset;
+  document.querySelector('input[name="image_1_mobile_srcset"]').value = data.image_1_mobile_srcset;
+  document.querySelector('input[name="image_1_mobile_src"]').value = data.image_1_mobile_src;
+  document.querySelector('input[name="image_2_srcset"]').value = data.image_2_srcset;
+  document.querySelector('input[name="image_2_mobile_srcset"]').value = data.image_2_mobile_srcset;
+  document.querySelector('input[name="image_2_mobile_src"]').value = data.image_2_mobile_src;
+  document.querySelector('input[name="image_3_srcset"]').value = data.image_3_srcset;
+  document.querySelector('input[name="image_3_mobile_srcset"]').value = data.image_3_mobile_srcset;
+  document.querySelector('input[name="image_3_mobile_src"]').value = data.image_3_mobile_src;
+  document.querySelector('input[name="image_4_srcset"]').value = data.image_4_srcset;
+  document.querySelector('input[name="image_4_mobile_srcset"]').value = data.image_4_mobile_srcset;
+  document.querySelector('input[name="image_4_mobile_src"]').value = data.image_4_mobile_src;
+}
+</script>
+
+OR!!!!
+
+<script>
+<!-- example HTML code for the component -->
+<div id="gallery-component"></div>
+
+<script>
+  // define the component function
+  function GalleryComponent(data) {
+    // create the article element with the gallery ID and class
+    const article = document.createElement('article');
+    article.id = `gallery-${data.gallery_id}`;
+    article.classList.add('site-section', 'subpalette1', 'gallery', 'editable', 'gallery-layout', 'first');
+    article.dataset.id = data.gallery_id;
+    article.dataset.category = 'gallery';
+
+    // create the div elements for the background helper and opacity
+    const bgHelper = document.createElement('div');
+    bgHelper.classList.add('bg-helper');
+
+    const bgOpacity = document.createElement('div');
+    bgOpacity.classList.add('bg-opacity');
+    bgOpacity.style.opacity = 0.0;
+
+    // append the background elements to the article
+    bgHelper.appendChild(bgOpacity);
+    article.appendChild(bgHelper);
+
+    // create the div element for the content wrapper
+    const contentWrapper = document.createElement('div');
+    contentWrapper.classList.add('content-wrapper', 'clearfix');
+
+    // create the div element for the slides container
+    const slidesContainer = document.createElement('div');
+    slidesContainer.classList.add('slides-container');
+
+    // create the div element for the slick container with data attributes
+    const slickContainer = document.createElement('div');
+    slickContainer.classList.add('slick-container');
+    slickContainer.dataset.slickSettings = JSON.stringify(data.slick_settings);
+    slickContainer.dataset.settings = JSON.stringify(data.settings);
+    slickContainer.dataset.id = data.gallery_id;
+    slickContainer.dataset.category = 'gallery';
+
+    // create the unordered list element with the class for the slick images
+    const slickList = document.createElement('ul');
+    slickList.classList.add('slick');
+
+    // loop through the image sources and create list items with pictures and sources
+    data.image_sources.forEach(source => {
+      const listItem = document.createElement('li');
+      const picture = document.createElement('picture');
+
+      // loop through the image source sets and create sources for each
+      source.source_sets.forEach(sourceSet => {
+        const sourceElement = document.createElement('source');
+        sourceElement.srcset = sourceSet.srcset;
+        sourceElement.media = sourceSet.media;
+        picture.appendChild(sourceElement);
+      });
+
+      // create the image element with class
+      const image = document.createElement('img');
+      image.classList.add('image');
+      picture.appendChild(image);
+
+      listItem.appendChild(picture);
+      slickList.appendChild(listItem);
+    });
+
+    slickContainer.appendChild(slickList);
+    slidesContainer.appendChild(slickContainer);
+    contentWrapper.appendChild(slidesContainer);
+    article.appendChild(contentWrapper);
+
+    // append the article to the gallery component div element
+    const galleryComponent = document.getElementById('gallery-component');
+    galleryComponent.appendChild(article);
+  }
+
+  // example usage of the GalleryComponent function with JSON data
+  const jsonData = {
+    gallery_id: '1234',
+    slick_settings: {
+      autoplay: true,
+      autoplaySpeed: 2500.0,
+      dots: true,
+      arrows: true,
+      infinite: true,
+      fade: false,
+      speed: 500.0
+    },
+    settings: {
+      gallery: {
+        max_width: 2280,
+        max_height: 1200,
+        arrows: true,
+        markers: true,
+        autoplay: true,
+        transition: 'Slide',
+        slide_duration: '2.5',
+        transition_duration: '0.5'
+      }
+    },
+    image_sources: [
+      {
+        source_sets: [
+          {
+            srcset: 'image1_large.jpg 2280w
+
+</script>

@@ -1,0 +1,7 @@
+{
+    "galleryId": "[GALLERY_ID]",
+    "images": [{"imageSrcset": "[COMMA_SEPARATED_LIST_OF_IMAGES]",
+    "imageMobileSrcset": "[COMMA_SEPARATED_LIST_MOBILE_IMAGES]",
+    "imageMobileSrc": "[SINGLE_MOBILE_IMAGE]"}]
+  }
+  

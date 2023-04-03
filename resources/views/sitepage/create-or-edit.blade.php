@@ -5,7 +5,9 @@
         </div>
         <!-- This element is to trick the browser into centering the modal contents. -->
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>?
-        <div x-data="{ template_selection_made: {{ $masterpage ? 'true' : 'false' }} }" x-init="template_selection_made = {{ $masterpage ? 'true' : 'false' }};" class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+        <div x-data="{ template_selection_made: {{ $masterpage ? 'true' : 'false' }} }" 
+            x-init="template_selection_made = {{ $masterpage ? 'true' : 'false' }};" 
+            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
             <form> <input type="hidden" wire:model="fk_site_id" />
             @if($errors->any())
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
@@ -29,12 +31,12 @@
                         <div class="mb-4">
                             <label for="masterpageInput" class="block text-gray-700 text-sm font-bold mb-2">Wrapper: </label>
                             <select wire:model="masterpage" name="masterpageInput" id="masterpageInput" class="mt-1 block w-full border-2 border-indigo-600/100 p-2"  @change="template_selection_made = $event.target.value !== ''">
-                            <option value="">No Master Page</option>
-                            @foreach($masterpage_recs as $g)
-                                <option value="{{$g->pagename}}" @if($masterpage==$g->pagename) selected="selected" @endif >{{$g->title}}</option>
-                            @endforeach
-                        </select>
-                        @error('masterpage') <span class="text-red-500">{{ $message }}</span>@enderror
+                                <option value="">No Master Page</option>
+                                @foreach($masterpage_recs as $g)
+                                    <option value="{{$g->pagename}}" @if($masterpage==$g->pagename) selected="selected" @endif >{{$g->title}}</option>
+                                @endforeach
+                            </select>
+                            @error('masterpage') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                       
                         <div x-data="{ template_info_open: false}" class="mb-4">
@@ -45,7 +47,7 @@
                             <select wire:model="template" name="templateInput" id="templateInput" class="mt-1 block w-full border-2 border-indigo-600/100 p-2" >
                                 <option value="" >No Template</option>
                             @foreach($template_recs as $g)
-                                <option value="{{$g->pagename}}" @if($template==$g->pagename) selected="selected" @endif >{{$g->title}}</option>
+                                <option value="{{$g->templatename}}" @if($template==$g->templatename) selected="selected" @endif >{{$g->title}}</option>
                             @endforeach
                             </select>
                             @error('template') <span class="text-red-500">{{ $message }}</span>@enderror
