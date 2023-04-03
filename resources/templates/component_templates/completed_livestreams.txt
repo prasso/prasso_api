@@ -1,0 +1,49 @@
+           <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
+
+            <script src="https://player.live-video.net/1.8.0/amazon-ivs-player.min.js"></script>
+            <script src="/js/ivs-script.js" defer></script>
+            <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"> 
+            <link rel="stylesheet" media="all" href="/css/ivscss.css"  />
+            <div style="position:grid;place-items: center;padding-top:2em;">
+
+               <script>
+                  let playbackUrl = "";
+
+                  function displayurl(video_to_show)
+                  {
+                     playbackUrl = video_to_show;
+                     if (playbackUrl)
+                     {
+                      player.load(playbackUrl);
+                     }
+                  }
+ 
+               </script>
+               <div id="player" class="player-wrapper">
+                  <div class="aspect-spacer"></div>
+                  <div class="pos-absolute full-width full-height top-0">
+                    <video id="video-player" controls muted autoplay playsinline></video>
+                  </div>
+                </div>
+               <div class="flex mt-10 w-full overflow-scroll pl-10 pr-10"  x-data='[MEDIA_LIST_JSON]'  >
+               <template x-for="vid in videos">
+                  <div class="w-1/3" style="min-width:33%">
+                    <div class="cursor-pointer mb-4"
+                         x-on:click="displayurl(vid.s3media_url)">
+                      <span x-text="vid.media_title"></span>
+                      <img class="max-w-sm" x-bind:src="vid.thumb_url">
+                    </div>
+                  </div>
+                </template>
+              </div>
+              
+            </div>
+
+
+<script>
+     window.onload = function() {
+    const videos = JSON.parse(document.querySelector('[x-data]').getAttribute('x-data')).videos;
+    displayurl(videos[0].s3media_url);
+  };
+</script>
+

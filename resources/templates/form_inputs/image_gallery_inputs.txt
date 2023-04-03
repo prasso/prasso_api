@@ -1,0 +1,34 @@
+<form>
+  <label for="gallery-id">Gallery ID:</label>
+  <input type="text" id="gallery-id" name="gallery-id"><br>
+
+  <label for="image-1-srcset">Image 1 Srcset:</label>
+  <input type="text" id="image-1-srcset" name="image-1-srcset"><br>
+  <label for="image-1-mobile-srcset">Image 1 Mobile Srcset:</label>
+  <input type="text" id="image-1-mobile-srcset" name="image-1-mobile-srcset"><br>
+  <label for="image-1-mobile-src">Image 1 Mobile Src:</label>
+  <input type="text" id="image-1-mobile-src" name="image-1-mobile-src"><br>
+
+  <label for="image-2-srcset">Image 2 Srcset:</label>
+  <input type="text" id="image-2-srcset" name="image-2-srcset"><br>
+  <label for="image-2-mobile-srcset">Image 2 Mobile Srcset:</label>
+  <input type="text" id="image-2-mobile-srcset" name="image-2-mobile-srcset"><br>
+  <label for="image-2-mobile-src">Image 2 Mobile Src:</label>
+  <input type="text" id="image-2-mobile-src" name="image-2-mobile-src"><br>
+
+  <label for="image-3-srcset">Image 3 Srcset:</label>
+  <input type="text" id="image-3-srcset" name="image-3-srcset"><br>
+  <label for="image-3-mobile-srcset">Image 3 Mobile Srcset:</label>
+  <input type="text" id="image-3-mobile-srcset" name="image-3-mobile-srcset"><br>
+  <label for="image-3-mobile-src">Image 3 Mobile Src:</label>
+  <input type="text" id="image-3-mobile-src" name="image-3-mobile-src"><br>
+
+  <label for="image-4-srcset">Image 4 Srcset:</label>
+  <input type="text" id="image-4-srcset" name="image-4-srcset"><br>
+  <label for="image-4-mobile-srcset">Image 4 Mobile Srcset:</label>
+  <input type="text" id="image-4-mobile-srcset" name="image-4-mobile-srcset"><br>
+  <label for="image-4-mobile-src">Image 4 Mobile Src:</label>
+  <input type="text" id="image-4-mobile-src" name="image-4-mobile-src"><br>
+
+  <button type="submit">Submit</button>
+</form>

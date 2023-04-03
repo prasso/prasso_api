@@ -133,6 +133,10 @@ Log::info('using system welcome: ');
             session()->flash('status','You are not a member of this site.');
             return redirect('/login');
         }
+        if ($sitepage->url != null && strlen($sitepage->url) > 5 && strcmp($sitepage->url,'http') != 0)
+        {
+            return redirect($sitepage->url);
+        }
 
         $sitepage->description = $this->prepareTemplate($sitepage);
       
@@ -149,6 +153,12 @@ Log::info('using system welcome: ');
      */
     public function editSitePages($siteid)
     {
+        if (!Controller::userOkToViewPageByHost($this->userService))
+        {
+            info('user not ok to view page: ' . $siteid);
+            return redirect('/login');
+        }
+
         return view('sitepage.view-site-pages') ->with('siteid', $siteid);
     }
 
@@ -188,6 +198,27 @@ Log::info('using system welcome: ');
     public function giveToDonate(){
         
         return redirect()->to('/page/donate');
+    }
+
+    public function templateInputs(Request $request){
+        //IDENTIFY which template has been posted
+        $template = $request['template'];
+        $siteid = $request['siteid'];
+        $pageid = $request['pageid'];
+        $page = SitePages::where('id',$pageid)->first();
+       
+        //loop through the request and gather form input values to build json object
+        $json = array();
+        foreach ($request->all() as $key => $value) {
+            if ($key != '_token' && $key != 'template' && $key != 'siteid' && $key != 'pageid'){
+                $json[$key] = $value;
+            }
+        }
+        $json = json_encode($json);
+        $page->json_data = $json;
+        $page->save();
+        return redirect()->back();
+
     }
 
 }
