@@ -112,14 +112,17 @@ class SitePageEditor extends Component
     public function store()
     {
         $this->section = preg_replace('/\s+/', '', $this->section??'');
+        //if url starts with https and is longer than 5 characters then description is not required
         $this->validate([
             'section' => "required|unique:site_pages,section,{{ $this->sitePage_id }},id,fk_site_id,{{ $this->siteid }}",
             'title' => 'required',
-            'description' => 'required',
-            'url' => 'required',
-            'masterpage' => 'required',
+            'description' => 'required_without:url',
+            'masterpage' => 'required_without:url',
+            'url' => 'required_if:masterpage,null',
             'login_required' => 'required',
         ]);
+        
+        
        SitePages::updateOrCreate(['id' => $this->sitePage_id], [
             'fk_site_id' => $this->siteid,
             'section' => $this->section,
@@ -156,7 +159,15 @@ class SitePageEditor extends Component
 
         $this->openModal();
     }
-    
+
+    public function updated($propertyName)
+    {
+        if ($propertyName == 'masterpage' && $this->masterpage != '') {
+            $this->url = '';
+        }
+        $this->resetErrorBag($propertyName);
+     
+    }
 
        /**
      * can we make this work with GrapesJs? (it works when loaded from a new page, not from the livewire component)

@@ -5,8 +5,15 @@
         </div>
         <!-- This element is to trick the browser into centering the modal contents. -->
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>?
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+        <div x-data="{ template_selection_made: {{ $masterpage ? 'true' : 'false' }} }" 
+            x-init="template_selection_made = {{ $masterpage ? 'true' : 'false' }};" 
+            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
             <form> <input type="hidden" wire:model="fk_site_id" />
+            @if($errors->any())
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                {!! implode('', $errors->all('<div>:message</div>')) !!}
+            </div>
+            @endif
             <input type="hidden" wire:model="sitePage_id" />
                           
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
@@ -23,32 +30,35 @@
                         </div>
                         <div class="mb-4">
                             <label for="masterpageInput" class="block text-gray-700 text-sm font-bold mb-2">Wrapper: </label>
-                            <select wire:model="masterpage" name="masterpageInput" id="masterpageInput" class="mt-1 block w-full border-2 border-indigo-600/100 p-2" >
-                            @foreach($masterpage_recs as $g)
-                                <option value="{{$g->pagename}}" @if($masterpage==$g->pagename) selected="selected" @endif >{{$g->title}}</option>
-                            @endforeach
-                        </select>
-                        @error('masterpage') <span class="text-red-500">{{ $message }}</span>@enderror
+                            <select wire:model="masterpage" name="masterpageInput" id="masterpageInput" class="mt-1 block w-full border-2 border-indigo-600/100 p-2"  @change="template_selection_made = $event.target.value !== ''">
+                                <option value="">No Master Page</option>
+                                @foreach($masterpage_recs as $g)
+                                    <option value="{{$g->pagename}}" @if($masterpage==$g->pagename) selected="selected" @endif >{{$g->title}}</option>
+                                @endforeach
+                            </select>
+                            @error('masterpage') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                       
-                        <div x-data="{ open: false}" class="mb-4">
-                        <i x-show="true" wire:ignore  x-on:click="open = !open"  class="float-right material-icons text-gray-600">info</i><label for="templateInput" class="block text-gray-700 text-sm font-bold mb-2">Template : </label>
-                                <div x-show="open" ><b>Template or custom. if template then the template name is in a field of sitepage and the html value is used to fill in placeholders in the template
-                        if custom then html=html</b></div>
+                        <div x-data="{ template_info_open: false}" class="mb-4">
+                            <i x-show="true" wire:ignore  x-on:click="template_info_open = !template_info_open"  class="float-right material-icons text-gray-600">info</i><label for="templateInput" class="block text-gray-700 text-sm font-bold mb-2">Template : </label>
+                                    <div x-show="template_info_open" ><b>Template or custom. if template then the template name is in a field of sitepage and the html value is used to fill in placeholders in the template
+                                        if custom then html=html</b>
+                                    </div>
                             <select wire:model="template" name="templateInput" id="templateInput" class="mt-1 block w-full border-2 border-indigo-600/100 p-2" >
-                                <option value="null" >Custom</option>
+                                <option value="" >No Template</option>
                             @foreach($template_recs as $g)
-                                <option value="{{$g->pagename}}" @if($template==$g->pagename) selected="selected" @endif >{{$g->title}}</option>
+                                <option value="{{$g->templatename}}" @if($template==$g->templatename) selected="selected" @endif >{{$g->title}}</option>
                             @endforeach
-                        </select>
-                        @error('template') <span class="text-red-500">{{ $message }}</span>@enderror
+                            </select>
+                            @error('template') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
-                        <div class="mb-4">
-                            <label for="descriptionInput" class="min-h-[10%] block text-gray-700 text-sm font-bold mb-2">Description: (enter html if template is custom)</label>
+
+                        <div x-show="template_selection_made" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
+                            <label for="descriptionInput" class="min-h-[10%] block text-gray-700 text-sm font-bold mb-2">Description: (enter html if no template is selected)</label>
                             <textarea rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="descriptionInput" wire:model.defer="description" placeholder="Enter Description"></textarea>
                             @error('description') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
-                        <div class="mb-4">
+                        <div x-show="!template_selection_made" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
                             <label for="urlInput" class="block text-gray-700 text-sm font-bold mb-2">Url: (if this is an outside page )</label>
                             <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="urlInput" placeholder="Enter Url" wire:model="url">
                             @error('url') <span class="text-red-500">{{ $message }}</span>@enderror
