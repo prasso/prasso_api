@@ -179,7 +179,7 @@
                   </ul>
                </li>
                <li class=" has-sub">
-                  <a href="/page/Sermons">
+                  <a href="/page/RecentSermons">
                   <span>Sermons</span>
                   </a>
                   <ul class="sub-navigation">
@@ -248,7 +248,7 @@
                         <i></i>
                      </li>
                      <li class=" has-sub">
-                        <a href="/page/Sermons">
+                        <a href="/page/RecentSermons">
                         <span>Sermons</span>
                         </a>
                         <ul class="sub-navigation">
