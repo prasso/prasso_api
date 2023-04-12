@@ -33,7 +33,7 @@
                         <button wire:click="edit({{ $sitePage->id }})" class="py-2 px-4 rounded"> <i class="material-icons md-36">mode_edit</i></button>
                         <a href="/visual-editor/{{ $sitePage->id }}" class="py-2 px-4 rounded"><i class="material-icons md-36">format_color_fill</i></a>
                         <button wire:click="delete({{ $sitePage->id }})" class="py-2 px-4 rounded"><i class="material-icons md-36">delete_forever</i></button>
-                        <a href="/page/{{ $sitePage->section }}" target="new" class="py-2 px-4 rounded"><i class="material-icons md-36">preview</i></a>
+                        <a href="{{ $https_host }}/page/{{ $sitePage->section }}" target="new" class="py-2 px-4 rounded"><i class="material-icons md-36">preview</i></a>
   
                     </td>
                     </tr>

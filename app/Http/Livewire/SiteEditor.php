@@ -17,7 +17,7 @@ class SiteEditor extends Component
 
     public $sites, $site_id,$site_name,$description, $host,$main_color,$logo_image, 
             $database, $favicon, $supports_registration, $app_specific_js, $app_specific_css,
-            $does_livestreaming;
+            $does_livestreaming,$https_host;
     public $current_user;
     public $isOpen = 0;
 

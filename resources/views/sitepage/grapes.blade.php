@@ -8,7 +8,9 @@
 
     <link rel="icon" type="image/png" href="{{$site->favicon}}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.css">
-    <link rel="stylesheet" href="/css/grapes.min.css?v0.16.44">
+    
+
+    <link rel="stylesheet" href="/css/grapes.min.css?0.21.1">
     <link rel="stylesheet" href="/css/grapesjs-preset-webpage.min.css">
     <link rel="stylesheet" href="/css/tooltip.css">
     <link rel="stylesheet" href="/css/grapesjs-plugin-filestack.css">
@@ -18,19 +20,24 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
 
-    <script src="/js/grapes.min.js?v0.16.44"></script>
+    
+    <script src="/js/grapes.min.js?v0.21.1"></script>
+    
     <script src="https://unpkg.com/@truenorthtechnology/grapesjs-code-editor"></script>
-    <script src="/js/grapesjs-preset-webpage.min.js?v0.1.11"></script>
-    <script src="/js/grapesjs-lory-slider.min.js?0.1.5"></script>
-    <script src="/js/grapesjs-tabs.min.js?0.1.1"></script>
-    <script src="/js/grapesjs-custom-code.min.js?0.1.2"></script>
-    <script src="/js/grapesjs-touch.min.js?0.1.1"></script>
-    <script src="/js/grapesjs-parser-postcss.min.js?0.1.1"></script>
-    <script src="/js/grapesjs-tooltip.min.js?0.1.1"></script>
-    <script src="/js/grapesjs-tui-image-editor.min.js?0.1.2"></script>
-    <script src="/js/grapesjs-typed.min.js?1.0.5"></script>
-    <script src="/js/grapesjs-style-bg.min.js?1.0.1"></script>
-
+    <script src="https://unpkg.com/grapesjs-preset-webpage@1.0.2"></script>
+    <script src="https://unpkg.com/grapesjs-blocks-basic@1.0.1"></script>
+    <script src="https://unpkg.com/grapesjs-plugin-forms@2.0.5"></script>
+    <script src="https://unpkg.com/grapesjs-component-countdown@1.0.1"></script>
+    <script src="https://unpkg.com/grapesjs-plugin-export@1.0.11"></script>
+    <script src="/js/grapesjs-tabs.min.js?1.0.6"></script>
+    <script src="https://unpkg.com/grapesjs-custom-code@1.0.1"></script>
+    <script src="https://unpkg.com/grapesjs-touch@0.1.1"></script>
+    <script src="https://unpkg.com/grapesjs-parser-postcss@1.0.1"></script>
+    <script src="https://unpkg.com/grapesjs-tooltip@0.1.7"></script>
+    <script src="https://unpkg.com/grapesjs-tui-image-editor@0.1.3"></script>
+    <script src="https://unpkg.com/grapesjs-typed@1.0.5"></script>
+    <script src="https://unpkg.com/grapesjs-style-bg@2.0.1"></script>
+    <script src="/js/grapesjs-lory-slider.min.js"></script>
     <style type="text/css">
         .icon-add-comp::before, .icon-comp100::before,.icon-comp50::before,.icon-comp30::before,.icon-rm::before{ content: '';}
         .icon-add-comp {
@@ -162,6 +169,10 @@
         <input type="hidden" name="url" value="{{$sitePage->url}}"/>
         <input type="hidden" name="csrf-token" value="{{ csrf_token() }}" />
         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+        <input type="hidden" name="headers" value="{{ $sitePage->headers }}" />
+        <input type="hidden" name="masterpage" value="{{ $sitePage->masterpage }}" />
+        <input type="hidden" name="login_required" value="{{ $sitePage->login_required }}" />
+        <input type="hidden" name="template" value="{{ $sitePage->template }}" />
         <input type="hidden" id="livewirecss" value="
             @livewireStyles
         " />
