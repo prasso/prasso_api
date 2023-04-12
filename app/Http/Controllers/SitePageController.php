@@ -88,7 +88,15 @@ class SitePageController extends Controller
     }
 
     private function prepareTemplate($dashboardpage){
-        $page_content = $dashboardpage->description;
+        //is this a template page?
+        if (strlen($dashboardpage->template) > 0)
+        {
+            $page_content= $this->sitePageService->getTemplate($dashboardpage->template);
+        }
+        else
+        {
+            $page_content = $dashboardpage->description;
+        }
         $user = Auth::user() ?? null;
 
         //replace the tokens in the dashboard page with the user's name, email, and profile photo
@@ -171,7 +179,7 @@ Log::info('using system welcome: ');
             session()->flash('status','Page not found.');
             return redirect()->back();
         }
-        return view('sitepage.grapes')->with('sitePage', $pageToEdit);
+        return view('sitepage.grapes-updated')->with('sitePage', $pageToEdit);
     }
 
     public function saveSitePage(Request $request)

@@ -8,7 +8,6 @@ use App\Models\SitePages;
 
 class SitePageService 
 {
-    
     public function saveSitePage($request)
     {
         $updatedSitePage = SitePages::updateOrCreate(['id' => $request['id']], 
@@ -17,6 +16,10 @@ class SitePageService
             'title' => $request['title'],
             'description' => $request['description'],
             'url' => $request['url'],
+            'headers' => $request['headers'],
+            'masterpage' => $request['masterpage'],
+            'login_required' => $request['login_required'],
+            'template' => $request['template'],
         ]);
         
         $message = $updatedSitePage ? 'Site Page Updated Successfully.' : 'Site Page Created Successfully.';
@@ -24,6 +27,11 @@ class SitePageService
         return json_encode($message);
     }
 
+    public function getTemplate($template){
+        //open the template file named by the template
+        $content = file_get_contents(resource_path() . '/templates/'.$template.'.txt');
+       // lklk
+    }
 }
 
 

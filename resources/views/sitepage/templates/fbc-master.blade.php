@@ -57,7 +57,7 @@
                 preview: false,
                 greenhouse_preview: false,
                 environment: "production",
-                site_name: "faithbaptistchurch",
+                site_name: "faithbaptistlakecity",
                 site_uuid: "1210c48d-3bc6-4059-b211-ccceae4a8d6a",
                 content_prefix: "12/1210c48d-3bc6-4059-b211-ccceae4a8d6a",
                 ssl: true,
@@ -116,7 +116,7 @@
       //]]>
    </script>
 </head>
-<body data-published-at="2020-11-02T11:57:00.962-05:00" class="palette nav-children-expand tabs-style-ribbon first-subpalette1 last-subpalette1 footer-subpalette4 dusk">
+<body class="palette nav-children-expand tabs-style-ribbon first-subpalette1 last-subpalette1 footer-subpalette4 dusk">
    <!-- site content -->
    <div id="wrapper">
       <a class="skip-link" href="#sections">Skip to main content</a>
