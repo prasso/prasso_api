@@ -12,8 +12,10 @@ use App\Models\Site;
 
 class SitePageEditor extends Component
 {
-    public $sitePages,$site_name,$fk_site_id, $section, $title, $description, $url, $sitePage_id, $masterpage,$template, $login_required;
+    public $sitePages,$site_name,$fk_site_id, $section, $title, $description, $url, $sitePage_id, $masterpage,$template, $login_required, $headers;
     
+    public $https_host;
+
     public $isOpen = 0;
     public $isVisualEditorOpen = 0;
     public $siteid;
@@ -29,6 +31,8 @@ class SitePageEditor extends Component
             $site->id = 0;
             $site->host = 'newsite';
             $site->main_color = '#000000';
+
+            $site = $site->toArray();
             
         }
         else{
@@ -37,6 +41,7 @@ class SitePageEditor extends Component
         $this->site = $site;
         $this->site_name = $site['site_name'];
         $this->siteid = $siteid;
+        $this->https_host = $this->getHttpsHost($site['host']);
     }
 
     public function render()
@@ -49,6 +54,28 @@ class SitePageEditor extends Component
             ->with('masterpage_recs', $masterpage_recs)
             ->with('template_recs', $template_recs);
     }
+
+    private function getHttpsHost($host) {
+        if (empty($host)) {
+            return '';
+        }
+
+        if (strpos($host, ',') !== false) {
+            $host_array = explode(',', $host);
+            $host = $host_array[0];
+        }
+        if (strpos($host, 'https') !== false) {
+            return $host;
+        }
+        $https_host = $host;
+        if (strpos($host, 'http') !== false) {
+            $https_host = str_replace('http', 'https', $host);
+        }
+        else{
+            $https_host = 'https://' . $host;
+        }
+        return $https_host;
+    }   
 
     public function create()
     {
@@ -131,6 +158,8 @@ class SitePageEditor extends Component
             'url' => $this->url,
             'masterpage' => $this->masterpage,
             'login_required' => $this->login_required,
+            'headers' => $this->headers,
+            'template' => $this->template,
         ]);
   
         session()->flash('message', 
