@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Routing\Controller as FrameworkController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use App\Models\Site;
@@ -13,7 +13,7 @@ use App\Models\SitePages;
 use App\Models\MasterPage;
 use Illuminate\Http\Request;
 
-class Controller extends BaseController
+class Controller extends FrameworkController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
@@ -25,7 +25,7 @@ class Controller extends BaseController
         $site = Controller::getClientFromHost();
         $this->site = $site;
 
-        info('_construct Controller');
+        info('_construct Controller: '.$request->getRequestUri());
         $masterpage = $this->getMasterForSite($site);
 
         View::share('site', $site);
