@@ -16,28 +16,8 @@
    <meta name="twitter:description" content="{{ $title??'' }}" />
    <meta name="twitter:image" content="{{ $site->logo_image }}" />
    <link rel="shortcut icon" type="image/x-icon" href="{{ $site->favicon }}">
-   <link rel="stylesheet" media="all" href="https://images.prasso.io/fbc/cdn.files/production/websites/application-2d3ea95936f79d8cf68c4a91238720210c7d217a5301ad14816159e44f1ae032.css" data_turbolinks_track="true" debug="false" />
-   <link rel="stylesheet" media="all" href="https://images.prasso.io/fbc/cdn.files/production/websites/designs/dusk/base-9c40b38ce0ba7fbd608fa6f1889f31185b652733c22bdf7fa828349f50411476.css" debug="false" />
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-   <script src="https://images.prasso.io/fbc/cdn.files/production/websites/application-31874a24645c9b67af7b8706e47524e06df702f3fe569a8a0eb69d396abd4ebf.js" class="clover" data_turbolinks_track="true" debug="false"></script>
-   <script src="https://images.prasso.io/fbc/cdn.files/production/websites/designs/dusk/base-ae8948f5e23c447398a0e96992fcb396c6936d1bd5213c83a88a0134815f6158.js" debug="false" data-turbolinks-track="true" class="clover"></script>
-   <script>
-      //<![CDATA[
-      
-            var __REACT_ON_RAILS_EVENT_HANDLERS_RAN_ONCE__ = true
-      
-      //]]>
-   </script>
-   <script src="https://images.prasso.io/fbc/cdn.files/js/runtime-29643ceddd61d164b25a.js"></script>
-   <script src="https://images.prasso.io/fbc/cdn.files/js/1-794656562a19776f9d49.chunk.js"></script>
-   <script src="https://images.prasso.io/fbc/cdn.files/js/2-a38190a685725a895f06.chunk.js"></script>
-   <script src="https://images.prasso.io/fbc/cdn.files/js/media-1ab6fa2937934576a72f.chunk.js"></script>
-   <link rel="preconnect" href="https://fonts.gstatic.com">
-   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-   <link rel="stylesheet" media="all" href="https://images.prasso.io/fbc/cdn.files/_user_generated_stylesheets/published_colors_1210c48d-3bc6-4059-b211-ccceae4a8d6a_ed24284b336f402eb0e12db92f9ba0e5.css" id="color-css" />
-   <link rel="stylesheet" media="all" href="https://images.prasso.io/fbc/cdn.files/_user_generated_stylesheets/published_fonts_1210c48d-3bc6-4059-b211-ccceae4a8d6a_275370be77490640d1a637c4ba2f42bf.css" id="font-css" />
-   <link rel="stylesheet" media="all" href="https://images.prasso.io/fbc/cdn.files/_user_generated_stylesheets/published_tweaks_1210c48d-3bc6-4059-b211-ccceae4a8d6a_74e0c2dd5e4fed4f834f88c72f6ba20d.css" id="tweak-css" />
+   {!!  $masterPage->css !!}
+   {!!  $masterPage->js !!}
    <script data-turbolinks-eval="false">
       //<![CDATA[
       
@@ -53,29 +33,7 @@
               if (bowser.ios) $('body').addClass('os-ios')
               if (navigator.platform === 'Win32') $('body').addClass('os-windows')
       
-              Sites.start({
-                preview: false,
-                greenhouse_preview: false,
-                environment: "production",
-                site_name: "faithbaptistlakecity",
-                site_uuid: "1210c48d-3bc6-4059-b211-ccceae4a8d6a",
-                content_prefix: "12/1210c48d-3bc6-4059-b211-ccceae4a8d6a",
-                ssl: true,
-                main_navigation: "more_button",
-                mobile_navigation: "top-left",
-                top_gallery: "",
-                navigation_settings: {"main":"more_button","mobile":"top-left","hoverable_sub_navigation":true},
-                gallery_settings: {"peek":true,"hide_gallery_arrows_while_editing":false},
-                events_settings: {"has_sidebar":true,"always_show_description":true,"prefer_separate_date_and_time":true,"always_show_icons":true,"always_show_location":true,"always_show_details_via_list_item":true,"fixed_tiles_per_row":true,"deviant_list_item_buttons":true,"gallery":{"peek":false}},
-                forms_settings: {"featured_image_floats_to_top":true},
-                tabs_settings: {"style":"ribbon"},
-                s3_bucket_name: "media.cloversites.com",
-                base_domain: "cloversites.com",
-                forms_domain: "https://forms.ministryforms.net",
-                form_builder_embed_url: "https://images.prasso.io/fbc/cdn.files/mb.formbuilder.embed.js",
-                packs_graph: {"runtime":["https://images.prasso.io/fbc/cdn.files/js/runtime-29643ceddd61d164b25a.js",[]],"1":["https://images.prasso.io/fbc/cdn.files/js/1-794656562a19776f9d49.chunk.js",[]],"2":["https://images.prasso.io/fbc/cdn.files/js/2-a38190a685725a895f06.chunk.js",[]],"7":["https://images.prasso.io/fbc/cdn.files/js/js/7-b879346cc33af45bdf54.chunk.js",[]],"media":["https://images.prasso.io/fbc/cdn.files/js/media-1ab6fa2937934576a72f.chunk.js",["runtime","1","2"]],"prayer":["https://images.prasso.io/fbc/cdn.files/js/prayer-8f35a7b9f5649e00c724.chunk.js",["runtime","1","7"]],"small-groups":["https://images.prasso.io/fbc/cdn.files/js/small-groups-7479f4ab3e343196f256.chunk.js",["runtime","1","2"]]}
-              })
-      
+              
               $(document).trigger('page:load');
             });
       
@@ -106,8 +64,6 @@
       
       //]]>
    </script>
-   <!-- Begin Custom Head Code -->
-   <!-- End Custom Head Code -->
    <script data-turbolinks-eval="false">
       //<![CDATA[
       

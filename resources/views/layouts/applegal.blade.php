@@ -9,19 +9,12 @@
     <link rel="icon" type="image/png" href="{{$site->favicon??''}}" />
     <title>{{ $site->site_name }} - {{ $title??'' }}</title>
 
-    <!-- Fonts -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
-    <link href="/js/google-fonts-material-icon.css" rel="stylesheet">
-    <link rel="stylesheet" href="/js/google-material-design-iconic-font.2.2.0.min.css">
-    <!-- Styles -->
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    @if (isset($masterPage))
+    {!!  $masterPage->js !!}
+    {!!  $masterPage->css !!}
+    @endif
 
     @livewireStyles
-
-    <!-- Scripts -->
-    <script src="{{ asset('/js/app.js') }}" defer></script>
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
-
 
     <link rel="icon" type="image/png" href="{{ config('app.photo_url').$site->image_folder}}favicon.ico">
     <link rel="icon" type="image/png" href="{{ config('app.photo_url').$site->image_folder}}favicon-16x16.png" sizes="16x16">

@@ -13,10 +13,13 @@
     <link rel="stylesheet" href="/css/tooltip.css">
     <link rel="stylesheet" href="/css/demos.css?v3">
     <link href="https://unpkg.com/grapick/dist/grapick.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/grapesjs-project-manager/dist/grapesjs-project-manager.min.css" rel="stylesheet">
+
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
     <script src="/js/grapes.min.js?v0.21.1"></script>
+    <script src="https://unpkg.com/grapesjs-project-manager"></script>
     <script src="https://unpkg.com/grapesjs-preset-webpage@1.0.2"></script>
     <script src="https://unpkg.com/grapesjs-blocks-basic@1.0.1"></script>
     <script src="https://unpkg.com/grapesjs-plugin-forms@2.0.5"></script>
@@ -30,6 +33,7 @@
     <script src="https://unpkg.com/grapesjs-tui-image-editor@0.1.3"></script>
     <script src="https://unpkg.com/grapesjs-typed@1.0.5"></script>
     <script src="https://unpkg.com/grapesjs-style-bg@2.0.1"></script>
+    //add masterpage css and js here
 
     <style type="text/css">
         .icons-flex {
@@ -111,6 +115,11 @@
           border-color: transparent;
         }
     </style>
+
+@if (isset($masterPage))
+    {!!  $masterPage->js !!}
+    {!!  $masterPage->css !!}
+    @endif
   </head>
   <body>
   <form id="sitePageForm" action="/save-site-page" method="post">
@@ -130,6 +139,7 @@
             @livewireStyles
         " />
   </form>
+
     <div id="gjs" style="height:0px; overflow:hidden">
     {!! $sitePage->description !!}
     </div>
@@ -157,6 +167,7 @@
 
       var editor  = grapesjs.init({
         storageManager: {autoload: false},
+        pageManager: true,
         avoidInlineStyle: 1,
         height: '100%',
         container : '#gjs',
@@ -424,6 +435,7 @@
           'grapesjs-typed',
           'grapesjs-style-bg',
           'grapesjs-preset-webpage',
+          'grapesjs-project-manager'
         ],
         pluginsOpts: {
           'gjs-blocks-basic': { flexGrid: true },
@@ -516,7 +528,23 @@
           'data-tooltip-pos': 'bottom',
         },
       });
-
+      pn.addButton('options', {
+          id: 'open-templates',
+          className: 'fa fa-folder-o',
+          attributes: {
+              title: 'Open projects and templates'
+          },
+          command: 'open-templates', //Open modal 
+      });
+      pn.addButton('views', {
+          id: 'open-pages',
+          className: 'fa fa-file-o',
+          attributes: {
+              title: 'Take Screenshot'
+          },
+          command: 'open-pages',
+          togglable: false
+      });
 
       // Simple warn notifier
       var origWarn = console.warn;

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use App\Services\SitePageService;
 use App\Services\UserService;
 use App\Models\SitePages;
+use App\Models\MasterPage;
 use App\Models\Site;
 use App\Models\User;
 
@@ -48,10 +49,13 @@ class SitePageController extends Controller
             return view('welcome');
         }
         $welcomepage->description = $this->prepareTemplate($welcomepage);
+        $masterpage = $this->getMaster($welcomepage);
+      
         return view($welcomepage->masterpage) 
             ->with('sitePage',$welcomepage)            
             ->with('site',$this->site)
-            ->with('page_short_url','/');
+            ->with('page_short_url','/')
+            ->with('masterPage',$masterpage);
     }
 
     /**
@@ -76,10 +80,12 @@ class SitePageController extends Controller
             if ($dashboardpage != null)
             {    
                 $dashboardpage->description = $this->prepareTemplate($dashboardpage);
+                $masterpage = $this->getMaster($dashboardpage);
                 return view($dashboardpage->masterpage)  
                 ->with('sitePage',$dashboardpage)
                 ->with('site',$this->site)
-                ->with('page_short_url','/');
+                ->with('page_short_url','/')
+                ->with('masterPage',$masterpage);
             }
         }
         
@@ -87,11 +93,20 @@ class SitePageController extends Controller
         return view('dashboard');
     }
 
+    private function getMaster($sitepage){
+        $master_page = null;
+        if (isset($sitepage->masterpage)){
+            //pull the masterpage css and js and send this as well
+            $master_page = MasterPage::where('pagename',$sitepage->masterpage)->first();
+        }
+        return $master_page;
+    }
+
     private function prepareTemplate($dashboardpage){
         //is this a template page?
         if (strlen($dashboardpage->template) > 0)
         {
-            $page_content= $this->sitePageService->getTemplate($dashboardpage->template);
+            $page_content= $this->sitePageService->getTemplate($dashboardpage);
         }
         else
         {
@@ -131,7 +146,7 @@ class SitePageController extends Controller
 
         if ($sitepage == null)
         {
-Log::info('using system welcome: ');   
+            Log::info('using system welcome: ');   
             return view('welcome');
         }
         if ( ($sitepage->requiresAuthentication() && $user == null ) ||
@@ -147,11 +162,13 @@ Log::info('using system welcome: ');
         }
 
         $sitepage->description = $this->prepareTemplate($sitepage);
-      
+        $masterpage = $this->getMaster($sitepage);
+        
         return view($sitepage->masterpage)//use the template here
             ->with('sitePage',$sitepage)
             ->with('site',$this->site)
-            ->with('page_short_url','/page/'.$section);
+            ->with('page_short_url','/page/'.$section)
+            ->with('masterPage',$masterpage);
     }
 
      /**
@@ -166,20 +183,30 @@ Log::info('using system welcome: ');
             info('user not ok to view page: ' . $siteid);
             return redirect('/login');
         }
-
-        return view('sitepage.view-site-pages') ->with('siteid', $siteid);
+        $masterpage = Controller::getMasterForSite($this->site);
+     info('editSitePages called getMasterForSite: ' . json_encode($masterpage)) ;  
+        return view('sitepage.view-site-pages')
+            ->with('siteid', $siteid)
+            ->with('site',$this->site)
+            ->with('masterPage',$masterpage);
     }
 
     public function visualEditor($pageid)
     {
+        if (!Controller::userOkToViewPageByHost($this->userService))
+        {
+            info('user not ok to view page: ' . $pageid);
+            return redirect('/login');
+        }
         $pageToEdit = SitePages::where('id',$pageid)->first();
+        $master_page = $this->getMaster($pageToEdit);
         
         if ($pageToEdit == null)
         {
             session()->flash('status','Page not found.');
             return redirect()->back();
         }
-        return view('sitepage.grapes-updated')->with('sitePage', $pageToEdit);
+        return view('sitepage.grapes-updated')->with('sitePage', $pageToEdit)->with('masterPage',$master_page);
     }
 
     public function saveSitePage(Request $request)

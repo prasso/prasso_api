@@ -10,22 +10,13 @@
          @if (isset($site))
         <title>{{ $site->site_name ." - " }}{{ $title }}</title>
          @endif
-        <script src="/js/jquery1.10.0.min.js"></script> 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="/js/google-fonts-inter.css" rel="stylesheet">
-        <link href="/js/google-fonts-material-icon.css" rel="stylesheet">
-        <link rel="stylesheet" href="/js/google-material-design-iconic-font.2.2.0.min.css">
-        <link href="/js/google-fonts-Roboto.css" rel="stylesheet"> 
-        <script src="/js/jqueryui.1.12.1.min.css"></script>
-
-        <!-- Styles -->
-        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"> 
-        <!-- Scripts -->
-        <script src="{{ asset('/js/app.js') }}" defer></script>
-        <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
+        @if (isset($masterPage))
+            {!!  $masterPage->css !!}
+            {!!  $masterPage->js !!}
+         @endif
         
          @if (isset($site))
          <link rel="icon" type="image/png" href="{{$site->favicon??''}}" />

@@ -27,9 +27,16 @@ class SitePageService
         return json_encode($message);
     }
 
-    public function getTemplate($template){
+    public function getTemplate($site_page){
+        return $site_page->description;
+        /**
+         * description contains all the html if this site_page specifies a master_page.
+         * 
+         * here's the problem for grapes editor: we edit the sitepage->description but
+         * we need the js and css specified in the sitepage->masterpage to lay it out properly
+         */
         //open the template file named by the template
-        $content = file_get_contents(resource_path() . '/templates/'.$template.'.txt');
+        //$content = file_get_contents(resource_path() . '/templates/'.$template.'.txt');
        // lklk
     }
 }
