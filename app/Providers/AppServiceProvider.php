@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use App\Http\Controllers\Controller;
+use App\Models\SitePages;
+use App\Models\MasterPage;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -33,20 +35,23 @@ class AppServiceProvider extends ServiceProvider
     public function boot(Request $request, Site $site)
     {
       Schema::defaultStringLength(191);
+      $this->loadDefaultsForPagesNotUsingControllerClass($site);
+ 
+    }
 
+      // this is called repeatedly when debugging
+    public function loadDefaultsForPagesNotUsingControllerClass($site)
+    {
+      //info('boot loadDefaultsForPagesNotUsingControllerClass');
       $site = $site;
       if ($site->host == '')
       {
         $site = Controller::getClientFromHost();        
       }
 
-
-//info('site: ' . json_encode($site));
+      $masterpage = Controller::getMasterForSite($site);
 
       View::share('site', $site);
-
-    
-    }
-
- 
+      View::share('masterPage', $masterpage);
+  }
 }

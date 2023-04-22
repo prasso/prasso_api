@@ -9,6 +9,8 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use App\Models\Site;
+use App\Models\SitePages;
+use App\Models\MasterPage;
 use Illuminate\Http\Request;
 
 class Controller extends BaseController
@@ -23,7 +25,11 @@ class Controller extends BaseController
         $site = Controller::getClientFromHost();
         $this->site = $site;
 
+        info('_construct Controller');
+        $masterpage = $this->getMasterForSite($site);
+
         View::share('site', $site);
+        View::share('masterPage', $masterpage);
     }
 
     /**
@@ -77,6 +83,23 @@ class Controller extends BaseController
             return null;
         }
         return $site;
+    }
+
+    public static function getMasterForSite($site){
+
+      $masterpage = null;
+      $dashboardpage = SitePages::where('fk_site_id',$site->id)->first();
+      if ($dashboardpage != null)
+      {    
+          if (isset($dashboardpage->masterpage)){
+              //pull the masterpage css and js and send this as well
+              $masterpage = MasterPage::where('pagename',$dashboardpage->masterpage)->first();
+          }
+      }
+      else{
+          //this is called repeatedly. constantly. info('dashboard is null');
+      }
+      return $masterpage;
     }
 
     /**
