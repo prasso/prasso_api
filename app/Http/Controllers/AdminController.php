@@ -10,7 +10,7 @@ use App\Services\MediaService;
 use App\Models\Site;
 use Auth;
 
-class AdminController extends Controller
+class AdminController extends BaseController
 {
 
     protected $userService;

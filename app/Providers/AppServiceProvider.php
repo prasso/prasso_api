@@ -35,7 +35,20 @@ class AppServiceProvider extends ServiceProvider
     public function boot(Request $request, Site $site)
     {
       Schema::defaultStringLength(191);
-      $this->loadDefaultsForPagesNotUsingControllerClass($site);
+
+      $allowedUris = ['/login', '/dashboard', '/register', '/forgot-password', '/privacy', '/terms', '/teams'];
+       // Get the current request's URI
+       $uri = $request->getRequestUri();
+
+       // Run the logic only if the URI matches a certain pattern
+        // Check if the URI matches any of the allowed URIs using a partial match with array_filter and count functions
+        $matches = array_filter($allowedUris, function ($allowedUri) use ($uri) {
+          return strpos($uri, $allowedUri) !== false;
+      });
+
+      if (count($matches) > 0) {
+           $this->loadDefaultsForPagesNotUsingControllerClass($site);
+       }
  
     }
 
