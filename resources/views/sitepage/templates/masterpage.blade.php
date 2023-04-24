@@ -22,8 +22,8 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         @if (isset($masterPage))
-        {!!  $masterPage->css !!}
         {!!  $masterPage->js !!}
+        {!!  $masterPage->css !!}
         @endif
 
         @if (isset($site->app_specific_js) && str_starts_with($site->app_specific_js, 'http') )
@@ -152,7 +152,7 @@
             </header>
             <div class="font-sans text-gray-900 antialiased">
                 {{Session::get('message')}}
-                {!!  $sitePage->description !!}
+                {!! $sitePage->description !!}
             </div>
         
         </div>

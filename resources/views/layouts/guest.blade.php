@@ -14,8 +14,8 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         @if (isset($masterPage))
-            {!!  $masterPage->css !!}
             {!!  $masterPage->js !!}
+            {!!  $masterPage->css !!}
          @endif
         
          @if (isset($site))

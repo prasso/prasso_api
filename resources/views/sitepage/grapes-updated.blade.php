@@ -13,13 +13,11 @@
     <link rel="stylesheet" href="/css/tooltip.css">
     <link rel="stylesheet" href="/css/demos.css?v3">
     <link href="https://unpkg.com/grapick/dist/grapick.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/grapesjs-project-manager/dist/grapesjs-project-manager.min.css" rel="stylesheet">
-
+  
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
     <script src="/js/grapes.min.js?v0.21.1"></script>
-    <script src="https://unpkg.com/grapesjs-project-manager"></script>
     <script src="https://unpkg.com/grapesjs-preset-webpage@1.0.2"></script>
     <script src="https://unpkg.com/grapesjs-blocks-basic@1.0.1"></script>
     <script src="https://unpkg.com/grapesjs-plugin-forms@2.0.5"></script>
@@ -33,7 +31,11 @@
     <script src="https://unpkg.com/grapesjs-tui-image-editor@0.1.3"></script>
     <script src="https://unpkg.com/grapesjs-typed@1.0.5"></script>
     <script src="https://unpkg.com/grapesjs-style-bg@2.0.1"></script>
-    //add masterpage css and js here
+    
+    @if (isset($masterPage))
+    {!!  $masterPage->js !!}
+    {!!  $masterPage->css !!}
+    @endif
 
     <style type="text/css">
         .icons-flex {
@@ -116,10 +118,6 @@
         }
     </style>
 
-@if (isset($masterPage))
-    {!!  $masterPage->js !!}
-    {!!  $masterPage->css !!}
-    @endif
   </head>
   <body>
   <form id="sitePageForm" action="/save-site-page" method="post">
@@ -135,15 +133,14 @@
         <input type="hidden" name="masterpage" value="{{ $sitePage->masterpage }}" />
         <input type="hidden" name="login_required" value="{{ $sitePage->login_required }}" />
         <input type="hidden" name="template" value="{{ $sitePage->template }}" />
-        <input type="hidden" id="livewirecss" value="
-            @livewireStyles
-        " />
+        
   </form>
 
     <div id="gjs" style="height:0px; overflow:hidden">
-    {!! $sitePage->description !!}
+    
     </div>
 
+    
     <script type="text/javascript">
       var lp = './img/';
       var plp = 'https://via.placeholder.com/350x250/';
@@ -434,14 +431,12 @@
           'grapesjs-tui-image-editor',
           'grapesjs-typed',
           'grapesjs-style-bg',
-          'grapesjs-preset-webpage',
-          'grapesjs-project-manager'
+          'grapesjs-preset-webpage'
         ],
         pluginsOpts: {
           'gjs-blocks-basic': { flexGrid: true },
           'grapesjs-tui-image-editor': {
             script: [
-              // 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.7/fabric.min.js',
               'https://uicdn.toast.com/tui.code-snippet/v1.5.2/tui-code-snippet.min.js',
               'https://uicdn.toast.com/tui-color-picker/v2.2.7/tui-color-picker.min.js',
               'https://uicdn.toast.com/tui-image-editor/v3.15.2/tui-image-editor.min.js'
@@ -628,11 +623,37 @@
         var openBlocksBtn = editor.Panels.getButton('views', 'open-blocks');
         openBlocksBtn && openBlocksBtn.set('active', 1);
 
+       var page_id = {{$sitePage->id}};
+
+        // Fetch the combined HTML and set it as the initial content of the editor
+        jQuery.ajax({
+          url: '/visual-editor/getCombinedHtml/'+page_id,
+          type: 'GET',
+          success: function(response) {
+            console.log('setting combined HTML');
+            editor.setComponents(response.html);
+          },
+          error: function(response) {
+            console.log('Error fetching combined HTML');
+          },
+        });
       });
       editor.Panels.addButton('options', [ { id: 'save', 
           className: 'fa fa-floppy-o icon-blank', command: function(editor1, sender)
            { 
-                document.getElementById("page_data").value = editor1.getHtml();
+                //document.getElementById("page_data").value = editor1.getHtml();
+
+                var htmlString = editor1.getHtml();
+                const parser = new DOMParser();
+                const htmlDoc = parser.parseFromString(htmlString, 'text/html');
+
+                const coreDiv = htmlDoc.querySelector('#core');
+                const coreContents = coreDiv.innerHTML;
+                //need just the the html inside div id="core"
+                if (coreContents != null)
+                {
+                  document.getElementById("page_data").value = coreContents;
+                }
                 var spf = document.getElementById("sitePageForm")
                 spf.submit();
 
@@ -650,13 +671,7 @@
           title: 'Return to Home'
         }
       });
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-      ga('create', 'UA-101161806-1', 'auto');
-      ga('send', 'pageview');
     </script>
   </body>
 </html>

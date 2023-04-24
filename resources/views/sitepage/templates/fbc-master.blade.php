@@ -228,7 +228,7 @@
          </header>
          <main role="main" id="sections">
             {{Session::get('message')}}
-            {!!  $sitePage->description !!}
+            {!! $sitePage->description !!}
          </main>
          <footer id="footer-39509" class="site-section subpalette4 footer editable " data-id="39509" data-category="footer">
             <div class="bg-helper">
