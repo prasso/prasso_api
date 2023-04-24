@@ -206,7 +206,39 @@ class SitePageController extends Controller
             session()->flash('status','Page not found.');
             return redirect()->back();
         }
-        return view('sitepage.grapes-updated')->with('sitePage', $pageToEdit)->with('masterPage',$master_page);
+     /*   $pageToEdit->description = '<div id="core">'.$pageToEdit->description.'</div>'; // was $coreBlock
+        $pageToEdit->description = view($master_page->pagename)->with('sitePage',$pageToEdit)
+            ->with('site',$this->site)
+            ->with('page_short_url','/page/'.$pageToEdit->section)
+            ->with('masterPage',$master_page)->render();*/
+        return view('sitepage.grapes-updated')->with('sitePage', $pageToEdit) ->with('site',$this->site)
+        ->with('page_short_url','/page/'.$pageToEdit->section)->with('masterPage',$master_page);
+    }
+
+    /**this can be called from grapesjs editor. but the functionality is also
+     * done in the visualeditor function above
+     */
+    public function getCombinedHtml($pageid)
+    {
+        if (!Controller::userOkToViewPageByHost($this->userService))
+            {
+                info('user not ok to view page: ' . $pageid);
+                return redirect('/login');
+            }
+            $pageToEdit = SitePages::where('id',$pageid)->first();
+            $pageToEdit->description = $this->prepareTemplate($pageToEdit);
+        
+            $master_page = $this->getMaster($pageToEdit);
+
+            $pageToEdit->description = '<div id="core">'.$pageToEdit->description.'</div>'; // was $coreBlock
+            $masterPage = view($master_page->pagename)->with('sitePage',$pageToEdit)
+            ->with('site',$this->site)
+            ->with('page_short_url','/page/'.$pageToEdit->section)
+            ->with('masterPage',$master_page)->render();
+
+            return response()->json(['html' => $masterPage]);
+            //return response()->json(['html' => $pageToEdit->description]);
+
     }
 
     public function saveSitePage(Request $request)

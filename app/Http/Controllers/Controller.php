@@ -25,7 +25,6 @@ class Controller extends FrameworkController
         $site = Controller::getClientFromHost();
         $this->site = $site;
 
-        info('_construct Controller: '.$request->getRequestUri());
         $masterpage = $this->getMasterForSite($site);
 
         View::share('site', $site);

@@ -10,8 +10,8 @@
     <title>{{ $site->site_name }} - {{ $title??'' }}</title>
 
     @if (isset($masterPage))
-    {!!  $masterPage->js !!}
     {!!  $masterPage->css !!}
+    {!!  $masterPage->js !!}
     @endif
 
     @livewireStyles
