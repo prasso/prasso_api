@@ -61,6 +61,7 @@ Route::group(['middleware'=> 'superadmin'], function() {
 Route::get('/sitepages/{siteid}', 'SitePageController@editSitePages');
 Route::post('/save-site-page', 'SitePageController@saveSitePage');
 Route::get('/visual-editor/{pageid}', 'SitePageController@visualEditor');
+Route::get('/visual-editor/getCombinedHtml/{pageid}', 'SitePageController@getCombinedHtml');
 
 Route::resource('Sites', SiteController::class);
 Route::get('/sites', 'SiteController@index')->name('sites.show');

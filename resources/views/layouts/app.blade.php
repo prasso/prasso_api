@@ -8,19 +8,14 @@
 
     <title>{{ $site->site_name }} - {{ $title??'' }}</title>
 
-    <!-- Fonts -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
-    <link href="/js/google-fonts-material-icon.css" rel="stylesheet">
-    <link rel="stylesheet" href="/js/google-material-design-iconic-font.2.2.0.min.css">
-    <!-- Styles -->
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"> 
+    @if (isset($masterPage))
+    {!!  $masterPage->js !!}
+    {!!  $masterPage->css !!}
+    @endif
         
     @livewireStyles
     {{ $extracss ?? '' }}
 
-
-    
     <link rel="icon" type="image/png" href="{{$site->favicon??''}}" />
     <link rel="icon" type="image/png" href="{{ config('app.photo_url').$site->image_folder}}favicon-16x16.png" sizes="16x16">
     <link rel="icon" type="image/png" href="{{ config('app.photo_url').$site->image_folder}}favicon-32x32.png" sizes="32x32">

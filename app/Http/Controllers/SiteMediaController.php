@@ -9,7 +9,7 @@ use App\Services\MediaService;
 use App\Models\SiteMedia;
 use Auth;
 
-class SiteMediaController extends Controller
+class SiteMediaController extends BaseController
 {
 
     protected $mediaService;

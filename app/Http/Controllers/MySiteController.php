@@ -10,7 +10,7 @@ use App\Services\UserService;
 use App\Models\Instructor;
 use Auth;
 
-class MySiteController extends Controller
+class MySiteController extends BaseController
 {
 
     protected $userService;
