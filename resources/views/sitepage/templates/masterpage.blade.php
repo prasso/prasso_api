@@ -24,6 +24,16 @@
         @if (isset($masterPage))
         {!!  $masterPage->js !!}
         {!!  $masterPage->css !!}
+        @else
+        <script src="/js/jquery1.10.0.min.js"></script>
+        <link href="/js/google-fonts-inter.css" rel="stylesheet">
+         <link href="/js/google-fonts-material-icon.css" rel="stylesheet">
+         <link rel="stylesheet" href="/js/google-material-design-iconic-font.2.2.0.min.css">
+         <link href="/js/google-fonts-Roboto.css" rel="stylesheet"> 
+         <script src="/js/jqueryui.1.12.1.min.css"></script>
+         <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+         <!-- Scripts -->
+         <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.2.1/dist/alpine.js" defer></script>
         @endif
 
         @if (isset($site->app_specific_js) && str_starts_with($site->app_specific_js, 'http') )
