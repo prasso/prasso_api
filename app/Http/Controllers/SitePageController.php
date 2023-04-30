@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -12,7 +13,7 @@ use App\Models\MasterPage;
 use App\Models\Site;
 use App\Models\User;
 
-class SitePageController extends Controller
+class SitePageController extends BaseController
 {
     protected $sitePageService;
     protected $userService;
@@ -206,11 +207,6 @@ class SitePageController extends Controller
             session()->flash('status','Page not found.');
             return redirect()->back();
         }
-     /*   $pageToEdit->description = '<div id="core">'.$pageToEdit->description.'</div>'; // was $coreBlock
-        $pageToEdit->description = view($master_page->pagename)->with('sitePage',$pageToEdit)
-            ->with('site',$this->site)
-            ->with('page_short_url','/page/'.$pageToEdit->section)
-            ->with('masterPage',$master_page)->render();*/
         return view('sitepage.grapes-updated')->with('sitePage', $pageToEdit) ->with('site',$this->site)
         ->with('page_short_url','/page/'.$pageToEdit->section)->with('masterPage',$master_page);
     }
