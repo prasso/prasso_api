@@ -54,17 +54,17 @@ Route::group(['middleware'=> 'instructorusergroup'], function() {
     Route::get('/site/{siteid}/livestream-mtce', 'AdminController@livestreamMtce')->name('site.mtce.livestream');
     Route::get('/site/{siteid}/livestream-mtce/{sitemediaid}', 'SiteMediaController@siteMediaEdit')->name('site.mtce.media.edit');
     Route::post('/site/{siteid}/livestream-mtce/move-to-permanent-storage', 'SiteMediaController@siteMediaCreate')->name('site.mtce.media.create');
+
+    Route::get('/visual-editor/{pageid}', 'SitePageController@visualEditor');
+    Route::get('/visual-editor/getCombinedHtml/{pageid}', 'SitePageController@getCombinedHtml');
 });
 
 Route::group(['middleware'=> 'superadmin'], function() {
+    Route::get('/sitepages/{siteid}', 'SitePageController@editSitePages');
+    Route::post('/save-site-page', 'SitePageController@saveSitePage');
 
-Route::get('/sitepages/{siteid}', 'SitePageController@editSitePages');
-Route::post('/save-site-page', 'SitePageController@saveSitePage');
-Route::get('/visual-editor/{pageid}', 'SitePageController@visualEditor');
-Route::get('/visual-editor/getCombinedHtml/{pageid}', 'SitePageController@getCombinedHtml');
-
-Route::resource('Sites', SiteController::class);
-Route::get('/sites', 'SiteController@index')->name('sites.show');
+    Route::resource('Sites', SiteController::class);
+    Route::get('/sites', 'SiteController@index')->name('sites.show');
 });
 
 
