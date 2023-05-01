@@ -207,6 +207,7 @@ class SitePageController extends BaseController
             session()->flash('status','Page not found.');
             return redirect()->back();
         }
+
         return view('sitepage.grapes-updated')->with('sitePage', $pageToEdit) ->with('site',$this->site)
         ->with('page_short_url','/page/'.$pageToEdit->section)->with('masterPage',$master_page);
     }
