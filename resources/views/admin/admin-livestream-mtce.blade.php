@@ -26,8 +26,7 @@
                 
                 <tr>
                     <td>{{ $livestream }}</td>
-                    <td><form method="post" action="{{ url('/site/'.$site->id.'/livestream-mtce/move-to-permanent-storage/') }}
-                    /site/{{$site->id}}/livestream-mtce/move-to-permanent-storage/">
+                    <td><form method="post" action="{{ url('/site/'.$site->id.'/livestream-mtce/move-to-permanent-storage/') }}">
                     @csrf
                     <input type="hidden" id="media_to_queue{{ $counter }}" name="media_to_queue{{$counter++}}" value="{{ $livestream }}"><input type="submit" class="teambutton text-white btn-sm font-bold py-2 px-4 rounded my-3" value="Queue for access"/></form></td>
                 </tr>
