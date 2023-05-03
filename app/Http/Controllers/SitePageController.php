@@ -104,15 +104,7 @@ class SitePageController extends BaseController
     }
 
     private function prepareTemplate($dashboardpage){
-        //is this a template page?
-        if (strlen($dashboardpage->template) > 0)
-        {
-            $page_content= $this->sitePageService->getTemplate($dashboardpage);
-        }
-        else
-        {
-            $page_content = $dashboardpage->description;
-        }
+        $page_content = $dashboardpage->description;
         $user = Auth::user() ?? null;
 
         //replace the tokens in the dashboard page with the user's name, email, and profile photo
@@ -164,6 +156,11 @@ class SitePageController extends BaseController
 
         $sitepage->description = $this->prepareTemplate($sitepage);
         $masterpage = $this->getMaster($sitepage);
+        if ($sitepage->template != null && strlen($sitepage->template) > 0)
+        {
+            $page_content= $this->sitePageService->getTemplateData($sitepage);
+            $sitepage->description = $page_content;
+        }
         
         return view($sitepage->masterpage)//use the template here
             ->with('sitePage',$sitepage)
