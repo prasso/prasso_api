@@ -149,7 +149,7 @@ class SitePageEditor extends Component
             'login_required' => 'required',
         ]);
         
-        
+        //specifying a template will launch code to run to gather data when the site-page is loaded
        SitePages::updateOrCreate(['id' => $this->sitePage_id], [
             'fk_site_id' => $this->siteid,
             'section' => $this->section,
