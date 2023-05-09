@@ -102,7 +102,7 @@ class Site extends Model
          return $team;
     }
 
-    private function createTeam($userid){
+    public function createTeam($userid){
         if ($this->id == null || $userid == null)
         {
             throw Exception('Site or user id is null in Site::createTeam');
