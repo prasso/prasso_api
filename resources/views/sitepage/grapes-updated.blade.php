@@ -38,6 +38,13 @@
     @endif
 
     <style type="text/css">
+      .CodeMirror * {
+          text-transform: none;
+          font-family: Arial, monospace;
+          font-size: 16px;
+          /*min-height: 450px;
+          margin-bottom: 8px;*/
+        }
         .icons-flex {
           background-size: 70% 65% !important;
           height: 15px;
@@ -104,10 +111,6 @@
           box-shadow: none;
         }
 
-        .CodeMirror {
-          min-height: 450px;
-          margin-bottom: 8px;
-        }
         .grp-handler-close {
           background-color: transparent;
           color: #ddd;
