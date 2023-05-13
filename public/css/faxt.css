@@ -1,0 +1,90 @@
+
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      
+      header {
+        text-align: right;
+        margin-bottom: 50px;
+        background-color: rgb(73,148,33);
+        padding-top: 200px;
+        padding-bottom: 200px;
+        background-image: url("https://images.prasso.io/faxt/Microsites-rafiki.svg");
+        background-repeat: no-repeat;
+
+      }
+      
+      header h1 {
+        font-size: 52px;
+        margin-bottom: 20px;
+        color: white;
+        padding-right: 40px;
+      }
+      
+      header p {
+        font-size: 30px;
+        color: #333333;
+        max-width: 50%;
+        padding-right: 40px;
+      }
+      
+      main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      section {
+        width: 80%;
+        margin-bottom: 50px;
+        text-align: center;
+      }
+      
+      section h2 {
+        font-size: 32px;
+        margin-bottom: 20px;
+      }
+      
+      section p {
+        font-size: 20px;
+        margin-bottom: 20px;
+        color:#333333
+      }
+      
+      section ul {
+        list-style: none;
+        padding: 0;
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
+      
+      section li {
+        margin-bottom: 10px;
+      }
+      
+      a.button {
+        text-decoration: none;
+        padding: 10px 20px;
+        background-color: #499421;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 20px;
+        cursor: pointer;
+      }
+      
+      footer {
+        margin-top: 50px;
+        text-align: center;
+        font-size: 16px;
+        color: gray;
+      }
+      .benefits {
+        background-color: #499421;
+        padding: 20px;
+        color: white;
+      } 
+      .faxt-green{background-color: #499421;
+        padding: 20px;
+        color: white;}

@@ -183,6 +183,7 @@
           sectors: [{
               name: 'General',
               properties:[
+                'background',
                 {
                   extend: 'float',
                   type: 'radio',
@@ -198,7 +199,7 @@
                 'top',
                 'right',
                 'left',
-                'bottom',
+                'bottom'
               ],
             }, {
                 name: 'Dimension',
@@ -520,7 +521,7 @@
           indentWithTabs: true
       });
 
-      btnEdit.innerHTML = 'Edit';
+      btnEdit.innerHTML = 'Edit Code';
       btnEdit.className = pfx + 'btn-prim ' + pfx + 'btn-import';
       btnEdit.onclick = function() {
           var code = codeViewer.editor.getValue();
@@ -558,11 +559,51 @@
                   className: 'fa fa-edit',
                   command: 'html-edit',
                   attributes: {
-                      title: 'Edit'
-                  }
+                  'title': 'Code Editor',
+                  'data-tooltip-pos': 'bottom',
+                }
               }
           ]
       );
+
+      pn.addButton('options', [ { id: 'save', 
+          className: 'fa fa-floppy-o icon-blank', command: function(editor1, sender)
+           { 
+                var htmlString = editor1.getHtml();
+                const parser = new DOMParser();
+                const htmlDoc = parser.parseFromString(htmlString, 'text/html');
+
+                const coreDiv = htmlDoc.querySelector('#core');
+                const coreContents = coreDiv.innerHTML;
+                //need just the the html inside div id="core"
+                if (coreContents != null)
+                {
+                  document.getElementById("page_data").value = coreContents;
+                }
+                var spf = document.getElementById("sitePageForm")
+                spf.submit();
+
+            }, attributes: {
+          'title': 'Save Page',
+          'data-tooltip-pos': 'bottom',
+        } }, ]);
+
+      pn.addButton('options', {
+        id: 'dashboard',
+        className: 'fa fa-home',
+        command: function(editor1, sender)
+           { 
+            @if (Auth::user()->role_id == 1)
+            window.location.replace("/sites");
+            @else
+            window.location.replace("/site/edit");
+            @endif
+            },
+            attributes: {
+          'title': 'Return to Home',
+          'data-tooltip-pos': 'bottom',
+        }
+      });
 
       // Add info command
       var mdlClass = 'gjs-mdl-dialog-sm';
@@ -572,7 +613,7 @@
         var mdlDialog = document.querySelector('.gjs-mdl-dialog');
         mdlDialog.className += ' ' + mdlClass;
         infoContainer.style.display = 'block';
-        modal.setTitle('About this demo');
+        modal.setTitle('About this editor');
         modal.setContent(infoContainer);
         modal.open();
         modal.getModel().once('change:open', function() {
@@ -587,24 +628,7 @@
         attributes: {
           'title': 'About',
           'data-tooltip-pos': 'bottom',
-        },
-      });
-      pn.addButton('options', {
-          id: 'open-templates',
-          className: 'fa fa-folder-o',
-          attributes: {
-              title: 'Open projects and templates'
-          },
-          command: 'open-templates', //Open modal 
-      });
-      pn.addButton('views', {
-          id: 'open-pages',
-          className: 'fa fa-file-o',
-          attributes: {
-              title: 'Take Screenshot'
-          },
-          command: 'open-pages',
-          togglable: false
+        }
       });
 
       // Simple warn notifier
@@ -686,7 +710,7 @@
         });
 
         // Open block manager
-        var openBlocksBtn = editor.Panels.getButton('views', 'open-blocks');
+        var openBlocksBtn = pn.getButton('views', 'open-blocks');
         openBlocksBtn && openBlocksBtn.set('active', 1);
 
        var page_id = {{$sitePage->id}};
@@ -704,42 +728,7 @@
           },
         });
       });
-      editor.Panels.addButton('options', [ { id: 'save', 
-          className: 'fa fa-floppy-o icon-blank', command: function(editor1, sender)
-           { 
-                //document.getElementById("page_data").value = editor1.getHtml();
-
-                var htmlString = editor1.getHtml();
-                const parser = new DOMParser();
-                const htmlDoc = parser.parseFromString(htmlString, 'text/html');
-
-                const coreDiv = htmlDoc.querySelector('#core');
-                const coreContents = coreDiv.innerHTML;
-                //need just the the html inside div id="core"
-                if (coreContents != null)
-                {
-                  document.getElementById("page_data").value = coreContents;
-                }
-                var spf = document.getElementById("sitePageForm")
-                spf.submit();
-
-            }, attributes: { title: 'Save Page' } }, ]);
-
-      editor.Panels.addButton('options', {
-        id: 'dashboard',
-        className: 'fa fa-home',
-        command: function(editor1, sender)
-           { 
-            @if (Auth::user()->role_id == 1)
-            window.location.replace("/sites");
-            @else
-            window.location.replace("/site/edit");
-            @endif
-            },
-        attributes: {
-          title: 'Return to Home'
-        }
-      });
+      
 
     </script>
   </body>
