@@ -182,7 +182,7 @@ class SitePageController extends BaseController
             return redirect('/login');
         }
         $masterpage = Controller::getMasterForSite($this->site);
-     info('editSitePages called getMasterForSite: ' . json_encode($masterpage)) ;  
+     info('editSitePages called getMasterForSite: ' . $this->site->site_name) ;  
         return view('sitepage.view-site-pages')
             ->with('siteid', $siteid)
             ->with('site',$this->site)
