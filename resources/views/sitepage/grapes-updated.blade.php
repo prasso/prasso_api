@@ -593,7 +593,7 @@
         className: 'fa fa-home',
         command: function(editor1, sender)
            { 
-            @if (Auth::user()->role_id == 1)
+            @if (Auth::user()->hasRole('1'))
             window.location.replace("/sites");
             @else
             window.location.replace("/site/edit");

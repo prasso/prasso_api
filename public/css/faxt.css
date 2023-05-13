@@ -20,6 +20,7 @@
         margin-bottom: 20px;
         color: white;
         padding-right: 40px;
+        float:right;
       }
       
       header p {
@@ -27,6 +28,7 @@
         color: #333333;
         max-width: 50%;
         padding-right: 40px;
+        float:right;
       }
       
       main {
@@ -37,6 +39,7 @@
       
       section {
         width: 80%;
+        margin:auto;
         margin-bottom: 50px;
         text-align: center;
       }
