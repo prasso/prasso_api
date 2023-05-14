@@ -136,6 +136,7 @@
         <input type="hidden" name="masterpage" value="{{ $sitePage->masterpage }}" />
         <input type="hidden" name="login_required" value="{{ $sitePage->login_required }}" />
         <input type="hidden" name="template" value="{{ $sitePage->template }}" />
+        <input type="hidden" id="page_style" name="style" value="{{ $sitePage->style }}" />
         
   </form>
 
@@ -580,6 +581,12 @@
                 {
                   document.getElementById("page_data").value = coreContents;
                 }
+                var cssRules = editor.getCss();
+                console.log(cssRules);
+                if (cssRules != null)
+                {
+                  document.getElementById("page_style").value = cssRules;
+                }
                 var spf = document.getElementById("sitePageForm")
                 spf.submit();
 
@@ -720,7 +727,6 @@
           url: '/visual-editor/getCombinedHtml/'+page_id,
           type: 'GET',
           success: function(response) {
-            console.log('setting combined HTML');
             editor.setComponents(response.html);
           },
           error: function(response) {

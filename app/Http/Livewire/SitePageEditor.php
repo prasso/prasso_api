@@ -12,7 +12,7 @@ use App\Models\Site;
 
 class SitePageEditor extends Component
 {
-    public $sitePages,$site_name,$fk_site_id, $section, $title, $description, $url, $sitePage_id, $masterpage,$template, $login_required, $headers;
+    public $sitePages,$site_name,$fk_site_id, $section, $title, $description, $url, $sitePage_id, $masterpage,$template,$style, $login_required, $headers;
     
     public $https_host;
 

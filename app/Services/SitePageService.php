@@ -21,6 +21,7 @@ class SitePageService
             'masterpage' => $request['masterpage'],
             'login_required' => $request['login_required'],
             'template' => $request['template'],
+            'style' => $request['style'],
         ]);
         
         $message = $updatedSitePage ? 'Site Page Updated Successfully.' : 'Site Page Created Successfully.';
