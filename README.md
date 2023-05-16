@@ -116,9 +116,38 @@ How sites and sites pages work
 3. site pages reference the site table, so if a site has pages they can be used in the display as links. These links look like https://prasso.io/page/Welcome-OLDPRASSO
 4. Code that runs when a site is loaded uses the current domain to compare with the stored site url to look up the landing page contents. if an entry is found in the site pages table for the site and with label of Welcome, that will be what is shown to the web visitor on the home page.
 
+### Site Pages
+Site Pages are of two types. 1. an external url or 2. masterpage and html content.
+
+If a site page is html content it can also specify a data template to be used when the url is loaded.
+
+Data templates are stored in the database and are associated with a site_page in the editor.
+EXAMPLE SQL: 
+    List all site_page_templates: SELECT * FROM faxt_api.site_page_templates;
+
+Embed [DATA] in the site page description ([DATA]) as shown in the example:
+x-data='{"videos":[[DATA] ]}' >
+
+The value [DATA] is replaced when the site page is passed to  getTemplateData($site_page) (which is in SitePageService).
+
+In the getTemplateData function, the template named in the site page is retrieved. The template containS instructions on how to retrieve the data in the field - template_data_query. If the site page has a template, the site page description will have a placeholder where the data is inserted - that is '[DATA]'.
+
+Prerequisite: Add a data-template record to prasso, naming the site page by its ID and providing information on how to retrieve data in the template_data_query. The model is listed first, followed by a colon, and then the query that limits the displayed models.
+EXAMPLE: 
+'App\Models\SiteMedia':'CONCAT(\'{"s3media_url":"\', s3media_url, \'","media_title":"\', media_title, \'","thumb_url":"\', thumb_url,\'"}\') as thumb_display')
+        
+
+To create a site page template, follow these steps:
+
+1. Create an HTML form with a placeholder that will be replaced by the template.
+2. Create a template and add its name as a record to the site_templates table, allowing it to be selected for the site page.
+3. Edit the site page record and specify the newly created data template as the template.
+
+
+
 ### Visual Editing (CMS)
 This code is integrating the GrapesJS editor (https://grapesjs.com) 
-When you edit your site you will be able to use the included components to assemble your pages
+When you edit your site you will be able to use the included components to assemble your pages.
 
 ## License
 
