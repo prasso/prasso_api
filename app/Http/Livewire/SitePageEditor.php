@@ -128,6 +128,8 @@ class SitePageEditor extends Component
         $this->sitePage_id = '';
         $this->masterpage = '';
         $this->login_required = false;
+        $this->template = '' ;
+        $this->style = '';
         
     }
 
@@ -160,6 +162,7 @@ class SitePageEditor extends Component
             'login_required' => $this->login_required,
             'headers' => $this->headers,
             'template' => $this->template,
+            'style' => $this->style,
         ]);
   
         session()->flash('message', 
@@ -185,6 +188,8 @@ class SitePageEditor extends Component
         $this->url = $sitePage->url;
         $this->masterpage = $sitePage->masterpage;
         $this->login_required = $sitePage->login_required;
+        $this->template = $sitePage->template;
+        $this->style = $sitePage->style;
 
         $this->openModal();
     }
@@ -214,6 +219,8 @@ class SitePageEditor extends Component
         $this->url = $sitePage->url;
         $this->masterpage = $sitePage->masterpage;
         $this->login_required = $sitePage->login_required;
+        $this->template = $sitePage->template;
+        $this->style = $sitePage->style;
 
         $this->openVisualModal();
     }

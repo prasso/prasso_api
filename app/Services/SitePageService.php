@@ -31,7 +31,7 @@ class SitePageService
 
     /** 
      * // the template data query is stored in the template record. get the sql from the template record
-        // format of this template data query is tablename:rawSql
+        // example format of this template data query is tablename:rawSql
         //'App\Models\SiteMedia':'CONCAT(\'{"s3media_url":"\', s3media_url, \'","media_title":"\', media_title, \'","thumb_url":"\', thumb_url,\'"}\') as thumb_display')
         // code
      */
@@ -45,13 +45,12 @@ class SitePageService
 
         $model = resolve($modelClassName);
 
-        $siteMedia = $model->where('fk_site_id', $site_page->fk_site_id)
+        $data = $model->where('fk_site_id', $site_page->fk_site_id)
             ->orderBy('media_date', 'desc')
             ->selectRaw($sql)
             ->get();
         
-                
-        $stringArray = $siteMedia->map(function ($item) {
+        $stringArray = $data->map(function ($item) {
             return $item->display;
         })->toArray();
 
