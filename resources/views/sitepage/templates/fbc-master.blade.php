@@ -18,6 +18,9 @@
    <link rel="shortcut icon" type="image/x-icon" href="{{ $site->favicon }}">
    {!!  $masterPage->css !!}
    {!!  $masterPage->js !!}
+   @if (isset($sitePage->style)  )
+            <style>{!! $sitePage->style !!}</style>
+        @endif
    <script data-turbolinks-eval="false">
       //<![CDATA[
       

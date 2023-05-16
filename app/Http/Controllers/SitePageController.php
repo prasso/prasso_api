@@ -225,6 +225,11 @@ class SitePageController extends BaseController
             $master_page = $this->getMaster($pageToEdit);
 
             $pageToEdit->description = '<div id="core">'.$pageToEdit->description.'</div>'; // was $coreBlock
+            if ($pageToEdit->style != null && strlen($pageToEdit->style) > 0)
+            {
+                $pageToEdit->description = $pageToEdit->description.'<style>'.$pageToEdit->style.'</style>'; // was $coreBlock
+            
+            }
             $masterPage = view($master_page->pagename)->with('sitePage',$pageToEdit)
             ->with('site',$this->site)
             ->with('page_short_url','/page/'.$pageToEdit->section)

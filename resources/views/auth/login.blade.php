@@ -10,12 +10,14 @@
 
         <x-jet-validation-errors class="mb-4" />
 
-        @if (session('status'))
+        
             <div class="mb-4 font-medium text-sm text-green-600">
+                @if (session('status'))
                 {{ session('status') }}<br>
+                @endif
                 <a class='underline' href="/register">Register</a> for this site.
             </div>
-        @endif
+        
         @if(Session::get('error_msg'))
             <div class="alert alert-danger alert-dismissable server-error">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>

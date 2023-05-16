@@ -31,7 +31,11 @@
     <script src="https://unpkg.com/grapesjs-tui-image-editor@0.1.3"></script>
     <script src="https://unpkg.com/grapesjs-typed@1.0.5"></script>
     <script src="https://unpkg.com/grapesjs-style-bg@2.0.1"></script>
-    
+    @if (isset($site->app_specific_css) && str_starts_with($site->app_specific_css, 'http') )
+            <link rel="stylesheet" href="{{$site->app_specific_css}}">
+        @else
+            <style>{!! $site->app_specific_css !!}</style>
+        @endif
     @if (isset($masterPage))
     {!!  $masterPage->js !!}
     {!!  $masterPage->css !!}
@@ -136,6 +140,7 @@
         <input type="hidden" name="masterpage" value="{{ $sitePage->masterpage }}" />
         <input type="hidden" name="login_required" value="{{ $sitePage->login_required }}" />
         <input type="hidden" name="template" value="{{ $sitePage->template }}" />
+        <input type="hidden" id="page_style" name="style" value="{{ $sitePage->style }}" />
         
   </form>
 
@@ -580,6 +585,12 @@
                 {
                   document.getElementById("page_data").value = coreContents;
                 }
+                var cssRules = editor.getCss();
+                console.log(cssRules);
+                if (cssRules != null)
+                {
+                  document.getElementById("page_style").value = cssRules;
+                }
                 var spf = document.getElementById("sitePageForm")
                 spf.submit();
 
@@ -720,7 +731,6 @@
           url: '/visual-editor/getCombinedHtml/'+page_id,
           type: 'GET',
           success: function(response) {
-            console.log('setting combined HTML');
             editor.setComponents(response.html);
           },
           error: function(response) {

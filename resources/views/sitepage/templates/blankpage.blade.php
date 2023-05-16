@@ -49,7 +49,9 @@
         @else
             <style>{!! $site->app_specific_css !!}</style>
         @endif
-
+        @if (isset($sitePage->style)  )
+            <style>{!! $sitePage->style !!}</style>
+        @endif
 
     </head>
     <body>
