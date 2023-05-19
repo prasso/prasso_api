@@ -56,7 +56,6 @@ class SiteMediaComponent extends Component
         } else {
             SiteMedia::create($validatedData);
         }
-
         $this->resetFields();
     }
     public function media_edit($id)

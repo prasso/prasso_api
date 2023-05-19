@@ -29,39 +29,60 @@ class SitePageService
         return json_encode($message);
     }
 
-    /** 
-     * // the template data query is stored in the template record. get the sql from the template record
-        // example format of this template data query is tablename:rawSql
-        //'App\Models\SiteMedia':'CONCAT(\'{"s3media_url":"\', s3media_url, \'","media_title":"\', media_title, \'","thumb_url":"\', thumb_url,\'"}\') as thumb_display')
-        // code
-     */
     public function getTemplateData($site_page){
-        
-        $template_data_query = SitePageTemplate::where('templatename', $site_page->template)->first()->template_data_query;
-        
-        $parts = explode(':', $template_data_query, 2);
-        $modelClassName = trim($parts[0], "'");
-        $sql = trim($parts[1], "'"). ' as display';
-
+       
+        $template_data = SitePageTemplate::where('templatename', $site_page->template)->first();
+  
+        $modelClassName = $template_data->template_data_model;
         $model = resolve($modelClassName);
 
-        $data = $model->where('fk_site_id', $site_page->fk_site_id)
-            ->orderBy('media_date', 'desc')
+        $sql = $template_data->template_data_query. ' as display';
+        
+ 
+        $where_clause_field = $template_data->template_where_clause;
+        $fieldValue = $site_page->getAttribute($where_clause_field);
+        
+        $query = $model->where($where_clause_field, $fieldValue);
+
+        $order_by_clause = $template_data->order_by_clause;
+        if ($order_by_clause != NULL)
+        {
+            $parts = explode(':', $order_by_clause, 2);
+            $fieldInOrder = trim($parts[0], "'");
+            $ascDesc = trim($parts[1], "'");
+            if ($ascDesc == NULL) {
+                $ascDesc = 'desc';
+            }
+            $query = $query->orderBy($fieldInOrder, $ascDesc);
+        }
+        
+        $data = $query   
             ->selectRaw($sql)
             ->get();
-        
-        $stringArray = $data->map(function ($item) {
-            return $item->display;
-        })->toArray();
+        if ($data->isEmpty())
+        {
+            $jsonData = $template_data->default_blank;
+        }
+        else
+        {
+            $jsonData = $data->toJson();
+        }
 
-        $jsonString = implode(',', $stringArray);
+        if ($template_data->include_csrf){
+            $phpObject = json_decode($jsonData);
+            $phpObject->csrftoken = csrf_token();
+            $jsonData = json_encode($phpObject);
+        }
 
         $placeholder = '[DATA]';
-        $site_page_description = str_replace($placeholder, $jsonString, $site_page->description);
+        $site_page_description = str_replace($placeholder, $jsonData, $site_page->description);
 
         return $site_page_description;
        
     }
+
+
+
 }
 
 
