@@ -96,15 +96,17 @@ class Apps extends Model
     }
     public static function processUpdates( $appModel)
     {
-        
-        Apps::updateOrCreate(['id' => $appModel['id']] , 
+        $updatedSitePage = Apps::updateOrCreate(['id' => $appModel['id']] , 
         ['team_id' => $appModel['team_id'], 
+        'site_id' => $appModel['site_id'],
         'appicon' => $appModel['appicon'], 
         'app_name' => $appModel['app_name'], 
         'page_title' => $appModel['page_title'],
         'page_url' => $appModel['page_url'],
         'sort_order' => $appModel['sort_order'] ] );
 
+        $message = $updatedSitePage ? 'Site Page Updated Successfully.' : 'Site Page Created Successfully.';
+        return json_encode($message);
     }
 
 }

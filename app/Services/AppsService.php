@@ -36,10 +36,10 @@ class AppsService
             (isset($user->roles) && count($user->roles) == 0))
         {
             //only tabs with  null roles
-            $app_data = Apps::with('nullroletabs')->with('team')
-            ->where('site_id', $site->id)
-            ->first();
+            $app_data_query = Apps::with('nullroletabs')->with('team')
+            ->where('site_id', $site->id);
 
+            $app_data = $app_data_query->first();
             //fix the label
             $returnval = str_replace('nullroletabs','tabs',json_encode($app_data));
 
@@ -53,21 +53,23 @@ class AppsService
                 ->where('site_id', $site->id)
                 ->first();
             $returnval = str_replace('instructorroletabs','tabs',json_encode($app_data));
+          
         }
         //update any user specific headers
         $returnval = str_replace(config('constants.USER_TOKEN'), $user_access_token, $returnval);
-
+      
         if (isset($user->thirdPartyToken))
         {
             $returnval = str_replace(config('constants.THIRD_PARTY_TOKEN'), $user->thirdPartyToken->THIRD_PARTY_TOKEN, $returnval);
+           
         }
         if (isset($user->current_team_id ))
         {
             $returnval = str_replace(config('constants.TEAM_ID'), $user->current_team_id, $returnval);
+           
         }
         $returnval = str_replace(config('constants.CSRF_HEADER'), csrf_token(), $returnval);
  
-        //Log::info('app settings by site: '.$returnval);
        return $returnval;    
     }
 

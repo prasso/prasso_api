@@ -40,6 +40,8 @@ class AppInfoForm extends Component
 
     public function updateApp()
     {
+        $this->teamapp->team_id = $this->team_id;
+        $this->teamapp->site_id = $this->site_id;
         $this->validate();
 
         // Execution doesn't reach here if validation fails.
@@ -50,7 +52,6 @@ class AppInfoForm extends Component
             $this->photo->store(config('constants.APP_LOGO_PATH') .'logos-'.$this->teamapp->team_id, 's3');
             $this->teamapp->appicon = config('constants.CLOUDFRONT_ASSET_URL') . config('constants.APP_LOGO_PATH') .'logos-'.$this->teamapp->team_id.'/'. $this->photo->hashName();
         }
-            
         Apps::processUpdates($this->teamapp->toArray()  );
         $this->show_success = true;
     }

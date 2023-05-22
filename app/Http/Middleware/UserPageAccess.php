@@ -19,8 +19,15 @@ class UserPageAccess
       $user = \Auth::user();
       if ($user == null)
       {
+        UserPageAccess::authorizeUser($request);
+        
+      }
+    
+      return $next($request);
+   }
 
-        $accessToken  = $request->header(config('constants.AUTHORIZATION_'));
+   public static function authorizeUser($request){
+    $accessToken  = $request->header(config('constants.AUTHORIZATION_'));
         $accessToken = str_replace("Bearer ", "", $accessToken);
         if (empty($accessToken))
         {     
@@ -37,7 +44,6 @@ class UserPageAccess
       
         $user = User::getUserByAccessToken($accessToken);
 
-
         if ($user == null) 
         {
           //redirect to login
@@ -48,11 +54,7 @@ class UserPageAccess
         {
           \Auth::login($user);
         }
-      }
-    
-      return $next($request);
    }
-
     /**
      * function is used to set accessToken cookie to browser
      */

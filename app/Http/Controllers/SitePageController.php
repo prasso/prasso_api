@@ -11,6 +11,7 @@ use App\Services\UserService;
 use App\Models\SitePages;
 use App\Models\MasterPage;
 use App\Models\Site;
+use App\Models\SitePageData;
 use App\Models\User;
 
 class SitePageController extends BaseController
@@ -132,7 +133,7 @@ class SitePageController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function viewSitePage($section)
+    public function viewSitePage(Request $request,$section)
     {
         $user = Auth::user() ?? null;
         $sitepage = SitePages::where('fk_site_id',$this->site->id)->where('section',$section)->first();
@@ -145,9 +146,20 @@ class SitePageController extends BaseController
         if ( ($sitepage->requiresAuthentication() && $user == null ) ||
                 ($user != null && !$this->userService->isUserOnTeam($user)))
         {
-            Auth::logout();
-            session()->flash('status','You are not a member of this site.');
-            return redirect('/login');
+            if ( $user == null ){
+                \App\Http\Middleware\UserPageAccess::authorizeUser($request);
+
+                if ($user == null){
+                    Auth::logout();
+                    session()->flash('status','You are not a member of this site.');
+                    return redirect('/login');
+                }
+            }
+            if (($user != null && !$this->userService->isUserOnTeam($user))){
+                Auth::logout();
+                session()->flash('status','You are not a member of this site.');
+                return redirect('/login');
+            }
         }
         if ($sitepage->url != null && strlen($sitepage->url) > 5 && strcmp($sitepage->url,'http') != 0)
         {
@@ -182,7 +194,7 @@ class SitePageController extends BaseController
             return redirect('/login');
         }
         $masterpage = Controller::getMasterForSite($this->site);
-     info('editSitePages called getMasterForSite: ' . $this->site->site_name) ;  
+        
         return view('sitepage.view-site-pages')
             ->with('siteid', $siteid)
             ->with('site',$this->site)
@@ -266,13 +278,32 @@ class SitePageController extends BaseController
         return redirect()->to('/page/donate');
     }
 
-    public function templateInputs(Request $request){
-        //IDENTIFY which template has been posted
-        $template = $request['template'];
+    /**
+     * a method used to store data from posted forms. 
+     * the forms will be custom html stored in site_pages table and so this
+     * will not depend on fixed form item names
+     * the data will be stored in site_page_data table with siteid, data's key, json_data, and date created/updated
+     */
+    public function sitePageDataPost(Request $request){
         $siteid = $request['siteid'];
         $pageid = $request['pageid'];
-        $page = SitePages::where('id',$pageid)->first();
-       
+        $data_key = $request['data_key'];
+        $newOne = false;
+        if ($data_key == NULL){
+            $data_key = uniqid();
+            $newOne = true;
+        }
+        $page = SitePageData::where('fk_site_page_id',$pageid)->where('data_key', $data_key)->first();
+        if ($page == null){
+            $page = SitePageData::create(['fk_site_page_id'=>$pageid,'data_key'=>$data_key]);
+        }
+        else{
+            // make sure this page belongs to this site
+            if ($page->fk_site_id != $siteid){
+                //save nothing
+                return $this->sendResponse('mismatch in site', 'ok');
+            }
+        }
         //loop through the request and gather form input values to build json object
         $json = array();
         foreach ($request->all() as $key => $value) {
@@ -283,6 +314,10 @@ class SitePageController extends BaseController
         $json = json_encode($json);
         $page->json_data = $json;
         $page->save();
+        if ($newOne)
+        {session()->flash('message','A freight order record has been added' );}
+        else
+        {session()->flash('message','A freight order record has been updated' );}
         return redirect()->back();
 
     }

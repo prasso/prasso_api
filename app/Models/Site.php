@@ -184,10 +184,11 @@ class Site extends Model
         return $color;
     }
     
+    /**this was not pretty so I'm setting to just light gray for now */
     public function getNavBackgroundFromMainColor(){
         // write code here that looks at the site main color and returns a border color which is a shade darker
         // first create a color from the main color
-        $color = $this->adjustBrightness($this->main_color,100);
+        $color = "#f1f1f1"; //$this->adjustBrightness($this->main_color,100);
         return $color;
     }
     

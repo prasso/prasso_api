@@ -141,7 +141,7 @@
                     <img src="{{ $site->logo_image }}" alt="{{ $site->site_name }}"  class="block h-9 w-auto" />
                 @endif
                 </div>
-                <div class="max-w-xs p-0 m-auto">
+                <div class="p-0 m-auto">
                 @if ($sitePage->section != "Dashboard")
                     <nav>
                         <ul>
@@ -163,7 +163,13 @@
                 @endif
             </header>
             <div class="font-sans text-gray-900 antialiased">
-                {{Session::get('message')}}
+            @if (session()->has('message'))
+                <div class="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md my-3 mb-0" role="alert">
+                    <div>
+                        <p class="m-auto text-center text-sm">{{ session('message') }}</p>
+                    </div>
+                </div>
+                @endif
                 {!! $sitePage->description !!}
             </div>
         

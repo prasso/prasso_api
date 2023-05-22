@@ -17,6 +17,10 @@ class SitePages extends Model
     protected $fillable = [
         'fk_site_id', 'section', 'title', 'description', 'url','headers','masterpage','template','style','login_required'
     ];
+    
+    public function site_page_data(){
+        return $this->hasMany(\App\Models\SitePageData::class, "fk_site_page_id", "id");
+    }
 
     public function requiresAuthentication()
     {
