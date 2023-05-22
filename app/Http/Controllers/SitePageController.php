@@ -133,7 +133,7 @@ class SitePageController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function viewSitePage($section)
+    public function viewSitePage(Request $request,$section)
     {
         $user = Auth::user() ?? null;
         $sitepage = SitePages::where('fk_site_id',$this->site->id)->where('section',$section)->first();
@@ -146,9 +146,20 @@ class SitePageController extends BaseController
         if ( ($sitepage->requiresAuthentication() && $user == null ) ||
                 ($user != null && !$this->userService->isUserOnTeam($user)))
         {
-            Auth::logout();
-            session()->flash('status','You are not a member of this site.');
-            return redirect('/login');
+            if ( $user == null ){
+                \App\Http\Middleware\UserPageAccess::authorizeUser($request);
+
+                if ($user == null){
+                    Auth::logout();
+                    session()->flash('status','You are not a member of this site.');
+                    return redirect('/login');
+                }
+            }
+            if (($user != null && !$this->userService->isUserOnTeam($user))){
+                Auth::logout();
+                session()->flash('status','You are not a member of this site.');
+                return redirect('/login');
+            }
         }
         if ($sitepage->url != null && strlen($sitepage->url) > 5 && strcmp($sitepage->url,'http') != 0)
         {

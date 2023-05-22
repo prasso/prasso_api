@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class AppsLayout extends Component
 {
-    public $selected_team;
+
     public $apps;
     public $selected_app;
     public $activeAppId;
@@ -21,9 +21,9 @@ class AppsLayout extends Component
      * @param  string  $message
      * @return void
      */
-    public function __construct($activeAppId, $selectedapp, $selectedteam, $apps)
+    public function __construct($activeAppId, $selectedapp,  $apps)
     {
-        $this->selected_team = $selectedteam;
+        
         $this->selected_app = $selectedapp;
         $this->apps = $apps;
         $this->activeAppId = $activeAppId;

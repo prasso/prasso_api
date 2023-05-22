@@ -157,7 +157,6 @@ class User extends Authenticatable {
         $coachrecord = Team::find($this->current_team_id)->first();
         $coachId = $coachrecord->user_id;
         $coachUid = User::find($coachId)->firebase_uid;
-        info('for user ' . $this->id . ' the coachUid is: ' . $coachUid);
         return $coachUid;
     }
 

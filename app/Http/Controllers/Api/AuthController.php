@@ -125,7 +125,6 @@ class AuthController extends BaseController
                 $user->save();
             }
             $user = $this->setUpUser($request,$user);
-            info('in record_login, the site is: '.json_encode($this->site));
             $success = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);
             $success['pn_token'] = $user->pn_token;
             $success['thirdPartyToken'] = '';      
@@ -182,22 +181,15 @@ class AuthController extends BaseController
         return $this->saveEnhancedProfile($request);
     }
 
+ 
+    /** just the app settings, nothing for the user */
     public function getAppSettings($apptoken,Request $request)
     {
-        
         $user = $this->setUpUser($request,null);
+        $app_data = $this->appsService->getAppSettingsBySite($this->site, $user,$user->personalAccessToken->token);
 
-       try {
-            if (!isset($user))
-            {
-                $this->sendToUnauthorized();
-            }
-            $app_data = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);
-            
-            return $this->sendResponse($app_data, 'Successfully refreshed app data');
-        } catch (\Throwable $e) {
-            Log::info($e);
-        }
+        return $app_data;
+
     }
     
     private function setUpUser($request,$user)
