@@ -49,7 +49,7 @@ class SitePageService
         {
             $parts = explode(':', $order_by_clause, 2);
             $fieldInOrder = trim($parts[0], "'");
-            $ascDesc = trim($parts[1], "'");
+            $ascDesc = $parts[1] == null ? 'desc' : trim($parts[1], "'");
             if ($ascDesc == NULL) {
                 $ascDesc = 'desc';
             }
