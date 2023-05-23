@@ -160,8 +160,9 @@ class AuthController extends BaseController
 
     public function logout(Request $request)
     {
+        \Auth::logout();
         $this->unsetAccessTokenCookie();
-        return $this->sendResponse('', 'User logged out successfully.');
+        return $this->sendResponse('', 'User logged out successfully...');
       
     }
 

@@ -19,10 +19,6 @@
 
 // App
 const videoPlayer = document.getElementById("video-player");
-const playerOverlay = document.getElementById("overlay");
-const playerControls = document.getElementById("player-controls");
-const btnPlay = document.getElementById("play");
-const btnMute = document.getElementById("mute");
 const btnSettings = document.getElementById("settings");
 const settingsMenu = document.getElementById("settings-menu");
 
@@ -92,50 +88,7 @@ let setBtnUnmute = function(){
   // Setvolume
   player.setVolume(0.1);
 
-  // Show/Hide player controls
-  playerOverlay.addEventListener(
-    "mouseover",
-    function (e) {
-      playerOverlay.classList.add("player--hover");
-    },
-    false
-  );
-  playerOverlay.addEventListener("mouseout", function (e) {
-    playerOverlay.classList.remove("player--hover");
-  });
 
-  // Controls events
-  // Play/Pause
-  btnPlay.addEventListener(
-    "click",
-    function (e) {
-      if (btnPlay.classList.contains("btn--play")) {
-        // change to pause
-        setBtnPaused();
-        player.pause();
-      } else {
-        // change to play
-        setBtnPlay();
-        player.play();
-      }
-    },
-    false
-  );
-
-  // Mute/Unmute
-  btnMute.addEventListener(
-    "click",
-    function (e) {
-      if (btnMute.classList.contains("btn--mute")) {
-        setBtnMute();
-        player.setMuted(1);
-      } else {
-        setBtnUnmute();
-        player.setMuted(0);
-      }
-    },
-    false
-  );
 
   // Create Quality Options
   let createQualityOptions = function (obj, i) {
@@ -151,38 +104,6 @@ let setBtnUnmute = function(){
       return false;
     });
   };
-
-  // Close Settings menu
-  let closeSettingsMenu = function () {
-    btnSettings.classList.remove("btn--settings-on");
-    btnSettings.classList.add("btn--settings-off");
-    settingsMenu.classList.remove("open");
-  };
-
-  // Settings
-  btnSettings.addEventListener(
-    "click",
-    function (e) {
-      let qualities = player.getQualities();
-      let currentQuality = player.getQuality();
-
-      // Empty Settings menu
-      while (settingsMenu.firstChild)
-        settingsMenu.removeChild(settingsMenu.firstChild);
-
-      if (btnSettings.classList.contains("btn--settings-off")) {
-        for (var i = 0; i < qualities.length; i++) {
-          createQualityOptions(qualities[i], i);
-        }
-        btnSettings.classList.remove("btn--settings-off");
-        btnSettings.classList.add("btn--settings-on");
-        settingsMenu.classList.add("open");
-      } else {
-        closeSettingsMenu();
-      }
-    },
-    false
-  );
 
   // Close Settings menu if user clicks outside the player
   window.addEventListener("click", function (e) {
