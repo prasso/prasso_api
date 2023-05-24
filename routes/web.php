@@ -49,7 +49,6 @@ Route::group(['middleware'=> 'instructorusergroup'], function() {
     Route::get('/profile/prasso_profile','User2Controller@prasso_profile')->name('prasso.profile');
     Route::post('/profile/profile_update_image','User2Controller@uploadProfileImage')->name('upload.post.image');
     
-    
     Route::get('/site/edit', 'MySiteController@editMySite')->name('site.edit.mysite');
     Route::get('/site/{siteid}/livestream-mtce', 'AdminController@livestreamMtce')->name('site.mtce.livestream');
     Route::get('/site/{siteid}/livestream-mtce/{sitemediaid}', 'SiteMediaController@siteMediaEdit')->name('site.mtce.media.edit');
@@ -57,6 +56,7 @@ Route::group(['middleware'=> 'instructorusergroup'], function() {
 
     Route::get('/visual-editor/{pageid}', 'SitePageController@visualEditor');
     Route::get('/visual-editor/getCombinedHtml/{pageid}', 'SitePageController@getCombinedHtml');
+    Route::post('/site/{siteid}/{pageid}/sitePageDataPost', 'SitePageController@sitePageDataPost');
 });
 
 Route::group(['middleware'=> 'superadmin'], function() {

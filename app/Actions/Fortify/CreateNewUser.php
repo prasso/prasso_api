@@ -65,8 +65,13 @@ class CreateNewUser implements CreatesNewUsers
                 else{
                     $this->createTeam($user,$site);
                 }
-                
+                try{
                 $user->sendWelcomeEmail();
+                }
+                catch(\Throwable $e){
+                    Log::info("Error sending welcome email: {$site->host}");
+                    Log::info($e);
+                }
                 ## BEGIN EDIT - if there's an invite, attach them accordingly ##
                 if (isset($input['invite'])) {
                     if ($invitation = Invitation::where('code', $input['invite'])->first()) {

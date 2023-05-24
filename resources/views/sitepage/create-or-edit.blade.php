@@ -58,6 +58,11 @@
                             <textarea rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="descriptionInput" wire:model.defer="description" placeholder="Enter Description"></textarea>
                             @error('description') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
+                        <div x-show="template_selection_made" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
+                            <label for="styleInput" class="min-h-[10%] block text-gray-700 text-sm font-bold mb-2">Style: (css shown between &lt;style&gt; tags)</label>
+                            <textarea rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="styleInput" wire:model.defer="style" placeholder="Enter style"></textarea>
+                            @error('style') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
                         <div x-show="!template_selection_made" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
                             <label for="urlInput" class="block text-gray-700 text-sm font-bold mb-2">Url: (if this is an outside page )</label>
                             <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="urlInput" placeholder="Enter Url" wire:model="url">

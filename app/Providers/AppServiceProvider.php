@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
     {
       Schema::defaultStringLength(191);
 
-      $allowedUris = ['/login', '/dashboard', '/register', '/forgot-password', '/privacy', '/terms', '/teams'];
+      $allowedUris = ['/user/profile','/login', '/dashboard', '/register', '/forgot-password', '/privacy', '/terms', '/teams'];
        // Get the current request's URI
        $uri = $request->getRequestUri();
 

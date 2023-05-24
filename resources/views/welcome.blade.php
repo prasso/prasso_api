@@ -4,13 +4,25 @@
   <head> <meta charset="utf-8"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta name="description" content=""> <meta name="author" content="Prasso"> <meta name="csrf" content="4TlNT:16b01222ba14eac4550da35a7d7f5ce8" id="csrf"> <link rel="shortcut icon" href="https://prasso.io/favicon.ico">
  <title>Prasso Welcome</title>
  <link href="/css/tilda.cc.css.tilda-grid-3.0.min.css" rel="stylesheet" media="screen">
-
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&subset=latin,cyrillic" rel="stylesheet">		
  <link href="/css/tilda-cc-projects-style-projectid-4017550.css" rel="stylesheet" media="screen">
+ <link href="/js/google-fonts-inter.css" rel="stylesheet">
+    <link href="/js/google-fonts-material-icon.css" rel="stylesheet">
+    <link rel="stylesheet" href="/js/google-material-design-iconic-font.2.2.0.min.css">
+    <link href="/js/google-fonts-Roboto.css" rel="stylesheet"> 
 
+    <!-- Styles -->   
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"> 
+    <!-- Scripts -->
+    <script src="/js/jquery1.10.0.min.js"></script> 
+    <script src="{{ asset('/js/app.js') }}" defer></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
+    <link rel="stylesheet" href="/js/jqueryui.1.12.1.min.css">
 
  
+
 
 </head>
 
@@ -424,7 +436,60 @@ class='tn-atom'
         
           
 </div> 
-<div id="rec308050817" class="r t-rec t-rec_pt_135 t-rec_pb_90" style="padding-top:135px;padding-bottom:90px; "  data-record-type="33"   >
+
+<div class="py-12" style="background-color:#f0f0f0;">
+		  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="text-center">
+			  <h2 class="text-base prasso-header font-semibold tracking-wide uppercase">Businesses We've Helped
+			  </h2>
+			  <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+				Our Portfolio
+			  </p>
+			  <p class="mt-4 max-w-2xl text-xl text-gray-800 lg:mx-auto">
+				Here are some examples of the amazing apps we've created for small businesses just like yours.
+			  </p>
+			</div>
+			<div class="mt-10">
+			  <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+				<div class="bg-white rounded-lg shadow-md overflow-hidden text-center">
+				  <div class="px-6 py-4">
+					<h3 class="text-lg font-semibold text-gray-800 mb-2">Faith Lake City
+					</h3>
+					<p class="text-gray-600 leading-6">Family-Oriented and Biblical church in Lake City, Florida 
+					</p>
+				  </div>
+				  <div class="px-6 py-4">
+					<a href="https://faithlakecity.com" class="inline-block prasso-green text-white rounded-full px-3 py-1 text-sm font-semibold">#Web</a>
+				  </div>
+				</div>
+				<div class="bg-white rounded-lg shadow-md overflow-hidden text-center">
+				  <div class="px-6 py-4">
+					<h3 class="text-lg font-semibold text-gray-800 mb-2">Go Go Delivery
+					</h3>
+					<p class="text-gray-600 leading-6">Easily schedule and track your deliveries with our platform.
+					</p>
+				  </div>
+				  <div class="px-6 py-4">
+					<a href="https://www.gogodeliveryonline.com/" class="inline-block prasso-green text-white rounded-full px-3 py-1 text-sm font-semibold">#Web</a>
+				  </div>
+				</div>
+				<div class="bg-white rounded-lg shadow-md overflow-hidden text-center">
+				  <div class="px-6 py-4">
+					<h3 class="text-lg font-semibold text-gray-800 mb-2">FAXT
+					</h3>
+					<p class="text-gray-600 leading-6">Developer site that highlights Prasso functionality.
+					</p>
+				  </div>
+				  <div class="px-6 py-4">
+					<a href="https://faxt.com/" class="inline-block prasso-green text-white rounded-full px-3 py-1 text-sm font-semibold">#Web</a>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		  </div>
+      </div>
+      <div id="rec308050817" class="r t-rec t-rec_pt_135 t-rec_pb_90" style="padding-top:135px;padding-bottom:135px; "  data-record-type="33"   >
+
 <!-- T017 -->
 <div class="t017">
   <div class="t-container t-align_center">
@@ -446,7 +511,14 @@ class='tn-atom'
 </div>
 
 </div>
-<!--/allrecords--> 
+<div class="bt-1 bg-white shadow text-gray-500">
+    <div class="p-14 flex sm:justify-center items-center  ">
+       <a href="privacy">privacy</a> | <a href="terms">terms</a>
+    </div>
+    <div class="flex sm:justify-center items-center sm:pt-0 ">
+        <small>&copy faxt 1999-<?php echo date('Y'); ?> and DeductionTraq</small>
+    </div>
+</div>
  
  <script>   try {
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

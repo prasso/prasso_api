@@ -31,13 +31,24 @@
     <script src="https://unpkg.com/grapesjs-tui-image-editor@0.1.3"></script>
     <script src="https://unpkg.com/grapesjs-typed@1.0.5"></script>
     <script src="https://unpkg.com/grapesjs-style-bg@2.0.1"></script>
-    
+    @if (isset($site->app_specific_css) && str_starts_with($site->app_specific_css, 'http') )
+            <link rel="stylesheet" href="{{$site->app_specific_css}}">
+        @else
+            <style>{!! $site->app_specific_css !!}</style>
+        @endif
     @if (isset($masterPage))
     {!!  $masterPage->js !!}
     {!!  $masterPage->css !!}
     @endif
 
     <style type="text/css">
+      .CodeMirror * {
+          text-transform: none;
+          font-family: Arial, monospace;
+          font-size: 16px;
+          /*min-height: 450px;
+          margin-bottom: 8px;*/
+        }
         .icons-flex {
           background-size: 70% 65% !important;
           height: 15px;
@@ -104,10 +115,6 @@
           box-shadow: none;
         }
 
-        .CodeMirror {
-          min-height: 450px;
-          margin-bottom: 8px;
-        }
         .grp-handler-close {
           background-color: transparent;
           color: #ddd;
@@ -133,6 +140,7 @@
         <input type="hidden" name="masterpage" value="{{ $sitePage->masterpage }}" />
         <input type="hidden" name="login_required" value="{{ $sitePage->login_required }}" />
         <input type="hidden" name="template" value="{{ $sitePage->template }}" />
+        <input type="hidden" id="page_style" name="style" value="{{ $sitePage->style }}" />
         
   </form>
 
@@ -180,6 +188,7 @@
           sectors: [{
               name: 'General',
               properties:[
+                'background',
                 {
                   extend: 'float',
                   type: 'radio',
@@ -195,7 +204,7 @@
                 'top',
                 'right',
                 'left',
-                'bottom',
+                'bottom'
               ],
             }, {
                 name: 'Dimension',
@@ -517,7 +526,7 @@
           indentWithTabs: true
       });
 
-      btnEdit.innerHTML = 'Edit';
+      btnEdit.innerHTML = 'Edit Code';
       btnEdit.className = pfx + 'btn-prim ' + pfx + 'btn-import';
       btnEdit.onclick = function() {
           var code = codeViewer.editor.getValue();
@@ -555,11 +564,57 @@
                   className: 'fa fa-edit',
                   command: 'html-edit',
                   attributes: {
-                      title: 'Edit'
-                  }
+                  'title': 'Code Editor',
+                  'data-tooltip-pos': 'bottom',
+                }
               }
           ]
       );
+
+      pn.addButton('options', [ { id: 'save', 
+          className: 'fa fa-floppy-o icon-blank', command: function(editor1, sender)
+           { 
+                var htmlString = editor1.getHtml();
+                const parser = new DOMParser();
+                const htmlDoc = parser.parseFromString(htmlString, 'text/html');
+
+                const coreDiv = htmlDoc.querySelector('#core');
+                const coreContents = coreDiv.innerHTML;
+                //need just the the html inside div id="core"
+                if (coreContents != null)
+                {
+                  document.getElementById("page_data").value = coreContents;
+                }
+                var cssRules = editor.getCss();
+                console.log(cssRules);
+                if (cssRules != null)
+                {
+                  document.getElementById("page_style").value = cssRules;
+                }
+                var spf = document.getElementById("sitePageForm")
+                spf.submit();
+
+            }, attributes: {
+          'title': 'Save Page',
+          'data-tooltip-pos': 'bottom',
+        } }, ]);
+
+      pn.addButton('options', {
+        id: 'dashboard',
+        className: 'fa fa-home',
+        command: function(editor1, sender)
+           { 
+            @if (Auth::user()->hasRole('1'))
+            window.location.replace("/sites");
+            @else
+            window.location.replace("/site/edit");
+            @endif
+            },
+            attributes: {
+          'title': 'Return to Home',
+          'data-tooltip-pos': 'bottom',
+        }
+      });
 
       // Add info command
       var mdlClass = 'gjs-mdl-dialog-sm';
@@ -569,7 +624,7 @@
         var mdlDialog = document.querySelector('.gjs-mdl-dialog');
         mdlDialog.className += ' ' + mdlClass;
         infoContainer.style.display = 'block';
-        modal.setTitle('About this demo');
+        modal.setTitle('About this editor');
         modal.setContent(infoContainer);
         modal.open();
         modal.getModel().once('change:open', function() {
@@ -584,24 +639,7 @@
         attributes: {
           'title': 'About',
           'data-tooltip-pos': 'bottom',
-        },
-      });
-      pn.addButton('options', {
-          id: 'open-templates',
-          className: 'fa fa-folder-o',
-          attributes: {
-              title: 'Open projects and templates'
-          },
-          command: 'open-templates', //Open modal 
-      });
-      pn.addButton('views', {
-          id: 'open-pages',
-          className: 'fa fa-file-o',
-          attributes: {
-              title: 'Take Screenshot'
-          },
-          command: 'open-pages',
-          togglable: false
+        }
       });
 
       // Simple warn notifier
@@ -683,7 +721,7 @@
         });
 
         // Open block manager
-        var openBlocksBtn = editor.Panels.getButton('views', 'open-blocks');
+        var openBlocksBtn = pn.getButton('views', 'open-blocks');
         openBlocksBtn && openBlocksBtn.set('active', 1);
 
        var page_id = {{$sitePage->id}};
@@ -693,7 +731,6 @@
           url: '/visual-editor/getCombinedHtml/'+page_id,
           type: 'GET',
           success: function(response) {
-            console.log('setting combined HTML');
             editor.setComponents(response.html);
           },
           error: function(response) {
@@ -701,42 +738,7 @@
           },
         });
       });
-      editor.Panels.addButton('options', [ { id: 'save', 
-          className: 'fa fa-floppy-o icon-blank', command: function(editor1, sender)
-           { 
-                //document.getElementById("page_data").value = editor1.getHtml();
-
-                var htmlString = editor1.getHtml();
-                const parser = new DOMParser();
-                const htmlDoc = parser.parseFromString(htmlString, 'text/html');
-
-                const coreDiv = htmlDoc.querySelector('#core');
-                const coreContents = coreDiv.innerHTML;
-                //need just the the html inside div id="core"
-                if (coreContents != null)
-                {
-                  document.getElementById("page_data").value = coreContents;
-                }
-                var spf = document.getElementById("sitePageForm")
-                spf.submit();
-
-            }, attributes: { title: 'Save Page' } }, ]);
-
-      editor.Panels.addButton('options', {
-        id: 'dashboard',
-        className: 'fa fa-home',
-        command: function(editor1, sender)
-           { 
-            @if (Auth::user()->role_id == 1)
-            window.location.replace("/sites");
-            @else
-            window.location.replace("/site/edit");
-            @endif
-            },
-        attributes: {
-          title: 'Return to Home'
-        }
-      });
+      
 
     </script>
   </body>
