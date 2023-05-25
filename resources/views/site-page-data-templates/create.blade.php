@@ -1,22 +1,23 @@
+
 <x-app-layout>
 
-<x-slot name="title">View and Edit Sites</x-slot>
+<x-slot name="title">New Site Page Data Templates</x-slot>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Sites') }}
+            {{ __('New Site Page Data Templates') }}
         </h2>
         <div class="flex bg-gray-100">
         <x-jet-responsive-nav-link href="{{ route('site-page-data-templates.index') }}" :active="request()->routeIs('site-page-data-templates.index')">
-            {{ __('View / Edit Data Templates for Site Pages') }}
+            {{ __('Cancel and go back') }}
         </x-jet-responsive-nav-link>
         </div>
     </x-slot>
     <div>
+        
+    @livewire('site-page-data-template-form-inputs',['template' => $template])
 
-        <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            
-            @livewire('site-editor');
-        </div>
+
+</div>
     </div>
 
 

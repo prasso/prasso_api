@@ -57,6 +57,11 @@ Route::group(['middleware'=> 'instructorusergroup'], function() {
     Route::get('/visual-editor/{pageid}', 'SitePageController@visualEditor');
     Route::get('/visual-editor/getCombinedHtml/{pageid}', 'SitePageController@getCombinedHtml');
     Route::post('/site/{siteid}/{pageid}/sitePageDataPost', 'SitePageController@sitePageDataPost');
+
+    Route::get('/site-page-data-templates', 'SitePageDataTemplateController@index')->name('site-page-data-templates.index');
+    Route::get('/site-page-data-templates/create', 'SitePageDataTemplateController@create')->name('site-page-data-templates.create');
+    Route::get('/site-page-data-templates/{id}/edit', 'SitePageDataTemplateController@edit');
+    Route::delete('/site-page-data-templates/{id}', 'SitePageDataTemplateController@destroy');
 });
 
 Route::group(['middleware'=> 'superadmin'], function() {

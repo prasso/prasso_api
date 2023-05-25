@@ -32,3 +32,4 @@ yarn-error.log
 ./vendor
 ./.vscode
 .vscode/*
+firestore-database-rules.txt

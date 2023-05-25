@@ -33,7 +33,7 @@ class UserPageAccess
         $accessToken = str_replace("Bearer ", "", $accessToken);
         if (empty($accessToken))
         {     
-         Log::info('in Middleware UserPageAccess -  cookies: '.json_encode($_COOKIE));
+         //Log::info('in Middleware UserPageAccess -  cookies: '.json_encode($_COOKIE));
       
           // check if the cookie is set
           if (isset($_COOKIE[config('constants.ACCESSTOKEN_')])) 
@@ -42,14 +42,14 @@ class UserPageAccess
        //     Log::info('in Middleware UserPageAccess - token from cookie: ' . $accessToken.' cookies: '.json_encode($_COOKIE));
           }
         }
-        Log::info('in Middleware UserPageAccess - Authorization header: '.$accessToken);
+        //Log::info('in Middleware UserPageAccess - Authorization header: '.$accessToken);
       
         $user = User::getUserByAccessToken($accessToken);
 
         if ($user == null) 
         {
           //redirect to login
-          info('redirect to login user is not logged in');
+          //info('redirect to login user is not logged in');
           session()->flash('message', config('constants.UNAUTHORIZED'));
           return false;
         }
