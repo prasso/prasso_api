@@ -141,6 +141,7 @@
         <input type="hidden" name="login_required" value="{{ $sitePage->login_required }}" />
         <input type="hidden" name="template" value="{{ $sitePage->template }}" />
         <input type="hidden" id="page_style" name="style" value="{{ $sitePage->style }}" />
+        <input type="hidden" id="where_value" name="where_value" value="{{ $sitePage->where_value }}" />
         
   </form>
 
