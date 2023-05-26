@@ -71,7 +71,7 @@ class SitePageController extends BaseController
         if ( !$this->userService->isUserOnTeam($user) )
         {
             Auth::logout();
-            session()->flash('status','You are not a member of this site.');
+            session()->flash('status',config('constants.LOGIN_AGAIN'));
             return redirect('/login');
         }
         
@@ -151,13 +151,13 @@ class SitePageController extends BaseController
                 $user = Auth::user() ?? null;   
                 if ($user == null){
                     Auth::logout();
-                    session()->flash('status','You are not a member of this site.');
+                    session()->flash('status',config('constants.LOGIN_AGAIN'));
                     return redirect('/login');
                 }
             }
             if (($user != null && !$this->userService->isUserOnTeam($user))){
                 Auth::logout();
-                session()->flash('status','You are not a member of this site.');
+                session()->flash('status',config('constants.LOGIN_AGAIN'));
                 return redirect('/login');
             }
         }

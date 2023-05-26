@@ -12,7 +12,7 @@ use App\Models\Site;
 
 class SitePageEditor extends Component
 {
-    public $sitePages,$site_name,$fk_site_id, $section, $title, $description, $url, $sitePage_id, $masterpage,$template,$style, $login_required, $headers;
+    public $sitePages,$site_name,$fk_site_id, $section, $title, $description, $url, $sitePage_id, $masterpage,$template,$style, $login_required, $headers, $where_value;
     
     public $https_host;
 
@@ -130,6 +130,7 @@ class SitePageEditor extends Component
         $this->login_required = false;
         $this->template = '' ;
         $this->style = '';
+        $this->where_value = '';
         
     }
 
@@ -149,6 +150,7 @@ class SitePageEditor extends Component
             'masterpage' => 'required_without:url',
             'url' => 'required_if:masterpage,null',
             'login_required' => 'required',
+            'where_value'=> 'nullable',
         ]);
         
         //specifying a template will launch code to run to gather data when the site-page is loaded
@@ -163,6 +165,7 @@ class SitePageEditor extends Component
             'headers' => $this->headers,
             'template' => $this->template,
             'style' => $this->style,
+            'where_value' => $this->where_value,
         ]);
   
         session()->flash('message', 
@@ -190,6 +193,7 @@ class SitePageEditor extends Component
         $this->login_required = $sitePage->login_required;
         $this->template = $sitePage->template;
         $this->style = $sitePage->style;
+        $this->where_value = $sitePage->where_value;
 
         $this->openModal();
     }
@@ -198,6 +202,9 @@ class SitePageEditor extends Component
     {
         if ($propertyName == 'masterpage' && $this->masterpage != '') {
             $this->url = '';
+        }
+        if ($propertyName == 'template' && $this->template != '' && $this->description == '') {
+            $this->description = '<div x-data=\"[DATA]\"></div>';
         }
         $this->resetErrorBag($propertyName);
      
@@ -221,6 +228,7 @@ class SitePageEditor extends Component
         $this->login_required = $sitePage->login_required;
         $this->template = $sitePage->template;
         $this->style = $sitePage->style;
+        $this->where_value = $sitePage->where_value;
 
         $this->openVisualModal();
     }

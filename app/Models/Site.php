@@ -132,7 +132,8 @@ class Site extends Model
             $content = file_get_contents(resource_path() . '/templates/welcome_no_register.txt');
         }
         $welcomepage = SitePages::firstOrCreate(['fk_site_id'=>$this->id,'section'=>'Welcome'],
-            ['description'=>$content,  'title'=>'Welcome','url'=>'html','login_required'=>false,'headers'=>'','masterpage'=>'sitepage.templates.blankpage']);
+            ['description'=>$content,  'title'=>'Welcome','url'=>'html','login_required'=>false,'headers'=>'','masterpage'=>'sitepage.templates.blankpage'
+            ,'template'=>'sitepage.templates.blankpage','style'=>'','where_value'=>'']);
         $welcomepage->save();
 
         //if this site supports registration, then create a dashboard page

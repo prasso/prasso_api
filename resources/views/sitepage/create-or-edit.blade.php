@@ -5,8 +5,8 @@
         </div>
         <!-- This element is to trick the browser into centering the modal contents. -->
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>?
-        <div x-data="{ template_selection_made: {{ $masterpage ? 'true' : 'false' }} }" 
-            x-init="template_selection_made = {{ $masterpage ? 'true' : 'false' }};" 
+        <div <div x-data="{ template_selection_made: {{ $masterpage ? 'true' : 'false' }}, dataTemplateSelectionMade:  {{ $template ? 'true' : 'false' }} }" 
+            x-init="template_selection_made = {{ ($masterpage || $template) ? 'true' : 'false' }};" 
             class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
             <form> <input type="hidden" wire:model="fk_site_id" />
             @if($errors->any())
@@ -14,8 +14,7 @@
                 {!! implode('', $errors->all('<div>:message</div>')) !!}
             </div>
             @endif
-            <input type="hidden" wire:model="sitePage_id" />
-                          
+            <input type="hidden" wire:model="sitePage_id" />                
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="">
                         <div x-data x-init="$refs.sectionInput.focus()" class="mb-4">
@@ -38,13 +37,14 @@
                             </select>
                             @error('masterpage') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
-                      
                         <div x-data="{ template_info_open: false}" class="mb-4">
                             <i x-show="true" wire:ignore  x-on:click="template_info_open = !template_info_open"  class="float-right material-icons text-gray-600">info</i><label for="templateInput" class="block text-gray-700 text-sm font-bold mb-2">Template : </label>
                                     <div x-show="template_info_open" ><b>Template or custom. if template then the template name is in a field of sitepage and the html value is used to fill in placeholders in the template
                                         if custom then html=html</b>
                                     </div>
-                            <select wire:model="template" name="templateInput" id="templateInput" class="mt-1 block w-full border-2 border-indigo-600/100 p-2" >
+                            <select wire:model="template" name="templateInput"
+                            @change="dataTemplateSelectionMade = $event.target.value !== ''"
+                             id="templateInput" class="mt-1 block w-full border-2 border-indigo-600/100 p-2" >
                                 <option value="" >No Template</option>
                             @foreach($template_recs as $g)
                                 <option value="{{$g->templatename}}" @if($template==$g->templatename) selected="selected" @endif >{{$g->title}}</option>
@@ -52,16 +52,20 @@
                             </select>
                             @error('template') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
-
-                        <div x-show="template_selection_made" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
+                        <div x-show="template_selection_made || dataTemplateSelectionMade" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
                             <label for="descriptionInput" class="min-h-[10%] block text-gray-700 text-sm font-bold mb-2">Description: (enter html if no template is selected)</label>
                             <textarea rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="descriptionInput" wire:model.defer="description" placeholder="Enter Description"></textarea>
                             @error('description') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
-                        <div x-show="template_selection_made" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
+                        <div x-show="template_selection_made || dataTemplateSelectionMade" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
                             <label for="styleInput" class="min-h-[10%] block text-gray-700 text-sm font-bold mb-2">Style: (css shown between &lt;style&gt; tags)</label>
                             <textarea rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="styleInput" wire:model.defer="style" placeholder="Enter style"></textarea>
                             @error('style') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
+                        <div x-show="template_selection_made || dataTemplateSelectionMade" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
+                            <label for="whereValue" class="block text-gray-700 text-sm font-bold mb-2">Where Value (if needed for where clause will replace ??? example: a site page id)</label>
+                            <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="whereValue" placeholder="Enter Where Value if used" wire:model="where_value">
+                            @error('where_value') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div x-show="!template_selection_made" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
                             <label for="urlInput" class="block text-gray-700 text-sm font-bold mb-2">Url: (if this is an outside page )</label>
@@ -72,7 +76,6 @@
                             <label for="login_requiredInput" class="block text-gray-700 text-sm font-bold mb-2">Requires Authentication: </label>
                             <input type="radio"  name="login_requiredInput" id="login_requiredInput" wire:model.defer="login_required" value="1"  />Yes
                             <input type="radio"  name="login_requiredInput" id="login_requiredInput" wire:model.defer="login_required" value="0" />No
-                
                             @error('login_required') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                     </div>

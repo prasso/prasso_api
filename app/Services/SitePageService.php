@@ -22,6 +22,7 @@ class SitePageService
             'login_required' => $request['login_required'],
             'template' => $request['template'],
             'style' => $request['style'],
+            'where_value' => $request['where_value']
         ]);
         
         $message = $updatedSitePage ? 'Site Page Updated Successfully.' : 'Site Page Created Successfully.';
@@ -38,24 +39,38 @@ class SitePageService
 
         $sql = $template_data->template_data_query. ' as display';
         
- 
-        $where_clause_field = $template_data->template_where_clause;
+ info(json_encode($site_page));
+        $where_clause_field = str_replace('???', $site_page->where_value, $template_data->template_where_clause);
         $fieldValue = $site_page->getAttribute($where_clause_field);
-        
-        $query = $model->where($where_clause_field, $fieldValue);
+        if ($fieldValue == null) //the where clause is not a field in the site page table
+        {
+            $query = $model->whereRaw($where_clause_field);
+        }
+        else
+        { 
+            $query = $model->where($where_clause_field, $fieldValue);
+        }
 
         $order_by_clause = $template_data->order_by_clause;
         if ($order_by_clause != NULL)
         {
             $parts = explode(':', $order_by_clause, 2);
             $fieldInOrder = trim($parts[0], "'");
-            $ascDesc = $parts[1] == null ? 'desc' : trim($parts[1], "'");
+            if (count($parts) > 1) {
+                $ascDesc = trim($parts[1] ?? '', "'");
+                if (!$ascDesc) {
+                    $ascDesc = 'desc';
+                }
+            } else {
+                $ascDesc = 'desc';
+            }
             if ($ascDesc == NULL) {
                 $ascDesc = 'desc';
             }
             $query = $query->orderBy($fieldInOrder, $ascDesc);
         }
-        
+        info($query->toSql());
+
         $data = $query   
             ->selectRaw($sql)
             ->get();

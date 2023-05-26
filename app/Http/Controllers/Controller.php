@@ -119,7 +119,7 @@ class Controller extends FrameworkController
         if (\Auth::user()==null || !$userService->isUserOnTeam(\Auth::user()))
         {
             \Auth::logout();
-            session()->flash('status','You are not a member of this site.');
+            session()->flash('status',config('constants.LOGIN_AGAIN'));
             return false;
         }
         return true;

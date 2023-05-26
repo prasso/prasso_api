@@ -43,4 +43,5 @@ return [
         'COMMUNTIYREMEMBER' => 'flarum_remember',
         'ACCESSTOKEN_' => 'accessToken' ,
         'thirdPartyToken' => 'thirdPartyToken',
+        'LOGIN_AGAIN' => 'Unrecognized user, please login again.',
 ];

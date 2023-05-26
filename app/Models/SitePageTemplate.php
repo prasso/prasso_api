@@ -18,7 +18,7 @@ class SitePageTemplate extends Model
         'order_by_clause',
         'default_blank',
         'include_csrf',
-        
+
     ];
 
     public static function getDefaultBlank()
@@ -30,7 +30,7 @@ class SitePageTemplate extends Model
             'template_data_model' => 'App\Models\SiteMedia',
             'template_where_clause' => 'fk_site_id',
             'template_data_query' => 'media_title',
-            'order_by_clause' => 'media_title',
+            'order_by_clause' => 'media_title:asc',
         ]);
     }
 }
