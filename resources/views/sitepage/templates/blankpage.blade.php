@@ -17,7 +17,13 @@
         <meta name="twitter:title" content="{{ $site->site_name }} - {{ $title??'' }}" />
         <meta name="twitter:description" content="{{ $title??'' }}" />
         <meta name="twitter:image" content="{{ $site->logo_image }}" />
-        <link rel="shortcut icon" type="image/x-icon" href="{{ $site->favicon }}">
+
+        <link rel="icon" type="image/png" href="{{$site->favicon??''}}" />
+        <link rel="icon" type="image/png" href="{{ config('app.photo_url').$site->image_folder}}favicon-16x16.png" sizes="16x16">
+        <link rel="icon" type="image/png" href="{{ config('app.photo_url').$site->image_folder}}favicon-32x32.png" sizes="32x32">
+        <link rel="icon" sizes="192x192" href="{{ config('app.photo_url').$site->image_folder}}android-chrome-192x192.png">
+        <link rel="icon" sizes="512x512" href="{{ config('app.photo_url').$site->image_folder}}android-chrome-512x512.png">
+        <link rel="apple-touch-icon" href="{{ config('app.photo_url').$site->image_folder}}apple-touch-icon.png">
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

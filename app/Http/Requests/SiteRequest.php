@@ -28,7 +28,11 @@ class SiteRequest extends BaseRequest {
             'database' => 'required',
             'favicon' => 'required',
             'photo' => 'required_without:logo_image|max:1024',
-            'supports_registration' => 'required'
+            'supports_registration' => 'required',
+            'app_specific_js' => 'nullable',
+            'app_specific_css' => 'nullable',
+            'does_livestreaming' => 'required',
+            'image_folder' => 'required|ends_with:/',
         ]);
     }
 }

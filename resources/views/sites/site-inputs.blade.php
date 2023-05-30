@@ -30,6 +30,11 @@
                             @error('main_color') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
+                            <label for="image_folderInput" class="block text-gray-700 text-sm font-bold mb-2">Image Foldername:</label>
+                            <input type="text" id="image_folderInput" placeholder="Enter Image Folder Name"  wire:model="image_folder" >
+                            @error('image_folder') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
+                        <div class="mb-4">
                             <x-jet-label value="{{ __('Logo Image') }}" />
                             <div class=" items-center mt-2"   style="max-width:400px;">
                                 @if (isset($photo) && !empty ($photo->temporaryUrl()) )

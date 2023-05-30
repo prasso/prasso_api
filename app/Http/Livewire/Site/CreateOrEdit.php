@@ -30,6 +30,7 @@ class CreateOrEdit extends Component
     public $current_user;
     public $team;
     public $show_modal = true;
+    public $image_folder;
 
     public $photo;
 
@@ -54,6 +55,7 @@ class CreateOrEdit extends Component
         $this->favicon = $site->favicon;
         $this->app_specific_js = $site->app_specific_js;
         $this->app_specific_css = $site->app_specific_css;
+        $this->image_folder = $site->image_folder;
 
     }
 
@@ -108,6 +110,7 @@ class CreateOrEdit extends Component
             'supports_registration' => $this->supports_registration,
             'app_specific_js' => $this->app_specific_js,
             'app_specific_css' => $this->app_specific_css,
+            'image_folder' => $this->image_folder,
         ]);
         return $site;
     }
