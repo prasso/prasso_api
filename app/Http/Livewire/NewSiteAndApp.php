@@ -36,6 +36,7 @@ class NewSiteAndApp extends Component
     public $description; //
     public $host; //
     public $main_color; //
+    public $image_folder; //
     public $logo_image; //
     public $supports_registration;//
     public $does_livestreaming; //
@@ -141,6 +142,7 @@ class NewSiteAndApp extends Component
         $this->newSite->favicon = 'favicon.ico';
         $this->newSite->supports_registration = $this->supports_registration;//
         $this->newSite->app_specific_css = ".teambutton {color:#f1f1f1;background-color: {$this->main_color};}";
+        $this->newSite->image_folder = $this->image_folder; //
 
         $newSite = $this->newSite->toArray();
         $site = $this->newSite::create($newSite);

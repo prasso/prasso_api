@@ -12,6 +12,17 @@
     <div><div>
             <div class="align-bottom bg-white rounded-lg text-left transition-all sm:my-8 sm:align-middle " >
         @endif
+        <div class="border-t border-gray-200"></div>
+                    <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
+                        {{ __('Add to Image Library') }}
+                    <div class="px-4 py-2">
+                        <form action="{{ route('images.upload') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" type="file" name="image">
+                            <button class="teambutton cursor-pointer mt-2 border p-2 rounded-xl px-2 py-1  text-sm  text-white transition duration-500 ease-in-out transform rounded-lg shadow-xl" type="submit">Upload</button>
+                        </form>
+                    </div>
+                </div>
         <form> 
                 
                 <input type="hidden" wire:model="siteid" />

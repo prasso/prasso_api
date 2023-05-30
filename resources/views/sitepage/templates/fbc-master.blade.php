@@ -15,7 +15,12 @@
    <meta name="twitter:title" content="{{ $site->site_name }} - {{ $title??'' }}" />
    <meta name="twitter:description" content="{{ $title??'' }}" />
    <meta name="twitter:image" content="{{ $site->logo_image }}" />
-   <link rel="shortcut icon" type="image/x-icon" href="{{ $site->favicon }}">
+   <link rel="icon" type="image/png" href="{{$site->favicon??''}}" />
+   <link rel="icon" type="image/png" href="{{ config('app.photo_url').$site->image_folder}}favicon-16x16.png" sizes="16x16">
+   <link rel="icon" type="image/png" href="{{ config('app.photo_url').$site->image_folder}}favicon-32x32.png" sizes="32x32">
+   <link rel="icon" sizes="192x192" href="{{ config('app.photo_url').$site->image_folder}}android-chrome-192x192.png">
+   <link rel="icon" sizes="512x512" href="{{ config('app.photo_url').$site->image_folder}}android-chrome-512x512.png">
+   <link rel="apple-touch-icon" href="{{ config('app.photo_url').$site->image_folder}}apple-touch-icon.png">
    {!!  $masterPage->css !!}
    {!!  $masterPage->js !!}
    @if (isset($sitePage->style)  )
@@ -170,7 +175,7 @@
                   <div class="photo-content editable photo-0 " data-id="155630" data-category="photo" data-width="500" data-height="190">
                      <div class="aspect-helper" style="padding-top:38.0%"></div>
                      <div class="photo-container">
-                        <img srcset="https://images.prasso.io/fbc/cdn.files/images/site-images/5d8fac1e-955e-447c-96a6-24c140c639b1.png, https://images.prasso.io/fbc/cdn.files/images/site-images/5d8fac1e-955e-447c-96a6-24c140c639b1@2x.png" border="0">
+                        <img src="https://images.prasso.io/faith/FaithLakeCityLogo-250.png" border="0">
                      </div>                                                                                                             
                   </div>
                </div>
@@ -242,7 +247,7 @@
                   <div class="photo-content editable photo-0 " data-id="12570587" data-category="photo" data-width="500" data-height="190">
                      <div class="aspect-helper" style="padding-top:38.0%"></div>
                      <div class="photo-container">
-                        <img srcset="https://images.prasso.io/fbc/cdn.files/images/site-images/5ccfb98c-594e-492f-a7a4-2e96f5a28b33.png, https://images.prasso.io/fbc/cdn.files/images/site-images/5ccfb98c-594e-492f-a7a4-2e96f5a28b33@2x.png" border="0">
+                         <img src="https://images.prasso.io/faith/FaithLakeCityLogo-250.png" border="0">
                      </div>
                   </div>
                   <div class="text-content text-1 editable" data-id="155629" data-category="text">

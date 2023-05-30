@@ -12,6 +12,7 @@
                     <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
                 </div>
             </div>
+           
             @if (Auth::user()->isSuperAdmin() || Auth::user()->getSiteCount() == 0)
                 <x-jet-responsive-nav-link href="{{ route('apps.newsiteandapp', Auth::user()->current_team_id)  }}">
                     <div class="text-center bg-gray-50 border-2 border-indigo-600/100">
@@ -69,10 +70,21 @@
                 <x-jet-responsive-nav-link href="{{ route('teams.create') }}" :active="request()->routeIs('teams.create')">
                     {{ __('Create New Team') }}
                 </x-jet-responsive-nav-link>
+
+                <div class="border-t border-gray-200"></div>
+                    <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
+                        {{ __('Add to Image Library') }}
+                    <div class="px-4 py-2">
+                        <form action="{{ route('images.upload') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" type="file" name="image">
+                            <button class="teambutton cursor-pointer mt-2 border p-2 rounded-xl px-2 py-1  text-sm  text-white transition duration-500 ease-in-out transform rounded-lg shadow-xl" type="submit">Upload</button>
+                        </form>
+                    </div>
+                </div>
                 @endif
 
                 <div class="border-t border-gray-200"></div>
-
 
                 @if (count(Auth::user()->allTeams()) > 1)
                 <!-- Team Switcher -->
@@ -91,7 +103,7 @@
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
 
-                        <x-jet-responsive-nav-link href="{{ route('logout') }}" onclick="event.preventDefault();
+                        <x-jet-responsive-nav-link class="teambutton px-4 py-2 font-semibold text-white transition duration-500 ease-in-out transform rounded-lg shadow-xl" href="{{ route('logout') }}" onclick="event.preventDefault();
                                     this.closest('form').submit();">
                             {{ __('Logout') }}
                         </x-jet-responsive-nav-link>

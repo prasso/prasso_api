@@ -68,6 +68,11 @@
     <label for="primary-color">Primary Color:</label>
     <input wire:model.defer='main_color' class='rounded-md shadow-sm  block' type="color" id="primary-color" name="primary-color">
     <br>
+    <h2>Your image folder name:</h2>
+   
+   <label for="primary-color">Primary Color:</label>
+   <input wire:model.defer='image_folder' class='rounded-md shadow-sm  block' type="color" id="image-folder" name="image-folder">
+   <br>
 
     <button type="button" wire:click="wizardProgress('PREV')"  class="prev-button cursor-pointer ml-6 border p-2 rounded-xl">PREV</button>
     <button type="button" wire:click="wizardProgress('NEXT')"  class="next-button cursor-pointer ml-6 border p-2 rounded-xl">Next</button>

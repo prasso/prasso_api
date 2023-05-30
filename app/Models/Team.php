@@ -72,4 +72,9 @@ class Team extends JetstreamTeam
     public function invitations() {
         return $this->hasMany('App\Models\Invitation');
     }
+
+    public function images()
+    {
+        return $this->hasMany(TeamImage::class);
+    }
 }

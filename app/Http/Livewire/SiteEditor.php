@@ -17,7 +17,7 @@ class SiteEditor extends Component
 
     public $sites, $site_id,$site_name,$description, $host,$main_color,$logo_image, 
             $database, $favicon, $supports_registration, $app_specific_js, $app_specific_css,
-            $does_livestreaming,$https_host;
+            $does_livestreaming,$https_host, $image_folder;
     public $current_user;
     public $isOpen = 0;
 
@@ -80,6 +80,7 @@ class SiteEditor extends Component
         $this->app_specific_js ='';
         $this->app_specific_css = '';
         $this->photo = null;
+        $this->image_folder = '';
     }
      
     /**
@@ -115,6 +116,7 @@ class SiteEditor extends Component
             'supports_registration' => $this->supports_registration,
             'app_specific_js' => $this->app_specific_js,
             'app_specific_css' => $this->app_specific_css,
+            'image_folder' => $this->image_folder,
         ]);
   
         // new sites need a new team for their users
@@ -141,6 +143,18 @@ class SiteEditor extends Component
         
         $this->resetInputFields();
     }
+
+    public function updated($propertyName)
+    {
+       
+        if ($propertyName == 'site_name' && $this->site_name != '' && $this->image_folder == '') {
+            $words = explode(" ", $this->site_name);
+            $first_word = $words[0];
+            $this->image_folder = $first_word.'/';
+        }
+        $this->resetErrorBag($propertyName);
+     
+    }
     /**
      * The attributes that are mass assignable.
      *
@@ -160,6 +174,7 @@ class SiteEditor extends Component
         $this->supports_registration = $site->supports_registration;
         $this->app_specific_js = $site->app_specific_js;
         $this->app_specific_css = $site->app_specific_css;
+        $this->image_folder = $site->image_folder;
 
         $this->openModal();
     }
