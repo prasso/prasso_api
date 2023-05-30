@@ -40,6 +40,8 @@ class NewSiteAndApp extends Component
     public $logo_image; //
     public $supports_registration;//
     public $does_livestreaming; //
+    public $app_specific_js;//
+    public $app_specific_css;//
 
     public $database;
     public $favicon;
@@ -72,6 +74,13 @@ class NewSiteAndApp extends Component
     public function updated($propertyName)
     {
         if ($propertyName == 'host') $this->checkhost();
+
+        if ($propertyName == 'site_name' && $this->site_name != '' && $this->image_folder == '') {
+            $words = explode(" ", $this->site_name);
+            $first_word = $words[0];
+            $this->image_folder = $first_word.'/';
+        }
+
         $siteRequest = new SiteRequest();
         $this->resetErrorBag($propertyName);
      
@@ -143,6 +152,9 @@ class NewSiteAndApp extends Component
         $this->newSite->supports_registration = $this->supports_registration;//
         $this->newSite->app_specific_css = ".teambutton {color:#f1f1f1;background-color: {$this->main_color};}";
         $this->newSite->image_folder = $this->image_folder; //
+        $this->newSite->app_specific_js = $this->app_specific_js;
+        $this->newSite->app_specific_css = $this->app_specific_css;
+        
 
         $newSite = $this->newSite->toArray();
         $site = $this->newSite::create($newSite);
