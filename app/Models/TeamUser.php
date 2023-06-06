@@ -24,7 +24,10 @@ class TeamUser extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public static function addToBaseTeam($user)
+    /**
+     * //$assign_team_id will keep user's current team the api site team if false
+     */
+    public static function addToBaseTeam($user, $assign_team_id = true)
     {
         //put this person on the main team for us to welcome until we know who they will settle in with
         if ($team = Team::where('user_id',1)->get()) {
@@ -34,7 +37,9 @@ class TeamUser extends Model
                 'role' => config('constants.TEAM_USER_ROLE')
             ]);
            
-            $user->current_team_id = 1;
+            if ($assign_team_id) {
+                $user->current_team_id = 1;
+            }
             $user->save();
             TeamMemberAdded::dispatch($team, $user);
         }

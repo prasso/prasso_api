@@ -297,7 +297,8 @@ info('addOrUpdateSubscription: '.json_encode($user));
         else
         {
           $user->sendWelcomeEmail();
-          TeamUser::addToBaseTeam($user);     
+          $assign_team_id = false;
+          TeamUser::addToBaseTeam($user, $assign_team_id);     
         }
        
       //  $this->makeCommunityUser($user);
