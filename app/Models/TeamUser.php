@@ -64,7 +64,7 @@ class TeamUser extends Model
         }
         $user->current_team_id = $team_id;
         $user->save();
-        $team = Team::where('team_id',$team_id)->get();
+        $team = Team::where('id',$team_id)->get();
         TeamMemberAdded::dispatch($team, $user);
 
     }

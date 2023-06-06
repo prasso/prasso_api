@@ -56,7 +56,10 @@ class AppsService
           
         }
         //update any user specific headers
-        $returnval = str_replace(config('constants.USER_TOKEN'), $user_access_token, $returnval);
+        if ($user)
+        {
+            $returnval = str_replace(config('constants.USER_TOKEN'), $user_access_token, $returnval);
+        }
       
         if (isset($user->thirdPartyToken))
         {

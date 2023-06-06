@@ -60,8 +60,9 @@ class AuthController extends BaseController
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
             'phone' => '',
-            'version' => '']);
-        $success_p1 = $this->userService->register($user,'user', $sendInvitation);
+            'version' => '',
+        'firebase_uid' => $input['firebase_uid']]);
+        $success_p1 = $this->userService->registerForSite($user,$this->site, config('constants.TEAM_USER_ROLE'), $sendInvitation);
 
         $success_p2 = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);
 
@@ -187,7 +188,13 @@ class AuthController extends BaseController
     public function getAppSettings($apptoken,Request $request)
     {
         $user = $this->setUpUser($request,null);
-        $app_data = $this->appsService->getAppSettingsBySite($this->site, $user,$user->personalAccessToken->token);
+        if ($user == null)
+        {
+            $user = new User();
+        }
+      $token = $user->personalAccessToken? $user->personalAccessToken->token : null;
+      $app_data = $this->appsService->getAppSettingsBySite($this->site, $user,$token);
+        $app_data = $this->appsService->getAppSettingsBySite($this->site, $user,$token);
 
         return $app_data;
 
