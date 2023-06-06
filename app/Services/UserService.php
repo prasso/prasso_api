@@ -187,7 +187,7 @@ info('addOrUpdateSubscription: '.json_encode($user));
       }
     }
 
-    public function register($user,$role, $sendInvitation)
+    protected function register($user,$role, $sendInvitation)
     {
         if (!isset($role))
         {
@@ -240,6 +240,73 @@ info('addOrUpdateSubscription: '.json_encode($user));
         $success[config('constants.thirdPartyToken')] = 'initializing';  //the job will obtain one for future use
         return $success;
     }
+
+    public function registerForSite($user, $site, $role, $sendInvitation)
+    {
+        if (!isset($role))
+        {
+            $role=config('constants.TEAM_USER_ROLE');
+        }
+        //get the team from the site
+        if ($site->supports_registration) {
+          $teamsite = TeamSite::where('site_id', $site->id)->first();
+          if ($teamsite == null)
+          {
+              Log::error('TeamSite not found for site: ' . $site->id);
+              $teamsite = TeamSite::where('site_id', 1)->first();
+          }
+          $team = Team::where('id', $teamsite->team_id)->first();
+          $team->users()->attach(
+              $user,
+              ['role' => 'user']
+          );
+          $user->current_team_id = $team->id;
+          $user->save();
+          \Laravel\Jetstream\Events\TeamMemberAdded::dispatch($team, $user);
+        }
+        else{
+          $user->ownedTeams()->save(Team::forceCreate([
+            'user_id' => $user->id,
+            'name' => explode(' ', $user->name, 2)[0] . "'s Team",
+            'personal_team' => true,
+            'phone' => $user->phone,
+        ]));
+        }
+        $user->refresh();
+        TeamUser::addToTeam($user,$team->id); 
+      
+        $user->save();
+
+        if ($sendInvitation)
+        {
+            $invitation = Invitation::create([
+              'user_id' => $user->id,
+
+              'team_id' => $user->current_team_id,
+
+              'role' => $role,
+              'email' => $user->email,
+            ]);
+            $invitation->sendEmailInviteNotification();
+            if ($role == config('constants.NEWSLETTER_ROLE_TEXT'))
+            {
+                //no community, no third party. we are done if our guys are newsletter
+                return;
+            }
+        }
+        else
+        {
+          $user->sendWelcomeEmail();
+          TeamUser::addToBaseTeam($user);     
+        }
+       
+      //  $this->makeCommunityUser($user);
+
+       // ObtainThirdPartyToken::dispatch($user);
+        $success[config('constants.thirdPartyToken')] = 'initializing';  //the job will obtain one for future use
+        return $success;
+    }
+
 
     /**
      * Consolidate code used in multiple places
