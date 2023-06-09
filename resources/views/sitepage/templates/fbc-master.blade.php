@@ -79,6 +79,75 @@
       
       //]]>
    </script>
+
+<script data-turbolinks-eval="false">
+    //<![CDATA[
+
+
+    window.$ = window.$c;
+
+    $(window).load(function () {
+      window.initialLoad = true;
+    });
+
+    $(document).ready(function () {
+      $('body').addClass('browser-' + bowser.name.toLowerCase().replace(' ', '-'))
+      if (bowser.ios) $('body').addClass('os-ios')
+      if (navigator.platform === 'Win32') $('body').addClass('os-windows')
+
+      Sites.start({
+        preview: false,
+        greenhouse_preview: false,
+        environment: "production",
+        site_name: "faithbaptistchurch",
+        site_uuid: "1210c48d-3bc6-4059-b211-ccceae4a8d6a",
+        content_prefix: "12/1210c48d-3bc6-4059-b211-ccceae4a8d6a",
+        ssl: true,
+        main_navigation: "more_button",
+        mobile_navigation: "top-left",
+        top_gallery: "",
+        navigation_settings: { "main": "more_button", "mobile": "top-left", "hoverable_sub_navigation": true },
+        gallery_settings: { "peek": true, "hide_gallery_arrows_while_editing": false },
+        events_settings: { "has_sidebar": true, "always_show_description": true, "prefer_separate_date_and_time": true, "always_show_icons": true, "always_show_location": true, "always_show_details_via_list_item": true, "fixed_tiles_per_row": true, "deviant_list_item_buttons": true, "gallery": { "peek": false } },
+        forms_settings: { "featured_image_floats_to_top": true },
+        tabs_settings: { "style": "ribbon" },
+        s3_bucket_name: "media.cloversites.com",
+        base_domain: "cloversites.com",
+        forms_domain: "https://forms.ministryforms.net",
+        form_builder_embed_url: "/cdn.files/mb.formbuilder.embed.js",
+        packs_graph: { "runtime": ["/js/runtime-29643ceddd61d164b25a.js", []], "1": ["/js/1-794656562a19776f9d49.chunk.js", []], "2": ["/js/2-a38190a685725a895f06.chunk.js", []], "7": ["/js/js/7-b879346cc33af45bdf54.chunk.js", []], "media": ["/js/media-1ab6fa2937934576a72f.chunk.js", ["runtime", "1", "2"]], "prayer": ["/js/prayer-8f35a7b9f5649e00c724.chunk.js", ["runtime", "1", "7"]], "small-groups": ["/js/small-groups-7479f4ab3e343196f256.chunk.js", ["runtime", "1", "2"]] }
+      })
+
+      $(document).trigger('page:load');
+    });
+
+    $(document).on('page:load', function (e) {
+      e.objectId = '24030'
+      e.objectType = 'page'
+      e.title = 'Our Pastors'
+
+      if (window.loaded) {
+        Sites.vent.trigger("pageunload", e)
+      }
+
+      Sites.vent.trigger("pageload", e);
+      // window.loaded is also used to ensure greenhouse loaded
+      // and to retry if it failed.
+      window.loaded = true;
+    });
+
+    $(document).on("page:before-change", function (e) {
+      Sites.vent.trigger("pagechange", e);
+    })
+
+    $(document).on("page:before-unload", function (e) {
+      window.loaded = false
+      Sites.vent.trigger("pageunload", e);
+    })
+
+
+//]]>
+  </script>
 </head>
 <body class="palette nav-children-expand tabs-style-ribbon first-subpalette1 last-subpalette1 footer-subpalette4 dusk">
    <!-- site content -->
@@ -87,12 +156,12 @@
       <!-- mobile nav -->
       <div id="mobile-nav-button-container">
          <button id="mobile-nav-button" class="nav-menu-button sites-button">
-         <span class="text">Menu</span>
-         <span class="mobile-nav-icon">
-         <span class="first"></span>
-         <span class="middle"></span>
-         <span class="last"></span>
-         </span>
+            <span class="text">Menu</span>
+            <span class="mobile-nav-icon">
+               <span class="first"></span>
+               <span class="middle"></span>
+               <span class="last"></span>
+            </span>
          </button>
       </div>
       <div id="mobile-navigation">
