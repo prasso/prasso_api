@@ -4,16 +4,16 @@
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-   <title>{{ $site->site_name }} - {{ $title??'' }}</title>
-   <meta name="description" content="{{ $title??'' }}" />
-   <meta property="og:title" content="{{ $site->site_name }} - {{ $title??'' }}" />
-   <meta property="og:description" content="{{ $title??'' }}" />
+   <title>{{ $site->site_name }} - {{ $sitePage->title??'' }}</title>
+   <meta name="description" content="{{ $sitePage->title??'' }}" />
+   <meta property="og:title" content="{{ $site->site_name }} - {{ $sitePage->title??'' }}" />
+   <meta property="og:description" content="{{ $sitePage->title??'' }}" />
    <meta property="og:type" content="website" />
    <meta property="og:url" content="{{ $page_short_url }}" />
    <meta property="og:image" content="{{ $site->logo_image }}" />
    <meta name="twitter:card" content="summary_large_image" />
-   <meta name="twitter:title" content="{{ $site->site_name }} - {{ $title??'' }}" />
-   <meta name="twitter:description" content="{{ $title??'' }}" />
+   <meta name="twitter:title" content="{{ $site->site_name }} - {{ $sitePage->title??'' }}" />
+   <meta name="twitter:description" content="{{ $sitePage->title??'' }}" />
    <meta name="twitter:image" content="{{ $site->logo_image }}" />
    <link rel="icon" type="image/png" href="{{$site->favicon??''}}" />
    <link rel="icon" type="image/png" href="{{ config('app.photo_url').$site->image_folder}}favicon-16x16.png" sizes="16x16">
@@ -21,66 +21,36 @@
    <link rel="icon" sizes="192x192" href="{{ config('app.photo_url').$site->image_folder}}android-chrome-192x192.png">
    <link rel="icon" sizes="512x512" href="{{ config('app.photo_url').$site->image_folder}}android-chrome-512x512.png">
    <link rel="apple-touch-icon" href="{{ config('app.photo_url').$site->image_folder}}apple-touch-icon.png">
-   {!!  $masterPage->css !!}
-   {!!  $masterPage->js !!}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="/js/faith-app.js"></script>
+<script src="https://images.prasso.io/fbc/cdn.files/production/websites/designs/dusk/base-ae8948f5e23c447398a0e96992fcb396c6936d1bd5213c83a88a0134815f6158.js" debug="false" data-turbolinks-track="true" class="clover"></script>
+<script>
+//<![CDATA[
+
+         var __REACT_ON_RAILS_EVENT_HANDLERS_RAN_ONCE__ = true
+
+//]]>
+</script>
+<script src="https://images.prasso.io/fbc/cdn.files/js/runtime-29643ceddd61d164b25a.js"></script>
+<script src="https://images.prasso.io/fbc/cdn.files/js/1-794656562a19776f9d49.chunk.js"></script>
+<script src="https://images.prasso.io/fbc/cdn.files/js/2-a38190a685725a895f06.chunk.js"></script>
+<script src="https://images.prasso.io/fbc/cdn.files/js/media-1ab6fa2937934576a72f.chunk.js"></script>
+<link rel="stylesheet" media="all" href="https://images.prasso.io/fbc/cdn.files/production/websites/application-2d3ea95936f79d8cf68c4a91238720210c7d217a5301ad14816159e44f1ae032.css" data_turbolinks_track="true" debug="false" />
+<link rel="stylesheet" media="all" href="https://images.prasso.io/fbc/cdn.files/production/websites/designs/dusk/base-9c40b38ce0ba7fbd608fa6f1889f31185b652733c22bdf7fa828349f50411476.css" debug="false" />
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" media="all" href="/css/fbc-colors.css" id="color-css" />
+<link rel="stylesheet" media="all" href="https://images.prasso.io/fbc/cdn.files/_user_generated_stylesheets/published_fonts_1210c48d-3bc6-4059-b211-ccceae4a8d6a_275370be77490640d1a637c4ba2f42bf.css" id="font-css" />
+<link rel="stylesheet" media="all" href="https://images.prasso.io/fbc/cdn.files/_user_generated_stylesheets/published_tweaks_1210c48d-3bc6-4059-b211-ccceae4a8d6a_74e0c2dd5e4fed4f834f88c72f6ba20d.css" id="tweak-css" />
+<link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+
    @if (isset($sitePage->style)  )
             <style>{!! $sitePage->style !!}</style>
         @endif
-   <script data-turbolinks-eval="false">
-      //<![CDATA[
-      
-      
-            window.$ = window.$c;
-      
-            $(window).load(function() {
-              window.initialLoad = true;
-            });
-      
-            $(document).ready(function() {
-              $('body').addClass('browser-' + bowser.name.toLowerCase().replace(' ', '-'))
-              if (bowser.ios) $('body').addClass('os-ios')
-              if (navigator.platform === 'Win32') $('body').addClass('os-windows')
-      
-              
-              $(document).trigger('page:load');
-            });
-      
-            $(document).on('page:load', function(e) {
-              e.objectId = '141799'
-              e.objectType = 'page'
-              e.title = 'PAGE_SLUG'
-      
-              if(window.loaded) {
-                Sites.vent.trigger("pageunload", e)
-              }
-      
-              Sites.vent.trigger("pageload", e);
-              // window.loaded is also used to ensure greenhouse loaded
-              // and to retry if it failed.
-              window.loaded = true;
-            });
-      
-            $(document).on("page:before-change", function(e) {
-              Sites.vent.trigger("pagechange", e);
-            })
-      
-            $(document).on("page:before-unload", function(e) {
-              window.loaded = false
-              Sites.vent.trigger("pageunload", e);
-            })
-      
-      
-      //]]>
-   </script>
-   <script data-turbolinks-eval="false">
-      //<![CDATA[
-      
-            window.$ = window.$c;
-      
-      //]]>
-   </script>
 
-<script data-turbolinks-eval="false">
+
+        <script data-turbolinks-eval="false">
     //<![CDATA[
 
 
@@ -96,24 +66,25 @@
       if (navigator.platform === 'Win32') $('body').addClass('os-windows')
 
       Sites.start({
-        preview: false,
+      preview: false,
         greenhouse_preview: false,
         environment: "production",
-        site_name: "faithbaptistchurch",
-        site_uuid: "1210c48d-3bc6-4059-b211-ccceae4a8d6a",
-        content_prefix: "12/1210c48d-3bc6-4059-b211-ccceae4a8d6a",
+        site_name: "faithlakecity",
         ssl: true,
         main_navigation: "more_button",
         mobile_navigation: "top-left",
         top_gallery: "",
         navigation_settings: { "main": "more_button", "mobile": "top-left", "hoverable_sub_navigation": true },
         gallery_settings: { "peek": true, "hide_gallery_arrows_while_editing": false },
+        tabs_settings: { "style": "ribbon" },
+        s3_bucket_name: "media.prasso.io/faith",
+        base_domain: "faithlakecity.prasso.io",
+        site_uuid: "1210c48d-3bc6-4059-b211-ccceae4a8d6a",
+        content_prefix: "12/1210c48d-3bc6-4059-b211-ccceae4a8d6a",
         events_settings: { "has_sidebar": true, "always_show_description": true, "prefer_separate_date_and_time": true, "always_show_icons": true, "always_show_location": true, "always_show_details_via_list_item": true, "fixed_tiles_per_row": true, "deviant_list_item_buttons": true, "gallery": { "peek": false } },
         forms_settings: { "featured_image_floats_to_top": true },
         tabs_settings: { "style": "ribbon" },
-        s3_bucket_name: "media.cloversites.com",
-        base_domain: "cloversites.com",
-        forms_domain: "https://forms.ministryforms.net",
+        forms_domain: "https://faithlakecity.prasso.io",
         form_builder_embed_url: "/cdn.files/mb.formbuilder.embed.js",
         packs_graph: { "runtime": ["/js/runtime-29643ceddd61d164b25a.js", []], "1": ["/js/1-794656562a19776f9d49.chunk.js", []], "2": ["/js/2-a38190a685725a895f06.chunk.js", []], "7": ["/js/js/7-b879346cc33af45bdf54.chunk.js", []], "media": ["/js/media-1ab6fa2937934576a72f.chunk.js", ["runtime", "1", "2"]], "prayer": ["/js/prayer-8f35a7b9f5649e00c724.chunk.js", ["runtime", "1", "7"]], "small-groups": ["/js/small-groups-7479f4ab3e343196f256.chunk.js", ["runtime", "1", "2"]] }
       })
@@ -124,7 +95,7 @@
     $(document).on('page:load', function (e) {
       e.objectId = '24030'
       e.objectType = 'page'
-      e.title = 'Our Pastors'
+      e.title = "{{ $site->site_name }} - {{ $sitePage->title??'' }}" 
 
       if (window.loaded) {
         Sites.vent.trigger("pageunload", e)
@@ -148,6 +119,15 @@
 
 //]]>
   </script>
+  <script data-turbolinks-eval="false">
+    //<![CDATA[
+
+    window.$ = window.$c;
+
+//]]>
+  </script>
+
+
 </head>
 <body class="palette nav-children-expand tabs-style-ribbon first-subpalette1 last-subpalette1 footer-subpalette4 dusk">
    <!-- site content -->
@@ -345,16 +325,16 @@
    <script>
       //<![CDATA[
       
-            // initialize all slick slideshows on ready
+         if ("{{ $sitePage->title }}" === 'Welcome') {
             $(document).ready(function() {
-              SlickInterface.reinitializeSlideshows()
-            })
-      
+               SlickInterface.reinitializeSlideshows();
+            });
+
             $(document).on('page:before-unload', function() {
-              // Prevent slideshow state sometimes transferring to another page in Bloom.
-              SlickInterface.pauseSlideshows()
-            })
-      
+               SlickInterface.pauseSlideshows();
+            });
+            }
+                  
       //]]>
    </script>
    <!-- Google Analytics -->
