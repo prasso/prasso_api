@@ -17,7 +17,7 @@ class AddKeyFieldToSitePageTemplateTable extends Migration
             $table->string('template_data_model',100)->after('description')->nullable();
             $table->string('template_where_clause',100)->after('template_data_model')->nullable();
             $table->string('order_by_clause',500)->after('template_where_clause')->nullable();
-            $table->boolean('include_csrf')->after('order_by_clause')->default(false);
+            $table->boolean('include_csrf')->after('order_by_clause')->nullable()->default(false);
             $table->text('default_blank')->after('include_csrf')->nullable();
         });
     }

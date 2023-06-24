@@ -163,7 +163,7 @@
                 Changes</button>
            
         </form>
-        <div style="clear:both; mb-10"></div>
+        <div style="clear:both; " class="mb-10"></div>
     </div>
    
 </x-app-layout>
