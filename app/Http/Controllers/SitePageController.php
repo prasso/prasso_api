@@ -285,6 +285,12 @@ class SitePageController extends BaseController
      * the data will be stored in site_page_data table with siteid, data's key, json_data, and date created/updated
      */
     public function sitePageDataPost(Request $request){
+        // make sure the user has access to this site and page
+        if (!Controller::userOkToViewPageByHost($this->userService))
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $siteid = $request['siteid'];
         $pageid = $request['pageid'];
         $data_key = $request['data_key'];

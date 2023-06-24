@@ -39,7 +39,7 @@ class SitePageService
 
         $sql = $template_data->template_data_query. ' as display';
         
- info(json_encode($site_page));
+ //info(json_encode($site_page));
         $where_clause_field = str_replace('???', $site_page->where_value, $template_data->template_where_clause);
         $fieldValue = $site_page->getAttribute($where_clause_field);
         if ($fieldValue == null) //the where clause is not a field in the site page table
@@ -69,7 +69,7 @@ class SitePageService
             }
             $query = $query->orderBy($fieldInOrder, $ascDesc);
         }
-        info($query->toSql());
+       // info($query->toSql());
 
         $data = $query   
             ->selectRaw($sql)
