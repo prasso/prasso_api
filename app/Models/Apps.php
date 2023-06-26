@@ -74,9 +74,9 @@ class Apps extends Model
     {
         $updatedSitePage = null;
         if (isset($appModel['id']) && $appModel['id'] != null) {
-           
+            $updateModel = Apps::find($appModel['id']);
             info('updating existing app '. $appModel['id']);
-            $updatedSitePage = Apps::update(['id' => $appModel['id']] , 
+            $updatedSitePage = $updateModel->update( 
             ['team_id' => $appModel['team_id'], 
             'site_id' => $appModel['site_id'],
             'appicon' => $appModel['appicon'], 
