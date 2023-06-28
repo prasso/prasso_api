@@ -59,6 +59,7 @@ Route::group(['middleware'=> 'instructorusergroup'], function() {
     Route::post('/site/{siteid}/{pageid}/sitePageDataPost', 'SitePageController@sitePageDataPost');
     Route::post('/images/upload', 'ImageController@upload')->name('images.upload');
 
+    Route::get('/getLatLonFromAddress', 'ProxyController@getLatLonFromAddress');
 });
 
 Route::group(['middleware'=> 'superadmin'], function() {
