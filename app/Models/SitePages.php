@@ -15,7 +15,7 @@ class SitePages extends Model
      * @var array
     */
     protected $fillable = [
-        'fk_site_id', 'section', 'title', 'description', 'url','headers','masterpage','template','style','login_required','where_value'
+        'fk_site_id', 'section', 'title', 'description', 'url','headers','masterpage','template','style','login_required','user_level','where_value'
     ];
     
     public function site_page_data(){
@@ -25,5 +25,8 @@ class SitePages extends Model
     public function requiresAuthentication()
     {
         return $this->login_required;
+    }
+    public function pageRequiresAdmin(){
+        return $this->user_level ;
     }
 }

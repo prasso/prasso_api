@@ -143,6 +143,11 @@ class SitePageController extends BaseController
             Log::info('using system welcome: ');   
             return view('welcome');
         }
+        //if the page requires admin, and the user isn't an admin, inform them no access to this page
+        if ( $sitepage->pageRequiresAdmin() && $user != null && !$user->isInstructor())
+        {
+            return view('noaccess');
+        }
         if ( ($sitepage->requiresAuthentication() && $user == null ) ||
                 ($user != null && !$this->userService->isUserOnTeam($user)))
         {

@@ -12,7 +12,7 @@ use App\Models\Site;
 
 class SitePageEditor extends Component
 {
-    public $sitePages,$site_name,$fk_site_id, $section, $title, $description, $url, $sitePage_id, $masterpage,$template,$style, $login_required, $headers, $where_value;
+    public $sitePages,$site_name,$fk_site_id, $section, $title, $description, $url, $sitePage_id, $masterpage,$template,$style, $login_required,$user_level, $headers, $where_value;
     
     public $https_host;
 
@@ -128,6 +128,7 @@ class SitePageEditor extends Component
         $this->sitePage_id = '';
         $this->masterpage = '';
         $this->login_required = false;
+        $this->user_level = 0;
         $this->template = '' ;
         $this->style = '';
         $this->where_value = '';
@@ -150,6 +151,7 @@ class SitePageEditor extends Component
             'masterpage' => 'required_without:url',
             'url' => 'required_if:masterpage,null',
             'login_required' => 'required',
+            'user_level' => 'required',
             'where_value'=> 'nullable',
         ]);
         
@@ -162,6 +164,7 @@ class SitePageEditor extends Component
             'url' => $this->url,
             'masterpage' => $this->masterpage,
             'login_required' => $this->login_required,
+            'user_level' => $this->user_level,
             'headers' => $this->headers,
             'template' => $this->template,
             'style' => $this->style,
@@ -191,6 +194,7 @@ class SitePageEditor extends Component
         $this->url = $sitePage->url;
         $this->masterpage = $sitePage->masterpage;
         $this->login_required = $sitePage->login_required;
+        $this->user_level = $sitePage->user_level;
         $this->template = $sitePage->template;
         $this->style = $sitePage->style;
         $this->where_value = $sitePage->where_value;
@@ -226,6 +230,7 @@ class SitePageEditor extends Component
         $this->url = $sitePage->url;
         $this->masterpage = $sitePage->masterpage;
         $this->login_required = $sitePage->login_required;
+        $this->user_level = $sitePage->user_level;
         $this->template = $sitePage->template;
         $this->style = $sitePage->style;
         $this->where_value = $sitePage->where_value;
