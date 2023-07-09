@@ -134,7 +134,7 @@ class Site extends Model
             $content = file_get_contents(resource_path() . '/templates/welcome_no_register.txt');
         }
         $welcomepage = SitePages::firstOrCreate(['fk_site_id'=>$this->id,'section'=>'Welcome'],
-            ['description'=>$content,  'title'=>'Welcome','url'=>'html','login_required'=>false,'headers'=>'','masterpage'=>'sitepage.templates.blankpage'
+            ['description'=>$content,  'title'=>'Welcome','url'=>'html','login_required'=>false,'user_level'=>false,'headers'=>'','masterpage'=>'sitepage.templates.blankpage'
             ,'template'=>'sitepage.templates.blankpage','style'=>'','where_value'=>'']);
         $welcomepage->save();
 
@@ -154,13 +154,21 @@ class Site extends Model
         return $sitepages;
     }
 
+    private function user_is_admin(){
+        return  Auth::user() !=null && ( Auth::user()->isInstructor() || Auth::user()->isThisSiteTeamOwner($this->id) );
+    }
+
     public function getSiteMapList()
     {
         $sitepages = $this->getSitePages();
         $sitemap = array();
         foreach ($sitepages as $page)
         {
-            $sitemap[$page->section] = $page->title;
+            //dont put menu items out that this user can not access
+            if ( $page->user_level == false || $this->user_is_admin() )
+            {
+                $sitemap[$page->section] = $page->title;
+            }
         }
         //format $sitemap into a list of LIs
         $list = '';
@@ -170,8 +178,7 @@ class Site extends Model
         }
         
         // if this user is an admin or a team owner then add the site editor
-        if ( Auth::user() !=null && 
-            ( Auth::user()->isInstructor() || Auth::user()->isThisSiteTeamOwner($this->id) ) )
+        if ( $this->user_is_admin() )
         {
             $list .= '<li><a href="/site/edit">Site Editor</a></li>';
         }

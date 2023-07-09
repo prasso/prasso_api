@@ -20,6 +20,7 @@ class SitePageService
             'headers' => $request['headers'],
             'masterpage' => $request['masterpage'],
             'login_required' => $request['login_required'],
+            'user_level' => $request['user_level'],
             'template' => $request['template'],
             'style' => $request['style'],
             'where_value' => $request['where_value']

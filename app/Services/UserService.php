@@ -273,6 +273,10 @@ info('addOrUpdateSubscription: '.json_encode($user));
         ]));
         }
         $user->refresh();
+        if ($team == null)
+        {
+            $team = $user->currentTeam;
+        }
         TeamUser::addToTeam($user,$team->id); 
       
         $user->save();
