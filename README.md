@@ -125,25 +125,79 @@ Data templates are stored in the database and are associated with a site_page in
 EXAMPLE SQL: 
     List all site_page_templates: SELECT * FROM faxt_api.site_page_templates;
 
-Embed [DATA] in the site page description ([DATA]) as shown in the example:
+There are two ways to embed a data template within a site page. (see Site Pate Template section )
+1. Embed [DATA] in the site page description ([DATA]) as shown in the example:
 x-data='{"videos":[[DATA] ]}' >
 
 The value [DATA] is replaced when the site page is passed to  getTemplateData($site_page) (which is in SitePageService).
 
-In the getTemplateData function, the template named in the site page is retrieved. The template containS instructions on how to retrieve the data in the field - template_data_query. If the site page has a template, the site page description will have a placeholder where the data is inserted - that is '[DATA]'.
+In the getTemplateData function, the template named in the site page is retrieved. The template containS instructions on how to retrieve the data in the field - template_data_query. If the site page has a template, the site page description will have a placeholder where the data is inserted - that is '[LATE_DATA]'.
+2. use Javascript from your site page which sends the request for template data to an api endpoint.
+    /sitepages/{siteid}/{pageid}/lateTemplateData
+    where siteid is your prasso site id as an integer
+    and pageid is your site page id as an integer
+    Sample: 
+    ```
+     function fetchLateData() {
+    console.log('fetching data from /sitepages/6/59/lateTemplateData');
+    fetch('/sitepages/6/54/lateTemplateData', {
+      method: 'POST',
+ headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: '_token=CSRF_TOKEN'
+      
+    }).then(response => {
+      return response.json();
+    }).then(data => {
+      gridOptions.api.setRowData(data);
+    }).catch(error => {
+      // Handle error
+    });
+  }
+  ``` 
 
-Prerequisite: Add a data-template record to prasso, naming the site page by its ID and providing information on how to retrieve data in the template_data_query. The model is listed first, followed by a colon, and then the query that limits the displayed models.
-EXAMPLE: 
-'App\Models\SiteMedia':'CONCAT(\'{"s3media_url":"\', s3media_url, \'","media_title":"\', media_title, \'","thumb_url":"\', thumb_url,\'"}\') as thumb_display')
+### Site Page Template
+
+Prerequisite: Use the data template editor to add a data-template record. (See the Data Template section)
         
-
 To create a site page template, follow these steps:
 
 1. Create an HTML form with a placeholder that will be replaced by the template.
 2. Create a template and add its name as a record to the site_templates table, allowing it to be selected for the site page.
 3. Edit the site page record and specify the newly created data template as the template.
 
-
+### Data Template Template
+/site-page-data-templates
+Template Name: example sitepage.templates.xxx
+Title:
+Description:
+Template Data Model: the class name of data table. example App\Models\SiteMedia
+Template Where Clause: the field that will limit what data comes from the table. example fk_site_id
+Template Data Query: the field that will be selected. example media_title
+Order By Clause: the field that will be used to order returned data. example media_title:asc
+This is a single item form that will be saved: if checked data will be single record. unchecked will be an array
+Json for default blank form: the json data which will be structured as expected to be returned. example {
+  "csrftoken": "",
+  "customer": "",
+  "status": "",
+  "item": "",
+  "pickupAddress": {
+    "address": "",
+    "city": "",
+    "state": "",
+    "zip": ""
+  },
+  "deliveryAddress": {
+    "address": "",
+    "city": "",
+    "state": "",
+    "zip": ""
+  }
+}
+Summary: Name the site page by its ID and provide information on how to retrieve data in the template_data_query. The model is listed first, followed by a colon, and then the query that limits the displayed models.
+EXAMPLE: 
+'App\Models\SiteMedia':'CONCAT(\'{"s3media_url":"\', s3media_url, \'","media_title":"\', media_title, \'","thumb_url":"\', thumb_url,\'"}\') as thumb_display')
 
 ### Visual Editing (CMS)
 This code is integrating the GrapesJS editor (https://grapesjs.com) 

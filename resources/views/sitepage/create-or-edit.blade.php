@@ -7,7 +7,7 @@
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>?
         <div <div x-data="{ template_selection_made: {{ $masterpage ? 'true' : 'false' }}, dataTemplateSelectionMade:  {{ $template ? 'true' : 'false' }} }" 
             x-init="template_selection_made = {{ ($masterpage || $template) ? 'true' : 'false' }};" 
-            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle " role="dialog" aria-modal="true" aria-labelledby="modal-headline">
             <form> <input type="hidden" wire:model="fk_site_id" />
             @if($errors->any())
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
@@ -54,7 +54,7 @@
                         </div>
                         <div x-show="template_selection_made || dataTemplateSelectionMade" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
                             <label for="descriptionInput" class="min-h-[10%] block text-gray-700 text-sm font-bold mb-2">Description: (enter html if no template is selected)</label>
-                            <textarea rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="descriptionInput" wire:model.defer="description" placeholder="Enter Description"></textarea>
+                            <textarea rows="35" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="descriptionInput" wire:model.defer="description" placeholder="Enter Description"></textarea>
                             @error('description') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div x-show="template_selection_made || dataTemplateSelectionMade" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >

@@ -31,7 +31,17 @@ class SitePageService
         return json_encode($message);
     }
 
-    public function getTemplateData($site_page){
+    public function getTemplateData($site_page, $placeholder){
+       
+        $jsonData = $this->getTemplateDataJSON($site_page);
+
+        $site_page_description = str_replace($placeholder, $jsonData, $site_page->description);
+
+        return $site_page_description;
+       
+    }
+
+    public function getTemplateDataJSON($site_page){
        
         $template_data = SitePageTemplate::where('templatename', $site_page->template)->first();
   
@@ -70,7 +80,7 @@ class SitePageService
             }
             $query = $query->orderBy($fieldInOrder, $ascDesc);
         }
-       // info($query->toSql());
+        info($query->toSql());
 
         $data = $query   
             ->selectRaw($sql)
@@ -83,21 +93,15 @@ class SitePageService
         {
             $jsonData = $data->toJson();
         }
+        info($jsonData);
 
         if ($template_data->include_csrf){
             $phpObject = json_decode($jsonData);
             $phpObject->csrftoken = csrf_token();
             $jsonData = json_encode($phpObject);
         }
-
-        $placeholder = '[DATA]';
-        $site_page_description = str_replace($placeholder, $jsonData, $site_page->description);
-
-        return $site_page_description;
-       
+        return $jsonData;
     }
-
-
 
 }
 

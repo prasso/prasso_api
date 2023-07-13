@@ -70,6 +70,10 @@ Route::group(['middleware'=> 'superadmin'], function() {
     Route::delete('/site-page-data-templates/{id}', 'SitePageDataTemplateController@destroy');
 
     Route::get('/sitepages/{siteid}', 'SitePageController@editSitePages');
+    Route::get('/sitepages/{siteid}/{pageid}/read-tsv-into-site-page-data', 'SitePageController@readTsvIntoSitePageData')->name('site-page.read-tsv-into-site-page-data');
+    Route::post('/sitepages/{siteid}/{pageid}/lateTemplateData', 'SitePageController@lateTemplateData')->name('site-page.late-template-data');
+
+
     Route::post('/save-site-page', 'SitePageController@saveSitePage');
 
     Route::resource('Sites', SiteController::class);
