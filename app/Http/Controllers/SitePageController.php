@@ -137,17 +137,13 @@ class SitePageController extends BaseController
     {
         $user = Auth::user() ?? null;
         $sitepage = SitePages::where('fk_site_id',$this->site->id)->where('section',$section)->first();
-
+//info(json_encode($sitepage  ));
         if ($sitepage == null)
         {
             Log::info('using system welcome: ');   
             return view('welcome');
         }
-        //if the page requires admin, and the user isn't an admin, inform them no access to this page
-        if ( $sitepage->pageRequiresAdmin() && $user != null && !$user->isInstructor())
-        {
-            return view('noaccess');
-        }
+
         if ( ($sitepage->requiresAuthentication() && $user == null ) ||
                 ($user != null && !$this->userService->isUserOnTeam($user)))
         {
@@ -166,6 +162,11 @@ class SitePageController extends BaseController
                 return redirect('/login');
             }
         }
+        //if the page requires admin, and the user isn't an admin, inform them no access to this page
+        if ( $sitepage->pageRequiresAdmin() && $user != null && !$user->isInstructor())
+        {
+            return view('noaccess');
+        }
         if ($sitepage->url != null && strlen($sitepage->url) > 5 && strcmp($sitepage->url,'http') != 0)
         {
             return redirect($sitepage->url);
@@ -173,9 +174,11 @@ class SitePageController extends BaseController
 
         $sitepage->description = $this->prepareTemplate($sitepage);
         $masterpage = $this->getMaster($sitepage);
-        if ($sitepage->template != null && strlen($sitepage->template) > 0)
+
+        $placeholder = '[DATA]';
+        if ($sitepage->template != null && strlen($sitepage->template) > 0 && strpos($sitepage->description, '[DATA]') !== false)
         {
-            $page_content= $this->sitePageService->getTemplateData($sitepage);
+            $page_content= $this->sitePageService->getTemplateData($sitepage, $placeholder);
             $sitepage->description = $page_content;
         }
         
@@ -296,7 +299,7 @@ class SitePageController extends BaseController
             abort(403, 'Unauthorized action.');
         }
 
-        $siteid = $request['siteid'];
+        $siteid = $this->site->id;
         $pageid = $request['pageid'];
         $data_key = $request['data_key'];
         $newOne = false;
@@ -330,6 +333,85 @@ class SitePageController extends BaseController
         else
         {session()->flash('message','A freight order record has been updated' );}
         return redirect()->back();
+
+    }
+
+    public function lateTemplateData(Request $request){
+        // make sure the user has access to this site and page
+        if (!Controller::userOkToViewPageByHost($this->userService))
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $siteid = $this->site->id;
+        $pageid = $request['pageid'];
+        $user = Auth::user() ?? null;
+        $sitepage = SitePages::where('fk_site_id',$this->site->id)->where('id',$pageid)->first();
+info(json_encode($sitepage  ));
+        if ($sitepage == null)
+        {
+            Log::info('using system welcome: ');   
+            return json_encode(['data' => '']);
+        }
+
+        if ( ($sitepage->requiresAuthentication() && $user == null ) ||
+                ($user != null && !$this->userService->isUserOnTeam($user)))
+        {
+            if ( $user == null ){
+                \App\Http\Middleware\UserPageAccess::authorizeUser($request);
+                $user = Auth::user() ?? null;   
+                json_encode(['data' => '']);
+            }
+            if (($user != null && !$this->userService->isUserOnTeam($user))){
+                json_encode(['data' => '']);
+            }
+        }
+        //if the page requires admin, and the user isn't an admin, inform them no access to this page
+        if ( $sitepage->pageRequiresAdmin() && $user != null && !$user->isInstructor())
+        {
+            return json_encode(['data' => '']);
+        }
+
+        if ($sitepage->template != null && strlen($sitepage->template) > 0) 
+        {
+            $json_data= $this->sitePageService->getTemplateDataJSON($sitepage);
+            return  $json_data;
+        }
+        
+        return json_encode(['data' => '']);
+        
+    }
+
+    public function readTsvIntoSitePageData(Request $request){
+        
+        $pageid = $request['pageid'];
+        // todo update this code to take a passed in file. for now, just use data.tsv
+        $file = fopen('data.tsv', 'r');
+
+        //ToDo: check if this site page has a data import defined.
+        // if no data import defined then iterate the tabs and
+        // do the key value pair thing as seen below
+
+        // Loop through each line of the file
+        while (($line = fgets($file)) !== false) {
+            $data_key = uniqid();
+            $page = SitePageData::create(['fk_site_page_id'=>$pageid,'data_key'=>$data_key]);
+            // Split the line into an array of values
+            $values = explode("\t", $line);
+
+            $json = array();
+            foreach ($values as $key => $value) {
+                $json["column$key"] = $value;
+            }
+            
+            $json = json_encode($json);
+            info($json);
+            $page->json_data = $json;
+            $page->save();
+        }
+
+        // Close the file
+        fclose($file);
 
     }
 
