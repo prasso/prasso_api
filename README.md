@@ -1,10 +1,37 @@
 
 ## About Prasso
-Prasso is a platform that streamlines the app prototype process for owners by providing a wizard-like framework for gathering the necessary details and building custom mobile and web apps.
+Prasso offers several compelling reasons to use its software:
 
-With Prasso you can create both your app api backend and your web site with one setup form. And then with the admin tools customize those to add branding and content.
+1. Simplified app prototype process: Prasso provides a wizard-like framework that streamlines the app prototype process, making it easier for owners to gather necessary details and build custom mobile and web apps.
 
-This API backend is based on the Laravel framework. It is used to feed application structure information to a Prasso app and site. Prasso app is a rapid prototyping tool that is configured with this api.
+2. Time-saving development: With Prasso, you can create both your app API backend and website using a single setup form. This saves time and streamlines the development process.
+
+3. Customization options: Prasso offers admin tools that allow you to customize your app and website by adding branding and content. This enables you to create a unique and personalized user experience.
+
+4. Rapid prototyping: Prasso's app serves as a rapid prototyping tool, enabling you to quickly build and test app prototypes. This helps you validate your app concept and make iterations before committing to full development.
+
+5. Robust and scalable foundation: The API backend of Prasso is built on the Laravel framework, known for its robustness and scalability. This ensures a stable and reliable foundation for your app.
+
+6. User registration and site association: Prasso supports user registration and association with specific sites, enabling personalized user experiences and effective management of user access and permissions.
+
+7. No-Code functionality: Prasso offers a No-Code approach to app development, allowing users to assemble functional apps without requiring coding knowledge. Pre-built components and integrations make app creation accessible to a wider range of users.
+
+8. Unification of web tools: Prasso combines multiple web tools into a single mobile app, allowing you to integrate functionalities like forums, YouTube channels, and calendars. This creates a comprehensive and personalized user experience.
+
+9. Proof of concept and rapid deployment: Prasso's rapid prototyping capabilities enable you to build and release your app quickly to validate your concept. This helps you gather feedback, test user engagement, and refine your app idea before investing in full-scale development.
+
+10. Visual editing with GrapesJs: Prasso provides a visual editor based on GrapesJs, making it easy to visually create and maintain site pages. This simplifies the design and updating of your app's content.
+
+11. Business information and API site: A Prasso site serves as both a business information site and an API site, allowing you to showcase your business information while serving the Prasso apps through the API. It provides a unified platform for managing both aspects.
+
+12. Easy setup and integration with Firebase: Prasso requires Firebase for user authentication and offers easy setup and integration with Firebase projects. This simplifies the authentication process and ensures secure user management.
+
+13. Comprehensive documentation and community support: Prasso provides extensive documentation and has an active community for support. This helps users navigate the platform, troubleshoot issues, and stay updated with the latest features and enhancements.
+
+14. Open-source and licensed under MIT: Prasso is an open-source platform and is licensed under the MIT license. This allows for customization, collaboration, and the freedom to modify the platform according to your needs.
+
+Overall, Prasso empowers you to efficiently build, customize, and validate your app ideas, offering a user-friendly interface, robust framework, and a range of features that simplify the development process.
+
 
 ## Prasso Concept
 1. everything is based on a site.
