@@ -74,14 +74,14 @@
                         </div>
                         <div class="mb-4">
                             <label for="login_requiredInput" class="block text-gray-700 text-sm font-bold mb-2">Requires Authentication: </label>
-                            <input type="radio"  name="login_requiredInput" id="login_requiredInput" wire:model.defer="login_required" value="1"  />Yes
-                            <input type="radio"  name="login_requiredInput" id="login_requiredInput" wire:model.defer="login_required" value="0" />No
+                            <input type="radio"  name="login_requiredInput" wire:model.defer="login_required" value="1"  />Yes
+                            <input type="radio"  name="login_requiredInput" wire:model.defer="login_required" value="0" />No
                             @error('login_required') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
                             <label for="user_levelInput" class="block text-gray-700 text-sm font-bold mb-2">Requires Admin Level: </label>
-                            <input type="radio"  name="user_levelInput" id="user_levelInput" wire:model.defer="user_level" value="1"  />Yes
-                            <input type="radio"  name="user_levelInput" id="user_levelInput" wire:model.defer="user_level" value="0" />No
+                            <input type="radio"  name="user_levelInput"  wire:model.defer="user_level" value="1"  />Yes
+                            <input type="radio"  name="user_levelInput"  wire:model.defer="user_level" value="0" />No
                             @error('user_level') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                     </div>

@@ -30,7 +30,7 @@ class SitePageDataTemplateFormInputs extends Component
 
     public function updated($propertyName)
     {
-        $sitePageTemplateRequest = new SitePageTemplateRequest();
+        $sitePageTemplateRequest = new SitePageTemplateRequest($this->template->id);
         $this->resetErrorBag($propertyName);
      
         $this->validateOnly($propertyName, $sitePageTemplateRequest->rules());
@@ -40,7 +40,7 @@ class SitePageDataTemplateFormInputs extends Component
     public function submit()
     {
         
-        $sitePageTemplateRequest = new SitePageTemplateRequest();
+        $sitePageTemplateRequest = new SitePageTemplateRequest($this->template->id);
         $this->validate($sitePageTemplateRequest->rules());
         $this->template->save();
 
