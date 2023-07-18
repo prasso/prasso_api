@@ -15,48 +15,48 @@
             {!! implode('', $errors->all('<div>:message</div>')) !!}
         </div>
         @endif
-    <input type="hidden" name="id" wire:model="template.id">
+    <input type="hidden" id="id" wire:model="template.id">
 
     <div class="mb-4">
         <label for="templatename" class="block font-medium text-gray-700">Template Name:</label>
-        <input type="text" name="templatename" x-bind:value="template.templatename" wire:model="template.templatename" 
+        <input type="text" id="templatename" x-bind:value="template.templatename" wire:model="template.templatename" 
         class="form-input mt-1 block w-full rounded-md shadow-sm">
     </div>
 
 
     <div class="mb-4">
         <label for="title" class="block font-medium text-gray-700">Title:</label>
-        <input type="text" name="title" wire:model="template.title" class="form-input mt-1 block w-full rounded-md shadow-sm">
+        <input type="text" id="title" wire:model="template.title" class="form-input mt-1 block w-full rounded-md shadow-sm">
     </div>
 
     <div class="mb-4">
         <label for="description" class="block font-medium text-gray-700">Description:</label>
-        <textarea name="description" wire:model="template.description" class="form-textarea mt-1 block w-full rounded-md shadow-sm"></textarea>
+        <textarea id="description" wire:model="template.description" class="form-textarea mt-1 block w-full rounded-md shadow-sm"></textarea>
     </div>
 
     <div class="mb-4">
         <label for="template_data_model" class="block font-medium text-gray-700">Template Data Model:</label>
-        <input type="text" name="template_data_model" wire:model="template.template_data_model" class="form-input mt-1 block w-full rounded-md shadow-sm">
+        <input type="text" id="template_data_model" wire:model="template.template_data_model" class="form-input mt-1 block w-full rounded-md shadow-sm">
     </div>
 
     <div class="mb-4">
         <label for="template_where_clause" class="block font-medium text-gray-700">Template Where Clause:</label>
-        <input type="text" name="template_where_clause" wire:model="template.template_where_clause" class="form-input mt-1 block w-full rounded-md shadow-sm">
+        <input type="text" id="template_where_clause" wire:model="template.template_where_clause" class="form-input mt-1 block w-full rounded-md shadow-sm">
     </div>
 
     <div class="mb-4">
         <label for="template_data_query" class="block font-medium text-gray-700">Template Data Query:</label>
-        <textarea name="template_data_query" wire:model="template.template_data_query" class="form-textarea mt-1 block w-full rounded-md shadow-sm"></textarea>
+        <textarea id="template_data_query" wire:model="template.template_data_query" class="form-textarea mt-1 block w-full rounded-md shadow-sm"></textarea>
     </div>
 
     <div class="mb-4">
         <label for="order_by_clause" class="block font-medium text-gray-700">Order By Clause:</label>
-        <input type="text" name="order_by_clause" wire:model="template.order_by_clause" class="form-input mt-1 block w-full rounded-md shadow-sm">
+        <input type="text" id="order_by_clause" wire:model="template.order_by_clause" class="form-input mt-1 block w-full rounded-md shadow-sm">
     </div>
 
     <div class="mb-4">
         <label for="include_csrf" class="inline-flex items-center">
-            <input type="checkbox" name="include_csrf" wire:model="template.include_csrf" class="form-checkbox">
+            <input type="checkbox" id="include_csrf" wire:model="template.include_csrf" class="form-checkbox">
             <span class="ml-2 text-gray-700">This is a single item form that will be saved</span>
         </label>
     </div>
@@ -64,7 +64,7 @@
         <label for="default_blank" class="inline-flex items-center">
             <span class="ml-2 text-gray-700">Json for default blank form</span>
         </label>
-            <textarea name="default_blank" wire:model="template.default_blank" class="form-textarea mt-1 block w-full rounded-md shadow-sm"></textarea>
+            <textarea id="default_blank" wire:model="template.default_blank" class="form-textarea mt-1 block w-full rounded-md shadow-sm"></textarea>
             
     </div>
 </div>
