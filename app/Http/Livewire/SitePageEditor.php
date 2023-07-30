@@ -24,6 +24,7 @@ class SitePageEditor extends Component
     
     public function mount( $siteid)
     {
+        info('site page editor for siteid: '.$siteid);
         if ($siteid == '0')
         {
             $site = new Site();

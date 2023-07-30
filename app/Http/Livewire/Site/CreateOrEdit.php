@@ -22,6 +22,7 @@ class CreateOrEdit extends Component
     public $main_color; //
     public $logo_image; //
     public $supports_registration;//
+    public $subteams_enabled; //
     public $does_livestreaming; //
     public $database;
     public $favicon;
@@ -50,6 +51,7 @@ class CreateOrEdit extends Component
         $this->main_color = $site->main_color;
         $this->logo_image = $site->logo_image;
         $this->supports_registration = $site->supports_registration;
+        $this->subteams_enabled = $site->subteams_enabled;
         $this->does_livestreaming = $site->livestream_settings() != null;
         $this->database = $site->database;
         $this->favicon = $site->favicon;
@@ -108,6 +110,7 @@ class CreateOrEdit extends Component
             'database' => $this->database,
             'favicon' => $this->favicon,
             'supports_registration' => $this->supports_registration,
+            'subteams_enabled' => $this->subteams_enabled,
             'app_specific_js' => $this->app_specific_js,
             'app_specific_css' => $this->app_specific_css,
             'image_folder' => $this->image_folder,

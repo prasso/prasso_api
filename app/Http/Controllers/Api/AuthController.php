@@ -55,13 +55,20 @@ class AuthController extends BaseController
         $sendInvitation = false; //will send welcome email
         
         //$user = User::create($input);
-        $user = User::create([
-            'name' => $input['name'],
-            'email' => $input['email'],
-            'password' => Hash::make($input['password']),
-            'phone' => '',
-            'version' => '',
-        'firebase_uid' => $input['firebase_uid']]);
+        try{
+            $user = User::create([
+                'name' => $input['name'],
+                'email' => $input['email'],
+                'password' => Hash::make($input['password']),
+                'phone' => '',
+                'version' => '',
+            'firebase_uid' => $input['firebase_uid']]);
+            
+        } catch (\Throwable $e) {
+            Log::info($e);
+            //if the error is Integrity constraint violation: 1062 Duplicate entry then go log this user in instead
+            return $this->login($request);
+        }
         $success_p1 = $this->userService->registerForSite($user,$this->site, config('constants.TEAM_USER_ROLE'), $sendInvitation);
 
         $success_p2 = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);
@@ -86,7 +93,12 @@ class AuthController extends BaseController
         $user = null;
         if (isset($firebase_uid ))
         {
+            //if user uses more than one prasso app, this will not match. the firebase uid will belong to most recent app that user used
             $user = User::where("firebase_uid",$firebase_uid)->first();
+            if ($user == null)
+            {
+                $user = User::where("email",$email)->first();
+            }
         }
         $user_logged_in=false;
         if(  Auth::attempt(['email' => $email, 'password' => $password]))
@@ -104,7 +116,6 @@ class AuthController extends BaseController
                 { 
                     $user_logged_in = true;
                 }
-             //   $this->userService->updateCommunityUser($user);
             }
         }
     

@@ -118,7 +118,7 @@ class User extends Authenticatable {
         return  config('app.photo_url') . $this->profile_photo_path;
     }
 
-    public function teams() {
+    public function team_owner() {
         return $this->hasMany(Team::class, 'user_id', 'id')
             ->with('apps')->with('site');
     }
@@ -207,9 +207,9 @@ class User extends Authenticatable {
         $user_app_info=[];
         $activeApp = $this->activeApp();
   
-        $user_app_info['team'] = $this->teams[0];
+        $user_app_info['team'] = $this->team_owned[0];
       
-        $user_app_info['teams'] = $this->teams->toArray();
+        $user_app_info['teams'] = $this->team_owned->toArray();
   
         $user_app_info['teamapps'] = $user_app_info['team']->apps;
         
@@ -259,7 +259,7 @@ class User extends Authenticatable {
     }
     public function getSiteCount() {
 
-        $teams = $this->teams->toArray();
+        $teams = $this->team_owned->toArray();
 
         $site_count = 0;
         foreach($teams as $team)
@@ -270,27 +270,38 @@ class User extends Authenticatable {
     }
 
     /**
-     * Get/Set the user's current team. This is the first team that is owned by the user
+     * Get/Set the user's current team. This is the first team that is owned by the user, if it exists
      * at the time of this writing, only one team per user that is not a super admin is allowed
      */
-    public function setCurrentTeam(){
-
-        $teams = $this->teams->toArray();
+    public function setCurrentTeam()
+    {
+        if ($this->current_team_id != null) {
+            return;
+        }
+        $teams = [];
+        if ($this->team_owned != null && count($this->team_owned)>0){
+            $teams = $this->team_owned->toArray();
+        }
         if ($this->current_team_id == null) {
             $this->current_team_id = 1;
         }
-        if($this->current_team_id == 1)
-        {
-            foreach($teams as $team)
-            {
-                if ($team['user_id'] == $this->id)
-                {
-                    $this->current_team_id = $team['id'];
-                    $this->save(); 
+        if (count($teams) == 0) {
+            $teamids = $this->team_member->toArray();
+info('teamids: ' . json_encode($teamids));
+            if (count($teamids) > 0) {
+                $this->current_team_id = $teamids[0]['team_id'];
+            }
+        } else {
+            if ($this->current_team_id == 1) {
+                foreach ($teams as $team) {
+                    if ($team['user_id'] == $this->id) {
+                        $this->current_team_id = $team['team_id'];
+                    }
+                    break;
                 }
-                break;
             }
         }
+        $this->save();
     }
 
     /**
@@ -310,7 +321,7 @@ class User extends Authenticatable {
     }
 
     public function isThisSiteTeamOwner($site_id) {
-        $teams = $this->teams->toArray();
+        $teams = $this->team_owner->toArray();
         foreach($teams as $team)
         {
             if ($team['user_id'] == $this->id)

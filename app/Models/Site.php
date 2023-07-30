@@ -36,6 +36,7 @@ class Site extends Model
         'database',
         'favicon',
         'supports_registration',
+        'subteams_enabled',
         'app_specific_js',
         'app_specific_css',
         'does_livestreaming',
@@ -155,20 +156,30 @@ class Site extends Model
     }
 
     private function user_is_admin(){
-        return  Auth::user() !=null && ( Auth::user()->isInstructor() || Auth::user()->isThisSiteTeamOwner($this->id) );
+        $is_admin_for_site =  Auth::user() !=null && ( Auth::user()->isInstructor() || Auth::user()->isThisSiteTeamOwner($this->id) );
+        return $is_admin_for_site;
     }
 
-    public function getSiteMapList()
+    public function getSiteMapList($current_page = null)
     {
         $sitepages = $this->getSitePages();
         $sitemap = array();
         foreach ($sitepages as $page)
         {
+            $lcase_section = strtolower($page->section);
+            $lcase_page = strtolower($current_page);
+            
+            //dont put menu items out that are the page this user is on
+            if ($page != null && ('/page/'.$lcase_section == $lcase_page || $lcase_section == $lcase_page))
+            {
+                continue;
+            }
             //dont put menu items out that this user can not access
             if ( $page->user_level == false || $this->user_is_admin() )
             {
                 $sitemap[$page->section] = $page->title;
             }
+            
         }
         //format $sitemap into a list of LIs
         $list = '';

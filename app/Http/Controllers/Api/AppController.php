@@ -20,22 +20,22 @@ class AppController extends BaseController
 
     }
 
-    public function getAppSettings($apptoken)
-    {
-        try {
-          $user = \Auth::user();
-          if ($user == null)
-            {
-                $user = new User();
-            }
-          $token = $user->personalAccessToken? $user->personalAccessToken->token : null;
-          $app_data = $this->appsService->getAppSettingsBySite($this->site, $user,$token);
+    // public function getAppSettings($apptoken)
+    // {
+    //     try {
+    //       $user = \Auth::user();
+    //       if ($user == null)
+    //         {
+    //             $user = new User();
+    //         }
+    //       $token = $user->personalAccessToken? $user->personalAccessToken->token : null;
+    //       $app_data = $this->appsService->getAppSettingsBySite($this->site, $user,$token);
   
-            return $app_data;
-        } catch (\Throwable $e) {
-            Log::info($e);
-        }
-    }
+    //         return $app_data;
+    //     } catch (\Throwable $e) {
+    //         Log::info($e);
+    //     }
+    // }
 
     public function saveApp(Request $request)
     {

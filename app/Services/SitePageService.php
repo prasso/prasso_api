@@ -31,9 +31,9 @@ class SitePageService
         return json_encode($message);
     }
 
-    public function getTemplateData($site_page, $placeholder){
+    public function getTemplateData($site_page, $placeholder, $user=null){
        
-        $jsonData = $this->getTemplateDataJSON($site_page);
+        $jsonData = $this->getTemplateDataJSON($site_page, $user);
 
         $site_page_description = str_replace($placeholder, $jsonData, $site_page->description);
 
@@ -41,7 +41,7 @@ class SitePageService
        
     }
 
-    public function getTemplateDataJSON($site_page){
+    public function getTemplateDataJSON($site_page, $user=null){
        
         $template_data = SitePageTemplate::where('templatename', $site_page->template)->first();
         if ($template_data == null)
@@ -57,6 +57,7 @@ class SitePageService
             $sql = $template_data->template_data_query. ' as display';
 
             $where_clause_field = str_replace('???', $site_page->where_value, $template_data->template_where_clause);
+   
             $fieldValue = $site_page->getAttribute($where_clause_field);
             if ($fieldValue == null) //the where clause is not a field in the site page table
             {
@@ -85,8 +86,17 @@ class SitePageService
                 }
                 $query = $query->orderBy($fieldInOrder, $ascDesc);
             }
-            //info($query->toSql());
-
+            
+            if ($user != null) {
+                $subteamIds = [];
+                if ($user != null){
+                    $subteamIds = $user->team_member->pluck('team_id')->toArray();
+                    info('subteams: ' . json_encode($subteamIds));
+                }
+                if ($subteamIds != [])
+                {$query = $query->whereIn('fk_team_id', $subteamIds);}
+            }
+            
             $data = $query   
                 ->selectRaw($sql)
                 ->get();

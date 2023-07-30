@@ -1,6 +1,6 @@
 
 ## About Prasso
-Prasso is a rapid prototyping and app development platform that streamlines the process of building functional mobile and web apps. Its wizard-like interface enables no-code app assembly, while the backend leverages the robust Laravel framework for scalability. Key benefits include simplified prototyping, customization options, time savings, seamless integration with tools like Firebase, and comprehensive documentation. Prasso allows you to quickly validate and iterate on app ideas before full development. Its open-source nature provides the flexibility to tailor the platform to your needs. Overall, Prasso empowers users to efficiently create, customize and rapidly deploy app prototypes to gather user feedback and refine concepts.
+Prasso is a rapid prototyping and app development platform that streamlines the process of building functional mobile and web apps. Its wizard-like interface enables low-code app assembly, while the backend leverages the robust Laravel framework for scalability. Key benefits include simplified prototyping, customization options, time savings, seamless integration with tools like Firebase, and comprehensive documentation. Prasso allows you to quickly validate and iterate on app ideas before full development. Its open-source nature provides the flexibility to tailor the platform to your needs. Overall, Prasso empowers users to efficiently create, customize and rapidly deploy app prototypes to gather user feedback and refine concepts.
 
 Prasso offers several compelling reasons to use its software:
 
@@ -16,7 +16,7 @@ Prasso offers several compelling reasons to use its software:
 
 6. User registration and site association: Prasso supports user registration and association with specific sites, enabling personalized user experiences and effective management of user access and permissions.
 
-7. No-Code functionality: Prasso offers a No-Code approach to app development, allowing users to assemble functional apps without requiring coding knowledge. Pre-built components and integrations make app creation accessible to a wider range of users.
+7. Low-Code functionality: Prasso offers a Low-Code approach to app development, allowing users to assemble functional apps without requiring coding knowledge. Pre-built components and integrations make app creation accessible to a wider range of users.
 
 8. Unification of web tools: Prasso combines multiple web tools into a single mobile app, allowing you to integrate functionalities like forums, YouTube channels, and calendars. This creates a comprehensive and personalized user experience.
 
@@ -111,7 +111,7 @@ The key thing to understand is:
 - Apps built on the **Prasso platform** link users to their site automatically on registration.
 
 
-## How the mobile app works as a "No-Code" user-built mobile app
+## How the mobile app works as a "Low-Code" user-built mobile app
 
 'Prasso by faxt (Fast Api eXtraction Technologies)'
 ![](https://i.imgur.com/K69SPIt.png)

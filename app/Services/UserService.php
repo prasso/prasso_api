@@ -60,6 +60,7 @@ class UserService
       {
         return true;
       }
+      info ('user is not on team: ' . $user->id . ' team: ' . $team->id);
       return false;
     }
 
@@ -241,6 +242,8 @@ info('addOrUpdateSubscription: '.json_encode($user));
         return $success;
     }
 
+    // TODO site subteams_enabled requires a modification here but I don't have full concept of how it works yet
+    // will potentially need 'my_table.subteam_id', $subteamIds where subteamIds is an array of team ids the user belongs to
     public function registerForSite($user, $site, $role, $sendInvitation)
     {
         if (!isset($role))
@@ -351,9 +354,10 @@ info('addOrUpdateSubscription: '.json_encode($user));
         }
         if ($user->current_team_id == null )
         {
-          $user->current_team_id = $user->teams[0]->id;
-          $success['personal_team_id'] = $user->teams[0]->id;
-          $success['team_coach_id'] = $user->teams[0]->user_id;
+          //currently is first owned team
+          $user->current_team_id = $user->team_owner[0]->id;
+          $success['personal_team_id'] = $user->team_owner[0]->id;
+          $success['team_coach_id'] = $user->team_owner[0]->user_id;
           $success['coach_uid'] = $user->getCoachUid();
         }
         else
@@ -366,7 +370,7 @@ info('addOrUpdateSubscription: '.json_encode($user));
         if ($user->isInstructor())
         { 
           try{
-              $success['team_members'] = json_encode(Instructor::getTeamMembersFor($user->teams[0]->id));
+              $success['team_members'] = json_encode(Instructor::getTeamMembersFor($user->current_team_id));
             } catch (\Throwable $e) {
               Log::info($e);
               $success['team_members'] = [];
@@ -381,7 +385,7 @@ info('addOrUpdateSubscription: '.json_encode($user));
         
         $success['app_data'] = $app_data; //configuration for setting up the app is here
 
-    //Log::info('app data being returned: ' . json_encode($success)); 
+    Log::info('app data being returned: ' . json_encode($success)); 
         return $success;
     }
 

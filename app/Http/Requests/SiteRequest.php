@@ -29,6 +29,7 @@ class SiteRequest extends BaseRequest {
             'favicon' => 'required',
             'photo' => 'required_without:logo_image|max:1024',
             'supports_registration' => 'required',
+            'subteams_enabled' => 'required',
             'app_specific_js' => 'nullable',
             'app_specific_css' => 'nullable',
             'does_livestreaming' => 'required',

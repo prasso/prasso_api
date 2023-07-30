@@ -77,6 +77,13 @@
                             @error('supports_registration') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
+                            <label for="subteams_enabledInput" class="block text-gray-700 text-sm font-bold mb-2">Subteams Enabled: </label>
+                            <input type="radio" name="subteams_enabledInput" id="subteams_enabledInput" wire:model.defer="subteams_enabled" value="1"  />Yes
+                            <input type="radio" name="subteams_enabledInput" id="subteams_enabledInput" wire:model.defer="subteams_enabled" value="0" />No
+                
+                            @error('subteams_enabled') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
+                        <div class="mb-4">
                             <label for="does_livestreamingInput" class="block text-gray-700 text-sm font-bold mb-2">Site hosts a live stream: </label>
                             <input type="radio" name="does_livestreamingInput" id="does_livestreamingInput" wire:model.defer="does_livestreaming" value="1"  />Yes
                             <input type="radio" name="does_livestreamingInput" id="does_livestreamingInput" wire:model.defer="does_livestreaming" value="0" />No

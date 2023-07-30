@@ -35,6 +35,7 @@ class SitePageController extends BaseController
     public function index()
     {
         $welcomepage = null;
+        $request = Request::capture();
         
         $user = Auth::user() ?? null;
         if ($user != null)
@@ -50,7 +51,7 @@ class SitePageController extends BaseController
         {
             return view('welcome');
         }
-        $welcomepage->description = $this->prepareTemplate($welcomepage);
+        $welcomepage->description = $this->prepareTemplate($welcomepage, $request->path());
         $masterpage = $this->getMaster($welcomepage);
       
         return view($welcomepage->masterpage) 
@@ -67,6 +68,7 @@ class SitePageController extends BaseController
     private function getDashboardForCurrentSite($user){
         
         $user->setCurrentTeam();
+        $request = Request::capture();
        
         if ( !$this->userService->isUserOnTeam($user) )
         {
@@ -81,7 +83,7 @@ class SitePageController extends BaseController
             $dashboardpage = SitePages::where('fk_site_id',$this->site->id)->where('section','Dashboard')->first();
             if ($dashboardpage != null)
             {    
-                $dashboardpage->description = $this->prepareTemplate($dashboardpage);
+                $dashboardpage->description = $this->prepareTemplate($dashboardpage, $request->path());
                 $masterpage = $this->getMaster($dashboardpage);
                 return view($dashboardpage->masterpage)  
                 ->with('sitePage',$dashboardpage)
@@ -104,14 +106,15 @@ class SitePageController extends BaseController
         return $master_page;
     }
 
-    private function prepareTemplate($dashboardpage){
+    private function prepareTemplate($dashboardpage, $path=null){
+        
         $page_content = $dashboardpage->description;
         $user = Auth::user() ?? null;
 
         //replace the tokens in the dashboard page with the user's name, email, and profile photo
         $page_content = str_replace('CSRF_TOKEN', csrf_token(), $page_content);
         $page_content = str_replace('MAIN_SITE_COLOR', $this->site->main_color, $page_content);
-        $page_content = str_replace('SITE_MAP', $this->site->getSiteMapList(), $page_content);
+        $page_content = str_replace('SITE_MAP', $this->site->getSiteMapList($path), $page_content);
         $page_content = str_replace('SITE_NAME', $this->site->site_name, $page_content);
         $page_content = str_replace('SITE_LOGO_FILE', $this->site->logo_image, $page_content);
         $page_content = str_replace('SITE_FAVICON_FILE', $this->site->favicon, $page_content);
@@ -135,12 +138,18 @@ class SitePageController extends BaseController
      */
     public function viewSitePage(Request $request,$section)
     {
+        if ($section == 'favicon.ico')
+        {
+            abort(404);
+            return null;
+        }
         $user = Auth::user() ?? null;
         $sitepage = SitePages::where('fk_site_id',$this->site->id)->where('section',$section)->first();
 //info(json_encode($sitepage  ));
         if ($sitepage == null)
         {
-            Log::info('using system welcome: ');   
+
+            info('viewSitePage page not found, using system welcome: '.$section.' site:'.$this->site->id); 
             return view('welcome');
         }
 
@@ -172,13 +181,13 @@ class SitePageController extends BaseController
             return redirect($sitepage->url);
         }
 
-        $sitepage->description = $this->prepareTemplate($sitepage);
+        $sitepage->description = $this->prepareTemplate($sitepage, $request->path());
         $masterpage = $this->getMaster($sitepage);
 
         $placeholder = '[DATA]';
         if ($sitepage->template != null && strlen($sitepage->template) > 0 && strpos($sitepage->description, '[DATA]') !== false)
         {
-            $page_content= $this->sitePageService->getTemplateData($sitepage, $placeholder);
+            $page_content= $this->sitePageService->getTemplateData($sitepage, $placeholder, $user);
             $sitepage->description = $page_content;
         }
         
@@ -337,20 +346,21 @@ class SitePageController extends BaseController
     }
 
     public function lateTemplateData(Request $request){
+        $pageid = $request['pageid'];
+        info('late template data: ' . $pageid);
         // make sure the user has access to this site and page
         if (!Controller::userOkToViewPageByHost($this->userService))
         {
+            info('no access for this user. late template data: ' . $pageid);
             abort(403, 'Unauthorized action.');
         }
 
-        $siteid = $this->site->id;
-        $pageid = $request['pageid'];
         $user = Auth::user() ?? null;
         $sitepage = SitePages::where('fk_site_id',$this->site->id)->where('id',$pageid)->first();
-info(json_encode($sitepage  ));
+
         if ($sitepage == null)
         {
-            Log::info('using system welcome: ');   
+            Log::info('lateTemplateData, page not found. using system welcome: ');   
             return json_encode(['data' => '']);
         }
 
@@ -374,7 +384,7 @@ info(json_encode($sitepage  ));
 
         if ($sitepage->template != null && strlen($sitepage->template) > 0) 
         {
-            $json_data= $this->sitePageService->getTemplateDataJSON($sitepage);
+            $json_data= $this->sitePageService->getTemplateDataJSON($sitepage, $user);
             return  $json_data;
         }
         

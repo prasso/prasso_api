@@ -91,7 +91,7 @@ class AppsService
         }
         else
         { 
-           if ( count($user->teams)<1 )
+           if ( count($user->team_owner)<1 )
            {
                //add a team for this user. it didn't happen when registered. maybe an early user
                $user->ownedTeams()->save(Team::forceCreate([
@@ -108,7 +108,7 @@ class AppsService
             if ($app_data == null )
             {
                 $app_data = $this->getBlankApp($user);
-                $app_data->team_id=$user->teams[0]->id;
+                $app_data->team_id=$user->team_owner[0]->id;
             }
         }
        
@@ -134,12 +134,11 @@ class AppsService
         {
             return '';
         }
-
+        // in this method, currently, the app is determined by the first owned team.
         $app_data = Apps::with('tabs')
-            ->where('team_id',$user->teams[0]->id)
+            ->where('team_id',$user->team_owner[0]->id)
             ->get();
 
-            
        return json_encode($app_data);
     }
 

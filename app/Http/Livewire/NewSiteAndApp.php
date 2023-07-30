@@ -39,6 +39,7 @@ class NewSiteAndApp extends Component
     public $image_folder; //
     public $logo_image; //
     public $supports_registration;//
+    public $subteams_enabled; //
     public $does_livestreaming; //
     public $app_specific_js;//
     public $app_specific_css;//
@@ -150,6 +151,7 @@ class NewSiteAndApp extends Component
         $this->newSite->database = 'prasso';
         $this->newSite->favicon = 'favicon.ico';
         $this->newSite->supports_registration = $this->supports_registration;//
+        $this->newSite->subteams_enabled = $this->subteams_enabled; //
         $this->newSite->app_specific_css = ".teambutton {color:#f1f1f1;background-color: {$this->main_color};}";
         $this->newSite->image_folder = $this->image_folder; //
         $this->newSite->app_specific_js = $this->app_specific_js;
