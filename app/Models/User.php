@@ -336,12 +336,12 @@ info('teamids: ' . json_encode($teamids));
         return false;
     }
 
-    public function sendWelcomeEmail() {
+    public function sendWelcomeEmail($site_team_id) {
         $emailbcc = 'info@faxt.com'; //because .env setting is not being read on prod server!
         Mail::to($this)->send(new welcome_user($this));
 
         try {
-            Mail::to($emailbcc, 'Prasso Sign Up')->send(new prasso_user_welcome($this));
+            Mail::to($emailbcc, 'Prasso Sign Up')->send(new prasso_user_welcome($this, $site_team_id));
         } catch (\Throwable $err) {
             Log::info('error sending user welcome sent email: ' . $err);
         }

@@ -190,6 +190,7 @@ info('addOrUpdateSubscription: '.json_encode($user));
 
     protected function register($user,$role, $sendInvitation)
     {
+      $site_team_id = -1;
         if (!isset($role))
         {
             $role=config('constants.TEAM_USER_ROLE');
@@ -198,6 +199,7 @@ info('addOrUpdateSubscription: '.json_encode($user));
         {
             //add them to team 2 (newsletter team) if signing up for the newsletter;
             TeamUser::addToTeam($user,config('constants.NEWSLETTER_TEAM_ID')); 
+            $site_team_id = config('constants.NEWSLETTER_TEAM_ID');
         }
         else
         {
@@ -231,7 +233,7 @@ info('addOrUpdateSubscription: '.json_encode($user));
         }
         else
         {
-          $user->sendWelcomeEmail();
+          $user->sendWelcomeEmail($site_team_id);
           TeamUser::addToBaseTeam($user);     
         }
        
@@ -281,7 +283,7 @@ info('addOrUpdateSubscription: '.json_encode($user));
             $team = $user->currentTeam;
         }
         TeamUser::addToTeam($user,$team->id); 
-      
+        $site_team_id = $team->id;
         $user->save();
 
         if ($sendInvitation)
@@ -303,7 +305,7 @@ info('addOrUpdateSubscription: '.json_encode($user));
         }
         else
         {
-          $user->sendWelcomeEmail();
+          $user->sendWelcomeEmail($site_team_id);
           $assign_team_id = false;
           TeamUser::addToBaseTeam($user, $assign_team_id);     
         }
@@ -367,8 +369,11 @@ info('addOrUpdateSubscription: '.json_encode($user));
           $success['coach_uid'] = $user->getCoachUid();
         }
 
+        $success['team_members'] = [];
         if ($user->isInstructor())
         { 
+          if (count($user->teams) > 0 && isset($user->teams[0]))
+          {
           try{
               $success['team_members'] = json_encode(Instructor::getTeamMembersFor($user->current_team_id));
             } catch (\Throwable $e) {
@@ -376,9 +381,6 @@ info('addOrUpdateSubscription: '.json_encode($user));
               $success['team_members'] = [];
             }
           }
-        else
-        {
-          $success['team_members'] = [];
         }
         
         $app_data = $appsService->getAppSettingsBySite($site, $user,$user_access_token);

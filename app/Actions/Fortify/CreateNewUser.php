@@ -44,7 +44,7 @@ class CreateNewUser implements CreatesNewUsers
             ]), function (User $user) use ($input) {
 
                 $site = Controller::getClientFromHost();
-
+                $site_team_id=-1;
                 //get the team from the site
                 if ($site->supports_registration) {
                     $teamsite = TeamSite::where('site_id', $site->id)->first();
@@ -54,6 +54,7 @@ class CreateNewUser implements CreatesNewUsers
                         $teamsite = TeamSite::where('site_id', 1)->first();
                     }
                     $team = Team::where('id', $teamsite->team_id)->first();
+                    $site_team_id = $team->id;
                     $team->users()->attach(
                         $user,
                         ['role' => 'user']
@@ -63,10 +64,10 @@ class CreateNewUser implements CreatesNewUsers
                     TeamMemberAdded::dispatch($team, $user);
                 }
                 else{
-                    $this->createTeam($user,$site);
+                    $site_team_id = $this->createTeam($user,$site);
                 }
                 try{
-                $user->sendWelcomeEmail();
+                $user->sendWelcomeEmail($site_team_id);
                 }
                 catch(\Throwable $e){
                     Log::info("Error sending welcome email: {$site->host}");
@@ -104,11 +105,14 @@ class CreateNewUser implements CreatesNewUsers
      * @return void
      */
     protected function createTeam(User $user) {
-        $user->ownedTeams()->save(Team::forceCreate([
+        $new_team = Team::forceCreate([
             'user_id' => $user->id,
             'name' => explode(' ', $user->name, 2)[0] . "'s Team",
             'personal_team' => true,
             'phone' => $user->phone,
-        ]));
+        ]);
+        $user->ownedTeams()->save($new_team);
+        $user->refresh();
+        return $new_team->id;
     }
 }

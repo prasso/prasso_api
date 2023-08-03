@@ -75,6 +75,8 @@ class AuthController extends BaseController
 
         $success = array_merge($success_p1,$success_p2);
         $success['ShowIntro'] = 'SHOW';
+
+        info('register'.json_encode($success));
         return $this->sendResponse($success, 'User registered successfully.');
     }
 
@@ -139,7 +141,9 @@ class AuthController extends BaseController
             $user = $this->setUpUser($request,$user);
             $success = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);
             $success['pn_token'] = $user->pn_token;
-            $success['thirdPartyToken'] = '';      
+            $success['thirdPartyToken'] = '';
+            
+            info('record_login'.json_encode($success));
             return $this->sendResponse($success, 'User has logged in.');
         } 
         else{ 
