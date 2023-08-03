@@ -92,8 +92,7 @@ class Instructor extends User
 
     public static function getTeamMembersFor($team_id)
     {
-        info('returning members for team_id: '.$team_id);
-        return User::select('users.firebase_uid as uid', 'users.id', 'users.name', 'users.email')
+        return User::select('users.id', 'users.name')
                 ->join('team_user', 'users.id','team_user.user_id')
                 ->where('team_user.team_id','=',$team_id)
                 ->get()->toArray();

@@ -16,7 +16,7 @@ class SiteEditor extends Component
     use WithFileUploads;
 
     public $sites, $site_id,$site_name,$description, $host,$main_color,$logo_image, 
-            $database, $favicon, $supports_registration, $app_specific_js, $app_specific_css,
+            $database, $favicon, $supports_registration, $subteams_enabled, $app_specific_js, $app_specific_css,
             $does_livestreaming,$https_host, $image_folder;
     public $current_user;
     public $isOpen = 0;
@@ -76,6 +76,7 @@ class SiteEditor extends Component
         $this->favicon = '';
         $this->site_id = '';
         $this->supports_registration = false;
+        $this->subteams_enabled = false;
         $this->does_livestreaming = false;
         $this->app_specific_js ='';
         $this->app_specific_css = '';
@@ -114,6 +115,7 @@ class SiteEditor extends Component
             'database' => $this->database,
             'favicon' => $this->favicon,
             'supports_registration' => $this->supports_registration,
+            'subteams_enabled' => $this->subteams_enabled,
             'app_specific_js' => $this->app_specific_js,
             'app_specific_css' => $this->app_specific_css,
             'image_folder' => $this->image_folder,
@@ -172,6 +174,7 @@ class SiteEditor extends Component
         $this->database = $site->database;
         $this->favicon = $site->favicon;
         $this->supports_registration = $site->supports_registration;
+        $this->subteams_enabled = $site->subteams_enabled;
         $this->app_specific_js = $site->app_specific_js;
         $this->app_specific_css = $site->app_specific_css;
         $this->image_folder = $site->image_folder;

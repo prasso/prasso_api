@@ -26,7 +26,7 @@ All rights not expressly granted to You are reserved.
 
 1. THE APPLICATION
 <br /><br />
-faxt (hereinafter: Application) is a piece of software created to A no-code solution for business applications. - and customized for Apple mobile devices. It is used to conduct daily operations of the business.
+faxt (hereinafter: Application) is a piece of software created to A low-code solution for business applications. - and customized for Apple mobile devices. It is used to conduct daily operations of the business.
 <br /><br />
 The Application is not tailored to comply with industry-specific regulations (Health Insurance Portability and Accountability Act (HIPAA), Federal Information Security Management Act (FISMA), etc.), so if your interactions would be subjected to such laws, you may not use this Application. You may not use the Application in a way that would violate the Gramm-Leach-Bliley Act (GLBA).
 <br /><br />

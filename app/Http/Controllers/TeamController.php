@@ -38,9 +38,9 @@ class TeamController extends Controller
   
         $team = Team::where('id',$user->current_team_id)->first();
      
-        $teams = $user->teams->toArray();
+        $teams_owned = $user->team_owner->toArray();
   
-        $teamapps = $team->apps;
+        $teamapps = $teams_owned->apps;
         
         $activeAppId = '0';
         if (isset($activeApp->app_id))
@@ -50,7 +50,7 @@ class TeamController extends Controller
 
         return view('apps.show')
             ->with('user', $user)
-            ->with('teams',$teams)
+            ->with('teams',$teams_owned)
             ->with('teamapps', $teamapps)
             ->with('team', $team)
             ->with('activeappid',$activeAppId);
@@ -99,7 +99,7 @@ class TeamController extends Controller
        // Log::info('In setupForTeamMessages');
         $user_access_token = isset($user->personalAccessToken) ? $user->personalAccessToken->token : null;
 
-        $team = $user->teams->where('id', $teamid)->first();
+        $team = $user->team_owned->where('id', $teamid)->first();
 
         if (count($team->users)>0)
         {
@@ -236,10 +236,10 @@ class TeamController extends Controller
     public function editApp(AppsService $appsService,$teamid, $appid)
     {
         $user = Auth::user(); 
-        $team = $user->teams->where('id',$teamid)->first();
+        $team = $user->team_owned->where('id',$teamid)->first();
         $teamapps = $team->apps;     
         $teamapp = $teamapps->where('id',$appid)->first();
-        $team_selection = $user->teams->pluck('name','id');
+        $team_selection = $user->team_owned->pluck('name','id');
         if ($appid == 0 || $teamapp ==  null)
         {
             $teamapp = $appsService->getBlankApp($user);
@@ -341,7 +341,7 @@ class TeamController extends Controller
     private function getEditTab($teamid, $appid, $tabid)
     {
         $user = Auth::user(); 
-        $team = $user->teams->where('id',$teamid)->first();
+        $team = $user->team_owned->where('id',$teamid)->first();
         $teamapps = $team->apps;     
         $teamapp = $teamapps->where('id',$appid)->first();
 

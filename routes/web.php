@@ -25,6 +25,9 @@ Route::get('/confirm_newsletter_subscription', 'EmailController@confirm_newslett
 
 
 Route::get('/page/{section}','SitePageController@viewSitePage');
+Route::post('/sitepages/{siteid}/{pageid}/lateTemplateData', 'SitePageController@lateTemplateData')->name('site-page.late-template-data');
+
+
 Route::get('/give','SitePageController@giveToDonate');
 
 Route::get('/dashboard', 'SitePageController@index')->name('dashboard');
@@ -60,6 +63,7 @@ Route::group(['middleware'=> 'instructorusergroup'], function() {
     Route::post('/images/upload', 'ImageController@upload')->name('images.upload');
 
     Route::get('/getLatLonFromAddress', 'ProxyController@getLatLonFromAddress');
+
 });
 
 Route::group(['middleware'=> 'superadmin'], function() {
@@ -71,8 +75,6 @@ Route::group(['middleware'=> 'superadmin'], function() {
 
     Route::get('/sitepages/{siteid}', 'SitePageController@editSitePages');
     Route::get('/sitepages/{siteid}/{pageid}/read-tsv-into-site-page-data', 'SitePageController@readTsvIntoSitePageData')->name('site-page.read-tsv-into-site-page-data');
-    Route::post('/sitepages/{siteid}/{pageid}/lateTemplateData', 'SitePageController@lateTemplateData')->name('site-page.late-template-data');
-
 
     Route::post('/save-site-page', 'SitePageController@saveSitePage');
 

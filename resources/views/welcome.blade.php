@@ -21,9 +21,6 @@
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
     <link rel="stylesheet" href="/js/jqueryui.1.12.1.min.css">
 
- 
-
-
 </head>
 
 <body style="margin:0px;" data-lang="EN" data-country="US"> 
@@ -43,7 +40,7 @@
 <div class='t396__elem tn-elem  tn-elem__3080480481470209944682' data-elem-id='1470209944682' data-elem-type='text'
  >
  
-<div class='tn-atom' field='tn_text_1470209944682'   >Prasso</div>
+<div class='prasso-h1 prasso-orange-accent' field='tn_text_1470209944682'   >Prasso</div>
  
 </div>
         
@@ -59,7 +56,7 @@ a user-friendly interface, robust framework, and a range of features that simpli
  >
  
           <div class='tn-atom'    > 
-        <img class='tn-atom__img' src='https://static.tildacdn.com/tild6632-3563-4661-b432-333761656164/prasso_logo-1024.png'  imgfield='tn_img_1470210033144'> 
+        <img class='tn-atom__img' src='/images/prasso_palm.png'  imgfield='tn_img_1470210033144'> 
       </div>
          
 </div>
@@ -93,16 +90,51 @@ a user-friendly interface, robust framework, and a range of features that simpli
 <div class="t467">
   <div class="t-container t-align_center">
     <div class="t-col t-col_10 t-prefix_1">
-      <div class="t467__title t-title t-title_lg t-margin_auto" field="title" style="">How It Works</div>      
+      <div class="t467__title t-title t-title_lg t-margin_auto prasso-green-font " field="title" style="">How It Works</div>      
       <div class="t467__descr t-descr t-descr_xl t-margin_auto" field="descr" style="">
 <ul class="pl-4">
-  <li class="text-left mt-3 border-b">Build custom mobile and web apps with ease using Prasso's streamlined app prototype process, single setup form, customization options, and rapid prototyping tool.</li>
-  <li class="text-left mt-3 border-b">Benefit from a stable Laravel framework-based API backend, user registration and site association, app configuration with tabs and views, and team-based association and roles.</li>
-  <li class="text-left mt-3 border-b">Create functional apps without coding using Prasso's No-Code functionality and unify web tools into a mobile app.</li>
-  <li class="text-left mt-3 border-b">Validate your app concept through rapid deployment, visually edit site pages with GrapesJs, and showcase business information while serving Prasso apps through the API.</li>
-  <li class="text-left mt-3 border-b">Enjoy easy setup and integration with Firebase, extensive documentation, and community support. Prasso is open-source and licensed under MIT for customization and collaboration.</li>
+  <li class="text-left mt-3 border-b">
+  <div class="grid grid-cols-2 gap-8 ">
+  <div class="m-auto"><span class="material-icons prasso-orange-accent" style="font-size: 100px;">
+construction
+</span></div>
+<div>
+    Build custom mobile and web apps with ease using Prasso's streamlined app prototype process, single setup form, customization options, and rapid prototyping tool.
+</div>
+</li>
+  <li class="text-left mt-3 border-b">
+  <div class="grid grid-cols-2 gap-8 ">
+  <div class="m-auto">
+  <span class="material-icons prasso-orange-accent" style="font-size: 100px;">
+  verified_user
+</span></div>
+<div>
+    Benefit from a stable Laravel framework-based API backend, user registration and site association, app configuration with tabs and views, and team-based association and roles.
+</div>
+</li>
+  <li class="text-left mt-3 border-b">
+  <div class="grid grid-cols-2 gap-8 ">
+  <div class="m-auto">
+    <span class="material-icons prasso-orange-accent" style="font-size: 100px;">code</span> </div>
+<div>
+    Create functional apps without coding using Prasso's Low-Code functionality and unify web tools into a mobile app.
+</div>
+</li>
+  <li class="text-left mt-3 border-b">
+  <div class="grid grid-cols-2 gap-8 ">
+  <div class="m-auto">
+  <span class="material-icons prasso-orange-accent" style="font-size: 100px;">trending_up</span> </div>
+<div>
+  Validate your app concept through rapid deployment, visually edit site pages with GrapesJs, and showcase business information while serving Prasso apps through the API.
+  </div>
+</li>
+  <li class="text-left mt-3 border-b">
+  <div class="grid grid-cols-2 gap-8 ">
+  <div class="m-auto"><span class="material-icons prasso-orange-accent" style="font-size: 100px;">favorite</span></div>
+<div> Enjoy easy setup and integration with Firebase, extensive documentation, and friendly support. Prasso is open-source and licensed under MIT for customization and collaboration.</div>
+</li>
 </ul>
-    </div>	          <a href="https://github.com/prasso" target="_blank" class="t-btn  "  style="color:#ffffff;background-color:#1f5bff;border-radius:50px; -moz-border-radius:50px; -webkit-border-radius:50px;"><table style="width:100%; height:100%;"><tr><td>View the Source</td></tr></table></a>
+    </div>	          <a href="https://github.com/prasso" target="_blank" class="t-btn prasso-orange-accent"  style="background:#ffffff; border-radius:50px; -moz-border-radius:50px; -webkit-border-radius:50px;"><table style="width:100%; height:100%;"><tr><td>View the Source</td></tr></table></a>
           </div>
   </div>
 </div> 
@@ -115,16 +147,16 @@ a user-friendly interface, robust framework, and a range of features that simpli
         <div class="t412__col t-col t-col_4 t412__col"> 
         <div class="t412__content" style="border-color: #000000;border-width: 2px;">
             <div class="t412__wrapper"> 
-              <img class="t412__img t412__img_circle t-img" src="https://static.tildacdn.com/tild6163-6539-4661-b165-343965393566/Landing_page-pana.png" data-tu-max-width="300" data-tu-max-height="300" style="" imgfield="img" /> 
+              <img class="" src="https://static.tildacdn.com/tild6163-6539-4661-b165-343965393566/Landing_page-pana.png" data-tu-max-width="300" data-tu-max-height="300" style="" imgfield="img" /> 
             <div class="t412__title t-name t-name_xl" style="" field="title" >Rapid Prototype</div>
-              <div class="t412__descr t-text" style="" field="descr" >Prasso is first a rapid prototyping tool. Assemble your app using no-code pages which have been built to prove your concept. Then release it to prove the concept works.<br /><br /><br /><br /></div> 
+              <div class="t412__descr t-text" style="" field="descr" >Prasso is first a rapid prototyping tool. Assemble your app using low-code pages which have been built to prove your concept. Then release it to prove the concept works.<br /><br /><br /><br /></div> 
           </div>
             </div> 
     </div> 
 <div class="t412__col t-col t-col_4 t412__col"> 
         <div class="t412__content" style="border-color: #000000;border-width: 2px;">
             <div class="t412__wrapper">           
-              <img class="t412__img t412__img_circle t-img" src="https://static.tildacdn.com/tild3965-3336-4534-a131-626334616330/Remote_team-amico.png" data-tu-max-width="300" data-tu-max-height="300" style="" imgfield="img2" /> 
+              <img class="" src="https://static.tildacdn.com/tild3965-3336-4534-a131-626334616330/Remote_team-amico.png" data-tu-max-width="300" data-tu-max-height="300" style="" imgfield="img2" /> 
             <div class="t412__title t-name t-name_xl" style="" field="title2" >No Code Options</div>
               <div class="t412__descr t-text" style="" field="descr2" >Prasso unites multiple web tools into one mobile app. For example, a flarum.cloud forum could be a tab, a YouTube channel could be a tab, a calendar scheduler could be a tab. Together the tabs assemble into a personalized app.<br /><br /><br /></div> 
           </div>
@@ -133,7 +165,7 @@ a user-friendly interface, robust framework, and a range of features that simpli
 <div class="t412__col t-col t-col_4 t412__col"> 
         <div class="t412__content" style="border-color: #000000;border-width: 2px;">
             <div class="t412__wrapper">           
-              <img class="t412__img t412__img_circle t-img" src="https://static.tildacdn.com/tild6362-3131-4533-b461-643631633533/Blog_post-bro.png" data-tu-max-width="300" data-tu-max-height="300" style="" imgfield="img3" /> 
+              <img class="" src="https://static.tildacdn.com/tild6362-3131-4533-b461-643631633533/Blog_post-bro.png" data-tu-max-width="300" data-tu-max-height="300" style="" imgfield="img3" /> 
             <div class="t412__title t-name t-name_xl" style="" field="title3" >Functionality</div>
               <div class="t412__descr t-text" style="" field="descr3" >A Prasso site is both business information site and Prasso api site. The api serves the Prasso apps. Apps can be assembled/ built at a Prasso site using the admin tools. And then when a user with an assigned team and app logs into the mobile app, the assembled presentation becomes their personalized mobile app.</div> 
           </div>
@@ -162,6 +194,8 @@ a user-friendly interface, robust framework, and a range of features that simpli
 			  <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
 				<div class="bg-white rounded-lg shadow-md overflow-hidden text-center">
 				  <div class="px-6 py-4">
+          <img class="m-auto" src="https://images.prasso.io/faith/FaithLakeCityLogo-250.png" style="min-height:150px;" /> 
+           
 					<h3 class="text-lg font-semibold text-gray-800 mb-2">Faith Lake City
 					</h3>
 					<p class="text-gray-600 leading-6">Family-Oriented and Biblical church in Lake City, Florida 
@@ -173,6 +207,7 @@ a user-friendly interface, robust framework, and a range of features that simpli
 				</div>
 				<div class="bg-white rounded-lg shadow-md overflow-hidden text-center">
 				  <div class="px-6 py-4">
+          <img class="m-auto" src="https://d2bj0u1jhmvqgo.cloudfront.net/prasso/-app-photos/logos-1/k9V1XYRZxpnTBR6AUKWPqQyUvVND18a9ET3zSQ2v.png" style="max-height:150px;" /> 
 					<h3 class="text-lg font-semibold text-gray-800 mb-2">Go Go Delivery
 					</h3>
 					<p class="text-gray-600 leading-6">Easily schedule and track your deliveries with our platform.
@@ -184,6 +219,7 @@ a user-friendly interface, robust framework, and a range of features that simpli
 				</div>
 				<div class="bg-white rounded-lg shadow-md overflow-hidden text-center">
 				  <div class="px-6 py-4">
+            <img class="m-auto" src="	https://images.prasso.io/faxt/Microsites-rafiki.svg" style="max-height:150px; min-height:150px;" />
 					<h3 class="text-lg font-semibold text-gray-800 mb-2">FAXT
 					</h3>
 					<p class="text-gray-600 leading-6">Developer site that highlights Prasso functionality.
@@ -209,8 +245,8 @@ a user-friendly interface, robust framework, and a range of features that simpli
             
         </div>      <div class="t017__title t-title t-title_xxs" field="title" style="">
             
-            <H1>Start Now for Free</h1>
-           <button class="t-btn t-btn_xxs t-animate" onclick="window.location.href='./register';" style="color:#ffffff;background-color:#000000;border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;">
+            <H1 class="prasso-orange-accent">Start Now for Free</h1>
+           <button class="t-btn t-btn_xxs t-animate prasso-green" onclick="window.location.href='./register';" style="border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;">
             <span class="t-btn__wrapper t-valign_middle">
               <span class="t-btn__text">Get Started</span>
             </span>
@@ -222,7 +258,7 @@ a user-friendly interface, robust framework, and a range of features that simpli
 </div>
 <div class="bt-1 bg-white shadow text-gray-500">
     <div class="p-14 flex sm:justify-center items-center  ">
-       <a href="privacy">privacy</a> | <a href="terms">terms</a>
+       <a href="/privacy">privacy</a> | <a href="/terms">terms</a>
     </div>
     <div class="flex sm:justify-center items-center sm:pt-0 ">
         <small>&copy faxt 1999-<?php echo date('Y'); ?> and DeductionTraq</small>
