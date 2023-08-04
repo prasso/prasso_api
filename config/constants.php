@@ -18,7 +18,7 @@ return [
         'ADMIN_EMAIL_SIGNATURE' => 'Prasso Support',
         'WELCOME_EMAIL_SUBJECT' => 'Welcome to Prasso',
         'CONTACT_FORM_SUBJECT' => 'Prasso Contact Form',
-        'PRASSO_USER_WELCOME_EMAIL' => 'Welcome this user to Prasso',
+        'PRASSO_USER_WELCOME_EMAIL' => 'Welcome this user to ',
         'SITE_SETUP_EMAIL' => 'DNS configuration required',
         'NOTIFY_NEWSLETTER_SUBSCRIBER_EMAIL' => 'A person signed up for Prasso newsletter',
         'UNAUTHORIZED' => 401,
