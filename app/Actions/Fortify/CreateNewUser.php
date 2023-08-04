@@ -27,7 +27,7 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input)
     {
-        Validator::make($input, [
+         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => $this->passwordRules(),
@@ -44,14 +44,14 @@ class CreateNewUser implements CreatesNewUsers
             ]), function (User $user) use ($input) {
 
                 $site = Controller::getClientFromHost();
-                $site_team_id=-1;
+                $site_team_id=config('constants.PRASSO_TEAM_ID');
                 //get the team from the site
                 if ($site->supports_registration) {
                     $teamsite = TeamSite::where('site_id', $site->id)->first();
                     if ($teamsite == null)
                     {
                         Log::error('TeamSite not found for site: ' . $site->id);
-                        $teamsite = TeamSite::where('site_id', 1)->first();
+                        $teamsite = TeamSite::where('site_id', $site_team_id)->first();
                     }
                     $team = Team::where('id', $teamsite->team_id)->first();
                     $site_team_id = $team->id;

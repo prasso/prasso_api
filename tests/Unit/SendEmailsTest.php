@@ -42,28 +42,6 @@ class SendEmailsTest extends TestCase
 
     }
 
-    /*public function test_send_welcome_email()
-    {
-        // Create a mock mailer object
-        $mailer = $this->getMockBuilder(\Illuminate\Contracts\Mail\Mailer::class)
-        ->disableOriginalConstructor()
-        ->getMock();
-
-        // Set up expectations for the mailer object
-        $mailer->expects($this->once())
-        ->method('send')
-        ->with('email.welcome_user', ['user' => $this->user], $this->callback(function ($message) {
-        return $message->to[0]['address'] === $this->user->email &&
-            $message->subject === 'Welcome to Prasso Local';
-        }));
-
-        // Set the mailer instance on the app container
-        $this->app->instance(\Illuminate\Contracts\Mail\Mailer::class, $mailer);
-
-        // Call the sendWelcomeEmail method on the user
-        $this->user->sendWelcomeEmail($this->site_team_id);
-
-    }*/
     public function test_send_welcome_email()
 {
     // Set up expectations for the Mail facade
