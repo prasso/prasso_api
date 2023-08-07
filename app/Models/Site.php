@@ -51,6 +51,26 @@ class Site extends Model
         return $this->hasMany(\App\Models\SiteMedia::class, "fk_site_id", "id");
     }
 
+    public function teams(){
+        return $this->hasMany(\App\Models\TeamSite::class, "site_id", "id")
+            ->with('team');
+    }
+
+    public function app()
+    {
+        return $this->hasOne(Apps::class);
+    }
+ 
+    public function sitePages()
+    {
+        return $this->hasMany(\App\Models\SitePages::class, "fk_site_id", "id");
+    }
+
+    public function getApp()
+    {
+        return optional($this->app)->id;
+    }
+    
     public static function getClient( $host) 
     {
         if ($host == null)
@@ -148,12 +168,6 @@ class Site extends Model
             $dashboardpage->save();
         }
     }
-    // a function to get the site pages for this site
-    public function getSitePages()
-    {
-        $sitepages = SitePages::where('fk_site_id',$this->id)->get();
-        return $sitepages;
-    }
 
     private function user_is_admin(){
         $is_admin_for_site =  Auth::user() !=null && ( Auth::user()->isInstructor() || Auth::user()->isThisSiteTeamOwner($this->id) );
@@ -162,7 +176,7 @@ class Site extends Model
 
     public function getSiteMapList($current_page = null)
     {
-        $sitepages = $this->getSitePages();
+        $sitepages = $this->sitePages();
         $sitemap = array();
         foreach ($sitepages as $page)
         {
@@ -253,4 +267,15 @@ class Site extends Model
         $logo_image = config('constants.CLOUDFRONT_ASSET_URL') . config('constants.APP_LOGO_PATH') .'logos-'.$this->id.'/'. $photo->hashName();
         return $logo_image;
     }
+
+    public function teamFromSite(){
+       //get the team from the site
+    $teamSite = $this->teams()->first();
+    if ($teamSite == null) {
+        Log::error('TeamSite not found for site: ' . $this->id);
+        $teamSite = TeamSite::where('site_id', 1)->first();
+    }
+    return optional($teamSite)->team;
+    }
 }
+

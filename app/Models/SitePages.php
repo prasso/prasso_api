@@ -18,6 +18,11 @@ class SitePages extends Model
         'fk_site_id', 'section', 'title', 'description', 'url','headers','masterpage','template','style','login_required','user_level','where_value'
     ];
     
+    public function site()
+    {
+        return $this->belongsTo(Site::class, 'fk_site_id');
+    }
+
     public function site_page_data(){
         return $this->hasMany(\App\Models\SitePageData::class, "fk_site_page_id", "id");
     }

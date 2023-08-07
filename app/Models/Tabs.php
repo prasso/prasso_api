@@ -47,7 +47,7 @@ class Tabs extends Model
 
   //  It's hasOne($related, $foreignKey, $localKey)
     public function team_role() {
-        return $this->hasOne(UserRole::class, 'team_role', 'id');
+        return optional($this->hasOne(UserRole::class, 'team_role', 'id'));
     }
 
 

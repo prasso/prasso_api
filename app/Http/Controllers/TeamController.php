@@ -38,9 +38,9 @@ class TeamController extends Controller
   
         $team = Team::where('id',$user->current_team_id)->first();
      
-        $teams_owned = $user->team_owner->toArray();
+        $teams_owned = $user->team_owner;
   
-        $teamapps = $teams_owned->apps;
+        $teamapps = $team->apps;
         
         $activeAppId = '0';
         if (isset($activeApp->app_id))
@@ -236,10 +236,17 @@ class TeamController extends Controller
     public function editApp(AppsService $appsService,$teamid, $appid)
     {
         $user = Auth::user(); 
-        $team = $user->team_owned->where('id',$teamid)->first();
+        if ($user->current_team_id != $teamid)
+        {
+            $response['message'] = trans('messages.invalid_token');
+            $response['success'] = false;
+            $response['status_code'] = \Symfony\Component\HttpFoundation\Response::HTTP_UNAUTHORIZED;
+            return $this->sendError('Unauthorized.', ['error' => 'Please login again.'], 400);
+        }
+        $team = Team::where('id',$teamid)->first();
         $teamapps = $team->apps;     
         $teamapp = $teamapps->where('id',$appid)->first();
-        $team_selection = $user->team_owned->pluck('name','id');
+        $team_selection = $team->pluck('name','id');
         if ($appid == 0 || $teamapp ==  null)
         {
             $teamapp = $appsService->getBlankApp($user);
@@ -311,7 +318,7 @@ class TeamController extends Controller
         return $this->getEditTab($teamid, $appid, 'new');
     }
   
-    public function deleteTab($appid, $tabid)
+    public function deleteTab($teamid,$appid, $tabid)
     {
         $tab = Tabs::findOrFail($tabid);
         if ($tab)
@@ -341,7 +348,7 @@ class TeamController extends Controller
     private function getEditTab($teamid, $appid, $tabid)
     {
         $user = Auth::user(); 
-        $team = $user->team_owned->where('id',$teamid)->first();
+        $team = Team::where('id',$teamid)->first();
         $teamapps = $team->apps;     
         $teamapp = $teamapps->where('id',$appid)->first();
 

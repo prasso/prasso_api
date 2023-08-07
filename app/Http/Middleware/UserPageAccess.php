@@ -55,7 +55,6 @@ class UserPageAccess
         }
         else
         {
-          info('authorized user');
           \Auth::login($user);
         }
         return true;

@@ -30,18 +30,20 @@ class Apps extends Model
         ->orderBy('sort_order');
     }
 
-    // for app users that have either instructor or admin, will exclude subscribepage links
+    // for app users that have either instructor or admin
     public function instructorroletabs()
     {
-        info('instructorroletabs');
-
         return $this->hasMany(\App\Models\Tabs::class, "app_id", "id")
-        ->where("team_role","=", config('constants.INSTRUCTOR'))
-        ->orWhere(function($query) 
+        ->where(function($query) 
         {
-           $query->where("team_role","=", null)
-           ->where('restrict_role',"=",false);
+            $query->where("team_role","=", config('constants.INSTRUCTOR'))
+            ->orWhere(function($query) 
+            {
+                $query->where("team_role","=", null)
+                ->where('restrict_role',"=",false);
+            });
         })
+        ->union($this->nullroletabs())
         ->orderBy('sort_order');
     }
 

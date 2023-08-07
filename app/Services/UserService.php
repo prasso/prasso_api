@@ -39,20 +39,16 @@ class UserService
         return true;
       }
 
+      //the url used in the request determines the Site
       $site = Controller::getClientFromHost();
       if ($site == null)
       {
         return false;
       }
 
-      //get the team from the site
-      $teamsite = TeamSite::where('site_id', $site->id)->first();
-      if ($teamsite == null)
-      {
-          Log::error('TeamSite not found for site: ' . $site->id);
-          $teamsite = TeamSite::where('site_id', 1)->first();
-      }
-      $team = Team::where('id', $teamsite->team_id)->first();
+      //Sites have teams ( may be one or may be many ) and users are attached to teams
+      // that determines if the user is a member of the site
+      $team = $site->teams()->first();
   
       $teamuser = TeamUser::where('user_id', $user->id)->where('team_id', $team->id)->first();
 
@@ -254,13 +250,7 @@ info('addOrUpdateSubscription: '.json_encode($user));
         }
         //get the team from the site
         if ($site->supports_registration) {
-          $teamsite = TeamSite::where('site_id', $site->id)->first();
-          if ($teamsite == null)
-          {
-              Log::error('TeamSite not found for site: ' . $site->id);
-              $teamsite = TeamSite::where('site_id', 1)->first();
-          }
-          $team = Team::where('id', $teamsite->team_id)->first();
+          $team = $site->teamFromSite();
           $team->users()->attach(
               $user,
               ['role' => 'user']
@@ -384,10 +374,8 @@ info('addOrUpdateSubscription: '.json_encode($user));
         }
         
         $app_data = $appsService->getAppSettingsBySite($site, $user,$user_access_token);
-        
         $success['app_data'] = $app_data; //configuration for setting up the app is here
 
-    Log::info('app data being returned: ' . json_encode($success)); 
         return $success;
     }
 
