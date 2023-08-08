@@ -47,13 +47,7 @@ class CreateNewUser implements CreatesNewUsers
                 $site_team_id=config('constants.PRASSO_TEAM_ID');
                 //get the team from the site
                 if ($site->supports_registration) {
-                    $teamsite = TeamSite::where('site_id', $site->id)->first();
-                    if ($teamsite == null)
-                    {
-                        Log::error('TeamSite not found for site: ' . $site->id);
-                        $teamsite = TeamSite::where('site_id', $site_team_id)->first();
-                    }
-                    $team = Team::where('id', $teamsite->team_id)->first();
+                    $team = $site->teamFromSite();
                     $site_team_id = $team->id;
                     $team->users()->attach(
                         $user,

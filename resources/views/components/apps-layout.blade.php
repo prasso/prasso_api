@@ -1,6 +1,6 @@
 
 <div class="col-span-6">
-    <div class="max-w-xl text-sm bg-gray">
+    <div class="text-sm bg-gray">
         @foreach($apps as $app)
         @if (Auth::user()->id == 1 || $app['app_name'] == 'Prasso')
 

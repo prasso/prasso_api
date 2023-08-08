@@ -143,7 +143,6 @@ class AuthController extends BaseController
             $success['pn_token'] = $user->pn_token;
             $success['thirdPartyToken'] = '';
             
-            info('record_login'.json_encode($success));
             return $this->sendResponse($success, 'User has logged in.');
         } 
         else{ 
@@ -209,7 +208,7 @@ class AuthController extends BaseController
         }
       $token = $user->personalAccessToken? $user->personalAccessToken->token : null;
       $app_data = $this->appsService->getAppSettingsBySite($this->site, $user,$token);
-        $app_data = $this->appsService->getAppSettingsBySite($this->site, $user,$token);
+      info('getAppSettings'.json_encode($app_data));
 
         return $app_data;
 

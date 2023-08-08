@@ -8,8 +8,11 @@ use App\Models\LivestreamSettings;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\SiteRequest;
 use App\Models\Site;
+use App\Models\Apps;
+use App\Models\Tabs;
 use Auth;
 use Livewire\WithFileUploads;
+use App\Services\AppSyncService;
 
 class SiteEditor extends Component
 {
@@ -18,14 +21,19 @@ class SiteEditor extends Component
     public $sites, $site_id,$site_name,$description, $host,$main_color,$logo_image, 
             $database, $favicon, $supports_registration, $subteams_enabled, $app_specific_js, $app_specific_css,
             $does_livestreaming,$https_host, $image_folder;
+    public $sitePages;
     public $current_user;
     public $isOpen = 0;
 
     public $photo;
+    public $showSyncDialog = false;
+    public $selectedPages = [];
 
+    protected $appSyncService;
     
-    public function mount(User $user)
+    public function mount(User $user, AppSyncService $appSyncService)
     {
+        $this->appSyncService = $appSyncService;
         $this->current_user = $user;
     }
 
@@ -61,6 +69,37 @@ class SiteEditor extends Component
         $this->isOpen = false;
     }
   
+    public function showTheSyncDialog($id)
+    {
+        $site = Site::findOrFail($id);
+        
+        $this->site_id = $id;
+        $this->site_name = $site->site_name;
+        $this->description = $site->description;
+        $this->host = $site->host;
+        $this->main_color = $site->main_color;
+        $this->logo_image = $site->logo_image;
+        $this->database = $site->database;
+        $this->favicon = $site->favicon;
+        $this->supports_registration = $site->supports_registration;
+        $this->subteams_enabled = $site->subteams_enabled;
+        $this->app_specific_js = $site->app_specific_js;
+        $this->app_specific_css = $site->app_specific_css;
+        $this->image_folder = $site->image_folder;
+
+
+        $this->sitePages = $site->sitePages;
+        $this->showSyncDialog = true;
+    }
+
+    public function hideSyncDialog()
+    {
+        $this->showSyncDialog = false;
+        if ($this->selectedPages != null)
+        {
+            $this->syncAppToSite();
+        }
+    }
     /**
      * The attributes that are mass assignable.
      *
@@ -182,7 +221,15 @@ class SiteEditor extends Component
         $this->openModal();
     }
     
+    public function syncAppToSite()
+    {
+        $site = Site::findOrFail($this->site_id);
+        $app = $site->app;
 
+        $this->appSyncService->syncSelectedSitePagesToApp($site, $app, $this->selectedPages);
+  
+        $this->showSyncDialog = false;
+    }
     /**
      * The attributes that are mass assignable.
      *
@@ -193,4 +240,5 @@ class SiteEditor extends Component
         Site::find($id)->delete();
         session()->flash('message', 'Site  Deleted Successfully.');
     }
+
 }

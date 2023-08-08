@@ -41,22 +41,29 @@
 
     <!-- Icon -->
     <div class="col-span-6 sm:col-span-4">
-        <x-jet-label for="icon" value="{{ __('Icon') }}" />
+        <x-jet-label value="{{ __('Icon') }}" />
 
         <div class="multiselect">
-            <div class="selectBox" x-data="{ isShowing: false }" onclick="showRadios()">
-                <select  class='border-2 border-indigo-600/100 p-2'>
-                    <option>Select an icon</option>
-                </select>
-                <div class="overSelect"></div>
-            </div>
-            <div id="checkboxes">
+        <div class="selectBox" x-data="{ isShowing: false }" onclick="showRadios()">
+            <select class='border-2 border-indigo-600/100 p-2' wire:model.defer="tabdata.icon">
+                <option value="">Select an icon</option>
                 @foreach($icondata as $name)
-                <label for="{{ $name }}">
-                    <input x:model="selectedIcon" onclick="showRadios()" type="radio" value="{{ $name }}" wire:model.defer="tabdata.icon"  name="icon" /><i class="material-icons md-36">{{ $name }}</i> {{ $name }}</label>
+                    <option value="{{ $name }}" @if($tabdata['icon'] == $name) selected @endif>
+                        {{ $name }}
+                    </option>
                 @endforeach
-            </div>
+            </select>
+            <div class="overSelect"></div>
         </div>
+        <div id="checkboxes">
+            @foreach($icondata as $name)
+                <label>
+                    <input x:model="selectedIcon" onclick="showRadios()" type="radio" value="{{ $name }}" wire:model.defer="tabdata.icon" name="icon" />
+                    <i class="material-icons md-36">{{ $name }}</i> {{ $name }}
+                </label>
+            @endforeach
+        </div>
+    </div>
         <div style="float:right; margin-left:2px;color:brown;" id="selectedIcon"></div>
         
         <x-jet-input-error for="icon" class="mt-2" />
