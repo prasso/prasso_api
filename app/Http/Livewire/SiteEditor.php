@@ -226,6 +226,10 @@ class SiteEditor extends Component
         $site = Site::findOrFail($this->site_id);
         $app = $site->app;
 
+        if ($this->appSyncService == null){
+
+            $this->appSyncService = new AppSyncService();
+        }
         $this->appSyncService->syncSelectedSitePagesToApp($site, $app, $this->selectedPages);
   
         $this->showSyncDialog = false;

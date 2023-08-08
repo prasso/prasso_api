@@ -208,7 +208,6 @@ class AuthController extends BaseController
         }
       $token = $user->personalAccessToken? $user->personalAccessToken->token : null;
       $app_data = $this->appsService->getAppSettingsBySite($this->site, $user,$token);
-      info('getAppSettings'.json_encode($app_data));
 
         return $app_data;
 
