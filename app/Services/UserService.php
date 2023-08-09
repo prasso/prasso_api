@@ -48,7 +48,8 @@ class UserService
 
       //Sites have teams ( may be one or may be many ) and users are attached to teams
       // that determines if the user is a member of the site
-      $team = $site->teams()->first();
+      //$teams = $site->teams->pluck('team');
+      $team = $site->teams->first();
   
       $teamuser = TeamUser::where('user_id', $user->id)->where('team_id', $team->id)->first();
 
