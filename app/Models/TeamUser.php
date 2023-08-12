@@ -30,22 +30,23 @@ class TeamUser extends Model
     public static function addToBaseTeam($user, $assign_team_id = true)
     {
         //put this person on the main team for us to welcome until we know who they will settle in with
-        if ($team = Team::where('user_id',1)->get()) {
-            TeamUser::forceCreate([
-                'user_id' => $user->id,
-                'team_id' => 1,
-                'role' => config('constants.TEAM_USER_ROLE')
-            ]);
-           
-            if ($assign_team_id) {
-                $user->current_team_id = 1;
+        if (!$user->teams->contains(1)) {
+            if ($team = Team::where('user_id',1)->get()) {
+                TeamUser::forceCreate([
+                    'user_id' => $user->id,
+                    'team_id' => 1,
+                    'role' => config('constants.TEAM_USER_ROLE')
+                ]);
+
+                if ($assign_team_id) {
+                    $user->current_team_id = 1;
+                }
+                $user->save();
+                TeamMemberAdded::dispatch($team, $user);
             }
-            $user->save();
-            TeamMemberAdded::dispatch($team, $user);
-        }
-        else
-        {
-            Log::info('base team not found in create new user');
+            else {
+                Log::info('base team not found in create new user');
+            }
         }
     }
 
