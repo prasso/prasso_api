@@ -144,6 +144,10 @@ class SitePageController extends BaseController
             return null;
         }
         $user = Auth::user() ?? null;
+        if ($user == null)
+        {
+            $user = $this->setUpUser($request, $user);
+        }
         $sitepage = SitePages::where('fk_site_id',$this->site->id)->where('section',$section)->first();
 //info(json_encode($sitepage  ));
         if ($sitepage == null)

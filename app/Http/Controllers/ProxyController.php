@@ -30,7 +30,6 @@ class ProxyController extends BaseController
         $url = "https://nominatim.openstreetmap.org/search?q=" . urlencode($q) . "&format=json&addressdetails=1&limit=1";
         info($url);
         $response = Http::get($url);
-        info($response->body());
 
         $result = json_decode($response->body())[0];
         $lat = $result->lat;

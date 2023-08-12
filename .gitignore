@@ -34,3 +34,4 @@ yarn-error.log
 .vscode/*
 firestore-database-rules.txt
 .phpunit.result.cache
+faxt_api_backup.sql

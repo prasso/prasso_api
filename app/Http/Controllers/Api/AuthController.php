@@ -76,7 +76,6 @@ class AuthController extends BaseController
         $success = array_merge($success_p1,$success_p2);
         $success['ShowIntro'] = 'SHOW';
 
-        info('register'.json_encode($success));
         return $this->sendResponse($success, 'User registered successfully.');
     }
 
@@ -213,37 +212,7 @@ class AuthController extends BaseController
 
     }
     
-    private function setUpUser($request,$user)
-    {
-        $accessToken  = $request->header(config('constants.AUTHORIZATION_'));
-        $accessToken = str_replace("Bearer ","",$accessToken);
     
-        if (!isset($accessToken) && isset($_COOKIE[config('constants.AUTHORIZATION_')]))
-        {
-            $accessToken = $_COOKIE[config('constants.AUTHORIZATION_')];
-        }
-        else
-        if ((!isset($accessToken) || $accessToken == 'Bearer') && $user != null) 
-        {
-
-            $accessToken = $request->user()->createToken(config('app.name'))->accessToken->token;
-
-        }
-        if (isset($accessToken))
-        {
-            $this->setAccessTokenCookie($accessToken);
-            if ($user == null)
-            {
-                $user = User::getUserByAccessToken($accessToken);
-            }
-
-            if ($user != null) 
-            {
-                \Auth::login($user); 
-            }
-        }
-       return $user;
-    }
 
     private function uploadImage(Request $request, $filePath, $userid)
     {
@@ -295,22 +264,5 @@ class AuthController extends BaseController
 
     }
        
-    /**
-    * function is used to accessToken email cookie to browser
-    */
-    protected function unsetAccessTokenCookie()
-    {
-        setcookie(config('constants.ACCESSTOKEN_'), '', time() - 3600, "/"); 
-    }
 
-    /**
-     * function is used to set accessToken cookie to browser
-     */
-    protected function setAccessTokenCookie($accessToken)
-    {
-        setcookie(config('constants.ACCESSTOKEN_'), $accessToken, time() + (86400 * 30), "/");
-        
-        setcookie(config('constants.COMMUNITYTOKEN'), $accessToken, time() + (86400 * 30), "/");
-        setcookie(config('constants.COMMUNTIYREMEMBER'), $accessToken, time() + (86400 * 30), "/");
-    }
 }

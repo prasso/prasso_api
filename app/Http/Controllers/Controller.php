@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use App\Models\Site;
 use App\Models\SitePages;
+use App\Models\User;
 use App\Models\MasterPage;
 use Illuminate\Http\Request;
 
@@ -123,5 +124,57 @@ class Controller extends FrameworkController
             return false;
         }
         return true;
+    }
+
+    protected function setUpUser($request,$user)
+    {
+        $accessToken  = $request->header(config('constants.AUTHORIZATION_'));
+        $accessToken = str_replace("Bearer ","",$accessToken);
+    
+        if (!isset($accessToken) && isset($_COOKIE[config('constants.AUTHORIZATION_')]))
+        {
+            $accessToken = $_COOKIE[config('constants.AUTHORIZATION_')];
+        }
+        else
+        if ((!isset($accessToken) || $accessToken == 'Bearer') && $user != null) 
+        {
+
+            $accessToken = $request->user()->createToken(config('app.name'))->accessToken->token;
+
+        }
+        if (isset($accessToken))
+        {
+            $this->setAccessTokenCookie($accessToken);
+            if ($user == null)
+            {
+                $user = User::getUserByAccessToken($accessToken);
+            }
+
+            if ($user != null) 
+            {
+                \Auth::login($user); 
+            }
+        }
+        info ('in setupUser: accessToken: '.$accessToken.' user: '. json_encode($user));
+       return $user;
+    }
+
+        /**
+    * function is used to accessToken email cookie to browser
+    */
+    protected function unsetAccessTokenCookie()
+    {
+        setcookie(config('constants.ACCESSTOKEN_'), '', time() - 3600, "/"); 
+    }
+
+    /**
+     * function is used to set accessToken cookie to browser
+     */
+    protected function setAccessTokenCookie($accessToken)
+    {
+        setcookie(config('constants.ACCESSTOKEN_'), $accessToken, time() + (86400 * 30), "/");
+        
+        setcookie(config('constants.COMMUNITYTOKEN'), $accessToken, time() + (86400 * 30), "/");
+        setcookie(config('constants.COMMUNTIYREMEMBER'), $accessToken, time() + (86400 * 30), "/");
     }
 }
