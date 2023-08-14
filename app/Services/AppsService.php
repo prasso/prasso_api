@@ -55,11 +55,6 @@ class AppsService
             $returnval = str_replace('instructorroletabs','tabs',json_encode($app_data));
           
         }
-        //update any user specific headers
-        if ($user)
-        {
-            $returnval = str_replace(config('constants.USER_TOKEN'), $user_access_token, $returnval);
-        }
       
         if (isset($user->thirdPartyToken))
         {

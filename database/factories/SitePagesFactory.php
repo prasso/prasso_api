@@ -27,7 +27,7 @@ class SitePagesFactory extends Factory
             'section' => 'testsection',
             'description' => $this->faker->phoneNumber,
             'url' => 'testSitePages.test',
-            'headers' =>  'Authorization: BearerToken',
+            'headers' =>  'Authorization: Bearer [USER_TOKEN]',
             'masterpage' => '' ,
             'template' =>  '',
             'style' =>  '',
