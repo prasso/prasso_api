@@ -128,19 +128,21 @@ class Controller extends FrameworkController
 
     protected function setUpUser($request,$user)
     {
-        $accessToken  = $request->header(config('constants.AUTHORIZATION_'));
+        $accessToken = $request->header(config('constants.AUTHORIZATION_'));
         $accessToken = str_replace("Bearer ","",$accessToken);
     
         if (!isset($accessToken) && isset($_COOKIE[config('constants.AUTHORIZATION_')]))
         {
             $accessToken = $_COOKIE[config('constants.AUTHORIZATION_')];
         }
-        else
-        if ((!isset($accessToken) || $accessToken == 'Bearer') && $user != null) 
-        {
+        else {
+            
+            if ((!isset($accessToken) || $accessToken == 'Bearer') && $user != null) 
+            {
 
-            $accessToken = $request->user()->createToken(config('app.name'))->accessToken->token;
+                $accessToken = $request->user()->createToken(config('app.name'))->accessToken->token;
 
+            }
         }
         if (isset($accessToken))
         {
