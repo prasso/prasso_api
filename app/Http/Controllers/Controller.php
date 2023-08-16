@@ -129,6 +129,12 @@ class Controller extends FrameworkController
     protected function setUpUser($request,$user)
     {
         $accessToken = $request->header(config('constants.AUTHORIZATION_'));
+        //if no accesstoken, check if we have an X-Authorization header present
+        if($accessToken == '' && $auth = $request->header(config('constants.XAUTHORIZATION_'))) {
+            info('setting authorization header from xauthorization header');
+            $request->headers->set('Authorization', $auth);
+        }
+
         $accessToken = str_replace("Bearer ","",$accessToken);
     
         if (!isset($accessToken) && isset($_COOKIE[config('constants.AUTHORIZATION_')]))
@@ -136,7 +142,7 @@ class Controller extends FrameworkController
             $accessToken = $_COOKIE[config('constants.AUTHORIZATION_')];
         }
         else {
-            
+
             if ((!isset($accessToken) || $accessToken == 'Bearer') && $user != null) 
             {
 
