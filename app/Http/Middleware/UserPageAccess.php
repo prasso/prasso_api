@@ -14,7 +14,10 @@ class UserPageAccess
 
    public function handle($request, Closure $next)
    {
-     // Log::info('in Middleware UserPageAccess');
+    Log::info('Request URL: ' . $request->url());
+      Log::info('in Middleware UserPageAccess');
+$backtrace = debug_backtrace();
+Log::info('Call stack:', $backtrace);
     
       $user = \Auth::user();
       if ($user == null)
