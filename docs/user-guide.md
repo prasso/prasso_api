@@ -8,8 +8,10 @@ This guide provides instructions for end users of Prasso apps.
 - Open the Prasso mobile app 
 - Tap "Register" and enter your email and password
 - You will receive a confirmation email to activate your account
+- All newly registered users receive the user access level. Admin access must be assigned by an existing admin.
 
 ## Managing Sites
+- Users who are Admins of a team will see an option to Create a new Site and App when they log in
 
 ### Adding Pages
 
@@ -34,6 +36,14 @@ This guide provides instructions for end users of Prasso apps.
 - Click "Update App" to publish changes  
 
 ## Managing Teams
+- Team Admins will see the team management option on their dashboard when logged in
+
+### Creating Sub-Teams
+
+- Sites that have sub-teams enabled will show an option to add team from the teams management page.
+- Go to Teams and click "Add Team"
+- Enter a team name and description
+- Select "Isolated Data" to restrict data access
 
 ### Adding Users
 
@@ -41,8 +51,3 @@ This guide provides instructions for end users of Prasso apps.
 - Enter the email address and role (Admin or User)
 - The user will receive an invitation to join the team
 
-### Creating Sub-Teams
-
-- Go to Teams and click "Add Team"
-- Enter a team name and description
-- Select "Isolated Data" to restrict data access

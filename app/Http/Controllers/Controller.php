@@ -25,7 +25,10 @@ class Controller extends FrameworkController
         
         $site = Controller::getClientFromHost();
         $this->site = $site;
-
+        if ($site == null)
+        {
+            return;
+        }
         $masterpage = $this->getMasterForSite($site);
 
         View::share('site', $site);

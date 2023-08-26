@@ -45,4 +45,5 @@ return [
         'ACCESSTOKEN_' => 'accessToken' ,
         'thirdPartyToken' => 'thirdPartyToken',
         'LOGIN_AGAIN' => 'Unrecognized user, please login again.',
+        'TEAM_FACTORY_USER_ID' => 10000,
 ];

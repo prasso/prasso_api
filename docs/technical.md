@@ -8,8 +8,8 @@
   - composer install
   - Setting environment variables - copy the env_example file to .env and fill in the appropriate values for your setup
 - ## Deployment
-  - Hosting options 
-  - CI/CD workflows
+  - Hosting options - Current use is from AWS and a hosted EC2 instance. 
+  - CI/CD workflows - Not yet implemented.
 - ## API reference
   - Endpoints, parameters, responses
 - Customization
@@ -25,7 +25,7 @@
 - ## [Laravel Backend](https://github.com/laravel/laravel)
   - Framework overview
   - Custom controllers
-  - Database schema
+  - Database schema - Contact the hosting developer to arrange this.
 - ## Blade Templates Frontend
   - Component architecture
   - App/Site management

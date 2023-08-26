@@ -25,7 +25,7 @@ class TeamFactory extends Factory
         return [
             'name' => $this->faker->name,
             'personal_team' => false,
-            'user_id' => 10000,
+            'user_id' => config('constants.TEAM_FACTORY_USER_ID'),
             'phone' => $this->faker->phoneNumber
         ];
     }

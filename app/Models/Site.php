@@ -27,7 +27,6 @@ class Site extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'id',
         'site_name',
         'description',
         'host',
@@ -52,8 +51,7 @@ class Site extends Model
     }
 
     public function teams(){
-        return $this->hasMany(\App\Models\TeamSite::class, "site_id", "id")
-            ->with('team');
+        return $this->belongsToMany(Team::class, 'team_site', 'site_id', 'team_id');
     }
 
     public function app()
@@ -69,6 +67,18 @@ class Site extends Model
     public function getApp()
     {
         return optional($this->app)->id;
+    }
+
+    public static function isPrasso($host) 
+    {
+        $site = Site::getClient($host);
+        if ($site == null)
+        {
+            Log::info('Site get client failed for host: ' . $host);
+            abort(404);
+            return null;
+        }
+        return $site->id == 1? 'true' : 'false';
     }
     
     public static function getClient( $host) 
@@ -199,13 +209,14 @@ class Site extends Model
         $list = '';
         foreach ($sitemap as $key => $value)
         {
-            $list .= '<li><a href="/page/' . $key . '">' . $value . '</a></li>';
+            //
+            $list .= '<li><a class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out" href="/page/' . $key . '">' . $value . '</a></li>';
         }
         
         // if this user is an admin or a team owner then add the site editor
         if ( $this->user_is_admin() )
         {
-            $list .= '<li><a href="/site/edit">Site Editor</a></li>';
+            $list .= '<li><a class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out" href="/site/edit">Site Editor</a></li>';
         }
 
     
@@ -269,13 +280,13 @@ class Site extends Model
     }
 
     public function teamFromSite(){
-       //get the team from the site
-    $teamSite = $this->teams()->first();
-    if ($teamSite == null) {
-        Log::error('TeamSite not found for site: ' . $this->id);
-        $teamSite = TeamSite::where('site_id', 1)->first();
-    }
-    return optional($teamSite)->team;
+       //get the first team from the site, it was added when the site was created
+        $teamSite = $this->teams()->first();
+        if ($teamSite == null) {
+            Log::error('TeamSite not found for site: ' . $this->id);
+            $teamSite = TeamSite::where('site_id', 1)->first();
+        }
+        return optional($teamSite)->team;
     }
 }
 

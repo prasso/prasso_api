@@ -34,7 +34,7 @@ class UserService
     public function isUserOnTeam($user)
     {
       //if the user is super admin he can log into any site ( that's me for now)
-      if ($user->hasRole(config('constants.SUPER_ADMIN')))
+      if ($user->isSuperAdmin())
       {
         return true;
       }
@@ -48,17 +48,19 @@ class UserService
 
       //Sites have teams ( may be one or may be many ) and users are attached to teams
       // that determines if the user is a member of the site
-      $teams = $site->teams->pluck('team');
-     // $team = $site->teams->first();
-     $team = $teams->first();
-  
+      $team = $site->teams->first();
+      if ($team->user_id == $user->id)
+      {
+        //the user is the owner of the team, so they are on the team and as owner they have access to edit 
+        return true;
+      }
+
       $teamuser = TeamUser::where('user_id', $user->id)->where('team_id', $team->id)->first();
 
       if ($teamuser != null)
       {
         return true;
       }
-      info ('user is not on team: ' . $user->id . ' team: ' . $team->id);
       return false;
     }
 

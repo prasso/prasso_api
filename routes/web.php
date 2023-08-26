@@ -53,6 +53,7 @@ Route::group(['middleware'=> 'instructorusergroup'], function() {
     Route::post('/profile/profile_update_image','User2Controller@uploadProfileImage')->name('upload.post.image');
     
     Route::get('/site/edit', 'MySiteController@editMySite')->name('site.edit.mysite');
+    Route::get('/site/{siteid}/edit', 'MySiteController@editSite')->name('site.edit');
     Route::get('/site/{siteid}/livestream-mtce', 'AdminController@livestreamMtce')->name('site.mtce.livestream');
     Route::get('/site/{siteid}/livestream-mtce/{sitemediaid}', 'SiteMediaController@siteMediaEdit')->name('site.mtce.media.edit');
     Route::post('/site/{siteid}/livestream-mtce/move-to-permanent-storage', 'SiteMediaController@siteMediaCreate')->name('site.mtce.media.create');
@@ -67,7 +68,8 @@ Route::group(['middleware'=> 'instructorusergroup'], function() {
 });
 
 Route::group(['middleware'=> 'superadmin'], function() {
-
+    Route::get('/profile/{userid}/update-user','User2Controller@update_user')->name('profile.updateuser');
+   
     Route::get('/site-page-data-templates', 'SitePageDataTemplateController@index')->name('site-page-data-templates.index');
     Route::get('/site-page-data-templates/create', 'SitePageDataTemplateController@create')->name('site-page-data-templates.create');
     Route::get('/site-page-data-templates/{id}/edit', 'SitePageDataTemplateController@edit');

@@ -33,7 +33,7 @@
     @if (isset($site->app_specific_css) && str_starts_with($site->app_specific_css, 'http') )
         <link rel="stylesheet" href="{{$site->app_specific_css}}">
     @else
-        <style>{{$site->app_specific_css}}</style>
+        <style>{{ $site->app_specific_css }}</style>
     @endif
     @if (isset($site->app_specific_js) && str_starts_with($site->app_specific_js, 'http') )
         <script src="{{$site->app_specific_js}}"></script>

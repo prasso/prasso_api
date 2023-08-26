@@ -36,8 +36,6 @@ use Twilio\Rest\Client;
  * @property string $firebase_uid
  * @property string $pn_token
  * @property string $profile_photo_path
- * @property bool $enableMealReminders
- * @property string reminderTimesJson
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  *
@@ -57,8 +55,8 @@ class User extends Authenticatable {
      *
      * @var array
      */
-    protected $fillable = [
-        'name', 'email', 'password', 'profile_photo_path', 'firebase_uid', 'pn_token', 'enableMealReminders', 'reminderTimesJson', 'timeZone', 'version','phone'
+    protected $fillable = [    'name', 'email', 'password', 'profile_photo_path', 'firebase_uid', 'pn_token', 'version','phone'
+    
     ];
 
     /**
@@ -89,7 +87,7 @@ class User extends Authenticatable {
      * @var array
 
     protected $appends = [
-        'profile_photo_path', 'enableMealReminders', 'timeZone'
+        'profile_photo_path'
     ];
     
     /**
@@ -152,6 +150,25 @@ class User extends Authenticatable {
         return 'firebase_uid';
     }
 
+    public function assignRole($roleName)
+    {
+        // Find the role with the specified name.
+        $role = Role::where('role_name', $roleName)->first();
+
+        // If the role doesn't exist, throw an exception.
+        if (!$role) {
+            throw new \InvalidArgumentException("Role not found: $roleName");
+        }
+
+        // Check if the user already has the role.
+        if ($this->roles->contains($role)) {
+            return;
+        }
+
+        // Assign the role to the user.
+        $new_role = UserRole::create(['user_id' => $this->id, 'role_id' => $role->id]);
+        $new_role->save($role->toArray());
+    }
 
     public function getCoachUid() {
         $coachrecord = Team::find($this->current_team_id)->first();
@@ -170,11 +187,7 @@ class User extends Authenticatable {
     }
 
     public function hasRole(...$role_looking_for) {
-        //Log::info('received roles: ' . json_encode($role_looking_for));
-
         foreach ($this->roles as $role) {
-
-            //Log::info('role: ' . json_encode($role));
 
             if (in_array($role->role_id, $role_looking_for)) {
                 return true;
@@ -207,9 +220,9 @@ class User extends Authenticatable {
         $user_app_info=[];
         $activeApp = $this->activeApp();
   
-        $user_app_info['team'] = $this->team_owned[0];
+        $user_app_info['team'] = $this->team_owner[0];
       
-        $user_app_info['teams'] = $this->team_owned->toArray();
+        $user_app_info['teams'] = $this->team_owner->toArray();
   
         $user_app_info['teamapps'] = $user_app_info['team']->apps;
         
@@ -258,9 +271,15 @@ class User extends Authenticatable {
         }
     }
     public function getSiteCount() {
-
-        $teams = $this->team_owned->toArray();
-
+        if ($this->isSuperAdmin())
+        {
+            return 1;
+        }
+        if ($this->team_owner == null)
+        {
+            return 0;
+        }
+        $teams = $this->team_owner->toArray();
         $site_count = 0;
         foreach($teams as $team)
         {
@@ -268,7 +287,27 @@ class User extends Authenticatable {
         }
         return $site_count;
     }
-
+    public function canManageTeamForSite(){
+        if ($this->isSuperAdmin())
+        {
+            return true;
+        }
+        if ($this->team_owner == null)
+        {
+            info('team_owner is null');
+            return false;
+        }
+        $teams = $this->team_owner->toArray();
+        foreach($teams as $team)
+        {
+            if ($team['user_id'] == $this->id)
+            {
+                return true;
+            }
+        }
+        info('canManageTeamForSite returning false');
+        return false;
+    }
     /**
      * Get/Set the user's current team. This is the first team that is owned by the user, if it exists
      * at the time of this writing, only one team per user that is not a super admin is allowed
@@ -279,8 +318,8 @@ class User extends Authenticatable {
             return;
         }
         $teams = [];
-        if ($this->team_owned != null && count($this->team_owned)>0){
-            $teams = $this->team_owned->toArray();
+        if ($this->team_owner != null && count($this->team_owner)>0){
+            $teams = $this->team_owner->toArray();
         }
         if ($this->current_team_id == null) {
             $this->current_team_id = 1;

@@ -36,6 +36,26 @@
 
             <x-jet-input-error for="name" class="mt-2" />
         </div>
+        <div class="col-span-6 sm:col-span-4">
+            <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
+                Team Sites
+            </div>
+            <div class="w-1/2">
+                @foreach ($team->site as $site)
+                @if ($site->site != null)
+                <div class="flex items-center justify-between">
+                    <x-jet-label value="{{ $site->site->site_name   }}" />
+                    @if (Auth::user()->getSiteCount() > 0 && Auth::user()->canManageTeamForSite())
+                    <x-jet-responsive-nav-link href="{{ route('site.edit', $site->site->id) }}" :active="request()->routeIs('sites.edit')" class="ml-auto">
+                        <i class="material-icons">settings</i>
+                    </x-jet-responsive-nav-link>
+                    @endif
+                </div>
+            @endif
+            @endforeach
+
+            </div>
+        </div>
     </x-slot>
 
     @if (Gate::check('update', $team))

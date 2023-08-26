@@ -3,10 +3,11 @@
     <x-slot name="title">Team Settings</x-slot>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Team Settings') }}
+            {{ __($team->name.' Team Settings') }}
         </h2>
-        <x-jet-dropdown-link href="{{ route('apps.show', Auth::user()->allTeams()->first()->id)  }}">
-            {{ __('Return to Apps') }}
+
+        <x-jet-dropdown-link href="{{ route('dashboard')  }}">
+            {{ __('Return to Dashboard') }}
             </x-jet-responsive-nav-link>
     </x-slot>
 
