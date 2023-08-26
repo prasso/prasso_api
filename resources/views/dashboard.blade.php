@@ -7,5 +7,5 @@
         </h2>
     </x-slot>
 
-    <x-dashboard></x-dashboard>                          
+    <x-dashboard :user-content="$user_content"></x-dashboard>                          
 </x-app-layout>

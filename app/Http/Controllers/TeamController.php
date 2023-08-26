@@ -76,15 +76,15 @@ class TeamController extends Controller
     public function editTeam($teamid)
     {
         $user = Auth::user(); 
-        if ($user->current_team_id != $teamid)
+        if (!$user->isSuperAdmin() && the user is not an owner of this team
+      //old  $user->current_team_id != $teamid)
         {
             $response['message'] = trans('messages.invalid_token');
             $response['success'] = false;
             $response['status_code'] = \Symfony\Component\HttpFoundation\Response::HTTP_UNAUTHORIZED;
             return $this->sendError('Unauthorized.', ['error' => 'Please login again.'], 400);
         }
-        $team = $user->currentTeam;
-        
+        $team = Team::where('id',$teamid)->with('site')->first();
         return view('teams.show')->with('team', $team);
     }
 
@@ -99,7 +99,7 @@ class TeamController extends Controller
        // Log::info('In setupForTeamMessages');
         $user_access_token = isset($user->personalAccessToken) ? $user->personalAccessToken->token : null;
 
-        $team = $user->team_owned->where('id', $teamid)->first();
+        $team = $user->team_owner->where('id', $teamid)->first();
 
         if (count($team->users)>0)
         {

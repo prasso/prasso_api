@@ -13,12 +13,12 @@
                 </div>
             </div>
 
-            @if (Auth::user()->isSuperAdmin() || Auth::user()->getSiteCount() == 0)
+            @if ((\App\Models\Site::isPrasso(parse_url(url()->current(), PHP_URL_HOST)) && Auth::user()->isSuperAdmin()) || (Auth::user()->isInstructor() && Auth::user()->getSiteCount() == 0))
             <div class="max-w-md m-auto">
                 <x-jet-responsive-nav-link href="{{ route('apps.newsiteandapp', Auth::user()->current_team_id)  }}">
                     <div class="text-center bg-gray-50 border-2 border-indigo-600/100">
                         <div class="font-sans  text-lg font-semibold text-gray-600">
-                            {{ __('New Site and App') }}
+                            New Site and App
                         </div>
                     </div>
                 </x-jet-responsive-nav-link>
@@ -45,6 +45,8 @@
                         </div>
                     </div>
                 </x-jet-responsive-nav-link>
+
+                {!! $user_content !!}
             </div>
             @endif
             <div class="grid max-w-xs m-auto">
@@ -52,6 +54,8 @@
 
                     <div class="col-6">
                         <div class="mt-3 space-y-1">
+
+                        <div class="border-t border-gray-200 mt-2"></div>
                             <!-- Account Management -->
                             <x-jet-responsive-nav-link href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')">
                                 {{ __('Profile') }}
@@ -60,7 +64,7 @@
                         </div>
                         @if (Auth::user()->isSuperAdmin())
                         <div class="font-sans block px-4 py-2 text-lg font-semibold text-gray-600">
-                            {{ __('Manage Apps') }}
+                            Manage Apps and Sites   
                         </div>
 
                         <x-jet-responsive-nav-link href="{{ route('apps.show', Auth::user()->current_team_id)  }}">
@@ -72,23 +76,10 @@
                         </x-jet-responsive-nav-link>
 
                         @endif
-                        @if (Auth::user()->isInstructor())
+                        @if (Auth::user()->isInstructor() )
                         <!-- Team Management -->
                         @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
                         <div class="border-t border-gray-200 mt-2"></div>
-
-                        <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
-                            {{ __('Manage Team') }}
-                        </div>
-
-                        <!-- Team Settings -->
-                        <x-jet-responsive-nav-link href="{{ route('teams.show', Auth::user()->currentTeam->id) }}" :active="request()->routeIs('teams.show')">
-                            {{ __('Team Settings') }}
-                        </x-jet-responsive-nav-link>
-
-                        <x-jet-responsive-nav-link href="{{ route('teams.create') }}" :active="request()->routeIs('teams.create')">
-                            {{ __('Create New Team') }}
-                        </x-jet-responsive-nav-link>
 
                         <div class="border-t border-gray-200"></div>
                         <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
@@ -108,13 +99,26 @@
                         @if (count(Auth::user()->allTeams()) > 1)
                         <!-- Team Switcher -->
                         <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
-                            {{ __('Switch Teams') }}
+                            Manage Teams
                         </div>
 
                         @foreach (Auth::user()->allTeams() as $team)
-                        <x-jet-switchable-team :team="$team" component="jet-responsive-nav-link" />
+                            <div class="flex items-center justify-between">
+                                <x-jet-switchable-team :team="$team" component="jet-responsive-nav-link" />
+                                @if (Auth::user()->getSiteCount() > 0 && Auth::user()->canManageTeamForSite())
+                                    <!-- Team Settings -->
+                                    <x-jet-responsive-nav-link href="{{ route('teams.show', $team->id) }}" :active="request()->routeIs('teams.show')" class="ml-auto">
+                                    <i class="material-icons">settings</i>
+                                    </x-jet-responsive-nav-link>
+                                @endif
+                            </div>
                         @endforeach
                         @endif
+
+                        <x-jet-responsive-nav-link href="{{ route('teams.create') }}" :active="request()->routeIs('teams.create')">
+                            {{ __('Create New Team') }}
+                        </x-jet-responsive-nav-link>
+
                         @endif
 
                         <div class="m-auto mt-2">

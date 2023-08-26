@@ -49,7 +49,7 @@ class DeleteUser implements DeletesUsers
      */
     protected function deleteTeams($user)
     {
-        $user->team_owned()->detach();
+        $user->team_owner()->detach();
         $user->team_members()->detach();
         $user->ownedTeams->each(function ($team) {
             $this->deletesTeams->delete($team);

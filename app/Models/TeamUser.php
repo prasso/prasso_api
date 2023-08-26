@@ -13,7 +13,11 @@ class TeamUser extends Model
     
     protected $table = 'team_user';
     public $timestamps = true;
-
+    protected $fillable = [
+        'user_id',
+        'team_id'
+    ];
+    
 
     public function team()
     {

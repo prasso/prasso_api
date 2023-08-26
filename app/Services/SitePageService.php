@@ -40,7 +40,9 @@ class SitePageService
         return $site_page_description;
        
     }
-
+/**
+ * troubleshooting data missing: check that the where clause in the site page is set to the id of the site
+ */
     public function getTemplateDataJSON($site_page, $user=null){
        
         $template_data = SitePageTemplate::where('templatename', $site_page->template)->first();

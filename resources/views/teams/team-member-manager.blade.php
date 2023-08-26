@@ -38,6 +38,10 @@
                             <button class="cursor-pointer ml-6 text-sm text-red-500 focus:outline-none" wire:click="confirmTeamMemberRemoval('{{ $user->id }}')">
                                 {{ __('Remove') }}
                             </button>
+
+                            <x-jet-responsive-nav-link href="{{ route('profile.updateuser', $user->id) }}" :active="request()->routeIs('profile.updateuser')" class="ml-auto">
+                                <i class="material-icons">settings</i>
+                            </x-jet-responsive-nav-link>
                             @endif
                         </div>
                     </div>

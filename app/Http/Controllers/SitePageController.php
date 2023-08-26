@@ -76,25 +76,17 @@ class SitePageController extends BaseController
             session()->flash('status',config('constants.LOGIN_AGAIN'));
             return redirect('/login');
         }
-        
+        $user_content='';
         // if the site supports registration, check to see if the site has a DASHBOARD site_page
         if ( $this->site != null && strcmp($this->site->site_name, config('app.name')) != 0)
         {
             $dashboardpage = SitePages::where('fk_site_id',$this->site->id)->where('section','Dashboard')->first();
             if ($dashboardpage != null)
             {    
-                $dashboardpage->description = $this->prepareTemplate($dashboardpage, $request->path());
-                $masterpage = $this->getMaster($dashboardpage);
-                return view($dashboardpage->masterpage)  
-                ->with('sitePage',$dashboardpage)
-                ->with('site',$this->site)
-                ->with('page_short_url','/')
-                ->with('masterPage',$masterpage);
+                $user_content = $this->prepareTemplate($dashboardpage, $request->path());
             }
         }
-        
-        // if not, show the dashboard
-        return view('dashboard');
+        return view('dashboard')->with('user_content', $user_content);
     }
 
     private function getMaster($sitepage){
@@ -149,7 +141,7 @@ class SitePageController extends BaseController
             $user = $this->setUpUser($request, $user);
         }
         $sitepage = SitePages::where('fk_site_id',$this->site->id)->where('section',$section)->first();
-//info(json_encode($sitepage  ));
+
         if ($sitepage == null)
         {
 
