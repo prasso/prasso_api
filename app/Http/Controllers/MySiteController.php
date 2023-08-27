@@ -43,14 +43,11 @@ class MySiteController extends BaseController
         }
         $mysite = Controller::getClientFromHost();
         $user = Auth::user();
-        if (!$user->isInstructor() )
+        if (!$user->isInstructor() && !$user->isTeamOwnerForSite($mysite))
         {
-            $firstTeam = $mysite->teams()->first();
-            if ($firstTeam && $user->team_owner->pluck('id')->contains($firstTeam->id)) {
-                // The user is the owner of the first team that belongs to the site.
-            } else {
-                abort(403, 'Unauthorized action.');
-            }
+            
+            abort(403, 'Unauthorized action.');
+            
         }
         return view('sites.my-site-editor')->with('site', $mysite)->with('user', $user)->with('team', $user->currentTeam);
     }   

@@ -76,7 +76,10 @@ class TeamController extends Controller
     public function editTeam($teamid)
     {
         $user = Auth::user(); 
-        if (!$user->isSuperAdmin() && the user is not an owner of this team
+        if (!$user->isSuperAdmin() && !$user->isTeamOwnerForSite($this->site))
+        {
+            abort(403, 'Unauthorized action.');
+        }
       //old  $user->current_team_id != $teamid)
         {
             $response['message'] = trans('messages.invalid_token');
