@@ -215,6 +215,16 @@ class User extends Authenticatable {
         return false;
     }
 
+    public function isTeamOwnerForSite($site){
+        $firstTeam = $site->teams()->first();
+        if ($firstTeam && $this->team_owner->pluck('id')->contains($firstTeam->id)) {
+            // The user is the owner of the first team that belongs to the site.
+            // the first team is assigned on site creation and is the only team that will edit the site setup
+            return true;
+        } 
+        return false;
+    }
+
     public function getUserAppInfo()
     {
         $user_app_info=[];

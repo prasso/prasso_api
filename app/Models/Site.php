@@ -286,7 +286,7 @@ class Site extends Model
             Log::error('TeamSite not found for site: ' . $this->id);
             $teamSite = TeamSite::where('site_id', 1)->first();
         }
-        return optional($teamSite)->team;
+        return optional($teamSite);
     }
 }
 
