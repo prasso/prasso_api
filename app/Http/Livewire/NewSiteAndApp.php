@@ -43,6 +43,8 @@ class NewSiteAndApp extends Component
     public $does_livestreaming; //
     public $app_specific_js;//
     public $app_specific_css;//
+    // for super admin setting team id
+    public $team_id;
 
     public $database;
     public $favicon;
@@ -50,13 +52,17 @@ class NewSiteAndApp extends Component
     public $current_user;
     public $currentStep = 1;
     public $step1, $step2, $step3, $step4 = false;
+    public $team_selection;
 
 
     public $photo;
         
-    public function mount(User $user, Team $team, Request $request)
+    public function mount(User $user, Team $team, $team_selection, Request $request)
     {
 
+        $this->team_selection = $team_selection;
+        $this->team_id = $team->id;
+        
         //does this user have an admin role?
         $this->current_user = $user;
         $this->team = $team;
@@ -72,14 +78,20 @@ class NewSiteAndApp extends Component
         return view('livewire.new-site-and-app');
     }
 
+    private function lowercaseWithoutSpacesSiteName(){
+        return strtolower(str_replace(" ", "", $this->site_name));
+    }
+
     public function updated($propertyName)
     {
+        if ($propertyName == 'site_name' && $this->site_name != '' && $this->host == '') {
+            $this->host = $this->lowercaseWithoutSpacesSiteName();
+        }
+
         if ($propertyName == 'host') $this->checkhost();
 
         if ($propertyName == 'site_name' && $this->site_name != '' && $this->image_folder == '') {
-            $words = explode(" ", $this->site_name);
-            $first_word = $words[0];
-            $this->image_folder = $first_word.'/';
+            $this->image_folder = $this->lowercaseWithoutSpacesSiteName().'/';
         }
 
         $siteRequest = new SiteRequest();
@@ -162,7 +174,8 @@ class NewSiteAndApp extends Component
         $site = $this->newSite::create($newSite);
 
         $this->current_user = Auth::user();
-        $team = $site->assignToUserTeam($this->current_user->id);
+
+        $team = $site->updateTeam($this->team_id);
 
         //upload the image if present
         if ($this->photo){

@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\User;
 use App\Models\LivestreamSettings;
+use App\Models\Team;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\SiteRequest;
 use App\Models\Site;
@@ -28,11 +29,15 @@ class SiteEditor extends Component
     public $photo;
     public $showSyncDialog = false;
     public $selectedPages = [];
+    public $team_selection;
+    public $team_id;
 
     protected $appSyncService;
     
-    public function mount(User $user, AppSyncService $appSyncService)
+    public function mount(User $user, AppSyncService $appSyncService, $team_selection)
     {
+        $this->team_selection = $team_selection;
+
         $this->appSyncService = $appSyncService;
         $this->current_user = $user;
     }
@@ -40,7 +45,8 @@ class SiteEditor extends Component
     public function render()
     {
         $this->sites = Site::all();
-        return view('livewire.site-editor');
+        return view('livewire.site-editor')
+            ->with('team_selection', $this->team_selection);
     }
 
     public function create()
@@ -75,6 +81,9 @@ class SiteEditor extends Component
         
         $this->site_id = $id;
         $this->site_name = $site->site_name;
+        if ($site->teams->count() > 0)
+        {$this->team_id = $site->teams[0]->id;}
+
         $this->description = $site->description;
         $this->host = $site->host;
         $this->main_color = $site->main_color;
@@ -83,6 +92,7 @@ class SiteEditor extends Component
         $this->favicon = $site->favicon;
         $this->supports_registration = $site->supports_registration;
         $this->subteams_enabled = $site->subteams_enabled;
+        $this->does_livestreaming = $site->livestream_settings()->exists();
         $this->app_specific_js = $site->app_specific_js;
         $this->app_specific_css = $site->app_specific_css;
         $this->image_folder = $site->image_folder;
@@ -107,6 +117,7 @@ class SiteEditor extends Component
      */
     private function resetInputFields(){
         $this->site_name = '';
+        $this->team_id = null;
         $this->description = '';
         $this->host = '';
         $this->main_color = '';
@@ -160,12 +171,16 @@ class SiteEditor extends Component
             'image_folder' => $this->image_folder,
         ]);
   
+
+        $this->current_user = Auth::user();
         // new sites need a new team for their users
         if ($newsite)
         {
             $this->site_id = $site->id;
-            $this->current_user = Auth::user();
             $site->createTeam($this->current_user->id);
+        }
+        else{
+            $site->updateTeam($this->team_id);
         }
 
         //upload the image if present
@@ -176,6 +191,9 @@ class SiteEditor extends Component
         }
         if ($this->does_livestreaming){
             LivestreamSettings::addOrUpdate($site);
+        }
+        else{
+            LivestreamSettings::remove($site->id);
         }
         session()->flash('message', 
             $this->site_id ? 'Site Updated Successfully.' : 'Site Created Successfully.');
@@ -206,6 +224,9 @@ class SiteEditor extends Component
         $site = Site::findOrFail($id);
         $this->site_id = $id;
         $this->site_name = $site->site_name;
+        if ($site->teams->count() > 0)
+        {$this->team_id = $site->teams[0]->id;}
+
         $this->description = $site->description;
         $this->host = $site->host;
         $this->main_color = $site->main_color;
@@ -214,6 +235,7 @@ class SiteEditor extends Component
         $this->favicon = $site->favicon;
         $this->supports_registration = $site->supports_registration;
         $this->subteams_enabled = $site->subteams_enabled;
+        $this->does_livestreaming = $site->livestream_settings()->exists();
         $this->app_specific_js = $site->app_specific_js;
         $this->app_specific_css = $site->app_specific_css;
         $this->image_folder = $site->image_folder;

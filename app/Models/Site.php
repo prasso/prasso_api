@@ -184,6 +184,35 @@ class Site extends Model
         return $is_admin_for_site;
     }
 
+    /*
+    Use this function when the team needs to be traded out, old for new. 
+    And the user must have specific admin abilities.
+     */
+    public function updateTeam($teamId)
+    {
+        $currentTeam = null;
+        $currentTeam = $this->teams()->firstOr(function () {
+                return null;
+            });
+
+        $user = Auth::user();
+        if ($user->isSuperAdmin() && $teamId != null) {
+        
+            if ($currentTeam) {
+                $this->teams()->detach($currentTeam);
+            }
+            $currentTeam = Team::find($teamId);
+            $this->teams()->attach($currentTeam);
+            
+        }
+        else {
+            if ($this->teams()->count() == 0) {
+                $currentTeam = $this->assignToUserTeam($user->id);
+            }
+        }
+        return $currentTeam;
+    }
+
     public function getSiteMapList($current_page = null)
     {
         $sitepages = $this->sitePages();

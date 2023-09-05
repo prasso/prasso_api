@@ -21,7 +21,7 @@ class CreateOrEdit extends Component
     public $host; //
     public $main_color; //
     public $logo_image; //
-    public $supports_registration;//
+    public $supports_registration; //
     public $subteams_enabled; //
     public $does_livestreaming; //
     public $database;
@@ -34,16 +34,21 @@ class CreateOrEdit extends Component
     public $image_folder;
 
     public $photo;
+    public $team_selection;
+    public $team_id;
 
-        
-    public function mount(Site $site, User $user, Team $team, $show_modal)
+
+    public function mount(Site $site, User $user, Team $team, $show_modal, $team_selection)
     {
+        $this->team_selection = $team_selection;
+
         if ($site == null) return;
         $this->show_modal = $show_modal;
 
         //does this user have an admin role?
         $this->current_user = $user;
         $this->team = $team;
+        $this->team_id = $team->id;
         $this->siteid = $site->id;
         $this->site_name = $site->site_name;
         $this->description = $site->description;
@@ -52,16 +57,15 @@ class CreateOrEdit extends Component
         $this->logo_image = $site->logo_image;
         $this->supports_registration = $site->supports_registration;
         $this->subteams_enabled = $site->subteams_enabled;
-        $this->does_livestreaming = $site->livestream_settings() != null;
+        $this->does_livestreaming = $site->livestream_settings()->exists();
         $this->database = $site->database;
         $this->favicon = $site->favicon;
         $this->app_specific_js = $site->app_specific_js;
         $this->app_specific_css = $site->app_specific_css;
         $this->image_folder = $site->image_folder;
-
     }
 
-     /**
+    /**
      * @var array
      */
     public function closeModal()
@@ -79,28 +83,30 @@ class CreateOrEdit extends Component
     public function store()
     {
         $siteRequest = new SiteRequest($this->siteid);
-        info('createoredit site id is: ' . $this->siteid);
         $this->validate($siteRequest->rules());
-        if (empty($this->id))
-        {
+        if (empty($this->id)) {
             $this->id = 0;
         }
-        
+
         $site = $this->save();
 
-        if (isset($this->photo))
-        {
+        if (isset($this->photo)) {
             $this->siteid = $site->id;
-            $this->photo->store(config('constants.APP_LOGO_PATH') .'logos-'.$site->id, 's3');
-            $this->logo_image = config('constants.CLOUDFRONT_ASSET_URL') . config('constants.APP_LOGO_PATH') .'logos-'.$site->id.'/'. $this->photo->hashName();
+            $this->photo->store(config('constants.APP_LOGO_PATH') . 'logos-' . $site->id, 's3');
+            $this->logo_image = config('constants.CLOUDFRONT_ASSET_URL') . config('constants.APP_LOGO_PATH') . 'logos-' . $site->id . '/' . $this->photo->hashName();
             $this->save();
         }
+
+        $this->current_user = \Auth::user();
+        
+        $site->updateTeam($this->team_id);
 
         return redirect()->route('site.edit.mysite')
             ->with('success', 'Site edit successful.');
     }
 
-    private function save(){
+    private function save()
+    {
         $site = Site::updateOrCreate(['id' => $this->siteid], [
             'site_name' => $this->site_name,
             'description' => $this->description,

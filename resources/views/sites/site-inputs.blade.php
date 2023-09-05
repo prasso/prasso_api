@@ -60,6 +60,20 @@
                             @error('favicon') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
+                            <x-jet-label value="{{ __('Team') }}" />
+                            <div class="flex items-center mt-2">
+                                @if (Auth::user()->isSuperAdmin())
+                                <select name="teams" id="teams" class="mt-1 block w-full border-2 border-indigo-600/100 p-2" wire:model="team_id" >
+                                    @foreach($team_selection as $id=>$name) 
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                    @endforeach
+                                </select>
+                                @else
+                                    {{ $team->user_id . ": ". $team->name }}
+                                @endif
+                            </div>
+                        </div>
+                        <div class="mb-4">
                             <label for="app_specific_jsInput" class="block text-gray-700 text-sm font-bold mb-2">Custom Script:<br><sm>(file location or code)</sm> </label>
                             <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="app_specific_jsInput" placeholder="Enter app_specific_js" wire:model="app_specific_js">
                             @error('app_specific_js') <span class="text-red-500">{{ $message }}</span>@enderror

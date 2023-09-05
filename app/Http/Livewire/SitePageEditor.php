@@ -50,10 +50,14 @@ class SitePageEditor extends Component
         $masterpage_recs = MasterPage::orderBy('pagename')->get();
         $template_recs = SitePageTemplate::orderBy('templatename')->get();
         $this->sitePages = SitePages::where('fk_site_id', $this->siteid)->get();
+        $site = Site::find($this->siteid);
 
+        $team = $site->teams()->first();
+        $team_selection = $team->pluck('name','id');
         return view('livewire.site-page-editor')
             ->with('masterpage_recs', $masterpage_recs)
-            ->with('template_recs', $template_recs);
+            ->with('template_recs', $template_recs)
+            ->with('team_selection', $team_selection);
     }
 
     private function getHttpsHost($host) {

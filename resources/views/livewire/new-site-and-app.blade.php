@@ -85,7 +85,7 @@
   <div class="step  inset-0  ease-out duration-400" id="step-4">
     <h2>Review and confirm</h2>
     <label>Site Info</label>
-    @include('sites.site-inputs')
+    @include('sites.site-inputs', ['team_selection' => $team_selection])
    
     <br>
 

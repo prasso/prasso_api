@@ -9,7 +9,7 @@
 
             <button wire:click="create()" class="teambutton text-white font-bold py-2 px-4 rounded my-3">Create New Site</button>
             @if($isOpen)
-                @include('sites.create-or-edit')
+                @include('sites.create-or-edit', ['team_selection' => $team_selection])
             @endif          
             @if($showSyncDialog)
                 @include('sites.sync-site-and-app')
