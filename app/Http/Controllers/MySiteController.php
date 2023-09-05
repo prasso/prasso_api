@@ -49,8 +49,17 @@ class MySiteController extends BaseController
             abort(403, 'Unauthorized action.');
             
         }
-        return view('sites.my-site-editor')->with('site', $mysite)->with('user', $user)->with('team', $user->currentTeam);
+        
+        $team = $mysite->teams()->first();
+        $team_selection = $team->pluck('name','id');
+        return view('sites.my-site-editor')
+            ->with('site', $mysite)
+            ->with('user', $user)
+            ->with('team', $user->currentTeam)
+            ->with('team_selection', $team_selection);
+
     }   
+
 
 
     public function editSite($siteid)
@@ -63,7 +72,12 @@ class MySiteController extends BaseController
         $site = Site::where('id',$siteid)->with('teams')->first();
         $team = $site->teams()->first();
 
-        return  view('sites.my-site-editor')->with('site', $site)->with('user', $user)->with('team', $team);
+        $team_selection = $team->pluck('name','id');
+        return  view('sites.my-site-editor')    
+            ->with('site', $site)
+            ->with('user', $user)
+            ->with('team', $team)
+            ->with('team_selection', $team_selection);
     }
 
 }

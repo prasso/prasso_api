@@ -68,9 +68,12 @@ class TeamController extends Controller
         if ($team == null){
             throw new \Exception('newSiteAndApp: Team not found in current_team_id');
         }
+
+        $team_selection = $team->pluck('name','id');
         return view('apps.new-site-wizard')
             ->with('user', $user)
-            ->with('team', $team);
+            ->with('team', $team)
+            ->with('team_selection', $team_selection);
     }
     
     public function editTeam($teamid)

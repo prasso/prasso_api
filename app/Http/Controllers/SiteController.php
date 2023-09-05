@@ -15,6 +15,7 @@ class SiteController extends BaseController
     public function __construct(SiteRequest $request)
     {
         parent::__construct( $request);
+        
         $this->middleware('superadmin');
     }
 
@@ -25,11 +26,19 @@ class SiteController extends BaseController
      */
     public function index()
     {
-        
+        $user = Auth::user() ?? null;   
+        if ($user == null || $user->currentTeam == null){
+            Auth::logout();
+            session()->flash('status',config('constants.LOGIN_AGAIN'));
+            return redirect('/login');
+        }
         $sites = Site::latest()->paginate(15);
-
+        $team = $user->currentTeam;
+        $team_selection = $team->pluck('name','id');
+        
         return view('sites.show', compact('sites'))
-            ->with('i', (request()->input('page', 1) - 1) * 5);
+            ->with('i', (request()->input('page', 1) - 1) * 5)
+            ->with('team_selection', $team_selection);
     }
 
     /**
@@ -94,7 +103,10 @@ class SiteController extends BaseController
      */
     public function create()
     {
-        return view('sites.create-or-edit');
+        $team = Auth::user()->currentTeam;
+        $team_selection = $team->pluck('name','id');
+        return view('sites.create-or-edit')
+            ->with('team_selection', $team_selection);
     }
 
     /**
@@ -154,17 +166,6 @@ class SiteController extends BaseController
             ->with('success', 'Site deleted successfully');
     }
 
-    /**
-     * Show the form for editing the logged in user's site.
-     *
-     * @param  \App\Models\Site  $site
-     * @return \Illuminate\Http\Response
-     */
-    public function editMySite(Request $request, Site $site)
-    {
-        $mysite = Controller::getClientFromHost();
-        return view('sites.my-site-editor')->with('site', $mysite)->with('user', Auth::user())->with('team', Auth::user()->currentTeam);
-    }   
 
 
 }

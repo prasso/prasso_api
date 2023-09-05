@@ -66,7 +66,7 @@
                 <div class="flex items-center justify-between">
                     <x-jet-label value="{{ $site_name }}" />
                     @if (Auth::user()->getSiteCount() > 0 && Auth::user()->canManageTeamForSite())
-                    <x-jet-responsive-nav-link href="{{ route('sites.show', $id) }}" :active="request()->routeIs('sites.show')" class="ml-auto">
+                    <x-jet-responsive-nav-link href="{{ route('site.edit', $id) }}" :active="request()->routeIs('site.edit')" class="ml-auto">
                         <i class="material-icons">settings</i>
                     </x-jet-responsive-nav-link>
                     @endif
