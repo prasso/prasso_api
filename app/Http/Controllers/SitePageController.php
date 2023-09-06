@@ -223,15 +223,24 @@ class SitePageController extends BaseController
         }
         $pageToEdit = SitePages::where('id',$pageid)->first();
         $master_page = $this->getMaster($pageToEdit);
-        
+        $page_site = Site::where('id',$pageToEdit->fk_site_id)->with('teams')->first();
+        $team_images = \App\Models\TeamImage::where('team_id', $page_site->teams[0]->id)->pluck('path')
+                        ->map(function ($path) {
+                            return config('constants.CLOUDFRONT_ASSET_URL') . $path;
+                        });
+         
         if ($pageToEdit == null)
         {
             session()->flash('status','Page not found.');
             return redirect()->back();
         }
 
-        return view('sitepage.grapes-updated')->with('sitePage', $pageToEdit) ->with('site',$this->site)
-        ->with('page_short_url','/page/'.$pageToEdit->section)->with('masterPage',$master_page);
+        return view('sitepage.grapes-updated')
+            ->with('sitePage', $pageToEdit) 
+            ->with('site',$this->site)
+            ->with('team_images', $team_images)
+            ->with('page_short_url','/page/'.$pageToEdit->section)
+            ->with('masterPage',$master_page);
     }
 
     /**this can be called from grapesjs editor. but the functionality is also

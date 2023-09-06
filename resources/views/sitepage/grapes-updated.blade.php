@@ -71,6 +71,24 @@
     <script type="text/javascript">
       const userIsAdmin = {{Auth::user()->hasRole('1') ? 'true' : 'false'}};
       const page_id = {{$sitePage->id}};
+      const team_images = {!! json_encode($team_images) !!};
+      /**
+       * var plp = 'https://via.placeholder.com/350x250/';
+       * var images = [
+  lp + 'team1.jpg',
+  lp + 'team2.jpg',
+  lp + 'team3.jpg',
+  plp + '78c5d6/fff',
+  plp + '459ba8/fff',
+  plp + '79c267/fff',
+  plp + 'c5d647/fff',
+  plp + 'f28c33/fff',
+  plp + 'e868a2/fff',
+  plp + 'cc4360/fff',
+  lp + 'work-desk.jpg',
+  lp + 'phone-app.png',
+  lp + 'bg-gr-v.png'
+]; */
     </script>
     <script type="module" src="/js/grapes-visual-editor/grapes-component.js"></script> 
   </body>

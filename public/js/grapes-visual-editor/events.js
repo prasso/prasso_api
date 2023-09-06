@@ -111,7 +111,7 @@ export function bindEditorEvents( editor ) {
             if (userIsAdmin) {
                 window.location.replace("/sites");}
             else
-               {} window.location.replace("/site/edit");
+               {window.location.replace("/site/edit");} 
             
         },
         attributes: {
