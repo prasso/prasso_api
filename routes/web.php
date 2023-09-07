@@ -62,6 +62,7 @@ Route::group(['middleware'=> 'instructorusergroup'], function() {
     Route::get('/visual-editor/getCombinedHtml/{pageid}', 'SitePageController@getCombinedHtml');
     Route::post('/site/{siteid}/{pageid}/sitePageDataPost', 'SitePageController@sitePageDataPost');
     Route::post('/images/upload', 'ImageController@upload')->name('images.upload');
+    Route::get('/image-library', 'ImageController@index')->name('image.library');
 
     Route::get('/getLatLonFromAddress', 'ProxyController@getLatLonFromAddress');
 

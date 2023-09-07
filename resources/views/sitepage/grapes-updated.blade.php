@@ -71,6 +71,8 @@
     <script type="text/javascript">
       const userIsAdmin = {{Auth::user()->hasRole('1') ? 'true' : 'false'}};
       const page_id = {{$sitePage->id}};
+      const team_images = {!! json_encode($team_images) !!};
+
     </script>
     <script type="module" src="/js/grapes-visual-editor/grapes-component.js"></script> 
   </body>

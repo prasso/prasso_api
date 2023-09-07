@@ -46,4 +46,5 @@ return [
         'thirdPartyToken' => 'thirdPartyToken',
         'LOGIN_AGAIN' => 'Unrecognized user, please login again.',
         'TEAM_FACTORY_USER_ID' => 10000,
+        'USER_IMAGE_FOLDER' => 'user-files/',
 ];

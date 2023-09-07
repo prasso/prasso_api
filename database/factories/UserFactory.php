@@ -30,6 +30,7 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'phone' => $this->faker->phoneNumber,
             'version' => 'v1',
+            'current_team_id' => 1,
         ];
     }
 }

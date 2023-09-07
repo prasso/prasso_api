@@ -1,24 +1,6 @@
 
 export function initEditor() {
- var lp = './img/';
-var plp = 'https://via.placeholder.com/350x250/';
-var images = [
-  lp + 'team1.jpg',
-  lp + 'team2.jpg',
-  lp + 'team3.jpg',
-  plp + '78c5d6/fff',
-  plp + '459ba8/fff',
-  plp + '79c267/fff',
-  plp + 'c5d647/fff',
-  plp + 'f28c33/fff',
-  plp + 'e868a2/fff',
-  plp + 'cc4360/fff',
-  lp + 'work-desk.jpg',
-  lp + 'phone-app.png',
-  lp + 'bg-gr-v.png'
-];
 
-var livewirestyles = document.getElementById("livewirecss");
 
 var editor  = grapesjs.init({
   storageManager: {autoload: false},
@@ -26,12 +8,11 @@ var editor  = grapesjs.init({
   avoidInlineStyle: 1,
   height: '100%',
   container : '#gjs',
-  style: livewirestyles,
   fromElement: true,
   showOffsets: true,
   assetManager: {
     embedAsBase64: true,
-    assets: images
+    assets: team_images
   },
   selectorManager: { componentFirst: true },
   styleManager: {
