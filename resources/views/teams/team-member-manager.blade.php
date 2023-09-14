@@ -76,7 +76,7 @@
                 <!-- Member Email -->
                 <div class="col-span-6 sm:col-span-4">
                     <x-jet-label for="email" value="{{ __('Email') }}" />
-                    <x-jet-input id="name" type="text" class="mt-1 block w-full" wire:model.defer="addTeamMemberForm.email" />
+                    <x-jet-input id="email" type="text" class="mt-1 block w-full" wire:model.defer="addTeamMemberForm.email" />
                     <x-jet-input-error for="email" class="mt-2" />
                 </div>
 
@@ -119,7 +119,7 @@
                 </div>
                 @endif
                 @else
-                <x-jet-input id="name" type="text" style="display:none" value="user" class="mt-1 block w-full" wire:model.defer="addTeamMemberForm.role" />
+                <x-jet-input type="text" style="display:none" value="user" class="mt-1 block w-full" wire:model.defer="addTeamMemberForm.role" />
 
 
                 @endif

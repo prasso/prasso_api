@@ -54,8 +54,7 @@ class UpdateUserInformationForm extends Component
         $user = User::find($this->userid);
         
         $this->team_selection = Team::pluck('name','id');
-        $this->site_selection = Site::where('supports_registration','true')
-                ->orderBy('site_name')->pluck('site_name','id');
+        $this->site_selection = Site::orderBy('site_name')->pluck('site_name','id');
         $this->role_selection = ['admin'=>'admin','user'=>'user'];
         $this->updateUserMembershipLists($user);
 

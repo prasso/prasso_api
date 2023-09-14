@@ -71,7 +71,7 @@
                             {{ __('Apps') }}
                         </x-jet-responsive-nav-link>
 
-                        <x-jet-responsive-nav-link href="{{ route('sites.show', Auth::user()->allTeams()->first()->id)  }}">
+                        <x-jet-responsive-nav-link href="{{ route('sites.show')  }}">
                             {{ __('Sites') }}
                         </x-jet-responsive-nav-link>
 
@@ -85,11 +85,12 @@
                         <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
                             {{ __('Add to Image Library') }}
                             <div class="flex">
-                                <div class="px-4 py-2 border-r border-gray-200">
+                                <div class="px-4 py-2 border-r border-gray-200" x-data="{fileSelected: false}">
                                     <form action="{{ route('images.upload') }}" method="POST" enctype="multipart/form-data">
                                         @csrf
-                                        <input class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" type="file" name="image">
-                                        <button class="teambutton cursor-pointer mt-2 border p-2 rounded-xl px-2 py-1  text-sm  text-white transition duration-500 ease-in-out transform rounded-lg shadow-xl" type="submit">Upload</button>
+                                        <input class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" type="file" id="fileInput" name="image" x-ref="fileInput"
+                                            @change="fileSelected = $refs.fileInput.files.length > 0">
+                                        <button :disabled="!fileSelected" class="teambutton cursor-pointer mt-2 border p-2 rounded-xl px-2 py-1  text-sm  text-white transition duration-500 ease-in-out transform rounded-lg shadow-xl" type="submit">Upload</button>
                                     </form>
                                 </div>
                                 <div class="px-4 py-2 ml-auto">

@@ -12,6 +12,7 @@ use App\Models\SitePages;
 use App\Models\MasterPage;
 use App\Models\Site;
 use App\Models\SitePageData;
+use App\Models\SitePageTemplate;
 use App\Models\User;
 
 class SitePageController extends BaseController
@@ -176,24 +177,89 @@ class SitePageController extends BaseController
         {
             return redirect($sitepage->url);
         }
+        $nodata = null;
+       return $this->prepareAndReturnView($sitepage, $nodata, $user, $request);
+        
+    }
 
+    /**
+     * This is the method that is called when a user clicks on a link to edit a site page's data 
+     * using that pages' form
+     */
+    public function editSitePageData(Request $request,$section, $dataid)
+    {
+        if ($section == 'favicon.ico')
+        {
+            abort(404);
+            return null;
+        }
+        $user = Auth::user() ?? null;   
+        if ($user == null){
+            \App\Http\Middleware\UserPageAccess::authorizeUser($request);
+            if ($user == null){
+                Auth::logout();
+                session()->flash('status',config('constants.LOGIN_AGAIN'));
+                return redirect('/login');
+            }
+        }
+        //make sure user has access to edit
+        if (!$this->userService->isUserOnTeam($user))
+        {
+            info('user is not on team to edit site page data '.$user->id);
+            abort(404);
+        }
+        //get record id'd by dataid
+        $data = SitePageData::where('id',$dataid)
+                ->firstOr(function () {
+                    return null;
+                });
+        if ($data == null){
+            info('data id not found in site page data table. '.$dataid);
+            abort(404);
+        }
+
+        //get view id'd in data record
+        $sitepage = SitePages::where('id',$data->fk_site_page_id)
+                        ->where('section',$section)
+                        ->firstOr(function () {
+                            return null;
+                        });
+
+        if ($sitepage == null)
+        {
+            info('page id not found from data '.$data->fk_site_page_id);
+            abort(404);
+        }
+
+        //put data in form
+        return $this->prepareAndReturnView($sitepage, $data, $user, $request);
+    }
+
+    private function prepareAndReturnView($sitepage, $site_page_data, $user, $request){
         $sitepage->description = $this->prepareTemplate($sitepage, $request->path());
         $masterpage = $this->getMaster($sitepage);
 
         $placeholder = '[DATA]';
         if ($sitepage->template != null && strlen($sitepage->template) > 0 && strpos($sitepage->description, '[DATA]') !== false)
         {
-            $page_content= $this->sitePageService->getTemplateData($sitepage, $placeholder, $user);
+            if ($site_page_data == null)
+            {$page_content= $this->sitePageService->getTemplateData($sitepage, $placeholder, $user);}
+            else{
+
+                $template_data = SitePageTemplate::where('templatename', $sitepage->template)->first();
+                $jsonData = $this->sitePageService->processJSONData($site_page_data, $template_data);
+               
+                $page_content = str_replace($placeholder, $jsonData, $sitepage->description);
+            }
             $sitepage->description = $page_content;
         }
-        
+
         return view($sitepage->masterpage)//use the template here
             ->with('sitePage',$sitepage)
             ->with('site',$this->site)
-            ->with('page_short_url','/page/'.$section)
+            ->with('page_short_url','/page/'.$sitepage->section)
             ->with('masterPage',$masterpage);
     }
-
      /**
      * Show the app edit form 
      *
@@ -201,6 +267,11 @@ class SitePageController extends BaseController
      */
     public function editSitePages($siteid)
     {
+        if ($siteid == 'favicon.ico')
+        {
+            abort(404);
+            return null;
+        }
         if (!Controller::userOkToViewPageByHost($this->userService))
         {
             info('user not ok to view page: ' . $siteid);
@@ -313,7 +384,7 @@ class SitePageController extends BaseController
             abort(403, 'Unauthorized action.');
         }
 
-        $siteid = $this->site->id;
+        $team_id = $request['team_id'];
         $pageid = $request['pageid'];
         $data_key = $request['data_key'];
         $newOne = false;
@@ -321,15 +392,17 @@ class SitePageController extends BaseController
             $data_key = uniqid();
             $newOne = true;
         }
-        $page = SitePageData::where('fk_site_page_id',$pageid)->where('data_key', $data_key)->first();
-        if ($page == null){
-            $page = SitePageData::create(['fk_site_page_id'=>$pageid,'data_key'=>$data_key]);
+        $data = SitePageData::where('fk_site_page_id',$pageid)->where('data_key', $data_key)->first();
+        if ($data == null){
+            $data = SitePageData::create(['fk_site_page_id'=>$pageid,'data_key'=>$data_key, 'fk_team_id'=>$this->site->teams[0]->id]);
         }
         else{
             // make sure this page belongs to this site
-            if ($page->fk_site_id != $siteid){
+            if ($data->fk_team_id != $team_id){
+                $message = 'No changes due to mismatch in team: ' . $team_id . ' ' . $data->fk_team_id;
+                session()->flash('message',$message );
                 //save nothing
-                return $this->sendResponse('mismatch in site', 'ok');
+                redirect()->back();
             }
         }
         //loop through the request and gather form input values to build json object
@@ -340,19 +413,25 @@ class SitePageController extends BaseController
             }
         }
         $json = json_encode($json);
-        $page->json_data = $json;
-        $page->save();
+        $data->json_data = $json;
+        $data->save();
+
         if ($newOne)
-        {session()->flash('message','A freight order record has been added' );}
+        {$message = 'A freight order record has been added';}
         else
-        {session()->flash('message','A freight order record has been updated' );}
+        {$message = 'A freight order record has been updated';}
+        if (SitePages::pageNotificationsRequested($pageid)){
+            //user wants notifications when this data changes
+            $user = \Auth::user();
+            $user->sendDataUpdated($user, $this->site);
+        }
+        session()->flash('message',$message );
         return redirect()->back();
 
     }
 
     public function lateTemplateData(Request $request){
         $pageid = $request['pageid'];
-        info('late template data: ' . $pageid);
         // make sure the user has access to this site and page
         if (!Controller::userOkToViewPageByHost($this->userService))
         {
@@ -420,7 +499,7 @@ class SitePageController extends BaseController
             }
             
             $json = json_encode($json);
-            info($json);
+           // info($json);
             $page->json_data = $json;
             $page->save();
         }

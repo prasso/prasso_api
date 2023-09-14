@@ -118,10 +118,10 @@
             }
             
             header nav ul li {float:right; padding:10px;font-weight: 900;}
-            header nav {height: 50px;margin:0; padding:3px; background:{{ $site->getNavBackgroundFromMainColor() }}; border: 1px solid {{ $site->getBorderColorFromMainColor() }};}
+            header nav {padding:3px; }
             nav ul li a {color:#212429;}
             nav ul li {padding:10px;font-weight: 900;}
-            nav {min-height: 50px;margin:0; padding:3px; background: {{ $site->getNavBackgroundFromMainColor() }};border: 1px solid {{ $site->getBorderColorFromMainColor() }};}
+            nav {min-height: 50px;margin:0; padding:3px;}
 
             section {clear:both; border-bottom: solid 1px #184594; padding: 20px; margin: 20px 0;}
             section h2 {color:{{ $site->main_color }};font-size: 36px; text-align:center; margin: 0; padding: 5px;}
@@ -187,18 +187,20 @@
             @if ($site->logo_image)
                     <img src="{{ $site->logo_image }}" alt="{{ $site->site_name }}" style="position:relative; top:-15px; left:0;" class="block h-9" />
                 @endif    
-            @if ($sitePage->section != "Dashboard")
-                    <nav id='lg'>
+                <div class="p-0 ml-10 m-auto  border border-solid border-gray-500">
+                @if ($sitePage->section != "Dashboard")
+                    <nav id='lg' class="w-3/4 ml-10 lg:block lg:hidden">
                         <ul>
                         {!! $site->getSiteMapList() !!}
                         </ul>
                     </nav>
                 @endif
                 </div>
+                </div>
                 
         </header>
            
-            <div class="font-sans text-gray-900 antialiased">
+            <div class="clear-both font-sans text-gray-900 antialiased">
             @if (session()->has('message'))
                 <div class="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md my-3 mb-0" role="alert">
                     <div>

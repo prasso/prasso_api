@@ -23,6 +23,7 @@ use App\Mail\welcome_user;
 use App\Mail\contact_form;
 use App\Mail\prasso_user_welcome;
 use App\Mail\livestream_notification;
+use App\Mail\site_data_updated_email;
 use Laravel\Cashier\Billable;
 use Twilio\Rest\Client;
 
@@ -405,6 +406,22 @@ info('teamids: ' . json_encode($teamids));
     public function sendCoachEmail($subject, $body, $fromemail, $fromname) {
 
         Mail::to($this)->send(new coach_message($this, $subject, $body, $fromemail, $fromname));
+    }
+
+    public function sendDataUpdated($message, $site){
+        //email from current user and to team admin from updates to site page data
+        try {
+            $team_admin =  $site->getTeamOwner();
+            if ($team_admin == null){
+                info('team admin not found: '.$site->site_name);
+                return;
+            }
+            //site team-0 owner
+            Mail::to($team_admin)->send(new site_data_updated_email($this,
+                $site->site_name.config('constants.DATA_UPDATED_SUBJECT'),$message, $this->email, $this->name));
+        } catch (\Throwable $err) {
+            Log::info('error sending user welcome sent email: ' . $err);
+        }
     }
 
     public function sendLivestreamNotification($subject, $body, $fromemail, $fromname) {

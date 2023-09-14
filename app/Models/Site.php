@@ -166,7 +166,7 @@ class Site extends Model
         }
         $welcomepage = SitePages::firstOrCreate(['fk_site_id'=>$this->id,'section'=>'Welcome'],
             ['description'=>$content,  'title'=>'Welcome','url'=>'html','login_required'=>false,'user_level'=>false,'headers'=>'','masterpage'=>'sitepage.templates.blankpage'
-            ,'template'=>'sitepage.templates.blankpage','style'=>'','where_value'=>'']);
+            ,'template'=>'sitepage.templates.blankpage','style'=>'','where_value'=>'','page_notifications_on'=>false]);
         $welcomepage->save();
 
         //if this site supports registration, then create a dashboard page
@@ -215,7 +215,7 @@ class Site extends Model
 
     public function getSiteMapList($current_page = null)
     {
-        $sitepages = $this->sitePages();
+        $sitepages = $this->sitePages()->get();
         $sitemap = array();
         foreach ($sitepages as $page)
         {
@@ -238,7 +238,6 @@ class Site extends Model
         $list = '';
         foreach ($sitemap as $key => $value)
         {
-            //
             $list .= '<li><a class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out" href="/page/' . $key . '">' . $value . '</a></li>';
         }
         
@@ -316,6 +315,15 @@ class Site extends Model
             $teamSite = TeamSite::where('site_id', 1)->first();
         }
         return optional($teamSite);
+    }
+
+    /**
+     * returns the user who owns the first team of this site
+     */
+    public function getTeamOwner($site){
+        $ownerTeam = $this->teamFromSite();
+        $owner = User::find($ownerTeam->user_id)->firstOr(function(){return null;});
+        return $owner;
     }
 }
 
