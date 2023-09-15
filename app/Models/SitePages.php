@@ -15,7 +15,7 @@ class SitePages extends Model
      * @var array
     */
     protected $fillable = [
-        'fk_site_id', 'section', 'title', 'description', 'url','headers','masterpage','template','style','login_required','user_level','where_value'
+        'fk_site_id', 'section', 'title', 'description', 'url','headers','masterpage','template','style','login_required','user_level','where_value','page_notifications_on'
     ];
     
     public function site()
@@ -30,6 +30,12 @@ class SitePages extends Model
     public function requiresAuthentication()
     {
         return $this->login_required;
+    }
+
+    public static function pageNotificationsRequested($pageid){
+        $page = SitePages::find($pageid)->firstOr(function(){return null;});
+
+        return $page->page_notifications_on;
     }
     public function pageRequiresAdmin(){
         return $this->user_level ;

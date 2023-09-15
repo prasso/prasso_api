@@ -12,7 +12,7 @@ use App\Models\Site;
 
 class SitePageEditor extends Component
 {
-    public $sitePages,$site_name,$fk_site_id, $section, $title, $description, $url, $sitePage_id, $masterpage,$template,$style, $login_required,$user_level, $headers, $where_value;
+    public $sitePages,$site_name,$fk_site_id, $section, $title, $description, $url, $sitePage_id, $masterpage,$template,$style, $login_required,$user_level, $headers, $where_value, $page_notifications_on;
     
     public $https_host;
 
@@ -53,7 +53,12 @@ class SitePageEditor extends Component
         $site = Site::find($this->siteid);
 
         $team = $site->teams()->first();
-        $team_selection = $team->pluck('name','id');
+        if ($team != null)
+        {$team_selection = $team->pluck('name','id');}
+        else
+        {
+            $team_selection=[];
+        }
         return view('livewire.site-page-editor')
             ->with('masterpage_recs', $masterpage_recs)
             ->with('template_recs', $template_recs)
@@ -137,6 +142,7 @@ class SitePageEditor extends Component
         $this->template = '' ;
         $this->style = '';
         $this->where_value = '';
+        $this->page_notifications_on = false;
         
     }
 
@@ -158,6 +164,7 @@ class SitePageEditor extends Component
             'login_required' => 'required',
             'user_level' => 'required',
             'where_value'=> 'nullable',
+            'page_notifications_on' => 'required'
         ]);
         
         //specifying a template will launch code to run to gather data when the site-page is loaded
@@ -174,6 +181,7 @@ class SitePageEditor extends Component
             'template' => $this->template,
             'style' => $this->style,
             'where_value' => $this->where_value,
+            'page_notifications_on' => $this->page_notifications_on,
         ]);
   
         session()->flash('message', 
@@ -203,6 +211,7 @@ class SitePageEditor extends Component
         $this->template = $sitePage->template;
         $this->style = $sitePage->style;
         $this->where_value = $sitePage->where_value;
+        $this->page_notifications_on = $sitePage->page_notifications_on;
 
         $this->openModal();
     }
@@ -239,6 +248,7 @@ class SitePageEditor extends Component
         $this->template = $sitePage->template;
         $this->style = $sitePage->style;
         $this->where_value = $sitePage->where_value;
+        $this->page_notifications_on = $sitePage->page_notifications_on;
 
         $this->openVisualModal();
     }

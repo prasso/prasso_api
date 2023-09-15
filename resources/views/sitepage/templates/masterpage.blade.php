@@ -118,10 +118,11 @@
             }
             
             header nav ul li {float:right; padding:10px;font-weight: 900;}
-            header nav {height: 50px;margin:0; padding:3px; background:{{ $site->getNavBackgroundFromMainColor() }}; border: 1px solid {{ $site->getBorderColorFromMainColor() }};}
+            
+            header nav {padding:3px; }
             nav ul li a {color:#212429;}
             nav ul li {padding:10px;font-weight: 900;}
-            nav {min-height: 50px;margin:0; padding:3px; background: {{ $site->getNavBackgroundFromMainColor() }};border: 1px solid {{ $site->getBorderColorFromMainColor() }};}
+            nav {min-height: 50px;margin:0; padding:3px;}
 
             section {clear:both; border-bottom: solid 1px #184594; padding: 20px; margin: 20px 0;}
             section h2 {color:{{ $site->main_color }};font-size: 36px; text-align:center; margin: 0; padding: 5px;}
@@ -140,21 +141,22 @@
     </head>
     <body>
         <div class="p-12 bg-white col-span-12 items-center ">
-            <header class="flex justify-between items-center">
+            <header class="flex justify-between items-start">
                 <div class="relative col-span-3 left-0">
                 @if ($site->logo_image)
                     <img src="{{ $site->logo_image }}" alt="{{ $site->site_name }}"  class="block h-9 w-auto" />
                 @endif
                 </div>
-                <div class="p-0 m-auto">
+                <div class="p-0 ml-10 m-auto  border border-solid border-gray-500">
                 @if ($sitePage->section != "Dashboard")
-                    <nav>
+                    <nav id='lg' class="overflow-ellipsis w-3/4 ml-10">
                         <ul>
                         {!! $site->getSiteMapList() !!}
                         </ul>
                     </nav>
                 @endif
                 </div>
+
                 @if (Auth::user()!=null)
                 <div class="relative col-span-12  right-0 flex px-4">
                         <div class="flex-shrink-0">

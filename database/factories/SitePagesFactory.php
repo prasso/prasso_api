@@ -23,7 +23,7 @@ class SitePagesFactory extends Factory
     {
         return [
             'title' => $this->faker->name,
-            'fk_site_id' => false,
+            'fk_site_id' => 0,
             'section' => 'testsection',
             'description' => $this->faker->phoneNumber,
             'url' => 'testSitePages.test',
@@ -33,6 +33,7 @@ class SitePagesFactory extends Factory
             'style' =>  '',
             'login_required' =>  1,
             'user_level' =>  0,
+            'page_notifications_on' => false,
         ];
     }
 }

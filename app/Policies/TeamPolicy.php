@@ -89,7 +89,7 @@ class TeamPolicy
      */
     public function removeTeamMember(User $user, Team $team)
     {
-        return $user->ownsTeam($team);
+        return $user->ownsTeam($team) || $user->isSuperAdmin();
     }
 
     /**

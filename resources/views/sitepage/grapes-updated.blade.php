@@ -60,6 +60,7 @@
         <input type="hidden" name="template" value="{{ $sitePage->template }}" />
         <input type="hidden" id="page_style" name="style" value="{{ $sitePage->style }}" />
         <input type="hidden" id="where_value" name="where_value" value="{{ $sitePage->where_value }}" />
+        <input type="hidden" id="page_notifications_on" name="page_notifications_on" value="{{ $sitePage->page_notifications_on }}" />
         
   </form>
 

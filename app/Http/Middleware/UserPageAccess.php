@@ -29,6 +29,11 @@ class UserPageAccess
    public static function authorizeUser($request){
     $accessToken  = $request->header(config('constants.AUTHORIZATION_'));
         $accessToken = str_replace("Bearer ", "", $accessToken);
+        //if no accesstoken, check if we have an X-Authorization header present
+        if($accessToken == '' && $auth = $request->header(config('constants.XAUTHORIZATION_'))) {
+          info('setting authorization header from xauthorization header');
+          $request->headers->set('Authorization', $auth);
+        }
         if (empty($accessToken))
         {     
          //Log::info('in Middleware UserPageAccess -  cookies: '.json_encode($_COOKIE));

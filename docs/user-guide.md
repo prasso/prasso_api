@@ -25,6 +25,10 @@ This guide provides instructions for end users of Prasso apps.
 - Go to Site Pages and click a page to edit
 - Make changes in the visual editor 
 - Click "Update Page" to publish changes
+- when filling in a sitepage that uses a url, keep the masterpage blank.
+otherwise, when editing the url is not visible. invenbin pages currently are all urls.
+
+
 
 ## Building Mobile Apps
 

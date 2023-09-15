@@ -25,6 +25,7 @@ Route::get('/confirm_newsletter_subscription', 'EmailController@confirm_newslett
 
 
 Route::get('/page/{section}','SitePageController@viewSitePage');
+Route::get('/page/{section}/{dataid}','SitePageController@editSitePageData');
 Route::post('/sitepages/{siteid}/{pageid}/lateTemplateData', 'SitePageController@lateTemplateData')->name('site-page.late-template-data');
 
 

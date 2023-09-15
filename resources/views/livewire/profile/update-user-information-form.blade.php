@@ -1,4 +1,5 @@
 <div>
+ @if(Auth::user()->isSuperAdmin())
     <x-jet-form-section submit="updateUserInformation">
         <x-slot name="title">
             {{ __('Profile Information') }}
@@ -48,7 +49,7 @@
             </x-jet-button>
         </x-slot>
     </x-jet-form-section>
-
+@endif
     <x-jet-form-section submit="UpdateSitesMember">
         <x-slot name="title">
             {{ __('Sites') }}
@@ -73,8 +74,7 @@
                 </div>
                 @endforeach
 
-            </div>
-           
+            </div>        
                 <x-jet-label for="addSiteMember" value="Select a Site to add this user as team member" />
                 <div class="flex items-center mt-2">
                     <select name="addSiteMember" id="addSiteMember" class="mt-1 block w-full border-2 border-indigo-600/100 p-2" wire:model="id_of_selected_site">

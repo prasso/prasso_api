@@ -84,6 +84,13 @@
                             <input type="radio"  name="user_levelInput"  wire:model.defer="user_level" value="0" />No
                             @error('user_level') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
+                        
+                        <div class="mb-4">
+                            <label for="page_notifications_onInput" class="block text-gray-700 text-sm font-bold mb-2">Notify Admin on Change</label>
+                            <input type="radio"  name="page_notifications_onInput" wire:model.defer="page_notifications_on" value="1"  />Yes
+                            <input type="radio"  name="page_notifications_onInput" wire:model.defer="page_notifications_on" value="0" />No
+                            @error('page_notifications_on') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
                     </div>
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">

@@ -19,6 +19,14 @@
                 </div>
             @endif
 
+            @if($user->isSuperAdmin())
+            <x-jet-section-border />
+
+            <div class="mt-10 sm:mt-0">
+                @livewire('profile.update-user-information-form', ['user'=>$user])
+            </div>
+            @endif
+
             @if (Laravel\Fortify\Features::canManageTwoFactorAuthentication())
                 <x-jet-section-border />
 
