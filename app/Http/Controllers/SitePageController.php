@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use App\Services\SitePageService;
 use App\Services\UserService;
 use App\Models\SitePages;
+use App\Models\PageView;
 use App\Models\MasterPage;
 use App\Models\Site;
 use App\Models\SitePageData;
@@ -360,9 +361,9 @@ class SitePageController extends BaseController
      */
     public function livestream_activity(Request $request){
         //ship this off to the logic that processes emails
-        info('Livestream Activity: ' . $request['detail']['event_name']);
+        info('Livestream Activity: ' . $request->body);
         $receipient_user = \App\Models\User::where('id',1)->first();
-        $receipient_user->sendLivestreamNotification('Livestream Notification', $request['detail']['event_name'], $receipient_user->email, $receipient_user->name);
+        $receipient_user->sendLivestreamNotification('Livestream Notification', $request->body, $receipient_user->email, $receipient_user->name);
         
     }
 
@@ -506,7 +507,26 @@ class SitePageController extends BaseController
 
         // Close the file
         fclose($file);
-
     }
+    
+    /*/v1/sites/" + n.site_name + "/page_views*/
+    public function pageView(Request $request, $site_name)
+    {
+        // Get the page ID from the request
+        $page_name = json_encode($request->input('page_view_attributes'));
+       // info('request vars: '. json_encode($request->all()));
 
+        // Create a new PageView instance
+        $pageView = new PageView();
+    
+        // Set the page ID and site ID for the page view
+        $pageView->page_name = $page_name;
+        $pageView->site_name = $site_name;
+    
+        // Save the page view to the database
+        $pageView->save();
+    
+        // Return a response indicating success
+        return response()->json(['message' => 'OK'], 200);
+    }
 }

@@ -78,13 +78,13 @@
         gallery_settings: { "peek": true, "hide_gallery_arrows_while_editing": false },
         tabs_settings: { "style": "ribbon" },
         s3_bucket_name: "media.prasso.io/faith",
-        base_domain: "faithlakecity.prasso.io",
+        base_domain: "faithlakecity.com",
         site_uuid: "1210c48d-3bc6-4059-b211-ccceae4a8d6a",
         content_prefix: "12/1210c48d-3bc6-4059-b211-ccceae4a8d6a",
         events_settings: { "has_sidebar": true, "always_show_description": true, "prefer_separate_date_and_time": true, "always_show_icons": true, "always_show_location": true, "always_show_details_via_list_item": true, "fixed_tiles_per_row": true, "deviant_list_item_buttons": true, "gallery": { "peek": false } },
         forms_settings: { "featured_image_floats_to_top": true },
         tabs_settings: { "style": "ribbon" },
-        forms_domain: "https://faithlakecity.prasso.io",
+        forms_domain: "https://faithlakecity.com",
         form_builder_embed_url: "/cdn.files/mb.formbuilder.embed.js",
         packs_graph: { "runtime": ["/js/runtime-29643ceddd61d164b25a.js", []], "1": ["/js/1-794656562a19776f9d49.chunk.js", []], "2": ["/js/2-a38190a685725a895f06.chunk.js", []], "7": ["/js/js/7-b879346cc33af45bdf54.chunk.js", []], "media": ["/js/media-1ab6fa2937934576a72f.chunk.js", ["runtime", "1", "2"]], "prayer": ["/js/prayer-8f35a7b9f5649e00c724.chunk.js", ["runtime", "1", "7"]], "small-groups": ["/js/small-groups-7479f4ab3e343196f256.chunk.js", ["runtime", "1", "2"]] }
       })
