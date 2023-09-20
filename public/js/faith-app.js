@@ -28855,7 +28855,7 @@ var _gsScope = "undefined" != typeof module && module.exports && "undefined" != 
                     }
                   }
             }, n.reqres.setHandler("service-request", function(t) {
-                return l.makeServiceRequest(t)
+                //do nothing
             })
         })
     }.call(this),
@@ -28880,7 +28880,7 @@ var _gsScope = "undefined" != typeof module && module.exports && "undefined" != 
                     return this.fetchSuccess = t(this.fetchSuccess, this), r.__super__.constructor.apply(this, arguments)
                 }
                 return e(r, n), r.prototype.urlRoot = function() {
-                    return "//api." + i.base_domain + "/v1/sites/" + i.site_name + "/media-status"
+                    return "//" + i.base_domain + "/v1/sites/" + i.site_name + "/media-status"
                 }, r.prototype.initialize = function() {
                     var t, e, n, r, o, l, u, c;
                     return e = this.get("content"), u = function() {
@@ -28937,7 +28937,7 @@ var _gsScope = "undefined" != typeof module && module.exports && "undefined" != 
                 }
                 return t(i, e), i.prototype.url = function() {
                     var t;
-                    return t = /\.test$/.test(n.base_domain) ? location.protocol : "https:", t + "//api." + n.base_domain + "/v1/sites/" + n.site_name + "/page_views"
+                    return t = /\.test$/.test(n.base_domain) ? location.protocol : "https:", t + "//" + n.base_domain + "/v1/sites/" + n.site_name + "/page_views"
                 }, i.prototype.save = function(t, e) {
                     return this.attributes.page_view_attributes = {}, this.attributes.page_view_attributes.object_id = this.attributes.objectId, this.attributes.page_view_attributes.object_type = this.attributes.objectType, this.attributes.page_view_attributes.title = this.attributes.title, delete this.attributes.objectId, delete this.attributes.objectType, delete this.attributes.title, i.__super__.save.call(this, t, e)
                 }, i
@@ -28960,7 +28960,7 @@ var _gsScope = "undefined" != typeof module && module.exports && "undefined" != 
                     return i.__super__.constructor.apply(this, arguments)
                 }
                 return t(i, e), i.prototype.url = function() {
-                    return "//api." + n.cloverDomain() + "/v1/sites/" + n.site_name + "/sections/" + this.id + "/settings" + (this.draft ? "?draft=1" : "")
+                    return "//" + n.cloverDomain() + "/v1/sites/" + n.site_name + "/sections/" + this.id + "/settings" + (this.draft ? "?draft=1" : "")
                 }, i.prototype.initialize = function(t) {
                     this.id = t.id, this.draft = t.draft
                 }, i
@@ -28993,7 +28993,7 @@ var _gsScope = "undefined" != typeof module && module.exports && "undefined" != 
                     return i.__super__.constructor.apply(this, arguments)
                 }
                 return t(i, e), i.prototype.paramRoot = "video", i.prototype.urlRoot = function() {
-                    return "//api." + n.base_domain + "/v1/sites/" + n.siteName + "/videos"
+                    return "//" + n.base_domain + "/v1/sites/" + n.siteName + "/videos"
                 }, i.prototype.initialize = function() {
                     return this._setSourceType()
                 }, i.prototype.getEmbedURL = function() {
@@ -29010,7 +29010,7 @@ var _gsScope = "undefined" != typeof module && module.exports && "undefined" != 
                     return r.__super__.constructor.apply(this, arguments)
                 }
                 return t(r, i), r.prototype.model = e.Video, r.prototype.url = function() {
-                    return "//api." + n.base_domain + "/v1/sites/" + n.siteName + "/videos"
+                    return "//" + n.base_domain + "/v1/sites/" + n.siteName + "/videos"
                 }, r.prototype.comparator = function(t) {
                     return t.get("media_info").original_filename.toLowerCase()
                 }, r.include("SingleChooser"), r

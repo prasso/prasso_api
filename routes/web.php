@@ -27,7 +27,7 @@ Route::get('/confirm_newsletter_subscription', 'EmailController@confirm_newslett
 Route::get('/page/{section}','SitePageController@viewSitePage');
 Route::get('/page/{section}/{dataid}','SitePageController@editSitePageData');
 Route::post('/sitepages/{siteid}/{pageid}/lateTemplateData', 'SitePageController@lateTemplateData')->name('site-page.late-template-data');
-
+Route::post('/v1/sites/{site_name}/page_views', 'SitePageController@pageView')->name('site-page.page-view');
 
 Route::get('/give','SitePageController@giveToDonate');
 
