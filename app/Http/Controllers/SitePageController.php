@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller as BaseController;
+use App\Providers\AppServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -146,7 +147,14 @@ class SitePageController extends BaseController
 
         if ($sitepage == null)
         {
-
+            //check for privacy and for terms of service, if shown then provide the Prasso version
+            $matches = array_filter(AppServiceProvider::$allowedUris, function ($allowedUri) use ($section) {
+                return strpos($section, $allowedUri) !== false;
+            });
+            if (count($matches) > 0) {
+                AppServiceProvider::loadDefaultsForPagesNotUsingControllerClass($this->site);
+                return view($section);
+            }
             info('viewSitePage page not found, using system welcome: '.$section.' site:'.$this->site->id); 
             return view('welcome');
         }
@@ -275,7 +283,7 @@ class SitePageController extends BaseController
         }
         if (!Controller::userOkToViewPageByHost($this->userService))
         {
-            info('user not ok to view page: ' . $siteid);
+            info('user not ok to view page. editSitePages ' . $siteid);
             return redirect('/login');
         }
         $masterpage = Controller::getMasterForSite($this->site);
@@ -290,7 +298,7 @@ class SitePageController extends BaseController
     {
         if (!Controller::userOkToViewPageByHost($this->userService))
         {
-            info('user not ok to view page: ' . $pageid);
+            info('user not ok to view page in visualEditor: ' . $pageid);
             return redirect('/login');
         }
         $pageToEdit = SitePages::where('id',$pageid)->first();
@@ -322,7 +330,7 @@ class SitePageController extends BaseController
     {
         if (!Controller::userOkToViewPageByHost($this->userService))
             {
-                info('user not ok to view page: ' . $pageid);
+                info('user not ok to view page in getcombinedhtml: ' . $pageid);
                 return redirect('/login');
             }
             $pageToEdit = SitePages::where('id',$pageid)->first();

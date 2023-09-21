@@ -16,6 +16,8 @@ use App\Models\MasterPage;
 class AppServiceProvider extends ServiceProvider
 {
     public $site; 
+    public static $allowedUris = ['/user/profile','/login', '/dashboard', '/register', '/forgot-password', '/privacy', '/terms', '/teams','privacy','terms'];
+     
 
     /**
      * Register any application services.
@@ -36,24 +38,23 @@ class AppServiceProvider extends ServiceProvider
     {
       Schema::defaultStringLength(191);
 
-      $allowedUris = ['/user/profile','/login', '/dashboard', '/register', '/forgot-password', '/privacy', '/terms', '/teams'];
-       // Get the current request's URI
+      // Get the current request's URI
        $uri = $request->getRequestUri();
 
        // Run the logic only if the URI matches a certain pattern
         // Check if the URI matches any of the allowed URIs using a partial match with array_filter and count functions
-        $matches = array_filter($allowedUris, function ($allowedUri) use ($uri) {
+        $matches = array_filter(AppServiceProvider::$allowedUris, function ($allowedUri) use ($uri) {
           return strpos($uri, $allowedUri) !== false;
       });
 
       if (count($matches) > 0) {
-           $this->loadDefaultsForPagesNotUsingControllerClass($site);
+        AppServiceProvider::loadDefaultsForPagesNotUsingControllerClass($site);
        }
  
     }
 
       // this is called repeatedly when debugging
-    public function loadDefaultsForPagesNotUsingControllerClass($site)
+    public static function loadDefaultsForPagesNotUsingControllerClass($site)
     {
       //info('boot loadDefaultsForPagesNotUsingControllerClass');
       $site = $site;
