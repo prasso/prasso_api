@@ -166,7 +166,7 @@ class Controller extends FrameworkController
                 \Auth::login($user); 
             }
         }
-        info ('in setupUser: accessToken: '.$accessToken.' user: '. json_encode($user));
+       
        return $user;
     }
 
