@@ -102,29 +102,24 @@ class SitePageService
             $data = $query   
                 ->selectRaw($sql)
                 ->get();
+
+             //process consolidation to share code that ensures consistent format
+             $site_page_data = SitePageData::factory()->create([
+                'fk_site_page_id' => $site_page->id,
+                'data_key' => uniqid(),
+                'json_data' => $data->isEmpty() ? $template_data->default_blank : $data->toJson()
+            ]);
+            $jsonData = $this->processJSONData($site_page_data, $template_data);
         
-            if ($data->isEmpty())
-            {
-                $jsonData = $template_data->default_blank;
-            }
-            else
-            {
-                if ($template_data->default_blank == null) {
-                   return $jsonData = $data->toJson();
-                }
-                //process consolidation to share code that ensures consistent format
-                $site_page_data = SitePageData::factory()->create([
-                    'fk_site_page_id' => $site_page->id,
-                    'data_key' => uniqid(),
-                    'json_data' => $data->toJson()
-                ]);
-                $jsonData = $this->processJSONData($site_page_data, $template_data);
-            }
         }
         else{
-            $jsonData = $template_data->default_blank;
+            $jsonencodedData = json_decode($template_data->default_blank);
+
+            if ($template_data->include_csrf){
+                $jsonencodedData->csrftoken = csrf_token();
+            }
+            $jsonData = json_encode($jsonencodedData);
         }
-        
         return $jsonData;
     }
 
