@@ -364,10 +364,14 @@ info('teamids: ' . json_encode($teamids));
         $teamsite = TeamSite::where('team_id', $this->current_team_id)->first();
         $site = Site::where('id', $teamsite->site_id)->first();
         
-        $site_url = $site['host'];
-        
-        
+        $site_url = $site['host']; //may have multiple hosts.  example: https://gogodelivery.prasso.io,localhost,localhost:8000/
+        $multiple_hosts = explode(',', $site_url);
+        if (count($multiple_hosts) > 1)
+        {
+            return "https://{$multiple_hosts[0]}";
+        }
         return "https://$site_url";
+        
     }
 
     public function isThisSiteTeamOwner($site_id) {
