@@ -18,7 +18,7 @@ class SiteRequest extends BaseRequest {
     public function rules() {
         return array_merge(parent::rules(), [
             'site_name' => 'required',
-            'description' => 'required',
+            'description' => ['required','max:150'],
             'host' => [
                 'required',
                 Rule::unique('sites', 'host')->ignore($this->id),
