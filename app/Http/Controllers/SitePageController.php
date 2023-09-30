@@ -252,7 +252,9 @@ class SitePageController extends BaseController
         if ($sitepage->template != null && strlen($sitepage->template) > 0 && strpos($sitepage->description, '[DATA]') !== false)
         {
             if ($site_page_data == null)
-            {$page_content= $this->sitePageService->getTemplateData($sitepage, $placeholder, $user);}
+            {
+                $page_content= $this->sitePageService->getTemplateData($sitepage, $placeholder, $user);
+            }
             else{
 
                 $template_data = SitePageTemplate::where('templatename', $sitepage->template)->first();

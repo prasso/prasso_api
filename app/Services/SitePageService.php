@@ -102,18 +102,22 @@ class SitePageService
             $data = $query   
                 ->selectRaw($sql)
                 ->get();
-
              //process consolidation to share code that ensures consistent format
-             $site_page_data = SitePageData::factory()->create([
+             if ($data->isEmpty()) {
+                $json_data = $template_data->default_blank ?? "";
+            } else {
+                $json_data = $data->toJson();
+            }
+            $site_page_data = SitePageData::factory()->create([
                 'fk_site_page_id' => $site_page->id,
                 'data_key' => uniqid(),
-                'json_data' => $data->isEmpty() ? $template_data->default_blank : $data->toJson()
+                'json_data' => $json_data,
             ]);
             $jsonData = $this->processJSONData($site_page_data, $template_data);
         
         }
         else{
-            $jsonencodedData = json_decode($template_data->default_blank);
+            $jsonencodedData = $template_data->default_blank === null ? [] : json_decode($template_data->default_blank);
 
             if ($template_data->include_csrf){
                 $jsonencodedData->csrftoken = csrf_token();
@@ -127,6 +131,10 @@ class SitePageService
     public function processJSONData($site_page_data, $template_data){
         // make sure the json matches default_blank
         $template_data_default_blank = json_decode($template_data->default_blank, true);
+        if ($template_data->default_blank === null ) {
+            return $site_page_data->json_data;
+        }
+        
         $jsonData = json_decode($site_page_data->json_data, true);
 
         $missingKeys = array_diff_key($template_data_default_blank, $jsonData);
