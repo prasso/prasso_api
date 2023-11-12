@@ -129,6 +129,19 @@ class Controller extends FrameworkController
         return true;
     }
 
+    // use for debugging data together with callstack info
+    public static function dd_with_callstack(...$args) {
+        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        $caller = array_shift($trace);
+        $caller_str = $caller['file'] . ':' . $caller['line'];
+        $callstack = array_map(function($trace) {
+            return $trace['file'] . ':' . $trace['line'];
+        }, $trace);
+        array_unshift($args, $callstack);
+        array_unshift($args, $caller_str);
+        dd(...$args);
+    }
+
     protected function setUpUser($request,$user)
     {
         $accessToken = $request->header(config('constants.AUTHORIZATION_'));

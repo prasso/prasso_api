@@ -20,7 +20,7 @@ class CreateTemplateTable extends Migration
             $table->text('description')->nullable();
             $table->timestamps();
         });
-        //add the default records, sitepage.templates.masterpage and sitepage.templates.blank
+        
         DB::table('site_page_templates')->insert(
             array(
                 'templatename' => 'sitepage.templates.past_livestreams',

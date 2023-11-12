@@ -251,9 +251,12 @@ class SitePageController extends BaseController
         $placeholder = '[DATA]';
         if ($sitepage->template != null && strlen($sitepage->template) > 0 && strpos($sitepage->description, '[DATA]') !== false)
         {
+            $page_content='';
             if ($site_page_data == null)
             {
+                //multi-record result sets will be returned within the x-data attribute of the template in $page_content
                 $page_content= $this->sitePageService->getTemplateData($sitepage, $placeholder, $user);
+                //Controller::dd_with_callstack($page_content);
             }
             else{
 
@@ -263,8 +266,10 @@ class SitePageController extends BaseController
                 $page_content = str_replace($placeholder, $jsonData, $sitepage->description);
             }
             $sitepage->description = $page_content;
+            //Controller::dd_with_callstack($sitepage);
+        
         }
-
+        //Controller::dd_with_callstack($sitepage);
         return view($sitepage->masterpage)//use the template here
             ->with('sitePage',$sitepage)
             ->with('site',$this->site)
