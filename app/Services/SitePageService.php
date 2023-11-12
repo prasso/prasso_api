@@ -38,6 +38,7 @@ class SitePageService
 
         $site_page_description = str_replace($placeholder, $jsonData, $site_page->description);
 
+        //$this->dd_with_callstack($site_page_description);
         return $site_page_description;
        
     }
@@ -114,6 +115,7 @@ class SitePageService
                 'json_data' => $json_data,
             ]);
             $jsonData = $this->processJSONData($site_page_data, $template_data);
+           // Controller::dd_with_callstack($jsonData);
         
         }
         else{
@@ -126,16 +128,16 @@ class SitePageService
         }
         return $jsonData;
     }
-
+   
     // make sure the json matches default_blank
     public function processJSONData($site_page_data, $template_data){
         // make sure the json matches default_blank
         $template_data_default_blank = json_decode($template_data->default_blank, true);
-        if ($template_data->default_blank === null ) {
+        if ($template_data_default_blank === null ) {
             return $site_page_data->json_data;
         }
         
-        $jsonData = json_decode($site_page_data->json_data, true);
+       $jsonData = json_decode($site_page_data->json_data, true);
 
         $missingKeys = array_diff_key($template_data_default_blank, $jsonData);
         $jsonData = array_merge($jsonData, $missingKeys);
