@@ -6,9 +6,9 @@
             {{ __($team->name.' Team Settings') }}
         </h2>
 
-        <x-jet-dropdown-link href="{{ route('dashboard')  }}">
+        <x-dropdown-link href="{{ route('dashboard')  }}">
             {{ __('Return to Dashboard') }}
-            </x-jet-responsive-nav-link>
+            </x-responsive-nav-link>
     </x-slot>
 
     <div>
@@ -19,7 +19,7 @@
             @livewire('teams.team-member-manager', ['team' => $team])
 
             @if (Gate::check('delete', $team) && ! $team->personal_team)
-            <x-jet-section-border />
+            <x-section-border />
 
             <div class="mt-10 sm:mt-0">
                 @livewire('teams.delete-team-form', ['team' => $team])

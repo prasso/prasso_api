@@ -33,9 +33,13 @@ Route::get('/give','SitePageController@giveToDonate');
 
 Route::get('/dashboard', 'SitePageController@index')->name('dashboard');
 
-
-Route::group(['middleware'=> 'instructorusergroup'], function() {
-
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+    'instructorusergroup'
+])->group(function () {
+    
     Route::get('/team/{teamid}', 'TeamController@editTeam')->name('team.edit');
     Route::get('/team/{teamid}/messages', 'TeamController@setupForTeamMessages')->name('team.getmessages');
     Route::post('/team/{teamid}/postmessages', 'TeamController@processTeamMessages')->name('team.postmessages');
@@ -69,7 +73,14 @@ Route::group(['middleware'=> 'instructorusergroup'], function() {
 
 });
 
-Route::group(['middleware'=> 'superadmin'], function() {
+
+Route::middleware([
+        'auth:sanctum',
+        config('jetstream.auth_session'),
+        'verified',
+        'superadmin'
+    ])->group(function () {
+      
     Route::get('/profile/{userid}/update-user','User2Controller@update_user')->name('profile.updateuser');
    
     Route::get('/site-page-data-templates', 'SitePageDataTemplateController@index')->name('site-page-data-templates.index');
@@ -85,5 +96,3 @@ Route::group(['middleware'=> 'superadmin'], function() {
     Route::resource('Sites', SiteController::class);
     Route::get('/sites', 'SiteController@index')->name('sites.show');
 });
-
-

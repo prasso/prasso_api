@@ -1,14 +1,14 @@
 <x-guest-layout>
 
 <x-slot name="title">Login</x-slot>
-    <x-jet-authentication-card>
+    <x-authentication-card>
         <x-slot name="logo">
         @isset($site)
         <img class="max-w-md" src="{{ $site->logo_image }}" />
         @endisset
         </x-slot>
 
-        <x-jet-validation-errors class="mb-4" />
+        <x-validation-errors class="mb-4" />
 
         
             <div class="mb-4 font-medium text-sm text-green-600">
@@ -29,13 +29,13 @@
             @csrf
 
             <div>
-                <x-jet-label value="{{ __('Email') }}" />
-                <x-jet-input class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
+                <x-label value="{{ __('Email') }}" />
+                <x-input class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
             </div>
 
             <div class="mt-4">
-                <x-jet-label value="{{ __('Password') }}" />
-                <x-jet-input class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
+                <x-label value="{{ __('Password') }}" />
+                <x-input class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
             </div>
 
             <div class="block mt-4">
@@ -53,10 +53,10 @@
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <div class="m-auto"><x-jet-button>
+                <div class="m-auto"><x-button>
                     {{ __('Login') }}
-                </x-jet-button></div>
+                </x-button></div>
             </div>
         </form>
-    </x-jet-authentication-card>
+    </x-authentication-card>
 </x-guest-layout>

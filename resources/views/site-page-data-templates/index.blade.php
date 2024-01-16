@@ -7,9 +7,9 @@
             {{ __('Site Page Data Templates') }}
         </h2>
         <div class="flex bg-gray-100">
-        <x-jet-responsive-nav-link href="{{ route('site-page-data-templates.create') }}" :active="request()->routeIs('site-page-data-templates.create')">
+        <x-responsive-nav-link href="{{ route('site-page-data-templates.create') }}" :active="request()->routeIs('site-page-data-templates.create')">
             {{ __('Create a new data template') }}
-        </x-jet-responsive-nav-link>
+        </x-responsive-nav-link>
         </div>
     </x-slot>
     <div>

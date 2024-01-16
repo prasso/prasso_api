@@ -31,7 +31,7 @@
             </div>
             <form> 
                 
-                <input type="hidden" wire:model="siteid" />
+                <input type="hidden" wire:model="site_id" />
                           
                 @include('sites.site-inputs', ['team_selection' => $team_selection])
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">

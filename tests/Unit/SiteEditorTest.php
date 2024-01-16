@@ -2,7 +2,7 @@
 use App\Models\Apps;
 use App\Models\Site;
 use App\Models\SitePages;
-use App\Http\Livewire\SiteEditor;
+use App\Livewire\SiteEditor;
 use App\Services\AppSyncService;
 use App\Models\Team;
 use App\Models\User;

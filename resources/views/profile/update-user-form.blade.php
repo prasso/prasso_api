@@ -11,7 +11,7 @@
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             @livewire('profile.update-user-information-form',['user'=>$user])
         </div>
-        <x-jet-section-border />
+        <x-section-border />
 
     </div>
 </x-app-layout>

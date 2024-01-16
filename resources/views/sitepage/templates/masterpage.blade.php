@@ -147,6 +147,39 @@
                     <img src="{{ $site->logo_image }}" alt="{{ $site->site_name }}"  class="block h-9 w-auto" />
                 @endif
                 </div>
+
+<!-- new nav with dropdown -->
+<div class="p-4 border border-solid border-gray-500">
+@if ($sitePage->section != "Dashboard")
+    <nav id="lg" class="overflow-ellipsis w-full">
+        <!-- Mobile Navigation -->
+        <div class="lg:hidden">
+            <button id="mobile-menu-btn" class="flex items-center px-3 py-2 border rounded text-gray-600 border-gray-600 hover:text-gray-800 hover:border-gray-800 focus:outline-none focus:text-gray-800 focus:border-gray-800 transition duration-150 ease-in-out">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+            <div id="mobile-menu" class="hidden bg-gray-100 mt-2">
+                <ul>
+                {!! $site->getSiteMapList() !!}
+                 <!--   <li><a class="block pl-3 pr-4 py-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition duration-150 ease-in-out" href="/page/Welcome-OLDPRASSO">Prasso - application framework</a></li>
+                 -->   
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Desktop Navigation -->
+        <ul class="hidden lg:flex">
+            {!! $site->getSiteMapList() !!}
+          <!--   <li><a class="block px-3 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out" href="/page/Welcome-OLDPRASSO">Prasso - application framework</a></li>
+           -->
+        </ul>
+    </nav>
+    @endif
+</div>
+
+
+                <!-- old
                 <div class="p-0 ml-10 m-auto  border border-solid border-gray-500">
                 @if ($sitePage->section != "Dashboard")
                     <nav id='lg' class="overflow-ellipsis w-3/4 ml-10">
@@ -156,6 +189,7 @@
                     </nav>
                 @endif
                 </div>
+                -->
 
                 @if (Auth::user()!=null)
                 <div class="relative col-span-12  right-0 flex px-4">
@@ -182,6 +216,12 @@
         
         </div>
         <!-- COPYRIGHT -->
-              
+        <script>
+    // Toggle mobile menu visibility
+    document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+        document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+</script>
+
     </body>
 </html>

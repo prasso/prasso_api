@@ -6,9 +6,9 @@
             {{ __('Sites') }}
         </h2>
         <div class="flex bg-gray-100">
-        <x-jet-responsive-nav-link href="{{ route('site-page-data-templates.index') }}" :active="request()->routeIs('site-page-data-templates.index')">
+        <x-responsive-nav-link href="{{ route('site-page-data-templates.index') }}" :active="request()->routeIs('site-page-data-templates.index')">
             {{ __('View / Edit Data Templates for Site Pages') }}
-        </x-jet-responsive-nav-link>
+        </x-responsive-nav-link>
         </div>
     </x-slot>
     <div>
