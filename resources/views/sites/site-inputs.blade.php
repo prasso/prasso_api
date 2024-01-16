@@ -35,7 +35,7 @@
                             @error('image_folder') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
-                            <x-jet-label value="{{ __('Logo Image') }}" />
+                            <x-label value="{{ __('Logo Image') }}" />
                             <div class=" items-center mt-2"   style="max-width:400px;">
                                 @if (isset($photo) && !empty ($photo->temporaryUrl()) )
                                 <img class=" h-12 rounded-full object-cover" src="{{ $photo->temporaryUrl() }}" alt="{{ $site_name }}">
@@ -60,7 +60,7 @@
                             @error('favicon') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
-                            <x-jet-label value="{{ __('Team') }}" />
+                            <x-label value="{{ __('Team') }}" />
                             <div class="flex items-center mt-2">
                                 @if (Auth::user()->isSuperAdmin())
                                 <select name="teams" id="teams" class="mt-1 block w-full border-2 border-indigo-600/100 p-2" wire:model="team_id" >

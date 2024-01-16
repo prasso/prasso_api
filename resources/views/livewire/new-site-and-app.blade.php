@@ -1,12 +1,12 @@
 <div>
 <x-slot name="header">
 
-    <x-jet-dropdown-link href="{{ route('dashboard')  }}">
+    <x-dropdown-link href="{{ route('dashboard')  }}">
                 {{ __('Return to Dashboard') }}
-            </x-jet-responsive-nav-link>
+            </x-responsive-nav-link>
 </x-slot>
 
-<x-jet-form-section submit="createSiteAndApp" id="wizard-form">
+<x-form-section submit="createSiteAndApp" id="wizard-form">
 <x-slot name="title">
         {{ __('New Site and App') }}
     </x-slot>
@@ -99,13 +99,13 @@
 
 <x-slot name="actions">
 @if($step4 )
-    <x-jet-action-message class="mr-3" on="saved">
+    <x-action-message class="mr-3" on="saved">
         {{ __('Saved.') }}
-    </x-jet-action-message>
-    <x-jet-button wire:loading.remove wire:processing.attr="disabled" >
+    </x-action-message>
+    <x-button wire:loading.remove wire:processing.attr="disabled" >
       <i wire:loading wire:target='submitForm' class="fas fa-spin fa-spinner mr-2"></i> 
         {{ __('Create Your Site and App') }}
-    </x-jet-button>
+    </x-button>
     <div wire:loading>
       <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
           Creating your site...
@@ -113,5 +113,5 @@
     </div>
 @endif
 </x-slot>
-</x-jet-form-section>
+</x-form-section>
 </div>

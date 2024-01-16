@@ -1,4 +1,4 @@
-<x-jet-form-section submit="updateApp">
+<x-form-section submit="updateApp">
     <x-slot name="title">
         {{ __('App Name') }}
     </x-slot>
@@ -29,7 +29,7 @@
 
         <!-- App Owner Information -->
         <div class="col-span-6">
-            <x-jet-label value="{{ __('Select Team') }}" />
+            <x-label value="{{ __('Select Team') }}" />
             <div class="flex items-center mt-2">
                 @if (isset($teamapps))
                 <select name="teams" id="teams" class="mt-1 block w-full border-2 border-indigo-600/100 p-2" wire:model="team_id" wire:change="updateApp">
@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="col-span-6">
-            <x-jet-label value="{{ __('Select Site') }}" />
+            <x-label value="{{ __('Select Site') }}" />
             <div class="flex items-center mt-2">
             @if (isset($sites))
             <select name="sites" id="sites" class="mt-1 block w-full border-2 border-indigo-600/100 p-2" wire:model="site_id" wire:change="updateApp">
@@ -55,7 +55,7 @@
             @endif
         </div>
         <div class="col-span-6">
-            <x-jet-label value="{{ __('App Icon') }}" />
+            <x-label value="{{ __('App Icon') }}" />
             <div class="flex items-center mt-2">
                 @if (isset($photo) && !empty ($photo->temporaryUrl()) )
                 <img class=" h-12 rounded-full object-cover" src="{{ $photo->temporaryUrl() }}" alt="{{ $teamapp['app_name'] }}">
@@ -81,14 +81,14 @@
     </x-slot>
 
     <x-slot name="actions">
-        <x-jet-action-message class="mr-3" on="saved">
+        <x-action-message class="mr-3" on="saved">
             {{ __('Saved.') }}
-        </x-jet-action-message>
+        </x-action-message>
 
-        <x-jet-button>
+        <x-button>
             {{ __('Save') }}
-        </x-jet-button>
+        </x-button>
     </x-slot>
 
 
-</x-jet-form-section>
+</x-form-section>

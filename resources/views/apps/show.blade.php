@@ -9,7 +9,7 @@
 
     <div class="items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
    
-        <x-jet-section-border />
+        <x-section-border />
        
 <section class="text-gray-700 body-font">
    

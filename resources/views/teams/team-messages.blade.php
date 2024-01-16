@@ -82,18 +82,18 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Team Messaging') }}
         </h2>
-        <x-jet-responsive-nav-link href="{{ route('teams.show', Auth::user()->currentTeam->id) }}" :active="request()->routeIs('teams.show')">
+        <x-responsive-nav-link href="{{ route('teams.show', Auth::user()->currentTeam->id) }}" :active="request()->routeIs('teams.show')">
             {{ __('Team Settings') }}
-        </x-jet-responsive-nav-link>
+        </x-responsive-nav-link>
     </x-slot>
 
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
         <div class='md:grid md:grid-cols-3 md:gap-6'>
-    <x-jet-section-title>
+    <x-section-title>
         <x-slot name="title"> {{ __('Team Communications') }}</x-slot>
         <x-slot name="description">{{ __('Create and Schedule Team Communications') }}</x-slot>
-    </x-jet-section-title>
+    </x-section-title>
 
     <div class="mt-5 md:mt-0 md:col-span-2">
         <form id="teamMessages" method="post" action="{{ route('team.postmessages', Auth::user()->currentTeam->id)}}">
@@ -113,12 +113,12 @@ Txt Message<input  id="emailselections" name="emailselections" type="radio" clas
                     </div>
                         <div class="col-span-6 sm:col-span-4 p-5 " class="py-2">
                             
-                            <x-jet-label for="subject" value="{{ __('Message Subject') }}" />
-                            <x-jet-input id="subject" name="subject" type="text" class="mt-1 block w-full"  value="{{old('subject') ?? $formdata['notifications']->subject}}"   />
-                            <x-jet-input-error for="subject" class="mt-2" />
+                            <x-label for="subject" value="{{ __('Message Subject') }}" />
+                            <x-input id="subject" name="subject" type="text" class="mt-1 block w-full"  value="{{old('subject') ?? $formdata['notifications']->subject}}"   />
+                            <x-input-error for="subject" class="mt-2" />
                         </div>
                         <div class="col-span-6 sm:col-span-4 p-5 ">
-                            <x-jet-label for="body" value="{{ __('Message Body') }}" />
+                            <x-label for="body" value="{{ __('Message Body') }}" />
                             <textarea rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="body" name="body" value="{{old('body') ?? $formdata['notifications']->body}}" placeholder="Enter Body"></textarea>
                             @error('body') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
@@ -143,11 +143,11 @@ Txt Message<input  id="emailselections" name="emailselections" type="radio" clas
                         </div>
                     </div>
                     <div class="col-span-6 sm:col-span-4 p-5">
-                        <x-jet-label for="schedule_date_time" value="{{ __('Date and Time to Send') }}" />
+                        <x-label for="schedule_date_time" value="{{ __('Date and Time to Send') }}" />
 
-                        <x-jet-input id="schedule_date_time" name="schedule_date_time"  value="{{old('schedule_date_time')  ?? $formdata['notifications']->schedule_date_time}}"  type="text" class="mt-1 block w-full"  />
+                        <x-input id="schedule_date_time" name="schedule_date_time"  value="{{old('schedule_date_time')  ?? $formdata['notifications']->schedule_date_time}}"  type="text" class="mt-1 block w-full"  />
 
-                        <x-jet-input-error for="schedule_date_time" class="mt-2" />
+                        <x-input-error for="schedule_date_time" class="mt-2" />
                     </div>
 
                     </div>

@@ -15,13 +15,13 @@
 
             @if ((\App\Models\Site::isPrasso(parse_url(url()->current(), PHP_URL_HOST)) && Auth::user()->isSuperAdmin()) || (Auth::user()->isInstructor() && Auth::user()->getSiteCount() == 0))
             <div class="max-w-md m-auto">
-                <x-jet-responsive-nav-link href="{{ route('apps.newsiteandapp', Auth::user()->current_team_id)  }}">
+                <x-responsive-nav-link href="{{ route('apps.newsiteandapp', Auth::user()->current_team_id)  }}">
                     <div class="text-center bg-gray-50 border-2 border-indigo-600/100">
                         <div class="font-sans  text-lg font-semibold text-gray-600">
                             New Site and App
                         </div>
                     </div>
-                </x-jet-responsive-nav-link>
+                </x-responsive-nav-link>
                 @if (!Auth::user()->isSuperAdmin())
                 <div class="font-sans px-4 py-2">
                     <h2 class="text-lg font-semibold text-gray-600 mb-4">Welcome to Prasso! We're excited for you to start building your apps. Here's how to get up and running:</h2>
@@ -38,13 +38,13 @@
             @else
             <div class="max-w-xs m-auto">
                 <!-- a link to this user's site dashboard -->
-                <x-jet-responsive-nav-link href="{{  Auth::user()->getUserSiteUrl()  }}">
+                <x-responsive-nav-link href="{{  Auth::user()->getUserSiteUrl()  }}">
                     <div class="mt-3 space-y-1">
                         <div class="font-sanstext-gray-600">
                             {{ __('My Site Dashboard') }}
                         </div>
                     </div>
-                </x-jet-responsive-nav-link>
+                </x-responsive-nav-link>
 
                 {!! $user_content !!}
             </div>
@@ -57,9 +57,9 @@
 
                         <div class="border-t border-gray-200 mt-2"></div>
                             <!-- Account Management -->
-                            <x-jet-responsive-nav-link href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')">
+                            <x-responsive-nav-link href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')">
                                 {{ __('Profile') }}
-                            </x-jet-responsive-nav-link>
+                            </x-responsive-nav-link>
                             <div class="border-t border-gray-200 mt-2"></div>
                         </div>
                         @if (Auth::user()->isSuperAdmin())
@@ -67,13 +67,13 @@
                             Manage Apps and Sites   
                         </div>
 
-                        <x-jet-responsive-nav-link href="{{ route('apps.show', Auth::user()->current_team_id)  }}">
+                        <x-responsive-nav-link href="{{ route('apps.show', Auth::user()->current_team_id)  }}">
                             {{ __('Apps') }}
-                        </x-jet-responsive-nav-link>
+                        </x-responsive-nav-link>
 
-                        <x-jet-responsive-nav-link href="{{ route('sites.show')  }}">
+                        <x-responsive-nav-link href="{{ route('sites.show')  }}">
                             {{ __('Sites') }}
-                        </x-jet-responsive-nav-link>
+                        </x-responsive-nav-link>
 
                         @endif
                         @if (Auth::user()->isInstructor() )
@@ -110,20 +110,20 @@
 
                         @foreach (Auth::user()->allTeams() as $team)
                             <div class="flex items-center justify-between">
-                                <x-jet-switchable-team :team="$team" component="jet-responsive-nav-link" />
+                                <x-switchable-team :team="$team" component="responsive-nav-link" />
                                 @if (Auth::user()->getSiteCount() > 0 && Auth::user()->canManageTeamForSite())
                                     <!-- Team Settings -->
-                                    <x-jet-responsive-nav-link href="{{ route('teams.show', $team->id) }}" :active="request()->routeIs('teams.show')" class="ml-auto">
+                                    <x-responsive-nav-link href="{{ route('teams.show', $team->id) }}" :active="request()->routeIs('teams.show')" class="ml-auto">
                                     <i class="material-icons">settings</i>
-                                    </x-jet-responsive-nav-link>
+                                    </x-responsive-nav-link>
                                 @endif
                             </div>
                         @endforeach
                         @endif
 
-                        <x-jet-responsive-nav-link href="{{ route('teams.create') }}" :active="request()->routeIs('teams.create')">
+                        <x-responsive-nav-link href="{{ route('teams.create') }}" :active="request()->routeIs('teams.create')">
                             {{ __('Create New Team') }}
-                        </x-jet-responsive-nav-link>
+                        </x-responsive-nav-link>
 
                         @endif
 
@@ -132,10 +132,10 @@
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
 
-                                <x-jet-responsive-nav-link class="teambutton px-4 py-2 font-semibold text-white transition duration-500 ease-in-out transform rounded-lg shadow-xl" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                <x-responsive-nav-link class="teambutton px-4 py-2 font-semibold text-white transition duration-500 ease-in-out transform rounded-lg shadow-xl" href="{{ route('logout') }}" onclick="event.preventDefault();
                                 this.closest('form').submit();">
                                     {{ __('Logout') }}
-                                </x-jet-responsive-nav-link>
+                                </x-responsive-nav-link>
                             </form>
                         </div>
                     </div>

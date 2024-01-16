@@ -15,10 +15,7 @@
     <!-- Styles -->   
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"> 
-    <!-- Scripts -->
-    <script src="/js/jquery1.10.0.min.js"></script> 
-    <script src="{{ asset('/js/app.js') }}" defer></script>
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
+   
     <link rel="stylesheet" href="/js/jqueryui.1.12.1.min.css">
     
     @livewireStyles
@@ -30,17 +27,7 @@
     <link rel="icon" sizes="192x192" href="{{ config('app.photo_url').$site->image_folder}}android-chrome-192x192.png">
     <link rel="icon" sizes="512x512" href="{{ config('app.photo_url').$site->image_folder}}android-chrome-512x512.png">
     <link rel="apple-touch-icon" href="{{ config('app.photo_url').$site->image_folder}}apple-touch-icon.png">
-    @if (isset($site->app_specific_css) && str_starts_with($site->app_specific_css, 'http') )
-        <link rel="stylesheet" href="{{$site->app_specific_css}}">
-    @else
-        <style>{{ $site->app_specific_css }}</style>
-    @endif
-    @if (isset($site->app_specific_js) && str_starts_with($site->app_specific_js, 'http') )
-        <script src="{{$site->app_specific_js}}"></script>
-    @else
-        <script>{{$site->app_specific_js}}</script>
-    @endif
-
+   
 
 </head>
 
@@ -73,9 +60,20 @@
         @stack('modals')
 
         <!-- Scripts -->
+        <script src="/js/jquery1.10.0.min.js"></script> 
         {{ $extrajs ?? ''}}
+        @if (isset($site->app_specific_css) && str_starts_with($site->app_specific_css, 'http') )
+            <link rel="stylesheet" href="{{$site->app_specific_css}}">
+        @else
+            <style>{{ $site->app_specific_css }}</style>
+        @endif
+        @if (isset($site->app_specific_js) && str_starts_with($site->app_specific_js, 'http') )
+            <script src="{{$site->app_specific_js}}"></script>
+        @else
+            <script>{{$site->app_specific_js}}</script>
+        @endif
+
         <script src="{{ asset('/js/app.js') }}" defer></script>
-        <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
 
         @livewireScripts
 

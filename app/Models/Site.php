@@ -238,13 +238,13 @@ class Site extends Model
         $list = '';
         foreach ($sitemap as $key => $value)
         {
-            $list .= '<li><a class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out" href="/page/' . $key . '">' . $value . '</a></li>';
+            $list .= '<li><a class="block pl-3 pr-4 py-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition duration-150 ease-in-out" href="/page/' . $key . '">' . $value . '</a></li>';
         }
         
         // if this user is an admin or a team owner then add the site editor
         if ( $this->user_is_admin() )
         {
-            $list .= '<li><a class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out" href="/site/edit">Site Editor</a></li>';
+            $list .= '<li><a class="block pl-3 pr-4 py-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition duration-150 ease-in-out" href="/site/edit">Site Editor</a></li>';
         }
 
     
