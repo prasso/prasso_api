@@ -34,7 +34,6 @@ return [
         'UNAUTHORIZED' => 'Not Authorized',
         'USER_TOKEN' => '[USER_TOKEN]',
         'THIRD_PARTY_TOKEN' => '[THIRD_PARTY_TOKEN]',
-        'yourHealthToken' => 'yourHealthToken',
         'TEAM_ID' => '[TEAM_ID]',
         'CSRF_HEADER' => '[CSRF_HEADER]',
         'BARIMORPHOSIS_APP' => 1,
