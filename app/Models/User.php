@@ -19,6 +19,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use App\Mail\welcome_user;
 use App\Mail\contact_form;
 use App\Mail\prasso_user_welcome;
@@ -41,7 +43,7 @@ use Twilio\Rest\Client;
  * @property \Carbon\Carbon $updated_at
  *
  */
-class User extends Authenticatable {
+class User extends Authenticatable implements FilamentUser {
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
@@ -143,10 +145,6 @@ class User extends Authenticatable {
         return $this->hasOne(PersonalAccessToken::class, 'tokenable_id', 'id');
     }
 
-    public function yourHealthToken() {
-        return $this->hasOne(YourHealthToken::class, 'user_id', 'id');
-    }
-
     public function getRouteKeyName() {
         return 'firebase_uid';
     }
@@ -224,6 +222,11 @@ class User extends Authenticatable {
             return true;
         } 
         return false;
+    }
+    /**filament interface */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->isInstructor();
     }
 
     public function getUserAppInfo()
