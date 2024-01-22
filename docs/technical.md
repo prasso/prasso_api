@@ -6,7 +6,10 @@
   - Laravel, Tailwind, AlpineJs, MySQL
 - ## Installation and configuration
   - composer install
-  - Setting environment variables - copy the env_example file to .env and fill in the appropriate values for your setup
+  - Setting environment variables - copy the env_example file to .env and fill in the appropriate values for your setup.
+    - fill in the app name
+    - artisan key:generate
+    - fill in the database connection info
 - ## Deployment
   - Hosting options - Current use is from AWS and a hosted EC2 instance. 
   - CI/CD workflows - Not yet implemented.
