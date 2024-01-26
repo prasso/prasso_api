@@ -15,6 +15,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Filters\SelectFilter;
+
 
 class UserRoleResource extends Resource
 {
@@ -51,7 +53,10 @@ class UserRoleResource extends Resource
                 Tables\Columns\TextColumn::make('team_role.role_name')
             ])
             ->filters([
-                //
+                SelectFilter::make('role_id')
+                ->options(function () {
+                    return Role::pluck('role_name', 'id');
+                })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
