@@ -29,7 +29,15 @@ class UserRole extends Model
     }
 
     public function team_role() {
-        return $this->belongsTo(Tab::class, 'team_role');
+        return $this->belongsTo(Role::class, 'role_id');
     }
+    /*
+    commenting out as I believe this was a mistake, but maybe is 
+    a necessary relation for the Tabs class which is the table
+    that feeds the apps and if the team_role field is filled in there then
+    the app will limit who can view it
+    public function team_role() {
+        return $this->belongsTo(Tab::class, 'team_role');
+    }*/
 
 }
