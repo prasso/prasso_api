@@ -82,6 +82,7 @@ class User extends Authenticatable implements FilamentUser {
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
     /**
@@ -223,10 +224,10 @@ class User extends Authenticatable implements FilamentUser {
         } 
         return false;
     }
-    /**filament interface */
+    /**filament interface, can the user access filament admin */
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->isInstructor();
+        return $this->isSuperAdmin();
     }
 
     public function getUserAppInfo()
