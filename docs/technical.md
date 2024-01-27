@@ -10,6 +10,9 @@
     - fill in the app name
     - artisan key:generate
     - fill in the database connection info
+    - composer install
+    - run migrations
+    - seed initial data using file prasso_initial.sql
 - ## Deployment
   - Hosting options - Current use is from AWS and a hosted EC2 instance. 
   - CI/CD workflows - Not yet implemented.
