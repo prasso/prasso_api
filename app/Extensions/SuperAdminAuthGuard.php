@@ -7,8 +7,9 @@ use Illuminate\Contracts\Auth\Guard;
 use App\Extensions\SuperAdminUserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Auth\SessionGuard;
  
-class SuperAdminAuthGuard implements Guard
+class SuperAdminAuthGuard extends SessionGuard implements Guard
 {
   protected $request;
   protected $provider;
