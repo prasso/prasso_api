@@ -186,16 +186,19 @@ class User extends Authenticatable implements FilamentUser {
         return $user;
     }
 
-    public function hasRole(...$role_looking_for) {
+    public function hasRole(...$role_looking_for)
+    {
         foreach ($this->roles as $role) {
-
-            if (in_array($role->role_id, $role_looking_for)) {
+            $roleId = (int) $role->role_id; // Cast role_id to integer
+            
+            if (in_array($roleId, $role_looking_for)) {
                 return true;
             }
         }
-
+    
         return false;
     }
+
 
     public function isSuperAdmin() {
         if ($this->hasRole(config('constants.SUPER_ADMIN'))) {
