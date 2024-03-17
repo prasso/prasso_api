@@ -58,7 +58,7 @@
                         <div class="border-t border-gray-100"></div>
 
                         <!-- Team Management -->
-                        @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
+                        @if (Laravel\Jetstream\Jetstream::hasTeamFeatures() && (Auth::user()->isInstructor() ))
                             <div class="block px-4 py-2 text-xs text-gray-400">
                                 {{ __('Manage Team') }}
                             </div>
@@ -76,6 +76,7 @@
 
                             <div class="border-t border-gray-100"></div>
 
+                           @if (count(Auth::user()->allTeams()) > 1)
                             <!-- Team Switcher -->
                             <div class="block px-4 py-2 text-xs text-gray-400">
                                 {{ __('Switch Teams') }}
@@ -84,6 +85,7 @@
                             @foreach (Auth::user()->allTeams() as $team)
                                 <x-switchable-team :team="$team" />
                             @endforeach
+                            @endif
 
                             <div class="border-t border-gray-100"></div>
                         @endif
@@ -159,7 +161,7 @@
                 </form>
 
                 <!-- Team Management -->
-                @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
+              @if (Laravel\Jetstream\Jetstream::hasTeamFeatures() && (Auth::user()->isInstructor() ))
                     <div class="border-t border-gray-200"></div>
 
                     <div class="block px-4 py-2 text-xs text-gray-400">
