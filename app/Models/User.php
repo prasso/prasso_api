@@ -110,15 +110,23 @@ class User extends Authenticatable implements FilamentUser {
         return false;
     }
 
-    public function getProfilePhoto() {
-        if ($this->profile_photo_path == null) {
+    public function getProfilePhotoUrlAttribute()
+    {
+        if (!$this->profile_photo_path) {
             return $this->defaultProfilePhotoUrl();
         }
-        if (str_starts_with($this->profile_photo_path, 'http')) {
-            return  $this->profile_photo_path;
+
+        if (stripos($this->profile_photo_path, 'http') === 0) {
+            return $this->profile_photo_path;
         }
-        return  config('app.photo_url') . $this->profile_photo_path;
+
+        return config('app.photo_url') . '/' . $this->profile_photo_path;
     }
+    public function getProfilePhoto()
+    {
+       return $this->profile_photo_path;
+    }
+
 
     public function team_owner() {
         return $this->hasMany(Team::class, 'user_id', 'id')
