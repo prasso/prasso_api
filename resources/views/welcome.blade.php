@@ -48,8 +48,9 @@
  >
  
 <div class='tn-atom' field='tn_text_1470210011265'   >
-a user-friendly interface, robust framework, and a range of features that simplify the development process.</div>
 
+Unlock the power of efficient coding practices with Prasso.io. Our platform provides a user-friendly interface, a robust framework, and a suite of features that streamline development.
+</div>
 </div>
         
      <div class='t396__elem tn-elem  tn-elem__3080480481470210033144' data-elem-id='1470210033144' data-elem-type='image'
@@ -64,7 +65,7 @@ a user-friendly interface, robust framework, and a range of features that simpli
      <div class='t396__elem tn-elem  tn-elem__3080480481470210128180' data-elem-id='1470210128180' data-elem-type='text'
  >
  
-<div class='tn-atom' field='tn_text_1470210128180'   >by faxt with help from <a href="https://tilda.cc" target="_blank">tilda.cc</a> and <a href="https://storyset.com/business" target="_blank">Freepik Storyset</a></div>
+<div class='tn-atom' field='tn_text_1470210128180'   >by faxt and DeductionTraq</div>
 
 </div>
         
@@ -75,7 +76,7 @@ a user-friendly interface, robust framework, and a range of features that simpli
         
      <div class='t396__elem tn-elem  tn-elem__3080480481470209944682' data-elem-id='1470233923389' data-elem-type='text'>
  
-<div class='tn-atom' style="font-size:32px !important;" > build, customize, and validate your app ideas</div>
+<div class='tn-atom' style="font-size:32px !important;" >we build software to support your business</div>
 
 </div>
 </div>
@@ -99,7 +100,7 @@ a user-friendly interface, robust framework, and a range of features that simpli
 construction
 </span></div>
 <div>
-    Build custom mobile and web apps with ease using Prasso's streamlined app prototype process, single setup form, customization options, and rapid prototyping tool.
+    <b>Smart Construction: </b>Easily create customized mobile and web applications using Prasso's all-in-one platform template. Benefit from our streamlined app prototype process, single setup form, and rapid prototyping tool, all engineered to boost your development workflow.
 </div>
 </li>
   <li class="text-left mt-3 border-b">
@@ -109,7 +110,7 @@ construction
   verified_user
 </span></div>
 <div>
-    Benefit from a stable Laravel framework-based API backend, user registration and site association, app configuration with tabs and views, and team-based association and roles.
+<b>Verified Stability:</b> Benefit from a stable Laravel framework-based API backend, seamless user registration, app configuration with tabs and views, and team-based association and roles, ensuring your app's stability and reliability.
 </div>
 </li>
   <li class="text-left mt-3 border-b">
@@ -117,7 +118,7 @@ construction
   <div class="m-auto">
     <span class="material-icons prasso-orange-accent" style="font-size: 100px;">code</span> </div>
 <div>
-    Create functional apps without coding using Prasso's Low-Code functionality and unify web tools into a mobile app.
+<b>Effortless Coding:</b> Experience the ease of Prasso's Low-Code functionality, transforming your ideas into fully functional apps. Our template seamlessly combines a robust backend API with a mobile app interface, ready to manage every aspect of your business operations with simplicity and efficiency.
 </div>
 </li>
   <li class="text-left mt-3 border-b">
@@ -125,13 +126,13 @@ construction
   <div class="m-auto">
   <span class="material-icons prasso-orange-accent" style="font-size: 100px;">trending_up</span> </div>
 <div>
-  Validate your app concept through rapid deployment, visually edit site pages with GrapesJs, and showcase business information while serving Prasso apps through the API.
-  </div>
+<b>Rapid Validation:</b> Validate your app concept swiftly through rapid deployment, visually edit site pages with GrapesJs, and showcase business information while effortlessly serving Prasso apps through the API.
+</div>
 </li>
   <li class="text-left mt-3 border-b">
   <div class="grid grid-cols-2 gap-8 ">
   <div class="m-auto"><span class="material-icons prasso-orange-accent" style="font-size: 100px;">favorite</span></div>
-<div> Enjoy easy setup and integration with Firebase, extensive documentation, and friendly support. Prasso is open-source and licensed under MIT for customization and collaboration.</div>
+<div> <b>User-Friendly Experience:</b> Enjoy easy setup and integration with Firebase, access extensive documentation, and receive friendly support every step of the way. Prasso.io is open-source and licensed under MIT for seamless customization and collaboration.</div>
 </li>
 </ul>
     </div>	          <a href="https://github.com/prasso" target="_blank" class="t-btn prasso-orange-accent"  style="background:#ffffff; border-radius:50px; -moz-border-radius:50px; -webkit-border-radius:50px;"><table style="width:100%; height:100%;"><tr><td>View the Source</td></tr></table></a>
@@ -149,7 +150,7 @@ construction
             <div class="t412__wrapper"> 
               <img class="" src="https://static.tildacdn.com/tild6163-6539-4661-b165-343965393566/Landing_page-pana.png" data-tu-max-width="300" data-tu-max-height="300" style="" imgfield="img" /> 
             <div class="t412__title t-name t-name_xl" style="" field="title" >Rapid Prototype</div>
-              <div class="t412__descr t-text" style="" field="descr" >Prasso is first a rapid prototyping tool. Assemble your app using low-code pages which have been built to prove your concept. Then release it to prove the concept works.<br /><br /><br /><br /></div> 
+              <div class="t412__descr t-text" style="" field="descr" >Prasso serves as a premier rapid prototyping tool, offering a versatile template designed for swift development. Utilize the Prasso template to swiftly build and validate your app concept, leveraging its open-source nature. Seamlessly transition from prototype to fully functional software, with the template's integrated API and mobile app components, ensuring a smooth transition from idea to execution.<br /><br /><br /><br /></div> 
           </div>
             </div> 
     </div> 
@@ -157,8 +158,8 @@ construction
         <div class="t412__content" style="border-color: #000000;border-width: 2px;">
             <div class="t412__wrapper">           
               <img class="" src="https://static.tildacdn.com/tild3965-3336-4534-a131-626334616330/Remote_team-amico.png" data-tu-max-width="300" data-tu-max-height="300" style="" imgfield="img2" /> 
-            <div class="t412__title t-name t-name_xl" style="" field="title2" >No Code Options</div>
-              <div class="t412__descr t-text" style="" field="descr2" >Prasso unites multiple web tools into one mobile app. For example, a flarum.cloud forum could be a tab, a YouTube channel could be a tab, a calendar scheduler could be a tab. Together the tabs assemble into a personalized app.<br /><br /><br /></div> 
+            <div class="t412__title t-name t-name_xl" style="" field="title2" >Template Integration</div>
+              <div class="t412__descr t-text" style="" field="descr2" >Prasso seamlessly integrates various web tools into a unified mobile app experience. Imagine your forum from flarum.cloud as a tab, your YouTube channel as another, and a calendar scheduler as yet another. These tabs come together within the Prasso template, creating a personalized and cohesive app tailored to your needs.<br /><br /><br /></div> 
           </div>
             </div>  
     </div>  
@@ -166,8 +167,8 @@ construction
         <div class="t412__content" style="border-color: #000000;border-width: 2px;">
             <div class="t412__wrapper">           
               <img class="" src="https://static.tildacdn.com/tild6362-3131-4533-b461-643631633533/Blog_post-bro.png" data-tu-max-width="300" data-tu-max-height="300" style="" imgfield="img3" /> 
-            <div class="t412__title t-name t-name_xl" style="" field="title3" >Functionality</div>
-              <div class="t412__descr t-text" style="" field="descr3" >A Prasso site is both business information site and Prasso api site. The api serves the Prasso apps. Apps can be assembled/ built at a Prasso site using the admin tools. And then when a user with an assigned team and app logs into the mobile app, the assembled presentation becomes their personalized mobile app.</div> 
+            <div class="t412__title t-name t-name_xl" style="" field="title3" >Integration and Functionality</div>
+              <div class="t412__descr t-text" style="" field="descr3" >At its core, a Prasso site functions as both a comprehensive business information hub and a Prasso API platform. The API seamlessly powers all Prasso apps, ensuring consistency across platforms. With our admin tools, you can effortlessly assemble and build apps directly on your Prasso site. When users access the mobile app with their assigned team and app credentials, they are greeted with a personalized mobile experience, crafted from the assembled presentation on the Prasso site.</div> 
           </div>
             </div>  
     </div> 
@@ -219,14 +220,14 @@ construction
 				</div>
 				<div class="bg-white rounded-lg shadow-md overflow-hidden text-center">
 				  <div class="px-6 py-4">
-            <img class="m-auto" src="	https://images.prasso.io/faxt/Microsites-rafiki.svg" style="max-height:150px; min-height:150px;" />
-					<h3 class="text-lg font-semibold text-gray-800 mb-2">FAXT
+            <img class="m-auto" src="	https://images.prasso.io/prasso/user-files/109/colorpluslogo.jpg" style="max-height:150px; min-height:150px;" />
+					<h3 class="text-lg font-semibold text-gray-800 mb-2">Printshop ERP
 					</h3>
-					<p class="text-gray-600 leading-6">Developer site that highlights Prasso functionality.
+					<p class="text-gray-600 leading-6">Manage manufacturing and sales for a packaging print shop.
 					</p>
 				  </div>
 				  <div class="px-6 py-4">
-					<a href="https://faxt.com/" class="inline-block prasso-green text-white rounded-full px-3 py-1 text-sm font-semibold">#Web</a>
+					<a href="https://printshoperp.prasso.io/" class="inline-block prasso-green text-white rounded-full px-3 py-1 text-sm font-semibold">#Web</a>
 				  </div>
 				</div>
 			  </div>
@@ -261,7 +262,9 @@ construction
        <a href="/privacy">privacy</a> | <a href="/terms">terms</a>
     </div>
     <div class="flex sm:justify-center items-center sm:pt-0 ">
-        <small>&copy faxt 1999-<?php echo date('Y'); ?> and DeductionTraq</small>
+        <small>&copy faxt 1999-<?php echo date('Y'); ?> and DeductionTraq<br/>
+        with help from <a href="https://tilda.cc" target="_blank">tilda.cc</a> and <a href="https://storyset.com/business" target="_blank">Freepik Storyset</a>
+      </small>
     </div>
 </div>
  

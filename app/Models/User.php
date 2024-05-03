@@ -124,7 +124,7 @@ class User extends Authenticatable implements FilamentUser {
     }
     public function getProfilePhoto()
     {
-       return $this->profile_photo_path;
+       return $this->getProfilePhotoUrlAttribute();
     }
 
 
