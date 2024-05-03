@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Contracts\Auth\Authenticatable as UserContract;
  
 class SuperAdminUserProvider extends ServiceProvider implements UserProvider 
 {
@@ -61,4 +62,17 @@ class SuperAdminUserProvider extends ServiceProvider implements UserProvider
   public function retrieveByToken($identifier, $token) {}
  
   public function updateRememberToken(Authenticatable $user, $token) {}
+
+  /**
+     * Rehash the user's password if necessary.
+     *
+     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
+     * @param  string  $password
+     * @return bool
+     */
+    public function rehashPasswordIfRequired(UserContract $user, array $credentials, bool $force = false)
+    {
+        // Implement your rehash logic here if necessary
+        return false; // Return true if rehashing is successful, false otherwise
+    }
 }
