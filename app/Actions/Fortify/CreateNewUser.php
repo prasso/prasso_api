@@ -31,6 +31,11 @@ class CreateNewUser implements CreatesNewUsers
          Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'billing_address' => ['nullable', 'string', function ($attribute, $value, $fail) {
+                if (!empty($value)) {
+                    $fail(''); //this is the bot eliminator, billing_address is not visible
+                }
+            }],
             'password' => $this->passwordRules(),
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
             'phone' => '',

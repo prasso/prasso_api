@@ -29,7 +29,8 @@
                 @else
                 <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
                 @endif
-            </div>
+                <input type="hidden" name="billing_address"  />
+             </div>
             @if (app('request')->input('invite'))
             <x-input id="invite" class="hidden" type="hidden" name="invite" value="{{ app('request')->input('invite') }}" required />
             @endif
