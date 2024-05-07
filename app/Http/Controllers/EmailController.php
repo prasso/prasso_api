@@ -96,7 +96,7 @@ class EmailController extends BaseController
             'Authorization'=> 'key='. $this->serverKey,
         ])->post($url, $data);
 
-        return redirect('/contact')->with('message', 'Your message was sent.'); 
+        return redirect('/dashboard')->with('message', 'Your message was sent.'); 
     }
 
 }

@@ -5,7 +5,7 @@
             {{ __('Contact') }}
         </h2>
     </x-slot>
-    <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 xl:max-w-screen-xl xl:w-3/4">
                 <div class="tyJCtd mGzaTb baZpAe lkHyyc">
         <form method="post" action="{{ route('send-email') }}">
         @csrf

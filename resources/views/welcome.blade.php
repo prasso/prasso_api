@@ -24,7 +24,24 @@
 </head>
 
 <body style="margin:0px;" data-lang="EN" data-country="US"> 
-
+@if ($errors->any())
+<div class="flex justify-center"> <div class="relative px-3 py-3 mb-4 border rounded text-teal-800 border-teal-900 bg-teal-300">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div></div>
+        @endif
+        @if(Session::get('message'))
+        <div class="flex justify-center">
+    <div class="relative px-3 py-3 mb-4 border rounded text-teal-800 border-teal-900 bg-teal-300">
+        <ul>
+            <li>{{ Session::get('message') }}</li>
+        </ul>
+    </div>
+</div>
+        @endif
 <!--allrecords-->
 <div id="allrecords" class="t-records" data-hook="blocks-collection-content-node" data-tilda-project-id="4017550" data-tilda-page-id="19079171"     data-tilda-mode="preview"   >
 
