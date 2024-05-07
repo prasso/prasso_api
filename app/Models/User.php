@@ -115,12 +115,11 @@ class User extends Authenticatable implements FilamentUser {
         if (!$this->profile_photo_path) {
             return $this->defaultProfilePhotoUrl();
         }
-
         if (stripos($this->profile_photo_path, 'http') === 0) {
-            return $this->profile_photo_path;
+            return rtrim($this->profile_photo_path, '/') ;
         }
-
-        return config('app.photo_url') . '/' . $this->profile_photo_path;
+        
+        return rtrim(config('app.photo_url'), '/') . '/' . ltrim($this->profile_photo_path, '/');
     }
     public function getProfilePhoto()
     {
