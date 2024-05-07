@@ -10,13 +10,16 @@
 
         <x-validation-errors class="mb-4" />
 
-        
+        @if(isset($site))
+            @if ($site->supports_registration) 
             <div class="mb-4 font-medium text-sm text-green-600">
                 @if (session('status'))
                 {{ session('status') }}<br>
                 @endif
                 <a class='underline' href="/register">Register</a> for this site.
             </div>
+            @endif
+        @endif
         
         @if(Session::get('error_msg'))
             <div class="alert alert-danger alert-dismissable server-error">

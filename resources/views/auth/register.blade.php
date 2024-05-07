@@ -1,6 +1,7 @@
 <x-guest-layout>
-
     <x-slot name="title">Register</x-slot>
+@if(isset($site))
+@if ($site->supports_registration) 
     <x-authentication-card>
         <x-slot name="logo">
             <img style='max-width:150px' src="{{ $site->logo_image }}" />
@@ -57,4 +58,6 @@
             </div>
         </form>
     </x-authentication-card>
+@endif
+@endif
 </x-guest-layout>
