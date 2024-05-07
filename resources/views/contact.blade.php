@@ -43,7 +43,7 @@
             <div class="hidden">
             <input type="text"  name="details" id="details"  >
             </div>
-            <button type="submit" class="btn-blue hover:bg-gray-800 text-white w-full p-2">Send Inquiry</button>
+            <button type="submit" class="t-btn t-btn_xxs t-animate prasso-green hover:bg-gray-800 text-white w-full p-2">Send Inquiry</button>
         </div>
     </form>                          
                 </div>
