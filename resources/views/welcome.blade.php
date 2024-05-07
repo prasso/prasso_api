@@ -44,31 +44,17 @@
  
 </div>
         
-     <div class='t396__elem tn-elem  tn-elem__3080480481470210011265' data-elem-id='1470210011265' data-elem-type='text'
+     <div class='t396__elem tn-elem  tn-elem__3080480481470210011265' data-elem-id='1470210011265' data-elem-type='image'
  >
- 
-<div class='tn-atom' field='tn_text_1470210011265'   >
-
-Unlock the power of efficient coding practices with Prasso.io. Our platform provides a user-friendly interface, a robust framework, and a suite of features that streamline development.
-</div>
-</div>
-        
-     <div class='t396__elem tn-elem  tn-elem__3080480481470210033144' data-elem-id='1470210033144' data-elem-type='image'
- >
- 
-          <div class='tn-atom'    > 
+ <div class='tn-atom'    > 
         <img class='tn-atom__img' src='/images/prasso_palm.png'  imgfield='tn_img_1470210033144'> 
       </div>
-         
-</div>
-        
-     <div class='t396__elem tn-elem  tn-elem__3080480481470210128180' data-elem-id='1470210128180' data-elem-type='text'
- >
- 
-<div class='tn-atom' field='tn_text_1470210128180'   >by faxt and DeductionTraq</div>
 
 </div>
         
+     <div  data-elem-id='1470210033144' 
+ >
+
      <div class='t396__elem tn-elem  tn-elem__3080480481470210224069' data-elem-id='1470210224069' data-elem-type='shape' >
   
     
@@ -76,9 +62,10 @@ Unlock the power of efficient coding practices with Prasso.io. Our platform prov
         
      <div class='t396__elem tn-elem  tn-elem__3080480481470209944682' data-elem-id='1470233923389' data-elem-type='text'>
  
-<div class='tn-atom' style="font-size:32px !important;" >we build software to support your business</div>
+<div class='tn-atom' style="font-size:32px !important;" >accelerated development of software to support your business</div>
 
 </div>
+
 </div>
   
 </div>   
@@ -246,8 +233,8 @@ construction
             
         </div>      <div class="t017__title t-title t-title_xxs" field="title" style="">
             
-            <H1 class="prasso-orange-accent">Start Now for Free</h1>
-           <button class="t-btn t-btn_xxs t-animate prasso-green" onclick="window.location.href='./register';" style="border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;">
+            <H1 class="prasso-orange-accent">Request a Quote</h1>
+           <button class="t-btn t-btn_xxs t-animate prasso-green" onclick="window.location.href='./contact';" style="border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;">
             <span class="t-btn__wrapper t-valign_middle">
               <span class="t-btn__text">Get Started</span>
             </span>

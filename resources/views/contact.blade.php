@@ -27,10 +27,9 @@
         @endif
         <div class="form-group row col-8">
             <div class="form-group col-12">
-                <label for="email">Email Address(es)</label>
-                <input type="text" class="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-grey-darker border border-grey rounded" name="email" id="email" placeholder="Example: johndoe@email.com,JohnDoe@email.com, " required>
-                <small id="email" class="form-text text-muted">Enter your email address, if more than one separate with a comma</small>
-            </div>
+                <label for="email">Email Address</label>
+                <input type="text" class="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-grey-darker border border-grey rounded" name="email" id="email" placeholder="Example: johndoe@email.com" required>
+                </div>
             <div class="form-group col-12">
                 <label for="subject">Subject</label>
                 <input type="text" class="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-grey-darker border border-grey rounded"" name="subject" id="subject" placeholder="Email Subject" required>
