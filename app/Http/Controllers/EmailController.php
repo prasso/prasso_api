@@ -61,9 +61,9 @@ class EmailController extends BaseController
    // this method sends to the main admin only. it sends the info entered. no other emails are sent from here
     public function sendEmail(Request $request, Site $site) {
         $this->validate($request, [
-            'email' => 'required',
-            'subject' => 'required',
-            'body' => 'required',
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'subject' => ['required', 'string', 'max:255'],
+            'body' => ['required', 'string', 'max:1000'],
         ]);
 
         $emails = $request->email;
@@ -73,7 +73,7 @@ class EmailController extends BaseController
         $admin_user = \App\Models\User::where('email','bcp@faxt.com')->first();
         $admin_user -> sendContactFormEmail($subject, $body);
 
-        /// txt message only works if the app is in the background of the device - at least on Android
+       /* /// txt message only works if the app is in the background of the device - at least on Android
         $data = [
             "to" => $admin_user->pn_token,
             "notification" =>
@@ -95,7 +95,7 @@ class EmailController extends BaseController
             'Content-Type' => 'application/json',
             'Authorization'=> 'key='. $this->serverKey,
         ])->post($url, $data);
-
+        */
         return redirect('/dashboard')->with('message', 'Your message was sent.'); 
     }
 
