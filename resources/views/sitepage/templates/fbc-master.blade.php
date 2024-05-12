@@ -293,16 +293,17 @@
             </div>
             <div class="content-wrapper clearfix">
                <div class="group group-0">
-                  <div class="photo-content editable photo-0 " data-id="12570587" data-category="photo" data-width="500" data-height="190">
-                     <div class="aspect-helper" style="padding-top:38.0%"></div>
-                     <div class="photo-container">
-                         <img src="https://images.prasso.io/faith/FaithLakeCityLogo-250.png" border="0">
-                     </div>
+                  <div style="display: flex; align-items: flex-start;">
+                        <img style="position:absolute; top:0px;max-width:250px" src="https://images.prasso.io/faith/FaithLakeCityLogo-250.png" border="0">
                   </div>
                   <div class="text-content text-1 editable" data-id="155629" data-category="text">
                      <div>
-                        <p style="font-weight: 700; font-size: 1.6277em;">Faith Baptist Church  ~  Lake City, Florida</p>
-                        <p style="font-weight: 400; font-size: 1.3885em;">Visit us on Faith Road behind The Home Depot and Aldi's</p>
+                        <p style="font-weight: 700; font-size: 1.6277em;line-height: 1.2;">Faith Baptist Church</p>
+                        <div>
+                           <p style="color: #666666;font-weight: 200; font-size: 1.3885em; line-height: 1.2;">299 SW Faith Road</p>
+                           <p style="color: #666666;font-weight: 200; font-size: 1.3885em; line-height: 1.2;">Lake City, FL 32025-1317</p>
+                           <p style="color: #666666;font-weight: 200; font-size: 1.3885em;line-height: 3;">Visit us on Faith Road behind The Home Depot and Aldi's</p>
+                        </div>
                         <p style="font-weight: 400; font-size: 1.3885em;"><a href="https://www.facebook.com/FaithLakeCity" data-location="external" data-detail="https://www.facebook.com/FaithLakeCity/" data-category="link" target="_blank" class="cloverlinks"><span data-socialicon="roundedfacebook"><span class="socialIconSymbol" aria-hidden="true"></span><span class="sr-only">roundedfacebook</span></span></a>   <span data-socialicon="roundedinstagram"><span class="socialIconSymbol" aria-hidden="true"></span><span class="sr-only">roundedinstagram</span></span>   <span data-socialicon="roundeditunes"><span class="socialIconSymbol" aria-hidden="true"></span><span class="sr-only">roundeditunes</span></span>  
                            <a href="https://www.youtube.com/@faithlakecity/streams/" data-location="external" data-detail="https://www.youtube.com/@faithlakecity/streams/" data-category="link" target="_blank" class="cloverlinks"><span data-socialicon="roundedyoutube"><span class="socialIconSymbol" aria-hidden="true"></span><span class="sr-only">roundedyoutube</span></span></a> </p>
                      </div>
