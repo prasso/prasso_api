@@ -14,18 +14,6 @@ use Illuminate\Http\Request;
 class AppsService 
 {
 
-    // for apps that have no role determinations.
-    //this serves the first app only app serves only one at this time ( will possibly add more later)
-    public function getBarimorphosisAppSettings($user)
-    {
-      //  Log::info('getBarimorphosisAppSettings app id: '. config('constants.BARIMORPHOSIS_APP'));
-        $app_data = Apps::with('tabs')->with('team')
-            ->where('id',config('constants.BARIMORPHOSIS_APP'))
-            ->first();
-      //  Log::info(json_encode($app_data));
-        return json_encode($app_data);
-    }
-
      //get tabs based on the role this user plays in the app
     //(instructor will have app management features. users will not)
     public function getAppSettingsBySite(Site $site, $user,$user_access_token) 

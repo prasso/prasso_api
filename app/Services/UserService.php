@@ -264,12 +264,16 @@ info('addOrUpdateSubscription: '.json_encode($user));
           \Laravel\Jetstream\Events\TeamMemberAdded::dispatch($team, $user);
         }
         else{
-          $user->ownedTeams()->save(Team::forceCreate([
-            'user_id' => $user->id,
-            'name' => explode(' ', $user->name, 2)[0] . "'s Team",
-            'personal_team' => true,
-            'phone' => $user->phone,
-        ]));
+
+          $team = $user->ownedTeams()->forceCreate([
+              'user_id' => $user->id,
+              'name' => explode(' ', $user->name, 2)[0] . "'s Team",
+              'personal_team' => true,
+              'phone' => $user->phone,
+          ]);
+          
+          $user->currentTeam()->associate($team);
+          $user->save();
         }
         $user->refresh();
         if ($team == null)
