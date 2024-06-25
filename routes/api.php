@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\CommandController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -19,4 +20,11 @@ Route::post('save_app', [\App\Http\Controllers\Api\AppController::class, 'saveAp
 
 Route::post('save_subscription', 'SubscriptionController@save_subscription');
 Route::post('livestream_activity', 'SitePageController@livestream_activity');
+Route::middleware([
+    'siteusergroup'
+])->group(function () {
+    
+Route::post('/run-artisan-command', [CommandController::class, 'runCommand']);
+
+});
 

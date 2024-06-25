@@ -1,0 +1,90 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Prasso",
+        "description": "Prasso api endpoints",
+        "contact": {
+            "email": "info@faxt.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/run-artisan-command": {
+            "post": {
+                "tags": [
+                    "Artisan Commands"
+                ],
+                "summary": "Run an Artisan command",
+                "description": "Execute a specified Artisan command with optional arguments",
+                "operationId": "1e96614fb759b4f0e870e67d4b4ae5c6",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "command"
+                                ],
+                                "properties": {
+                                    "command": {
+                                        "type": "string",
+                                        "example": "update:master-page"
+                                    },
+                                    "arguments": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": [
+                                            "pageContentsId=1",
+                                            "masterId=1"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Command executed successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "responses": {
+            "401": {
+                "description": "Unauthorized"
+            }
+        },
+        "securitySchemes": {
+            "bearer_token": {
+                "type": "apiKey",
+                "description": "A short description for security scheme",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    }
+}
