@@ -4,15 +4,88 @@
   - standard for a Laravel project
 - ## Key technologies
   - Laravel, Tailwind, AlpineJs, MySQL
-- ## Installation and configuration
-  - composer install
-  - Setting environment variables - copy the env_example file to .env and fill in the appropriate values for your setup.
-    - fill in the app name
-    - artisan key:generate
-    - fill in the database connection info
-    - composer install
-    - run migrations
-    - seed initial data using file prasso_initial.sql
+
+### Installation and Configuration
+
+1. **Clone the Code:**
+   ```bash
+   git clone https://github.com/prasso/prasso_api.git
+   cd prasso_api
+   ```
+
+2. **MySQL Installation:**
+   - Update package information:
+     ```bash
+     sudo apt update
+     ```
+   - Install MySQL:
+     ```bash
+     sudo apt install mysql-server
+     ```
+   - Secure the MySQL installation:
+     ```bash
+     sudo mysql_secure_installation
+     ```
+   - Log in to MySQL:
+     ```bash
+     sudo mysql -u root -p
+     ```
+   - Create a database and user for the application:
+     ```sql
+     CREATE DATABASE your_database_name;
+     CREATE USER 'your_user_name'@'localhost' IDENTIFIED BY 'your_password';
+     GRANT ALL PRIVILEGES ON your_database_name.* TO 'your_user_name'@'localhost';
+     FLUSH PRIVILEGES;
+     EXIT;
+     ```
+
+3. **Setting Environment Variables:**
+   - Copy the example `.env` file and configure it with your details:
+     ```bash
+     cp .env.example .env
+     nano .env
+     ```
+   - Update the `.env` file with your setup:
+     ```env
+     APP_NAME=YourAppName
+     APP_ENV=local
+     APP_KEY=base64:...
+     APP_DEBUG=true
+     APP_URL=http://localhost
+
+     DB_CONNECTION=mysql
+     DB_HOST=127.0.0.1
+     DB_PORT=3306
+     DB_DATABASE=your_database_name
+     DB_USERNAME=your_user_name
+     DB_PASSWORD=your_password
+
+     # Other necessary environment variables
+     ```
+
+4. **Generate Application Key:**
+   ```bash
+   php artisan key:generate
+   ```
+
+5. **Composer Installation:**
+   - Install Composer dependencies:
+     ```bash
+     composer install
+     ```
+
+6. **Run Migrations:**
+   - Run the database migrations:
+     ```bash
+     php artisan migrate
+     ```
+
+7. **Seed Initial Data:**
+   - Seed the initial data using the SQL file:
+     ```bash
+     mysql -u your_user_name -p your_database_name < docs/prasso_initial.sql
+     ```
+
 - ## Deployment
   - Hosting options - Current use is from AWS and a hosted EC2 instance. 
   - CI/CD workflows - Not yet implemented.

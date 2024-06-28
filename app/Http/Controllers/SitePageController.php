@@ -91,14 +91,18 @@ class SitePageController extends BaseController
         }
         return view('dashboard')->with('user_content', $user_content);
     }
-
-    private function getMaster($sitepage){
-        $master_page = null;
-        if (isset($sitepage->masterpage)){
-            //pull the masterpage css and js and send this as well
-            $master_page = MasterPage::where('pagename',$sitepage->masterpage)->first();
+    private function getMaster($sitepage) {
+        $masterPage = null;
+        
+        if (isset($sitepage->masterpage)) {
+            // If the sitepage has a masterpage specified, use it
+            $masterPage = MasterPage::where('pagename', $sitepage->masterpage)->first();
+        } elseif (isset($this->masterpage)) {
+            // If the sitepage doesn't have a masterpage, use controller's masterpage if available
+            $masterPage = MasterPage::where('pagename', $this->masterpage)->first();
         }
-        return $master_page;
+        
+        return $masterPage;
     }
 
     private function prepareTemplate($dashboardpage, $path=null){

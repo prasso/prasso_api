@@ -36,3 +36,5 @@ firestore-database-rules.txt
 .phpunit.result.cache
 faxt_api_backup.sql
 resources/views/vendor/l5-swagger/.gitkeep
+.phpunit.cache/test-results
+phpunit.xml.bak
