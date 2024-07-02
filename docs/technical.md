@@ -63,16 +63,17 @@
      # Other necessary environment variables
      ```
 
-4. **Generate Application Key:**
-   ```bash
-   php artisan key:generate
-   ```
-
-5. **Composer Installation:**
+4. **Composer Installation:**
    - Install Composer dependencies:
      ```bash
      composer install
      ```
+
+5. **Generate Application Key:**
+   ```bash
+   php artisan key:generate
+   ```
+
 
 6. **Run Migrations:**
    - Run the database migrations:
