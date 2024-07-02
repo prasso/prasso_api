@@ -4,6 +4,7 @@ namespace App\Actions\Jetstream;
 
 use App\Models\Invitation;
 use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Jetstream\Contracts\AddsTeamMembers;
@@ -27,7 +28,6 @@ class AddTeamMember implements AddsTeamMembers
     public function add($user, $team, string $email, string $role = null)
     {
         Gate::forUser($user)->authorize('addTeamMember', $team);
-
         if (!isset($role))
         {
             $role=config('constants.TEAM_USER_ROLE');
@@ -43,18 +43,26 @@ class AddTeamMember implements AddsTeamMembers
                 $newTeamMember = Jetstream::findUserByEmailOrFail($email),
                 ['role' => $role]
             );
+            UserRole::create([
+                        'user_id' => $newTeamMember->id,
+                        'role_id' => 2, //'instructor' 'INSTRUCTOR_ROLE_TEXT' => 'instructor',
+                    ]);
+       
 
             TeamMemberAdded::dispatch($team, $newTeamMember);
-            ##  - Send invite if user is not in the system ##
-        } else {
+           
+        }
+        else{
+            info('no user record exists for email: '.$email);
             $invitation = Invitation::create([
                 'user_id' => $user->id,
                 'team_id' => $team->id,
                 'role' => $role,
                 'email' => $email,
             ]);
-            $invitation->sendEmailInviteNotification();
+             $invitation->sendEmailInviteNotification();
         }
+
 
     }
 
