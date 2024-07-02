@@ -32,6 +32,7 @@ class Team extends JetstreamTeam
     protected $fillable = [
         'name',
         'personal_team',
+        'phone'
     ];
     /**
      * The attributes that should be hidden for arrays.
@@ -65,7 +66,13 @@ class Team extends JetstreamTeam
     {
         return $this->hasMany(\App\Models\TeamUser::class, 'team_id', 'id');
     }
-
+    
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'team_user', 'team_id', 'user_id')
+                    ->withPivot('role');
+    }
+    
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
