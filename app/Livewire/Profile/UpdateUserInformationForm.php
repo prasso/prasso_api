@@ -73,7 +73,7 @@ class UpdateUserInformationForm extends Component
         $user->email = $this->email;
         $user->save();
 
-        $this->emit('saved');
+       $this->dispatch('saved');
 
     }
 
@@ -84,7 +84,7 @@ class UpdateUserInformationForm extends Component
             ->where('id', $this->id_of_owned_team)
             ->update(['user_id' => $this->userid]);
        $this->user->refresh();
-       $this->emit('savedteam');
+      $this->dispatch('savedteam');
     }
     protected $listeners = [
         'savedteam' => 'refreshTeamsOwned',
@@ -126,7 +126,7 @@ class UpdateUserInformationForm extends Component
 
         // Refresh the user model again to ensure that it has the latest data.
         $this->user->refresh();
-        $this->emit('savedsite');
+       $this->dispatch('savedsite');
     }
 
 
