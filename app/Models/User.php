@@ -129,7 +129,14 @@ class User extends Authenticatable implements FilamentUser {
 
     public function team_owner() {
         return $this->hasMany(Team::class, 'user_id', 'id')
-            ->with('apps')->with('site');
+            ->whereHas('team_members', function ($query) {
+                $query->where('role', 'instructor');
+            })
+            ->with(['apps', 'site' => function ($query) {
+                $query->when(auth()->user()->role != 'super_admin', function ($query) {
+                    $query->where('site_id', '!=', 1);
+                });
+            }]);
     }
 
     public function team_member() {

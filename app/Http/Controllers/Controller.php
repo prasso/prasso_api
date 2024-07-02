@@ -19,6 +19,7 @@ class Controller extends FrameworkController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     public $site; 
+    public $masterpage;
 
     public function __construct(Request $request)
     {
@@ -27,12 +28,10 @@ class Controller extends FrameworkController
         $this->site = $site;
         if ($site == null)
         {
+            Log::info('no site for this host. ');
             return;
         }
-        $masterpage = $this->getMasterForSite($site);
-
-        View::share('site', $site);
-        View::share('masterPage', $masterpage);
+        $this->masterpage = $this->getMasterForSite($site);
     }
 
     /**
@@ -100,7 +99,7 @@ class Controller extends FrameworkController
           }
       }
       else{
-          //this is called repeatedly. constantly. info('dashboard is null');
+           info('dashboard is null');
       }
       return $masterpage;
     }

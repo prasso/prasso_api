@@ -111,24 +111,40 @@
                         @endif
 
                         <div class="border-t border-gray-200"></div>
-
-                        @if (count(Auth::user()->allTeams()) > 1)
-                        <!-- Team Switcher -->
-                        <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
-                            Manage Teams
-                        </div>
-
-                        @foreach (Auth::user()->allTeams() as $team)
-                            <div class="flex items-center justify-between">
-                                <x-switchable-team :team="$team" component="responsive-nav-link" />
-                                @if (Auth::user()->getSiteCount() > 0 && Auth::user()->canManageTeamForSite())
-                                    <!-- Team Settings -->
-                                    <x-responsive-nav-link href="{{ route('teams.show', $team->id) }}" :active="request()->routeIs('teams.show')" class="ml-auto">
-                                    <i class="material-icons">settings</i>
-                                    </x-responsive-nav-link>
-                                @endif
+                        @if (Auth::user()->isSuperAdmin())
+                            <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
+                                Manage Teams
                             </div>
-                        @endforeach
+                            @foreach (\App\Models\Team::all() as $team)
+                                <div class="flex items-center justify-between">
+                                    <x-switchable-team :team="$team" component="responsive-nav-link" />
+                                    @if (Auth::user()->getSiteCount() > 0 && Auth::user()->canManageTeamForSite())
+                                        <!-- Team Settings -->
+                                        <x-responsive-nav-link href="{{ route('teams.show', $team->id) }}" :active="request()->routeIs('teams.show')" class="ml-auto">
+                                        <i class="material-icons">settings</i>
+                                        </x-responsive-nav-link>
+                                    @endif
+                                </div>
+                            @endforeach
+                        @else
+                            @if (count(Auth::user()->allTeams()) > 1)
+                            <!-- Team Switcher -->
+                            <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
+                                Manage Teams
+                            </div>
+
+                            @foreach (Auth::user()->allTeams() as $team)
+                                <div class="flex items-center justify-between">
+                                    <x-switchable-team :team="$team" component="responsive-nav-link" />
+                                    @if (Auth::user()->getSiteCount() > 0 && Auth::user()->canManageTeamForSite())
+                                        <!-- Team Settings -->
+                                        <x-responsive-nav-link href="{{ route('teams.show', $team->id) }}" :active="request()->routeIs('teams.show')" class="ml-auto">
+                                        <i class="material-icons">settings</i>
+                                        </x-responsive-nav-link>
+                                    @endif
+                                </div>
+                            @endforeach
+                            @endif
                         @endif
 
                         <x-responsive-nav-link href="{{ route('teams.create') }}" :active="request()->routeIs('teams.create')">
