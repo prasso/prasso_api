@@ -86,7 +86,13 @@
      ```bash
      mysql -u your_user_name -p your_database_name < docs/prasso_initial.sql
      ```
-
+8. **Test your installation**
+  - run the artisan server. this format will enable debugging with a mobile project
+       ```bash
+     php artisan serve --host=0.0.0.0 --port=8000 
+     ```
+  - open your browser and navigate to localhost:8000
+  
 - ## Deployment
   - Hosting options - Current use is from AWS and a hosted EC2 instance. 
   - CI/CD workflows - Not yet implemented.
