@@ -245,6 +245,10 @@ class Site extends Model
         if ( $this->user_is_admin() )
         {
             $list .= '<li><a class="block pl-3 pr-4 py-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition duration-150 ease-in-out" href="/site/edit">Site Editor</a></li>';
+            $this->load('app');
+            $this->app->load('team');
+        
+            $list .= '<li><a class="block pl-3 pr-4 py-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition duration-150 ease-in-out" href="/team/'.$this->app->team->id.'/apps/'.$this->app->id.'">App Editor</a></li>';
         }
 
     

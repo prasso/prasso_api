@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\View;
 
 class User2Controller extends BaseController
 {
@@ -25,6 +26,8 @@ class User2Controller extends BaseController
             return redirect('/dashboard');
         }
         $usr = User::where('id',$userid)->first();
+
+View::share('site',$this->site);
         return view('profile.update-user-form')->with('user',$usr);
     }
 

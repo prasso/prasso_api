@@ -232,6 +232,9 @@ class User extends Authenticatable implements FilamentUser {
         return false;
     }
 
+    public function isTeamOwner($team){
+        return $this->id == $team->user_id;
+    }
     public function isTeamOwnerForSite($site){
         $firstTeam = $site->teams()->first();
         if ($firstTeam && $this->team_owner->pluck('id')->contains($firstTeam->id)) {
@@ -383,12 +386,19 @@ info('teamids: ' . json_encode($teamids));
         $this->setCurrentTeam();
         
         $teamsite = TeamSite::where('team_id', $this->current_team_id)->first();
+ 
         $site = Site::where('id', $teamsite->site_id)->first();
         
         $site_url = $site['host']; //may have multiple hosts.  example: https://gogodelivery.prasso.io,localhost,localhost:8000/
         $multiple_hosts = explode(',', $site_url);
-        if (count($multiple_hosts) > 1)
-        {
+        if (count($multiple_hosts) > 1) {
+            // Select the one with localhost in it if one exists
+            foreach ($multiple_hosts as $host) {
+                if (strpos($host, 'localhost') !== false) {
+                    return "http://$host";
+                }
+            }
+            // If no localhost found, return the first host
             return "https://{$multiple_hosts[0]}";
         }
         return "https://$site_url";

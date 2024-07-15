@@ -1,1 +1,1 @@
-<img src="images/prasso_palm.jpg">
+<img src="/images/prasso_palm.jpg">
