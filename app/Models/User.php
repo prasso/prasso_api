@@ -386,7 +386,7 @@ info('teamids: ' . json_encode($teamids));
         $this->setCurrentTeam();
         
         $teamsite = TeamSite::where('team_id', $this->current_team_id)->first();
- Log::info(json_encode($teamsite));
+ 
         $site = Site::where('id', $teamsite->site_id)->first();
         
         $site_url = $site['host']; //may have multiple hosts.  example: https://gogodelivery.prasso.io,localhost,localhost:8000/
