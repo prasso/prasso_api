@@ -187,8 +187,11 @@ class NewSiteAndApp extends Component
             LivestreamSettings::addOrUpdate($site);
         }
 
-        /**put the data into newSite and newApp*/
+        /**when the app is created - team_id should be the team the site belongs to
+	    and site_id should have been the id of the site just created
+        ut the data into newSite and newApp*/
         $this->newApp->team_id = $team->id;
+        $this->newApp->site_id = $site->id;
         $this->newApp->appicon = $this->logo_image;
         $this->newApp->app_name = $this->site_name;
         $this->newApp->page_title = $this->site_name;

@@ -36,6 +36,7 @@ class CreateOrEdit extends Component
     public $photo;
     public $team_selection;
     public $team_id;
+    public $site;
 
 
     public function mount(Site $site, User $user, Team $team, $show_modal, $team_selection)
@@ -43,6 +44,7 @@ class CreateOrEdit extends Component
         $this->team_selection = $team_selection;
 
         if ($site == null) return;
+        $this->site = $site;
         $this->show_modal = $show_modal;
 
         //does this user have an admin role?

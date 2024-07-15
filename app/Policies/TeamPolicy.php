@@ -30,7 +30,7 @@ class TeamPolicy
      */
     public function view(User $user, Team $team)
     {
-        return $user->isSuperAdmin() || $user->isMemberOfAnyTeam();
+        return $user->isSuperAdmin() || $user->isTeamOwner($team);
     }
 
     /**
