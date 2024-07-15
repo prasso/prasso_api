@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use App\Services\UserService;
 use App\Models\Instructor;
 use Auth;
+use Illuminate\Support\Facades\View;
 
 class MySiteController extends BaseController
 {
@@ -37,6 +38,9 @@ class MySiteController extends BaseController
      */
     public function editMySite(Request $request)
     {
+        // the way this is written, there's no straightforward method of debugging
+        // with localhost when the site is not setup in sites as localhost
+        // so, set this up in the site->hosts field for the user's site
         if (!Controller::userOkToViewPageByHost($this->userService))
         {
             return redirect('/login');
@@ -52,6 +56,7 @@ class MySiteController extends BaseController
         
         $team = $mysite->teams()->first();
         $team_selection = $team->pluck('name','id');
+        View::share('site', $mysite);
         return view('sites.my-site-editor')
             ->with('site', $mysite)
             ->with('user', $user)

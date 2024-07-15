@@ -54,9 +54,13 @@ class UserService
         //the user is the owner of the team, so they are on the team and as owner they have access to edit 
         return true;
       }
+      // Build the query
+      $query = TeamUser::where('user_id', $user->id)->where('team_id', $team->id);
 
-      $teamuser = TeamUser::where('user_id', $user->id)->where('team_id', $team->id)->first();
-
+      // // if need to troubleshoot user login: Get the SQL query with placeholders
+      // $sql = $query->toSql();
+      // Log::info($sql);
+      $teamuser = $query->first();
       if ($teamuser != null)
       {
         return true;
