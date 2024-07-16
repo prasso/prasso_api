@@ -15,7 +15,6 @@ use App\Models\Site;
 use App\Models\UserActiveApp;
 use App\Models\FlutterIcons;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\View;
 
 class TeamController extends Controller
 {
@@ -25,7 +24,6 @@ class TeamController extends Controller
         parent::__construct( $request);
         $this->middleware('instructorusergroup');
 
-View::share('site',$this->site);
     }
 
     /**
@@ -42,7 +40,11 @@ View::share('site',$this->site);
         $team = Team::where('id',$user->current_team_id)->first();
      
         $teams_owned = $user->team_owner;
-  
+        // Validate that $teams_owned is not null or empty
+        if (empty($teams_owned)) {
+            return redirect()->back()->withErrors(['error' => 'Team owner information is missing.']);
+        }
+        
         $teamapps = $team->apps;
         
         $activeAppId = '0';
@@ -50,6 +52,7 @@ View::share('site',$this->site);
         {
             $activeAppId = $activeApp->app_id;
         }
+
         return view('apps.show')
             ->with('user', $user)
             ->with('teams',$teams_owned)
