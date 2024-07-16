@@ -15,6 +15,7 @@ use App\Models\Site;
 use App\Models\UserActiveApp;
 use App\Models\FlutterIcons;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\View;
 
 class TeamController extends Controller
 {
@@ -23,6 +24,7 @@ class TeamController extends Controller
     {
         parent::__construct( $request);
         $this->middleware('instructorusergroup');
+
 
     }
 
@@ -52,7 +54,6 @@ class TeamController extends Controller
         {
             $activeAppId = $activeApp->app_id;
         }
-
         return view('apps.show')
             ->with('user', $user)
             ->with('teams',$teams_owned)
