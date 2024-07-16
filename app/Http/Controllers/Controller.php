@@ -31,7 +31,10 @@ class Controller extends FrameworkController
             Log::info('no site for this host. ');
             return;
         }
+
         $this->masterpage = $this->getMasterForSite($site);
+        View::share('site', $site);
+        View::share('masterpage', $this->masterpage);
     }
 
     /**

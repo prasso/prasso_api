@@ -27,7 +27,7 @@ class User2Controller extends BaseController
         }
         $usr = User::where('id',$userid)->first();
 
-View::share('site',$this->site);
+
         return view('profile.update-user-form')->with('user',$usr);
     }
 
