@@ -38,3 +38,5 @@ faxt_api_backup.sql
 resources/views/vendor/l5-swagger/.gitkeep
 .phpunit.cache/test-results
 phpunit.xml.bak
+public/css/filament/*
+public/js/filament/*
