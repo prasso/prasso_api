@@ -16,13 +16,15 @@ class BlockSwaggerAccess
      */
     public function handle($request, Closure $next)
     {
-
-        Log::info('running block swagger access');
         // Check if the environment is production
         if (app()->environment('production')) {
+            //if authenticated user is superadmin, allow it
+            $user = \Auth::user();
+            if (!$user->isSuperAdmin()){
             Log::info('should be blocked');
             // Block access to the Swagger documentation route
             return response()->json(['message' => 'not today'], 403);
+        }
         }
 
         // Allow access to other routes

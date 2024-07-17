@@ -11,42 +11,20 @@ use Auth;
 
 class AuthenticateSuperAdmin
 {
-    private $superuser;
-
+    
     public function __construct(SuperAdmin $suser)
     {
-      $this->superuser = $suser;
-      //Log::info('in __construct.AuthenticateSuperAdmin, : ' . json_encode($suser));
-
     }
 
    public function handle($request, Closure $next)
    {
-      $guard = Auth::guard('superadmin');
+      $user = \Auth::user();
+      Log::info('in AuthenticateSuperAdmin: ' . json_encode($user));
+      $superAdminModel = new \App\Models\SuperAdmin();
+      $adminuser = $superAdminModel->fetchUserByCredentials($user->email);
 
-      if (!$guard->check()) 
-      {
-        $user = \Auth::user();
-    Log::info('in AuthenticateSuperAdmin, handle, after guard->check: ' . json_encode($user));
-
-        //double check because this guard/provider isn't plugged in properly yet
-        if ($user != null)
-        {
-          $adminuser = $this->superuser->fetchUserByCredentials($user->email);
-          
-          if ($adminuser == null)
-          {
-            session()->flash('message', config('constants.UNAUTHORIZED'));
-            return redirect('/login');
-          }
-          $credentials['email'] = $user->email;
-          $credentials['password'] = $user->password;
-
-          $guard->validate($credentials);
-        }
-        else{
-          
-        }
+      if ($adminuser == null) {
+        return redirect('/login')->with('message', config('constants.UNAUTHORIZED'));
       }
       return $next($request);
    }
