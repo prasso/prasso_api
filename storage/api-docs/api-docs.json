@@ -36,8 +36,8 @@
                                             "type": "string"
                                         },
                                         "example": [
-                                            "pageContentsId=1",
-                                            "masterId=1"
+                                            "73",
+                                            "6"
                                         ]
                                     }
                                 },

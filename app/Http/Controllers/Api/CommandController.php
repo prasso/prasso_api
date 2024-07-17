@@ -28,6 +28,11 @@ use Illuminate\Support\Facades\Log;
  */
 class CommandController extends BaseController
 {
+    public function __construct(Request $request)
+    {
+        parent::__construct( $request);
+        $this->middleware('superadmin');
+    }
     
     /**
      * Run an Artisan command
@@ -46,7 +51,7 @@ class CommandController extends BaseController
      *         @OA\JsonContent(
      *             required={"command"},
      *             @OA\Property(property="command", type="string", example="update:master-page"),
-     *             @OA\Property(property="arguments", type="array", @OA\Items(type="string"), example={"pageContentsId=1", "masterId=1"})
+     *             @OA\Property(property="arguments", type="array", @OA\Items(type="string"), example={"73", "6"})
      *         )
      *     ),
      *     @OA\Response(
@@ -77,14 +82,19 @@ class CommandController extends BaseController
     {
         // verify super admin access
 
+
         $command = $request->input('command');
         $arguments = $request->input('arguments', []);
-
+        if (empty($command)){
+            return response()->json(['error' => 'No input was received'], 500);
+        }
         try {
             $argumentsString = implode(' ', \Arr::flatten($arguments));
-
-            // Concatenate the command and the arguments string
-            $fullCommand = "$command $argumentsString";
+            $fullCommand = "$command";
+            if (!empty($argumentsString)) {
+                // Concatenate the command and the arguments string
+                $fullCommand = "$command $argumentsString";
+            }
 
             // Call Artisan command with the full command
             $exitCode = Artisan::call($fullCommand);
