@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class SitePages extends Model
 {
     use HasFactory;
+    protected $table = 'site_pages';
 
      /**
      * The attributes that are mass assignable.

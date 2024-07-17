@@ -1,3 +1,4 @@
+
 <html class="__className_aaf875 v0-streaming-finished" lang="en">
 
 <head>
@@ -879,7 +880,7 @@
                         </svg><span class="sr-only" data-id="23">Toggle navigation menu</span></button></div>
             </header>
             <main class="flex-1" data-id="24">
-            {!! $sitePage->description !!}
+            Test page content
             </main>
             <footer class="bg-gray-900 text-white px-4 lg:px-6 py-6 flex flex-col lg:flex-row items-center justify-between gap-4" data-id="25">
                 <p class="text-sm" data-id="26">© 2024 Acme Corp. All rights reserved.</p>
