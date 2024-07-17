@@ -74,11 +74,11 @@ return [
             */
             'middleware' => [
                 'api' => [
-                    'superadmin'
+                    'superadminswagger'
                 ],
                 'asset' => [],
                 'docs' => [
-                    'superadmin'
+                    'superadminswagger'
                 ],
                 'oauth2_callback' => [],
             ],

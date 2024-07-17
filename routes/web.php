@@ -93,6 +93,6 @@ Route::middleware([
 
     Route::post('/save-site-page', 'SitePageController@saveSitePage');
 
-    Route::resource('Sites', SiteController::class);
+    Route::resource('Sites', \App\Http\Controllers\SiteController::class);
     Route::get('/sites', 'SiteController@index')->name('sites.show');
 });
