@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use App\Services\UserService;
 use App\Models\Instructor;
 use Auth;
+use Illuminate\Support\Facades\View;
 
 class MySiteController extends BaseController
 {
@@ -55,6 +56,7 @@ class MySiteController extends BaseController
         
         $team = $mysite->teams()->first();
         $team_selection = $team->pluck('name','id');
+        View::share('site', $mysite);
         return view('sites.my-site-editor')
             ->with('site', $mysite)
             ->with('user', $user)
