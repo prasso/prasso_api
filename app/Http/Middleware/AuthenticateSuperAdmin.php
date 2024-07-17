@@ -27,7 +27,7 @@ class AuthenticateSuperAdmin
       if (!$guard->check()) 
       {
         $user = \Auth::user();
-   // Log::info('in AuthenticateSuperAdmin, handle, after guard->check: ' . json_encode($user));
+    Log::info('in AuthenticateSuperAdmin, handle, after guard->check: ' . json_encode($user));
 
         //double check because this guard/provider isn't plugged in properly yet
         if ($user != null)
@@ -43,6 +43,9 @@ class AuthenticateSuperAdmin
           $credentials['password'] = $user->password;
 
           $guard->validate($credentials);
+        }
+        else{
+          
         }
       }
       return $next($request);
