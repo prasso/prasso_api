@@ -40,7 +40,10 @@ class PullLatestChanges extends Command
     public function handle()
     {
         $this->info('Pulling the latest changes from the repository...');
-        
+       
+        $current_user = shell_exec('whoami');
+\Illuminate\Support\Facades\Log::info("Current user: {$current_user}");
+
         // Run the git pull command
         $process = new Process(['git', 'pull']);
         $process->run();
