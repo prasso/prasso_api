@@ -44,7 +44,6 @@ class PullLatestChanges extends Command
         $current_user = shell_exec('whoami');
 \Illuminate\Support\Facades\Log::info("Current user: {$current_user}");
 
-
         // Run the git pull command
         $process = new Process(['git', 'pull']);
         $process->run();
