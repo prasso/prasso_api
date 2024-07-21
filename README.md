@@ -29,8 +29,8 @@ User-Friendly Experience: Enjoy easy setup and integration with Firebase, access
 
 For more details, check out the other docs:
 
+- [User Guide](docs/user-guide.md) 
 - [Getting Started](docs/getting-started.md)
 - [Technical Documentation](docs/technical.md)
-- [User Guide](docs/user-guide.md) 
 - [Frequently Asked Questions](docs/faq.md)
 
