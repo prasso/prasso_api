@@ -35,6 +35,7 @@ erDiagram
         name string
         personal_team int
         phone string
+        parent_id int
     }
 
      sites {
@@ -100,6 +101,7 @@ erDiagram
     teams ||--o{ team_user : "team_id"
     users ||--o{ team_user : "user_id"
     teams ||--o{ team_site : "team_id"
+    teams ||--o{ teams : "parent_id"
     sites ||--o{ team_site : "site_id"
     teams ||--o{ apps : "team_id"
     sites ||--o{ apps : "site_id"
