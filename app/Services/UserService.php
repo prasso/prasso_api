@@ -248,8 +248,6 @@ info('addOrUpdateSubscription: '.json_encode($user));
         return $success;
     }
 
-    // TODO site subteams_enabled requires a modification here but I don't have full concept of how it works yet
-    // will potentially need 'my_table.subteam_id', $subteamIds where subteamIds is an array of team ids the user belongs to
     public function registerForSite($user, $site, $role, $sendInvitation)
     {
         if (!isset($role))
