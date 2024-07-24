@@ -1,8 +1,6 @@
 
 # User Guide
-
-Certainly, I can help organize these notes into a user documentation manual for Prasso. I'll structure the information under relevant topics. Here's an organized version:
-
+![pdf](Prasso User Documentation Manual .pdf)
 # Prasso User Documentation Manual
 
 ## 1. Introduction to Prasso
@@ -20,13 +18,15 @@ With Prasso, you can create both your app API backend and your website with one 
 - When a user registers, a private team is assigned. Users can also be included in other teams.
 - A team owner is one who has been assigned to admin a team or who has created the team.
 - Teams are the basic unit in a social group. Teams have owners (coaches) and members.
-
+![users and teams diagram](images/DiagramUserTeam.png)
 ### 2.2 Sites
 - Teams own sites. Everything is based on a site.
 - A site is determined by its URL and has assigned attributes that determine the appearance of the site.
 - A Prasso site is both a business information site and a Prasso API site. The API serves the Prasso apps.
 - Sites have site pages. These can be created and maintained using a built-in visual editor based on the GrapesJS opensource project.
 - Sites are the landing page of the App home website. Example Prasso sites: https://prasso.io, https://barimorphosis.com, https://lileyscapes.prasso.io, https://mercyfullfarms.com
+![sites diagram](images/DiagramUserTeam.png)
+![site pages diagram](images/DiagramSitePages.png)
 
 ### 2.3 Apps
 - Sites can have an APP. When a user who is a member of a team logs into the Prasso app, the default-designated app will be loaded for use.
@@ -34,19 +34,24 @@ With Prasso, you can create both your app API backend and your website with one 
 - An app is configured with tabs that point to views.
 - An app is identified at the backend by the host of the request.
 - The host is associated with the site, the site is associated with the app.
+![apps diagram](images/DiagramSiteAppTab.png)
 
 ### 2.4 Tabs
 - Apps have tabs. Users "build" their apps in the Prasso Admin tool.
 - App tabs are web page URLs. Custom header information can be sent to the URL with the request to enable application-specific sessions.
 - Changing the tab configuration of an app is done through the admin panel.
+![apps and tabs diagram](images/DiagramAppsTabs.png)
 
 ### 2.5 Roles
 - Users have roles. There are three tiers of user roles: Super-Admin, Site Admin, and App User.
 - Allow anyone with a login to log into the app. No role is required.
 - Site-admins can log into the sites they have an association with.
 - Super-admins can access any site admin area.
+![user roles diagram](images/DiagramUserRole.png)
 
 ## 3. How Prasso Works
+
+![main concepts diagram](images/DiagramMainInteractions.png)
 
 ### 3.1 Site and Page Loading
 - At least one site must be configured in the site table (example: prasso.io).

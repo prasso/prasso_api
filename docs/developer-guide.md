@@ -1,6 +1,7 @@
 
 
 ![install video](prasso_installation.mp4)
+![fundamentals overview](https://youtu.be/bBe3Qu7fxeY)
 
 
 mermaid diagram info
@@ -106,3 +107,54 @@ erDiagram
     teams ||--o{ apps : "team_id"
     sites ||--o{ apps : "site_id"
     apps ||--o{ tabs : "app_id"
+
+
+
+
+erDiagram
+     sites {
+        site_name string
+        host string
+    }
+    site_pages {
+        section
+        title
+        description
+        url
+    }
+    site_page_templates {
+        template_name
+        title
+    }
+    site_page_data {
+        data_key
+        json_data
+    }
+    sites ||--o{ site_pages : "sites have site pages"
+    site_pages || --o{ site_page_templates : "site_pages can be made of templates"
+
+
+
+
+
+
+erDiagram
+
+  
+    apps {
+        team_id int
+        site_id int
+        app_name string
+    }
+
+    tabs {
+        app_id int
+        team_role int
+        page_title string
+        page_url string
+    }
+
+    
+
+    apps || --o{ tabs : "app views are made of defined tabs"
+
