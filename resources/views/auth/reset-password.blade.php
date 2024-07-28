@@ -3,7 +3,9 @@
 <x-slot name="title">Password Reset</x-slot>
     <x-authentication-card>
         <x-slot name="logo">
+            @if(isset($site))
             <img src="{{ $site->logo_image }}" />
+            @endif
         </x-slot>
 
         <x-validation-errors class="mb-4" />
