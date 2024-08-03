@@ -88,14 +88,8 @@ class TeamController extends Controller
         {
             abort(403, 'Unauthorized action.');
         }
-      //old  $user->current_team_id != $teamid)
-        {
-            $response['message'] = trans('messages.invalid_token');
-            $response['success'] = false;
-            $response['status_code'] = \Symfony\Component\HttpFoundation\Response::HTTP_UNAUTHORIZED;
-            return $this->sendError('Unauthorized.', ['error' => 'Please login again.'], 400);
-        }
-        $team = Team::where('id',$teamid)->with('site')->first();
+
+        $team = Team::where('id',$teamid)->with('site')->with('users')->first();
         return view('teams.show')->with('team', $team);
     }
 

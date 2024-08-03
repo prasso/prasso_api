@@ -19,6 +19,9 @@ class SiteEditor extends Component
 {
     use WithFileUploads;
 
+    protected $listeners = ['deleteSite'];
+
+
     public $sites, $site_id,$site_name,$description, $host,$main_color,$logo_image, 
             $database, $favicon, $supports_registration, $subteams_enabled, $app_specific_js, $app_specific_css,
             $does_livestreaming,$https_host, $image_folder;
@@ -256,6 +259,15 @@ class SiteEditor extends Component
   
         $this->showSyncDialog = false;
     }
+
+
+    public function deleteSite($id)
+    {
+        info('delete site received');
+        $this->delete($id);
+    }
+
+
     /**
      * The attributes that are mass assignable.
      *

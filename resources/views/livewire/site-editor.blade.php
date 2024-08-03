@@ -34,8 +34,9 @@
                         <td class="border px-2 py-2">
                         <button wire:click="edit({{ $site->id }})" class="py-2 px-3 "> <i class="material-icons md-36">mode_edit</i></button>
                         <a href="/sitepages/{{ $site->id }}" ><i class="material-icons md-36 text-black ">list</i></a>
-                        <button onclick="return window.confirm('Are you sure you want to delete this site?')" wire:click="delete({{ $site->id }})" class="ml-3 py-2 px-3 rounded"><i class="material-icons md-36">delete_forever</i></button>
-                       
+                        <button onclick="confirmDeletion({{ $site->id }})" class="ml-3 py-2 px-3 rounded">
+                            <i class="material-icons md-36">delete_forever</i>
+                        </button>
                         <button wire:click="showTheSyncDialog({{ $site->id }})" class="py-2 px-3"><i class="material-icons md-36">sync</i></button>
                         
                         @if ($site->livestream_settings != null)
@@ -55,4 +56,11 @@
 
 
 
+    <script>
+    function confirmDeletion(siteId) {
+        if (window.confirm('Are you sure you want to delete this site?')) {
+            Livewire.dispatch('deleteSite', [siteId]);
+        }
+    }
+</script>
 

@@ -5,9 +5,11 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Site;
 use App\Models\Team;
+use App\Models\Role;
 use App\Models\TeamSite;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use App\Services\UserService;
 
 class UpdateUserInformationForm extends Component
 {
@@ -18,7 +20,11 @@ class UpdateUserInformationForm extends Component
     // these lists will not persist to the front end after the initialization of the view as they are objects
     public $team_selection;
     public $site_selection;
-    public $role_selection;
+    
+    public $userRoles = [];
+    public $allRoles = [];
+    public $selectedRoles = [];
+    public $selectedRoleToAdd;
     public $user_site_member_of;
     public $user_team_owner_of;
 
@@ -45,6 +51,9 @@ class UpdateUserInformationForm extends Component
         $this->firebase_uid = $user->firebase_uid;
         $this->version = $user->version;
         $this->phone = $user->phone;
+        $this->userRoles = $user->roles->pluck('role_name', 'id')->toArray();
+        $this->allRoles = Role::pluck('role_name', 'id')->toArray();
+        $this->selectedRoles = $user->roles->pluck('id')->toArray();
         
     
         
@@ -55,12 +64,16 @@ class UpdateUserInformationForm extends Component
         
         $this->team_selection = Team::pluck('name','id');
         $this->site_selection = Site::orderBy('site_name')->pluck('site_name','id');
-        $this->role_selection = ['admin'=>'admin','user'=>'user'];
+        
+        $this->userRoles = $user->roles->pluck('role_name', 'id')->toArray();
+        $this->allRoles = Role::pluck('role_name', 'id')->toArray();
+        $this->selectedRoles = $user->roles->pluck('id')->toArray();
         $this->updateUserMembershipLists($user);
 
     return view('livewire.profile.update-user-information-form', [
         'teamsOwned' => $this->user_team_owner_of,
         'sitesMemberOf' => $this->user_site_member_of,
+        'userRoles' => $this->userRoles
     ]);
 }
  
@@ -75,6 +88,23 @@ class UpdateUserInformationForm extends Component
 
        $this->dispatch('saved');
 
+    }
+
+    public function updateUserRoles()
+    {
+        $this->validate([
+            'selectedRoles' => 'array',
+            'selectedRoleToAdd' => 'nullable|exists:roles,id',
+        ]);
+
+        $user = User::find($this->userid);
+        $user->roles()->sync($this->selectedRoles);
+
+        if ($this->selectedRoleToAdd) {
+            $user->roles()->attach($this->selectedRoleToAdd);
+        }
+
+        $this->dispatch('saved');
     }
 
     public function UpdateTeamsOwned(){
@@ -93,40 +123,14 @@ class UpdateUserInformationForm extends Component
     
     public function UpdateSitesMember(){
         info('UpdateSitesMember: '.$this->id_of_selected_site);
-        // Refresh the user model to ensure that it has the latest data.
-        $this->user->refresh();
-
-        // Find the TeamSite model with the specified site ID and eager load the associated team.
-        $teamSite = TeamSite::where('site_id', $this->id_of_selected_site)->with('team')->first();
-
-        // If the TeamSite model doesn't exist, create a new one.
-        if ($teamSite == null) {
-            $teamSite = new TeamSite();
-            $teamSite->site_id = $this->id_of_selected_site;
-        }
-
-        // If the team ID field of the TeamSite model is null, create a new team.
-        if ($teamSite->team_id == null) {
-            $team = new Team();
-            $team->user_id = Auth::user()->id;
-            $team->name = Site::find($this->id_of_selected_site)->site_name;
-            $team->personal_team = false;
-            $team->phone = ' ';
-            $team->save();
-
-            $teamSite->team_id = $team->id;
-            $teamSite->save();
-        }
-
-        // Create a new team member for the team.
-        $teamSite->team->team_members()->create([
-            'user_id' => $this->userid,
-            'role' => config('constants.TEAM_USER_ROLE'),
-        ]);
+        // Resolving the service class from the service container
+        $userService = app(UserService::class);
+        $this->user = User::find($this->userid);
+        $userService->UpdateSitesMember($this->user,null, $this->id_of_selected_site);
 
         // Refresh the user model again to ensure that it has the latest data.
         $this->user->refresh();
-       $this->dispatch('savedsite');
+       $this->dispatch('savedsitemember');
     }
 
 

@@ -21,7 +21,6 @@ class SuperAdmin extends Authenticatable
     public function fetchUserByCredentials($email)
     {
 
-        Log::info('checking user in fetchuserbycredentials'.$email);
         return self::select('users.*', 'users.firebase_uid AS uid')
             ->join('user_role', 'users.id', '=', 'user_role.user_id')
             ->where('users.email', $email)

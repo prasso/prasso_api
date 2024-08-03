@@ -70,7 +70,7 @@ class SitePageController extends BaseController
      */
     private function getDashboardForCurrentSite($user){
         
-        $user->setCurrentTeam();
+        $user->setCurrentToOwnedTeam();
         $request = Request::capture();
        
         if ( !$this->userService->isUserOnTeam($user) )

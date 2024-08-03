@@ -68,12 +68,14 @@ class MySiteController extends BaseController
     public function editSite($siteid)
     {
         $user = Auth::user();
-        if (!$user->canManageTeamForSite())
+        $site = Site::where('id',$siteid)->with('teams')->first();
+        
+        $team = $site->teams()->first();
+        if (!$user->canManageTeamForSite($team->id))
         {
             abort(403, 'Unauthorized action.');
         }
-        $site = Site::where('id',$siteid)->with('teams')->first();
-        $team = $site->teams()->first();
+        
 
         $team_selection = $team->pluck('name','id');
         return  view('sites.my-site-editor')    

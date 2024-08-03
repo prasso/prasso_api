@@ -127,10 +127,7 @@ class Site extends Model
         {
             $team = $this->createTeam($current_user_id);
         }
-        Auth::user()->setCurrentTeam();
-
-         //and the teamsite table needs to be updated
-         TeamSite::create(['team_id' => $team->id, 'site_id' => $this->id]);
+        
          $team->refresh();
          return $team;
     }
@@ -151,6 +148,9 @@ class Site extends Model
             throw Exception('Team id is null in Site::createTeam');
         }
         
+        //and the teamsite table needs to be updated, if not prasso
+        if ($this->id != 1)
+        {TeamSite::create(['team_id' => $team->id, 'site_id' => $this->id]);}
         return $team;
     }
 
