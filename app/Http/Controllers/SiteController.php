@@ -15,7 +15,6 @@ class SiteController extends BaseController
     public function __construct(SiteRequest $request)
     {
         parent::__construct( $request);
-        Log::info('_construct SiteController');
     }
 
     /**
@@ -26,7 +25,6 @@ class SiteController extends BaseController
     public function index()
     {
 
-        Log::info('index SiteController');
         $user = Auth::user() ?? null;   
         if ($user == null || $user->currentTeam == null){
             Auth::logout();

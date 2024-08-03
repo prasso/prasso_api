@@ -45,9 +45,13 @@
                     @endif
                 </div>
                 @else
+                @if (Auth::user()->isInstructor() && Auth::user()->getSiteCount() > 0)
                 <div class="max-w-xs m-auto">
+                <div class="block py-2 text-lg font-semibold text-gray-600">
+                                {{ __('Admin') }}
+                            </div>
                     <!-- a link to this user's site dashboard -->
-                    <x-responsive-nav-link href="{{  Auth::user()->getUserSiteUrl()  }}">
+                    <x-responsive-nav-link href="/site/{{  Auth::user()->getUserOwnerSiteId()  }}/edit">
                         <div class="mt-3 space-y-1">
                             <div class="font-sanstext-gray-600">
                                 {{ __('My Site Dashboard') }}
@@ -57,6 +61,7 @@
 
                     {!! $user_content !!}
                 </div>
+                @endif
                 @endif
             @endif
             <div class="grid max-w-xs m-auto">
@@ -92,7 +97,7 @@
                         <div class="border-t border-gray-200 mt-2"></div>
 
                         <div class="border-t border-gray-200"></div>
-                        <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
+                        <div class="block py-2 text-lg font-semibold text-gray-600">
                             {{ __('Add to Image Library') }}
                             <div class="flex">
                                 <div class="px-4 py-2 border-r border-gray-200" x-data="{fileSelected: false}">
@@ -118,7 +123,7 @@
                             @foreach (\App\Models\Team::all() as $team)
                                 <div class="flex items-center justify-between">
                                     <x-switchable-team :team="$team" component="responsive-nav-link" />
-                                    @if (Auth::user()->getSiteCount() > 0 && Auth::user()->canManageTeamForSite())
+                                    @if (Auth::user()->getSiteCount() > 0 && Auth::user()->canManageTeamForSite($team->id))
                                         <!-- Team Settings -->
                                         <x-responsive-nav-link href="{{ route('teams.show', $team->id) }}" :active="request()->routeIs('teams.show')" class="ml-auto">
                                         <i class="material-icons">settings</i>
@@ -129,14 +134,14 @@
                         @else
                             @if (count(Auth::user()->allTeams()) > 1)
                             <!-- Team Switcher -->
-                            <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
-                                Manage Teams
+                            <div class="block py-2 text-lg font-semibold text-gray-600">
+                                My Teams
                             </div>
 
                             @foreach (Auth::user()->allTeams() as $team)
                                 <div class="flex items-center justify-between">
                                     <x-switchable-team :team="$team" component="responsive-nav-link" />
-                                    @if (Auth::user()->getSiteCount() > 0 && Auth::user()->canManageTeamForSite())
+                                    @if (Auth::user()->getSiteCount() > 0 && Auth::user()->canManageTeamForSite($team->id))
                                         <!-- Team Settings -->
                                         <x-responsive-nav-link href="{{ route('teams.show', $team->id) }}" :active="request()->routeIs('teams.show')" class="ml-auto">
                                         <i class="material-icons">settings</i>
@@ -147,10 +152,13 @@
                             @endif
                         @endif
 
+                        @if ((\App\Models\Site::isPrasso(parse_url(url()->current(), PHP_URL_HOST)) && Auth::user()->isSuperAdmin()) || (Auth::user()->isInstructor() && Auth::user()->isThisSiteTeamOwner($site->id)))
+               
                         <x-responsive-nav-link href="{{ route('teams.create') }}" :active="request()->routeIs('teams.create')">
                             {{ __('Create New Team') }}
                         </x-responsive-nav-link>
 
+                        @endif
                         @endif
 
                         <div class="m-auto mt-2">

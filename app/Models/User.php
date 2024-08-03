@@ -148,8 +148,9 @@ class User extends Authenticatable implements FilamentUser {
         return $this->hasMany('App\Models\Invitation');
     }
 
-    public function roles() {
-        return $this->hasMany(UserRole::class, 'user_id', 'id');
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'user_role', 'user_id', 'role_id');
     }
 
     public function activeApp() {
@@ -203,8 +204,7 @@ class User extends Authenticatable implements FilamentUser {
     public function hasRole(...$role_looking_for)
     {
         foreach ($this->roles as $role) {
-            $roleId = (int) $role->role_id; // Cast role_id to integer
-            
+            $roleId = (int) $role->id; // Cast role_id to integer
             if (in_array($roleId, $role_looking_for)) {
                 return true;
             }
@@ -221,7 +221,7 @@ class User extends Authenticatable implements FilamentUser {
         return false;
     }
     public function isInstructor() {
-        // Log::info('checking for isInstructor: ' );
+        $this->load('roles');
 
         if ($this->hasRole(config('constants.INSTRUCTOR'))) {
             return true;
@@ -244,6 +244,39 @@ class User extends Authenticatable implements FilamentUser {
         } 
         return false;
     }
+
+    // User.php
+    public function isTeamMember($teamId) {
+        return $this->team_member()->where('team_id', $teamId)->exists();
+    }
+
+    public function isTeamMemberOrOwner($teamId) {
+        $isMember = $this->team_member()->where('team_id', $teamId)->exists();
+        $isOwner = $this->team_owner()->where('id', $teamId)->exists();
+        return $isMember || $isOwner;
+    }
+
+    /**
+     * Determine if the user belongs to the given team.
+     *
+     * @param  mixed  $team
+     * @return bool
+     */
+    public function belongsToTeam($team)
+    {
+        info('local belongs to team');
+        if (is_null($team)) {
+            return false;
+        }
+        if ($this->isSuperAdmin()){
+            return true;
+        }
+
+        return $this->ownsTeam($team) || $this->teams->contains(function ($t) use ($team) {
+            return $t->id === $team->id;
+        });
+    }
+
     /**filament interface, can the user access filament admin */
     public function canAccessPanel(Panel $panel): bool
     {
@@ -322,7 +355,7 @@ class User extends Authenticatable implements FilamentUser {
         }
         return $site_count;
     }
-    public function canManageTeamForSite(){
+    public function canManageTeamForSite($team_id){
         if ($this->isSuperAdmin())
         {
             return true;
@@ -335,43 +368,54 @@ class User extends Authenticatable implements FilamentUser {
         $teams = $this->team_owner->toArray();
         foreach($teams as $team)
         {
-            if ($team['user_id'] == $this->id)
+            if ($team_id == $team['id'] && $team['user_id'] == $this->id )
             {
                 return true;
             }
         }
-        info('canManageTeamForSite returning false');
+        
         return false;
     }
     /**
      * Get/Set the user's current team. This is the first team that is owned by the user, if it exists
      * at the time of this writing, only one team per user that is not a super admin is allowed
      */
-    public function setCurrentTeam()
+    public function setCurrentToOwnedTeam()
     {
-        if ($this->current_team_id != null) {
+        if ($this->id == 1){
+            //super admin, ok
+            return;
+        }
+        $this->load('team_owner');
+        if (isset($this->current_team_id) && $this->current_team_id > 1) {
             return;
         }
         $teams = [];
         if ($this->team_owner != null && count($this->team_owner)>0){
+            info('user: '.$this->id.' has owned teams.');
             $teams = $this->team_owner->toArray();
         }
         if ($this->current_team_id == null) {
             $this->current_team_id = 1;
         }
+        
         if (count($teams) == 0) {
+
+            info('user: '.$this->id.' has 0 owned teams.');
             $teamids = $this->team_member->toArray();
-info('teamids: ' . json_encode($teamids));
+            info('teamids: ' . json_encode($teamids));
             if (count($teamids) > 0) {
                 $this->current_team_id = $teamids[0]['team_id'];
             }
         } else {
             if ($this->current_team_id == 1) {
+
                 foreach ($teams as $team) {
                     if ($team['user_id'] == $this->id) {
-                        $this->current_team_id = $team['team_id'];
+                        $this->current_team_id = $team['id'];
+                        info('team owner of: ' . $team['id']);
+                        break;
                     }
-                    break;
                 }
             }
         }
@@ -379,34 +423,31 @@ info('teamids: ' . json_encode($teamids));
     }
 
     /**
-     * Get the user's site url. This is the first team that is owned by the user
+     * Get the user's site url. 
+     * determined by two things. 
+     *  1. if this is prasso then the site url is the first team that is owned by the user
+     *  2. if this is not prasso then if the user owns the current site's team then the same site as is showing
      * at the time of this writing, only one team per user that is not a super admin is allowed
      */
-    public function getUserSiteUrl(){
-        $this->setCurrentTeam();
-        
+    public function getUserOwnerSiteId(){
+        $this->setCurrentToOwnedTeam();
         $teamsite = TeamSite::where('team_id', $this->current_team_id)->first();
- 
-        $site = Site::where('id', $teamsite->site_id)->first();
-        
-        $site_url = $site['host']; //may have multiple hosts.  example: https://gogodelivery.prasso.io,localhost,localhost:8000/
-        $multiple_hosts = explode(',', $site_url);
-        if (count($multiple_hosts) > 1) {
-            // Select the one with localhost in it if one exists
-            foreach ($multiple_hosts as $host) {
-                if (strpos($host, 'localhost') !== false) {
-                    return "http://$host";
-                }
-            }
-            // If no localhost found, return the first host
-            return "https://{$multiple_hosts[0]}";
-        }
-        return "https://$site_url";
+        return $teamsite->site_id;
         
     }
 
     public function isThisSiteTeamOwner($site_id) {
+        if ($site_id == 1){return false;} // only super-admins own prasso and that is checked first
+   /*
+   
+   if the site has subteams rules are the same as when the site does not
+    the site owner user_id is stored with the team record
+
+    is the problem knowing which team owns. then look at parent record of the team
+    */     
+        $this->load('team_owner');
         $teams = $this->team_owner->toArray();
+
         foreach($teams as $team)
         {
             if ($team['user_id'] == $this->id)

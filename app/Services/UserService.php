@@ -6,6 +6,7 @@ use App\Models\CommunityAccessTokens;
 use Illuminate\Support\Facades\Log;
 use App\Models\Invitation;
 use App\Models\Team;
+use App\Models\Site;
 use App\Models\TeamUser;
 use App\Models\TeamSite;
 use App\Models\CommunityUser;
@@ -24,6 +25,48 @@ class UserService
     public function __construct(Instructor $suser)
     {
       $this->instruc = $suser;
+    }
+
+    public function UpdateSitesMember($user, $team, $id_of_selected_site){
+
+        // Find the TeamSite model with the specified site ID and eager load the associated team.
+        $teamSite = null;
+        if (isset($team)){
+          $teamSite = TeamSite::where('site_id', $id_of_selected_site)->where('team_id',$team->id)->with('team')->first();
+        }
+        else{
+          $teamSite = TeamSite::where('site_id', $id_of_selected_site)->with('team')->first();
+        }
+
+        // If the TeamSite model doesn't exist, create a new one.
+        if ($teamSite == null) {
+            $teamSite = new TeamSite();
+            $teamSite->site_id = $id_of_selected_site;
+        }
+
+        // If the team ID field of the TeamSite model is null, create a new team.
+        if ($teamSite->team_id == null) {
+          if (!isset($team))
+          { 
+            $team = new Team();
+            $team->user_id = $user->id;
+            $team->name = Site::find($id_of_selected_site)->site_name;
+            $team->personal_team = false;
+            $team->phone = ' ';
+            $team->save();
+          }
+
+        }
+
+        $teamSite->team_id = $team->id;
+        $teamSite->save();
+
+        // Create a new team member for the team.
+        $teamSite->team->team_members()->create([
+            'user_id' => $user->id,
+            'role' => config('constants.TEAM_USER_ROLE'),
+        ]);
+
     }
 
     /**

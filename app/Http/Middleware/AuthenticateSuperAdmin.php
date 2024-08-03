@@ -19,7 +19,10 @@ class AuthenticateSuperAdmin
    public function handle($request, Closure $next)
    {
       $user = \Auth::user();
-      Log::info('in AuthenticateSuperAdmin: ' . json_encode($user));
+      if (!isset($user)){
+         session()->flash('message', config('constants.UNAUTHORIZED'));
+         return redirect('/login');
+       }
       $superAdminModel = new \App\Models\SuperAdmin();
       $adminuser = $superAdminModel->fetchUserByCredentials($user->email);
 
