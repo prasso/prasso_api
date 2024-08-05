@@ -1,6 +1,5 @@
 <div>
-
-    @if ($team->users->isNotEmpty())
+   
     <x-section-border />
 
     <!-- Manage Team Members -->
@@ -50,7 +49,7 @@
             </x-slot>
         </x-action-section>
     </div>
-    @endif
+
 
     @if (Gate::check('addTeamMember', $team))
     <x-section-border />
@@ -81,15 +80,15 @@
                 </div>
 
                 <!-- Role -->
-                @if (Auth::user()->hasRole('1'))
+                @if (Auth::user()->hasRole('1') || $site->getTeamOwner($site)))
                 @if (count($this->roles) > 0)
                 <div class="col-span-6 lg:col-span-4">
                     <x-label for="role" value="{{ __('Role') }}" />
                     <x-input-error for="role" class="mt-2" />
 
                     <div class="mt-1 border border-gray-200 rounded-lg cursor-pointer">
-
                         @foreach ($this->roles as $index => $role)
+
                         @if($role->name != 'Administrator')
                         <div class="px-4 py-3 {{ $index > 0 ? 'border-t border-gray-200' : '' }}" wire:click="$set('addTeamMemberForm.role', '{{ $role->key }}')">
                             <div class="{{ isset($addTeamMemberForm['role']) && $addTeamMemberForm['role'] !== $role->key ? 'opacity-50' : '' }}">

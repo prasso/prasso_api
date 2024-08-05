@@ -105,13 +105,14 @@ class CreateNewUser implements CreatesNewUsers
      * @param  \App\Models\User  $user
      * @return void
      */
-    protected function createTeam(User $user) {
+    protected function createTeam(User $user, $site) {
         $new_team = Team::forceCreate([
             'user_id' => $user->id,
             'name' => explode(' ', $user->name, 2)[0] . "'s Team",
             'personal_team' => true,
             'phone' => $user->phone,
         ]);
+
         $user->ownedTeams()->save($new_team);
         $user->refresh();
         return $new_team->id;

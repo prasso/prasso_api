@@ -31,6 +31,19 @@
             </div>
             <form> 
                 
+            <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
+    <!-- a link to this user's app -->
+    <x-responsive-nav-link href="{{ route('apps.show', Auth::user()->current_team_id) }}">
+        <div class="flex items-center">
+            <!-- Mobile phone icon -->
+            <svg class="h-5 w-5 text-gray-600 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 2.75a2 2 0 00-2 2v14.5a2 2 0 002 2h10a2 2 0 002-2V4.75a2 2 0 00-2-2H7zM7 2.75h10M11 18h2M12 10.25h.01"/>
+            </svg>
+            {{ __('Edit Mobile App') }}
+        </div>
+    </x-responsive-nav-link>
+</div>
+
                 <input type="hidden" wire:model="site_id" />
                           
                 @include('sites.site-inputs', ['team_selection' => $team_selection])

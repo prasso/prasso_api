@@ -45,7 +45,7 @@
                 @if ($site->site != null)
                 <div class="flex items-center justify-between">
                     <x-label value="{{ $site->site->site_name   }}" />
-                    @if (Auth::user()->getSiteCount() > 0 && Auth::user()->canManageTeamForSite())
+                    @if (Auth::user()->getSiteCount() > 0 && Auth::user()->isThisSiteTeamOwner($site->site->id))
                     <x-responsive-nav-link href="{{ route('site.edit', $site->site->id) }}" :active="request()->routeIs('sites.edit')" class="ml-auto">
                         <i class="material-icons">settings</i>
                     </x-responsive-nav-link>

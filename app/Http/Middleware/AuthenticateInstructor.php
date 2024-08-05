@@ -21,11 +21,13 @@ class AuthenticateInstructor
    public function handle($request, Closure $next)
    {
       $guard = Auth::guard('instructor');
-
-      if ($guard->check()) 
+      if (!$guard->check()) 
       {
         $user = \Auth::user();
-
+        if (!isset($user)){
+          session()->flash('message', config('constants.UNAUTHORIZED'));
+          return redirect('/login');
+        }
         //double check because this guard/provider isn't plugged in properly yet
         $instructoruser = $this->instruc->fetchUserByCredentials($user->email);
         

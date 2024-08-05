@@ -15,8 +15,6 @@ class SiteController extends BaseController
     public function __construct(SiteRequest $request)
     {
         parent::__construct( $request);
-        
-        $this->middleware('superadmin');
     }
 
     /**
@@ -26,6 +24,7 @@ class SiteController extends BaseController
      */
     public function index()
     {
+
         $user = Auth::user() ?? null;   
         if ($user == null || $user->currentTeam == null){
             Auth::logout();

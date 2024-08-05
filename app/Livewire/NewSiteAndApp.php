@@ -14,6 +14,7 @@ use Auth;
 use Illuminate\Support\Facades\Artisan;
 use Livewire\WithFileUploads;
 use App\Http\Requests\SiteRequest;
+use App\Services\UserService;
 
 use Illuminate\Support\Facades\Validator;
 
@@ -174,9 +175,14 @@ class NewSiteAndApp extends Component
         $site = $this->newSite::create($newSite);
 
         $this->current_user = Auth::user();
+        $team = Team::firstOr( $this->team_id);
 
-        $team = $site->updateTeam($this->team_id);
+        //need a team site record
+        //need a team member record for this user when the team is created for this user_error
+        $userService = app(UserService::class);
+        $userService->UpdateSitesMember($this->current_user, $team, $site->id);
 
+        $this->current_user->setCurrentToOwnedTeam();
         //upload the image if present
         if ($this->photo){
             $this->logo_image = $site->uploadImage($this->photo);

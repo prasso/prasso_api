@@ -32,7 +32,8 @@ class Team extends JetstreamTeam
     protected $fillable = [
         'name',
         'personal_team',
-        'phone'
+        'phone',
+        'parent_id'
     ];
     /**
      * The attributes that should be hidden for arrays.
@@ -85,5 +86,14 @@ class Team extends JetstreamTeam
     public function images()
     {
         return $this->hasMany(TeamImage::class);
+    }
+
+    public function subteams(){
+        return $this->hasMany(Team::class, 'parent_id', 'id');
+    }
+
+    public function parentTeam(){
+
+        return $this->belongsTo(Team::class, 'parent_id');
     }
 }
