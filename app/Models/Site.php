@@ -150,7 +150,10 @@ class Site extends Model
         
         //and the teamsite table needs to be updated, if not prasso
         if ($this->id != 1)
-        {TeamSite::create(['team_id' => $team->id, 'site_id' => $this->id]);}
+        {
+            $teamsite = TeamSite::where('team_id' , $team->id)->where( 'site_id' , $this->id)->first();
+            if (!isset($teamsite)){TeamSite::create(['team_id' => $team->id, 'site_id' => $this->id]);}
+        }
         return $team;
     }
 
