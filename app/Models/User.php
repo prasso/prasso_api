@@ -344,29 +344,6 @@ class User extends Authenticatable implements FilamentUser {
         return $this->hasOne(Apps::class);
     }
     
-    public function getAppCount() {
-        if ($this->isSuperAdmin())
-        {
-            return 1;
-        }
-        if ($this->team_owner == null)
-        {
-            return 0;
-        }
-        $teams = $this->team_owner->toArray();
-        $app_count = 0;
-        foreach($teams as $team)
-        {
-            foreach($team['site'] as $site)
-            {
-                info(json_encode($site));
-                //[2024-08-03 21:40:26] local.INFO: {"id":103,"site_id":155,"team_id":165,"created_at":"2024-08-01T17:50:49.000000Z","updated_at":null,"site":{"id":155,"site_name":"OpenBiz","host":"openbiz.prasso.io","main_color":"#f133d9","logo_image":"https:\/\/images.prasso.io\/prasso\/-app-photos\/logos-155\/AyrSy1n4SdQqd3rFCmqn5k60BnB5NZD35e9wVajl.png","database":"prasso","app_specific_js":null,"app_specific_css":null,"image_folder":"openbiz\/","favicon":"favicon.ico","created_at":"2024-07-31T14:31:42.000000Z","updated_at":"2024-07-31T14:31:43.000000Z","description":"Open Source Business Software","supports_registration":1,"subteams_enabled":1}}  
-
-            }
-        }
-        return $app_count;
-    }
-
     public function getSiteCount() {
         if ($this->isSuperAdmin())
         {
