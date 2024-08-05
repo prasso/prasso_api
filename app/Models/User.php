@@ -338,6 +338,12 @@ class User extends Authenticatable implements FilamentUser {
             }
         }
     }
+
+    public function app()
+    {
+        return $this->hasOne(Apps::class);
+    }
+    
     public function getSiteCount() {
         if ($this->isSuperAdmin())
         {

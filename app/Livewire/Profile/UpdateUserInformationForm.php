@@ -130,7 +130,7 @@ class UpdateUserInformationForm extends Component
 
         // Refresh the user model again to ensure that it has the latest data.
         $this->user->refresh();
-       $this->dispatch('savedsitemember');
+       $this->dispatch('savedsite');
     }
 
 
