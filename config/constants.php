@@ -21,6 +21,7 @@ return [
         'PRASSO_USER_WELCOME_EMAIL' => 'Welcome this user to ',
         'DATA_UPDATED_SUBJECT' => ' Notice of new data received',
         'SITE_SETUP_EMAIL' => 'DNS configuration required',
+        'ADMIN_ERROR_EMAIL' => 'Error Occurred',
         'NOTIFY_NEWSLETTER_SUBSCRIBER_EMAIL' => 'A person signed up for Prasso newsletter',
         'UNAUTHORIZED' => 401,
         'INSTRUCTOR' => 2,
@@ -47,4 +48,6 @@ return [
         'LOGIN_AGAIN' => 'Unrecognized user, please login again.',
         'TEAM_FACTORY_USER_ID' => 10000,
         'USER_IMAGE_FOLDER' => 'user-files/',
+        'STRIPE_MONTHLY_HOSTING_SMALL_BUSINESS_PRICE' => env('STRIPE_MONTHLY_HOSTING_SMALL_BUSINESS_PRICE'),
+        'STRIPE_DEVELOPER_10_HR_MO_PRICE' => env('STRIPE_DEVELOPER_10_HR_MO_PRICE'),
 ];

@@ -50,14 +50,13 @@ class SubscriptionController extends BaseController
 {
     // Generate a SetupIntent for the authenticated user
     $setupIntent = $request->user()->createSetupIntent();
-#STRIPE_MONTHLY_HOSTING_SMALL_BUSINESS_PRODUCT=prod_Qhzf5O2UFywDy3
-#STRIPE_DEVELOPER_10_HR_MO_PRODUCT=prod_QhzgtzI5wOXiQX
+    
     // Get the list of Stripe products/plans (this could be fetched from your database or an external source)
     $products = [
         'none' => 'Select a Plan',
-        'price_1PqZbnJmhER0XpDie03Lhm70' => 'Small Business Monthly Hosting',
-        'price_1PqZgzJmhER0XpDiOoGXGtAm' => 'Developer Support (Tier 1)',
-       
+        config('constants.STRIPE_MONTHLY_HOSTING_SMALL_BUSINESS_PRICE') => 'Small Business Monthly Hosting',
+        config('constants.STRIPE_DEVELOPER_10_HR_MO_PRICE') => 'Developer Support (Tier 1)',
+
     ];
 
     // Return the view with the setupIntent and products
@@ -84,16 +83,17 @@ class SubscriptionController extends BaseController
 
             $user->updateDefaultPaymentMethod($paymentMethod);
 
-            //$user->newSubscription('default', env('STRIPE_MONTHLY_HOSTING_SMALL_BUSINESS'))->create($paymentMethod);
-            $user->newSubscription('default', $subscriptionProduct)
-            ->create($paymentMethod);
+            $user->newSubscription('default', $subscriptionProduct)->create($paymentMethod);
 info('succeeded');
-           // return redirect()->route('dashboard')->with('success', 'Subscription created successfully!');
-           return redirect('/dashboard')->with('message', 'Subscription created successfully!'); 
-   
+           // return redirect('/dashboard')->with('message', 'Subscription created successfully!'); 
+            $success['message'] = 'Subscription created successfully!';
+
+            return $this->sendResponse($success, 'User subscribed.');
         } catch (\Exception $e) {
             info('failed with error: '.$e->getMessage());
-            return response()->json(['status' => 'Subscription failed', 'error' => $e->getMessage()], 500);
+            $this->adminNotifyOnError($e->getMessage());
+           // return response()->json(['status' => 'Subscription failed', 'error' => $e->getMessage()], 500);
+            return $this->sendError('Subscription failed.',  $e->getMessage());   
         }
    
     }
