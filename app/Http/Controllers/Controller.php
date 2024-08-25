@@ -34,7 +34,7 @@ class Controller extends FrameworkController
 
         $this->masterpage = $this->getMasterForSite($site);
         View::share('site', $site);
-        View::share('masterpage', $this->masterpage);
+        View::share('masterPage', $this->masterpage);
     }
 
     /**

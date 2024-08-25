@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SubscriptionController;
+use Laravel\Cashier\Http\Controllers\WebhookController;
+use Illuminate\Http\Request;
+
 
 Route::get('logout', function () {
     return redirect('/login');
@@ -32,6 +36,21 @@ Route::post('/v1/sites/{site_name}/page_views', 'SitePageController@pageView')->
 Route::get('/give','SitePageController@giveToDonate');
 
 Route::get('/dashboard', 'SitePageController@index')->name('dashboard');
+
+Route::get('subscribe', [SubscriptionController::class, 'showSubscriptionForm'])->name('subscription.form');
+Route::post('subscribe', [SubscriptionController::class, 'createSubscription'])->name('subscription.create');
+Route::post('stripe/webhook', [WebhookController::class, 'handleWebhook']);
+Route::get('/payment/setup-intent', function (Request $request) {
+    return $request->user()->createSetupIntent();
+});
+Route::post('/payment', function (Request $request) {
+    $user = $request->user();
+    $paymentMethod = $request->input('payment_method');
+
+    $user->newSubscription('default', 'plan_id')
+        ->create($paymentMethod);
+});
+
 
 Route::middleware([
     'auth:sanctum',
