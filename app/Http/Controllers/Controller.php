@@ -13,6 +13,8 @@ use App\Models\SitePages;
 use App\Models\User;
 use App\Models\MasterPage;
 use Illuminate\Http\Request;
+use App\Mail\admin_error_notification;
+use Illuminate\Support\Facades\Mail;
 
 class Controller extends FrameworkController
 {
@@ -70,6 +72,16 @@ class Controller extends FrameworkController
         }
 
         return response()->json($response, $code);
+    }
+
+    public function adminNotifyOnError($message){
+        //notify me admin error
+        try{
+            Mail::to('info@prasso.io', 'Prasso Admin')->send(new admin_error_notification($this));
+        }catch(\Throwable $e){
+            Log::info("Error sending email: {$message}");
+            Log::info($e);
+        }
     }
 
     /**
