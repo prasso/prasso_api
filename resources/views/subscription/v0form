@@ -1,0 +1,132 @@
+<body class="bg-background !opacity-100 transition-opacity duration-300 v0-c" style="opacity:0">
+    <style type="text/tailwindcss">@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    @apply scroll-smooth;
+  }
+  body {
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+}
+@layer utilities {
+  .step {
+    counter-increment: step;
+  }
+  .step:before {
+    @apply absolute w-9 h-9 bg-muted rounded-full font-mono font-medium text-center text-base inline-flex items-center justify-center -indent-px border-4 border-background;
+    @apply ml-[-50px] mt-[-4px];
+    content: counter(step);
+  }
+  .chunk-container {
+    @apply shadow-none;
+  }
+  .chunk-container::after {
+    content: '';
+    @apply absolute -inset-4 shadow-xl rounded-xl border;
+  }
+}
+@media (max-width: 640px) {
+  .container {
+    @apply px-4;
+  }
+}</style><!--$--><!--$-->
+    <div role="region" aria-label="Notifications (F8)" tabindex="-1" style="pointer-events:none">
+        <ol tabindex="-1" class="fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col lg:max-w-[420px]"></ol>
+    </div>
+    <div class="!visible transition-opacity duration-150 bg-background text-foreground !opacity-100" id="v0-container" style="visibility:hidden;opacity:0"><!--$-->
+        <style>
+            :root {
+                --background: 0 0% 100%;
+                --foreground: 240 10% 3.9%;
+                --card: 0 0% 100%;
+                --card-foreground: 240 10% 3.9%;
+                --popover: 0 0% 100%;
+                --popover-foreground: 240 10% 3.9%;
+                --primary: 240 5.9% 10%;
+                --primary-foreground: 0 0% 98%;
+                --secondary: 240 4.8% 95.9%;
+                --secondary-foreground: 240 5.9% 10%;
+                --muted: 240 4.8% 95.9%;
+                --muted-foreground: 240 3.8% 45%;
+                --accent: 240 4.8% 95.9%;
+                --accent-foreground: 240 5.9% 10%;
+                --destructive: 0 72% 51%;
+                --destructive-foreground: 0 0% 98%;
+                --border: 240 5.9% 90%;
+                --input: 240 5.9% 90%;
+                --ring: 240 5.9% 10%;
+                --chart-1: 173 58% 39%;
+                --chart-2: 12 76% 61%;
+                --chart-3: 197 37% 24%;
+                --chart-4: 43 74% 66%;
+                --chart-5: 27 87% 67%;
+                --radius: 0.5rem;
+            }
+
+            img[src="/placeholder.svg"],
+            img[src="/placeholder-user.jpg"] {
+                filter: sepia(.3) hue-rotate(-60deg) saturate(.5) opacity(0.8)
+            }
+        </style>
+        <style>
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                font-family: 'Inter', sans-serif;
+                --font-sans-serif: 'Inter';
+            }
+        </style>
+        <style>
+            body {
+                font-family: 'Inter', sans-serif;
+                --font-sans-serif: 'Inter';
+            }
+        </style><!--/$-->
+        <div class="rounded-lg border bg-card text-card-foreground shadow-sm w-full max-w-md mx-auto" data-id="1" data-v0-t="card">
+            <div class="flex flex-col space-y-1.5 p-6" data-id="2">
+                <h3 class="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight" data-id="3">Subscribe Today</h3>
+                <p class="text-sm text-muted-foreground" data-id="4">Choose your plan and enter your payment details.</p>
+            </div>
+            <div class="p-6 space-y-4" data-id="5">
+                <div class="space-y-2" data-id="6"><label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="plan" data-id="7">Subscription Plan</label><button type="button" role="combobox" aria-controls="radix-:rs:" aria-expanded="false" aria-autocomplete="none"
+                        dir="ltr" data-state="closed" data-placeholder=""
+                        class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        id="plan" data-id="9"><span data-id="10" style="pointer-events: none;">Select a plan</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-chevron-down h-4 w-4 opacity-50" aria-hidden="true">
+                            <path d="m6 9 6 6 6-6"></path>
+                        </svg></button></div>
+                <div class="space-y-2" data-id="15"><label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="card-number" data-id="16">Card Number</label><input
+                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        id="card-number" placeholder="0000 0000 0000 0000" data-id="17" type="text"></div>
+                <div class="grid grid-cols-2 gap-4" data-id="18">
+                    <div class="space-y-2" data-id="19"><label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="expiration" data-id="20">Expiration</label>
+                        <div class="flex items-center space-x-2" data-id="21"><button type="button" role="combobox" aria-controls="radix-:rt:" aria-expanded="false" aria-autocomplete="none" dir="ltr" data-state="closed" data-placeholder=""
+                                class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                id="expiration-month" data-id="23"><span data-id="24" style="pointer-events: none;">MM</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-chevron-down h-4 w-4 opacity-50" aria-hidden="true">
+                                    <path d="m6 9 6 6 6-6"></path>
+                                </svg></button><button type="button" role="combobox" aria-controls="radix-:ru:" aria-expanded="false" aria-autocomplete="none" dir="ltr" data-state="closed" data-placeholder=""
+                                class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                id="expiration-year" data-id="28"><span data-id="29" style="pointer-events: none;">YYYY</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-chevron-down h-4 w-4 opacity-50" aria-hidden="true">
+                                    <path d="m6 9 6 6 6-6"></path>
+                                </svg></button></div>
+                    </div>
+                    <div class="space-y-2" data-id="32"><label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="cvv" data-id="33">CVV</label><input
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            id="cvv" placeholder="123" data-id="34" type="text"></div>
+                </div>
+            </div>
+            <div class="flex items-center p-6" data-id="35"><button
+                    class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
+                    type="submit" data-id="36">Subscribe</button></div>
+        </div>
+    </div><!--/$--><!--/$-->
+     <link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Inter:,i,b&amp;display=block">
+   </body>
