@@ -2,7 +2,7 @@
 
 namespace App\Actions\Jetstream;
 
-use App\Models\Invitation;
+use App\Models\TeamInvitation;
 use App\Models\User;
 use App\Models\UserRole;
 use Illuminate\Support\Facades\Gate;
@@ -44,25 +44,16 @@ class AddTeamMember implements AddsTeamMembers
                 ['role' => $role]
             );
             UserRole::create([
-                        'user_id' => $newTeamMember->id,
-                        'role_id' => 2, //'instructor' 'INSTRUCTOR_ROLE_TEXT' => 'instructor',
-                    ]);
+                'user_id' => $newTeamMember->id,
+                'role_id' => $role === 'user' ? 1 : 2,
+            ]);
+            
        
             $newTeamMember->current_team_id = $team->id;
             $newTeamMember->save();
             
             TeamMemberAdded::dispatch($team, $newTeamMember);
            
-        }
-        else{
-            info('no user record exists for email: '.$email);
-            $invitation = Invitation::create([
-                'user_id' => $user->id,
-                'team_id' => $team->id,
-                'role' => $role,
-                'email' => $email,
-            ]);
-             $invitation->sendEmailInviteNotification();
         }
 
 

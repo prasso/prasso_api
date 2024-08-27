@@ -2,7 +2,7 @@
 
 namespace App\Actions\Fortify;
 
-use App\Models\Invitation;
+use App\Models\TeamInvitation;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\TeamUser;
@@ -16,10 +16,14 @@ use Laravel\Jetstream\Events\TeamMemberAdded;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Laravel\Jetstream\Jetstream;
+use Illuminate\Validation\ValidationException;
 
 class CreateNewUser implements CreatesNewUsers
 {
     use PasswordValidationRules;
+
+    private $site_team_id, $site, $team, $invitation;
+
     /**
      * Create a newly registered user.
      *
@@ -41,6 +45,39 @@ class CreateNewUser implements CreatesNewUsers
             'phone' => '',
             'version' => ''
         ])->validate();
+
+        $this->site = Controller::getClientFromHost();
+        if (!$this->site->supports_registration) {
+            throw ValidationException::withMessages([
+                'email' => ['This site does not support registration.'],
+            ]);
+        }
+        
+        $this->invitation = TeamInvitation::where('email', $input['email'])->first();
+        if ($this->invitation){
+            //get the team from the invitation
+            $this->team = Team::find($this->invitation->team_id);
+        }
+        else{
+            //get the team from the site
+            $this->team = $this->site->teamFromSite();
+        }
+
+     info('team: '.json_encode($this->team));
+               
+        $this->site_team_id = $this->team->id;
+            
+        if ($this->site->invitation_only) {
+
+            if (!$this->invitation) {
+                // Throw an exception if the user is not invited
+                throw ValidationException::withMessages([
+                    'email' => ['This site is invitation-only. Your email is not on the invitation list.'],
+                ]);
+            }
+        }
+
+
         return DB::transaction(function () use ($input) {
             return tap(User::create([
                 'name' => $input['name'],
@@ -50,48 +87,50 @@ class CreateNewUser implements CreatesNewUsers
                 'version' => '',
             ]), function (User $user) use ($input) {
 
-                $site = Controller::getClientFromHost();
-                $site_team_id=config('constants.PRASSO_TEAM_ID');
-                //get the team from the site
-                if ($site->supports_registration) {
-                    $team = $site->teamFromSite();
-                    $site_team_id = $team->id;
-                    $team->users()->attach(
-                        $user,
-                        ['role' => 'user']
-                    );
-                    $user->current_team_id = $team->id;
-                    $user->save();
-                    TeamMemberAdded::dispatch($team, $user);
-                }
-                else{
-                    $site_team_id = $this->createTeam($user,$site);
-                }
+                // Default: add all users to Prasso team at user level
+                $prasso_team = Team::find(1);
+
+                $prasso_team->users()->syncWithoutDetaching([
+                    $user->id => ['role' => 'user']
+                ]);
+
+
+                $this->team->users()->attach(
+                    $user,
+                    ['role' => 'user']
+                );
+                $user->current_team_id = $this->team->id;
+                $user->save();
+                TeamMemberAdded::dispatch($this->team, $user);
+
                 try{
-                $user->sendWelcomeEmail($site_team_id);
+                $user->sendWelcomeEmail($this->site_team_id);
                 }
                 catch(\Throwable $e){
-                    Log::info("Error sending welcome email: {$site->host}");
+                    Log::info("Error sending welcome email: {$this->site->host}");
                     Log::info($e);
                 }
-                ## BEGIN EDIT - if there's an invite, attach them accordingly ##
-                if (isset($input['invite'])) {
-                    if ($invitation = Invitation::where('code', $input['invite'])->first()) {
-                        if ($team = $invitation->team) {
-                            $team->users()->attach(
-                                $user,
-                                ['role' => $invitation->role]
-                            );
-                            $user->current_team_id = $team->id;
-                            $user->save();
-                            TeamMemberAdded::dispatch($team, $user);
-                            $invitation->delete();
-                        }
+
+                // - if there's an invite, attach them accordingly 
+                if (isset($this->invitation)) {
+                    // Check if the user is already a member of the team
+                    if ($this->team->users()->where('user_id', $user->id)->exists()) {
+                        // Update the role if the user is already a member
+                        $this->team->users()->updateExistingPivot($user->id, ['role' => $this->invitation->role]);
+                    } else {
+                        // Attach the user to the team with the specified role if they are not already a member
+                        $this->team->users()->attach($user, ['role' => $this->invitation->role]);
                     }
+                    
+                    TeamMemberAdded::dispatch($this->team, $user);
+                    
+                    $user->current_team_id = $this->team->id;
+                    $user->save();
+                    $this->invitation->delete();
                 }
                 else
                 {
-                    if (!$site->supports_registration) {
+                    if (!$this->site->supports_registration) {
                         TeamUser::addToBaseTeam($user);
                     }
                 }
@@ -105,7 +144,7 @@ class CreateNewUser implements CreatesNewUsers
      * @param  \App\Models\User  $user
      * @return void
      */
-    protected function createTeam(User $user, $site) {
+    protected function createTeam(User $user) {
         $new_team = Team::forceCreate([
             'user_id' => $user->id,
             'name' => explode(' ', $user->name, 2)[0] . "'s Team",
