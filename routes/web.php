@@ -24,7 +24,6 @@ Route::get('contact', function () {
 Route::post('/send-email', 'EmailController@sendEmail')->name('send-email');
 Route::get('/page/faqs', 'SiteController@seeFaqs')->name('see-faqs');
 Route::post('/question', 'SiteController@processQuestion')->name('send-question');
-Route::post('/newsletter', 'EmailController@registerEmailForNewsletter')->name('newsletter-register');
 Route::get('/confirm_newsletter_subscription', 'EmailController@confirm_newsletter_subscription')->name('confirm-newsletter-subscription');
 
 

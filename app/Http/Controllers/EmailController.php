@@ -36,27 +36,7 @@ class EmailController extends BaseController
         return redirect('/page/email_subscription_confirmed')->with('message', 'Please confirm your subscription'); 
     }
 
-    public function registerEmailForNewsletter(Request $request)
-    {
-        if (!isset($request['email']) )
-        {
-            return redirect('/')->with('message','email was empty');
-        }
-        $email = $request['email'];
-        // Remove all illegal characters from email
-        $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-
-        // Validate e-mail
-        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            //send a confirmation email to the poster - if they confirm to signup for the newsletter then inform me
-            $this->userService->subscribeNewsletter($request['email']);
-
-            return redirect('/page/please_confirm_your_subscription')->with('message', 'Please confirm your subscription'); 
     
-        } else {
-            return redirect('/')->with('message','email was not valid');
-        }
-   }
 
    // this method sends to the main admin only. it sends the info entered. no other emails are sent from here
     public function sendEmail(Request $request, Site $site) {
