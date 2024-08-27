@@ -33,6 +33,7 @@ class SiteRequest extends BaseRequest {
             'app_specific_js' => 'nullable',
             'app_specific_css' => 'nullable',
             'does_livestreaming' => 'required',
+            'invitation_only' => 'required',
             'image_folder' => 'required|ends_with:/',
         ]);
     }

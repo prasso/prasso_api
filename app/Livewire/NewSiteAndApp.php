@@ -42,6 +42,8 @@ class NewSiteAndApp extends Component
     public $supports_registration;//
     public $subteams_enabled; //
     public $does_livestreaming; //
+    public $invitation_only; //
+    
     public $app_specific_js;//
     public $app_specific_css;//
     // for super admin setting team id

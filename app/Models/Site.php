@@ -39,6 +39,7 @@ class Site extends Model
         'app_specific_js',
         'app_specific_css',
         'does_livestreaming',
+        'invitation_only',
         'image_folder',
     ];
 

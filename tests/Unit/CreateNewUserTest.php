@@ -13,6 +13,8 @@ class CreateNewUserTest extends TestCase
 {
     public function test_create_new_user()
     {
+        $user = User::where('email','johndoe@example.com')->first();
+        if ($user){$user->delete();}
         $pass = Hash::make('123456789');
         // Create a mock input array
         $input = [

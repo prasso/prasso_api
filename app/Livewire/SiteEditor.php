@@ -24,7 +24,7 @@ class SiteEditor extends Component
 
     public $sites, $site_id,$site_name,$description, $host,$main_color,$logo_image, 
             $database, $favicon, $supports_registration, $subteams_enabled, $app_specific_js, $app_specific_css,
-            $does_livestreaming,$https_host, $image_folder;
+            $does_livestreaming,$https_host, $image_folder,$invitation_only;
     public $sitePages;
     public $current_user;
     public $isOpen = 0;
@@ -96,6 +96,8 @@ class SiteEditor extends Component
         $this->supports_registration = $site->supports_registration;
         $this->subteams_enabled = $site->subteams_enabled;
         $this->does_livestreaming = $site->livestream_settings()->exists();
+        $this->invitation_only = $site->invitation_only;
+        
         $this->app_specific_js = $site->app_specific_js;
         $this->app_specific_css = $site->app_specific_css;
         $this->image_folder = $site->image_folder;
@@ -131,6 +133,8 @@ class SiteEditor extends Component
         $this->supports_registration = false;
         $this->subteams_enabled = false;
         $this->does_livestreaming = false;
+        $this->invitation_only = false;
+        
         $this->app_specific_js ='';
         $this->app_specific_css = '';
         $this->photo = null;
@@ -168,6 +172,7 @@ class SiteEditor extends Component
             'database' => $this->database,
             'favicon' => $this->favicon,
             'supports_registration' => $this->supports_registration,
+            'invitation_only' => $this->invitation_only,
             'subteams_enabled' => $this->subteams_enabled,
             'app_specific_js' => $this->app_specific_js,
             'app_specific_css' => $this->app_specific_css,
@@ -239,6 +244,8 @@ class SiteEditor extends Component
         $this->supports_registration = $site->supports_registration;
         $this->subteams_enabled = $site->subteams_enabled;
         $this->does_livestreaming = $site->livestream_settings()->exists();
+        $this->invitation_only = $site->invitation_only;
+        
         $this->app_specific_js = $site->app_specific_js;
         $this->app_specific_css = $site->app_specific_css;
         $this->image_folder = $site->image_folder;

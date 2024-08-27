@@ -24,6 +24,8 @@ class CreateOrEdit extends Component
     public $supports_registration; //
     public $subteams_enabled; //
     public $does_livestreaming; //
+    public $invitation_only; //
+    
     public $database;
     public $favicon;
     public $app_specific_js;
@@ -60,6 +62,8 @@ class CreateOrEdit extends Component
         $this->supports_registration = $site->supports_registration;
         $this->subteams_enabled = $site->subteams_enabled;
         $this->does_livestreaming = $site->livestream_settings()->exists();
+        $this->invitation_only = $site->invitation_only;
+        
         $this->database = $site->database;
         $this->favicon = $site->favicon;
         $this->app_specific_js = $site->app_specific_js;

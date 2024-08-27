@@ -104,5 +104,16 @@
                 
                             @error('does_livestreaming') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
+
+
+                        <div class="mb-4">
+                            <label for="invitation_onlyInput" class="block text-gray-700 text-sm font-bold mb-2">Site registration is invitation only: </label>
+                            <input type="radio" name="invitation_onlyInput" id="invitation_onlyInput" wire:model.defer="invitation_only" value="1"  />Yes
+                            <input type="radio" name="invitation_onlyInput" id="invitation_onlyInput" wire:model.defer="invitation_only" value="0" />No
+                
+                            @error('invitation_only') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
+
+
                     </div>
                 </div>
