@@ -18,6 +18,7 @@
 /storage/uploads/*
 /vendor/*
 /public/pages/*
+packages/*
 
 composer.lock
 Homestead.json

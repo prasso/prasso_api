@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Schema;
 use App\Http\Controllers\Controller;
 use App\Models\SitePages;
 use App\Models\MasterPage;
+use Faxt\Invenbin\Support\Facades\InvenbinPanel;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -26,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-    
+     InvenbinPanel::register();
     }
 
     /**

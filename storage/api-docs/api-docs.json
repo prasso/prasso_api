@@ -70,9 +70,2015 @@
                     }
                 ]
             }
+        },
+        "/api/bom": {
+            "get": {
+                "tags": [
+                    "BillOfMaterials"
+                ],
+                "summary": "Get all bills of material",
+                "description": "Retrieve a list of bills of material records with eager loading of products relationship",
+                "operationId": "882320e99deb4a56ba974cc2e1681a1b",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "guid": {
+                                                "type": "string",
+                                                "example": "abc123"
+                                            },
+                                            "bom_name": {
+                                                "type": "string",
+                                                "example": "cup with logo"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "BillOfMaterials"
+                ],
+                "summary": "Create a new bill of material",
+                "description": "Create a new bill of material",
+                "operationId": "c66f60124a81ce27527e4b47dae088c3",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BillOfMaterialsInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BillOfMaterialsOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/bom/{guid}": {
+            "get": {
+                "tags": [
+                    "BillOfMaterials"
+                ],
+                "summary": "Get a specific bill of material",
+                "description": "Display the specified resource.",
+                "operationId": "716b3b7d052b819439548ce5733b376f",
+                "parameters": [
+                    {
+                        "name": "guid",
+                        "in": "path",
+                        "description": "GUID of the bill of material",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BillOfMaterialsOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "BillOfMaterials"
+                ],
+                "summary": "Update a bill of material",
+                "description": "Update a bill of material",
+                "operationId": "62a6620d576b19c21f6f117fbf4b8528",
+                "parameters": [
+                    {
+                        "name": "guid",
+                        "in": "path",
+                        "description": "GUID of the bill of material",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BillOfMaterialsInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BillOfMaterialsOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "BillOfMaterials"
+                ],
+                "summary": "Delete a bill of material",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "f71c61e9a045295a658e404a697207fa",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the bill of material",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "BillOfMaterials deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/categories": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Get all categories",
+                "description": "Retrieve a list of categories records with eager loading of products relationship",
+                "operationId": "730a1403537467d50ca63354f78013d7",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "2"
+                                            },
+                                            "category_name": {
+                                                "type": "string",
+                                                "example": "Cat A"
+                                            },
+                                            "parent": {
+                                                "type": "string",
+                                                "example": "1"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Create a new category",
+                "description": "Create a new category",
+                "operationId": "9b60d6cab865929b63f97641a19d73ce",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CategoryInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/categories/{id}": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Get a specific category",
+                "description": "Display the specified resource.",
+                "operationId": "2e23a25f44b88fdb74ba84cf4dc12636",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the category",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Update a category",
+                "description": "Update a category",
+                "operationId": "6f1aedaec5ce4467485d354c75860e36",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the category",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CategoryInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Delete a category",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "5069d07ad31dd6c417837864bf61530b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the category",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Category deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/inventory": {
+            "get": {
+                "tags": [
+                    "Inventory"
+                ],
+                "summary": "Get inventory levels for all products",
+                "description": "Returns a list of all products along with their inventory levels.",
+                "operationId": "getInventory",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "description": "Product ID",
+                                                "type": "integer"
+                                            },
+                                            "product_name": {
+                                                "description": "Product name",
+                                                "type": "string"
+                                            },
+                                            "inventory_count": {
+                                                "description": "Inventory count",
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/inventory/{id}": {
+            "get": {
+                "tags": [
+                    "Inventory"
+                ],
+                "summary": "Display the inventory level for a specific product.",
+                "description": "Returns the inventory level for a product identified by its ID.",
+                "operationId": "6c1aedb5ef66e368cd8ab3bb74db1707",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the product",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "description": "Product ID",
+                                                "type": "integer"
+                                            },
+                                            "product_name": {
+                                                "description": "Product Name",
+                                                "type": "string"
+                                            },
+                                            "inventory_count": {
+                                                "description": "Inventory Count",
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Product not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Inventory"
+                ],
+                "summary": "Update the inventory level for a specific product.",
+                "description": "Adjusts the inventory level based on the incoming adjustment value and returns the updated product details.",
+                "operationId": "dfd11a8cb2a501228cb11b5a8392a590",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the product",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Adjustment value for the inventory count",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "adjustment",
+                                    "adjustment_type",
+                                    "reason"
+                                ],
+                                "properties": {
+                                    "adjustment": {
+                                        "type": "integer"
+                                    },
+                                    "adjustment_type": {
+                                        "type": "string",
+                                        "example": "+"
+                                    },
+                                    "reason": {
+                                        "type": "string",
+                                        "example": "return to stock"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "description": "Product ID",
+                                            "type": "integer"
+                                        },
+                                        "product_name": {
+                                            "description": "Product Name",
+                                            "type": "string"
+                                        },
+                                        "inventory_count": {
+                                            "description": "Updated Inventory Count",
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Product not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/products/{id}/reorder": {
+            "put": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Set reorder point for a product",
+                "description": "Set the reorder point for a specific product and trigger notifications if necessary.",
+                "operationId": "setReorderPoint",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the product",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Reorder point data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "reorder_point"
+                                ],
+                                "properties": {
+                                    "reorder_point": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Reorder point updated successfully."
+                                        },
+                                        "product": {
+                                            "$ref": "#/components/schemas/ProductOutput"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Product not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/lookups/categories": {
+            "get": {
+                "tags": [
+                    "Lookups"
+                ],
+                "summary": "Get list of categories",
+                "description": "Return a list of categories.",
+                "operationId": "4de62c53f31012d71cb26ded761b5fad",
+                "responses": {
+                    "200": {
+                        "description": "List of categories",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "category_name": {
+                                                "type": "string",
+                                                "example": "Ink"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/lookups/units-of-measure": {
+            "get": {
+                "tags": [
+                    "Lookups"
+                ],
+                "summary": "Get list of units of measure",
+                "description": "Return a list of units of measure.",
+                "operationId": "eac6e8f4d9095f9ccb1378baa7249dff",
+                "responses": {
+                    "200": {
+                        "description": "List of units of measure",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "ea"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/lookups/dimension-units": {
+            "get": {
+                "tags": [
+                    "Lookups"
+                ],
+                "summary": "Get list of dimension units",
+                "description": "Return a list of dimension units.",
+                "operationId": "c39d4605a2a2ef398f7327b5238a3a20",
+                "responses": {
+                    "200": {
+                        "description": "List of dimension units",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Centimeter"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/lookups/statuses": {
+            "get": {
+                "tags": [
+                    "Lookups"
+                ],
+                "summary": "Get list of statuses",
+                "operationId": "e3c7362cee8d92a9a45e7ee9b1dab1fd",
+                "responses": {
+                    "200": {
+                        "description": "List of statuses",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "status": {
+                                                "type": "string",
+                                                "example": "Active"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/lookups/types": {
+            "get": {
+                "tags": [
+                    "Lookups"
+                ],
+                "summary": "Get list of types",
+                "operationId": "130a0ae29ce978d6955b07b0b3f423fc",
+                "responses": {
+                    "200": {
+                        "description": "List of types",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 2
+                                            },
+                                            "product_type": {
+                                                "type": "string",
+                                                "example": "Component"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get all products",
+                "description": "Retrieve a list of product records with eager loading of products relationship",
+                "operationId": "b11687b1f4b2e5460f99035e4b1642e2",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "guid": {
+                                                "type": "string",
+                                                "example": "11111-11111-11111-11111"
+                                            },
+                                            "product_name": {
+                                                "type": "string",
+                                                "example": "Product A"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "example": "01/01/2024"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Create a new product",
+                "description": "Create a new product",
+                "operationId": "2e0ada19ccf77b8b5b470bd2ef810b13",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductOutput"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/products/components": {
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Create a new product and component if bom id passed",
+                "description": "Create a new product and component if bom id passed",
+                "operationId": "8210efa2dfa4ca10e1f497c25309a4f2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductComponentInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/products/{guid}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get a specific product",
+                "description": "Display the specified resource.",
+                "operationId": "b33e771769e0e5959efc5d1ef27a30f2",
+                "parameters": [
+                    {
+                        "name": "guid",
+                        "in": "path",
+                        "description": "GUID of the product",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Update a product",
+                "description": "Update a product",
+                "operationId": "8786c70e9277fcf07a5fbbfb392fa54a",
+                "parameters": [
+                    {
+                        "name": "guid",
+                        "in": "path",
+                        "description": "GUID of the product",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Delete a product",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "8880204a34698a053e06cf321e2664c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the product",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Product deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/product-statuses": {
+            "get": {
+                "tags": [
+                    "ProductStatuses"
+                ],
+                "summary": "Get all statuses that apply to products",
+                "description": "Retrieve a list of product status records",
+                "operationId": "8e9071ce40101549cbe8c51d8716fa1f",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "status": {
+                                                "type": "string",
+                                                "example": "Active"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "ProductStatuses"
+                ],
+                "summary": "Create a new product status",
+                "description": "Create a new product status",
+                "operationId": "dec3ac6e9aa746bf15f59eeb8ade1fb7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductStatusInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductStatusOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/product-statuses/{id}": {
+            "get": {
+                "tags": [
+                    "ProductStatuses"
+                ],
+                "summary": "Get a specific product status",
+                "description": "Display the specified resource.",
+                "operationId": "31130128c09916216f44ec29baa6f235",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the product status",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductStatusOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "ProductStatuses"
+                ],
+                "summary": "Update a product status",
+                "description": "Update a product status",
+                "operationId": "a8b953ea6ff1bddfeaece0064ca7d264",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the product status",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductStatusInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductStatusOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "ProductStatuses"
+                ],
+                "summary": "Delete a product status",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "8a90cf8afa6e249ec8594dcf10464c83",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the product status",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "ProductStatus deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/product-types": {
+            "get": {
+                "tags": [
+                    "ProductTypes"
+                ],
+                "summary": "Get all product types",
+                "description": "Retrieve a list of product types records with eager loading of products relationship",
+                "operationId": "077adef1d3c044195fc38a19ea79b634",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "product_type": {
+                                                "type": "string",
+                                                "example": "Assembly"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "ProductTypes"
+                ],
+                "summary": "Create a new product type",
+                "description": "Create a new product type",
+                "operationId": "8a476fcef8119d62c500be665190fa91",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductTypeInputOutput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductTypeInputOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/product-types/{id}": {
+            "get": {
+                "tags": [
+                    "ProductTypes"
+                ],
+                "summary": "Get a specific product type",
+                "description": "Display the specified resource.",
+                "operationId": "436c6d68e02798a64a443419fefbf200",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the product type",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductTypeInputOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "ProductTypes"
+                ],
+                "summary": "Update a product type",
+                "description": "Update a product type",
+                "operationId": "81c603a71daa53648fa8dbaa53c0b59b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id of the product type",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductTypeInputOutput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductTypeInputOutput"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "ProductTypes"
+                ],
+                "summary": "Delete a product type",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "bc5cd2c0eb55f3a9795c3194e1862a80",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the product type",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "ProductType deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
         }
     },
     "components": {
+        "schemas": {
+            "BillOfMaterialsInput": {
+                "title": "ErpBom",
+                "description": "Erp Bom model",
+                "required": [
+                    "bom_name"
+                ],
+                "properties": {
+                    "erp_product_id": {
+                        "description": "Foreign key ID of the associated ERP product",
+                        "type": "integer",
+                        "example": 123,
+                        "nullable": true
+                    },
+                    "job_order_id": {
+                        "description": "Foreign key ID of a quotation details job order to create the associated ERP product from",
+                        "type": "integer",
+                        "example": 456,
+                        "nullable": true
+                    },
+                    "bom_name": {
+                        "description": "Name of the BOM",
+                        "type": "string",
+                        "example": "BOM-001"
+                    }
+                },
+                "type": "object"
+            },
+            "BillOfMaterialsOutput": {
+                "title": "ErpBom",
+                "description": "Erp Bom model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the BOM",
+                        "type": "integer"
+                    },
+                    "guid": {
+                        "description": "GUID of the BOM",
+                        "type": "string"
+                    },
+                    "erp_product_id": {
+                        "description": "Foreign key ID of the associated ERP product",
+                        "type": "integer"
+                    },
+                    "bom_name": {
+                        "description": "Name of the BOM",
+                        "type": "string"
+                    },
+                    "updated_by": {
+                        "description": "Foreign key ID of the user who last updated the BOM",
+                        "type": "integer"
+                    },
+                    "updated_at": {
+                        "description": "Date and time when the BOM was last updated",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_at": {
+                        "description": "Date and time when the BOM was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "product": {
+                        "$ref": "#/components/schemas/ProductShortOutput"
+                    },
+                    "components": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProductShortOutput"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "CategoryInput": {
+                "title": "Category",
+                "description": "Erp Category model",
+                "properties": {
+                    "category_name": {
+                        "description": "Name of the category",
+                        "type": "string"
+                    },
+                    "image_file": {
+                        "description": "Image file of the category",
+                        "type": "string"
+                    },
+                    "parent_id": {
+                        "description": "ID of the parent category",
+                        "type": "integer"
+                    },
+                    "short_description": {
+                        "description": "Short description of the category",
+                        "type": "string"
+                    },
+                    "long_description": {
+                        "description": "Long description of the category",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "CategoryOutput": {
+                "title": "Category",
+                "description": "Erp Category model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the category",
+                        "type": "integer"
+                    },
+                    "category_name": {
+                        "description": "Name of the category",
+                        "type": "string"
+                    },
+                    "image_file": {
+                        "description": "Image file of the category",
+                        "type": "string"
+                    },
+                    "parent_id": {
+                        "description": "ID of the parent category",
+                        "type": "integer"
+                    },
+                    "short_description": {
+                        "description": "Short description of the category",
+                        "type": "string"
+                    },
+                    "long_description": {
+                        "description": "Long description of the category",
+                        "type": "string"
+                    },
+                    "updated_by": {
+                        "description": "ID of the user who last updated the category",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "ErpBomItem": {
+                "title": "ErpBomItem",
+                "description": "Erp Bom Item model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the BOM item",
+                        "type": "integer"
+                    },
+                    "item_description": {
+                        "description": "Description of the BOM item",
+                        "type": "string"
+                    },
+                    "adjustment_units": {
+                        "description": "Identifier of the BOM item",
+                        "type": "decimal",
+                        "nullable": true
+                    },
+                    "erp_bom_id": {
+                        "description": "Foreign key ID of the associated BOM",
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "Date and time when the BOM item was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Date and time when the BOM item was last updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductOutput": {
+                "title": "ErpProduct",
+                "description": "Erp Product model",
+                "properties": {
+                    "sku": {
+                        "description": "SKU of the product",
+                        "type": "string"
+                    },
+                    "guid": {
+                        "description": "GUID of the product",
+                        "type": "string"
+                    },
+                    "product_name": {
+                        "description": "Name of the product",
+                        "type": "string"
+                    },
+                    "short_description": {
+                        "description": "Short description of the product",
+                        "type": "string"
+                    },
+                    "category": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 62
+                                },
+                                "category_name": {
+                                    "type": "string",
+                                    "example": "Ink"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "vendor": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 62
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "example": "Acme Co"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "admin_comments": {
+                        "description": "Comments/Notes about the product",
+                        "type": "string"
+                    },
+                    "default_image": {
+                        "description": "URL or path to the default image of the product",
+                        "type": "string"
+                    },
+                    "inventory_count": {
+                        "description": "Inventory count of the product",
+                        "type": "integer"
+                    },
+                    "reorder_point": {
+                        "description": "Reorder point of the product",
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 62
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "Acme Co"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 62
+                                },
+                                "product_type": {
+                                    "type": "string",
+                                    "example": "Acme Co"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ProductComponentInput": {
+                "title": "ErpProduct",
+                "description": "Erp Product/Component model input creates a component if bom id included",
+                "properties": {
+                    "sku": {
+                        "description": "SKU of the product",
+                        "type": "string"
+                    },
+                    "product_name": {
+                        "description": "Name of the product",
+                        "type": "string"
+                    },
+                    "short_description": {
+                        "description": "Short description of the product",
+                        "type": "string"
+                    },
+                    "price": {
+                        "description": "price of the product",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "vendor_id": {
+                        "description": "ID of vendor for the product ",
+                        "type": "numeric",
+                        "example": "1"
+                    },
+                    "erp_bom_id": {
+                        "description": "Bill Of Materials to associate product with (optional)",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductShortOutput": {
+                "title": "ErpProduct",
+                "description": "Erp Product model",
+                "properties": {
+                    "sku": {
+                        "description": "SKU of the product",
+                        "type": "string"
+                    },
+                    "guid": {
+                        "description": "GUID of the product",
+                        "type": "string"
+                    },
+                    "product_name": {
+                        "description": "Name of the product",
+                        "type": "string"
+                    },
+                    "short_description": {
+                        "description": "Short description of the product",
+                        "type": "string"
+                    },
+                    "product_status": {
+                        "description": "Status of the product",
+                        "type": "string"
+                    },
+                    "product_type": {
+                        "description": "Type of the product",
+                        "type": "string"
+                    },
+                    "inventory_count": {
+                        "description": "Inventory count of the product",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductInput": {
+                "title": "ErpProduct",
+                "description": "Erp Product model",
+                "properties": {
+                    "product_name": {
+                        "description": "Name of the product",
+                        "type": "string"
+                    },
+                    "short_description": {
+                        "description": "Short description of the product",
+                        "type": "string"
+                    },
+                    "unit_of_measure_id": {
+                        "description": "ID of Unit of measure for the product (1 is each)",
+                        "type": "numeric",
+                        "example": "1"
+                    },
+                    "category_id": {
+                        "description": "ID of category for the product ",
+                        "type": "numeric",
+                        "example": "1"
+                    },
+                    "vendor_id": {
+                        "description": "ID of vendor for the product ",
+                        "type": "numeric",
+                        "example": "1"
+                    },
+                    "admin_comments": {
+                        "description": "Comments/Notes about the product",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductStatusInput": {
+                "title": "ErpProductStatus",
+                "description": "Erp Product Status model",
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier for the product status",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "status": {
+                        "description": "The status of the product",
+                        "type": "string",
+                        "example": "Active"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductStatusOutput": {
+                "title": "ErpProductStatus",
+                "description": "Erp Product Status model",
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier for the product status",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "status": {
+                        "description": "The status of the product",
+                        "type": "string",
+                        "example": "Active"
+                    },
+                    "updated_by": {
+                        "description": "The user who last updated the product status",
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "created_at": {
+                        "description": "The date and time when the product status was created",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "description": "The date and time when the product status was last updated",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    }
+                },
+                "type": "object"
+            },
+            "ProductTypeInputOutput": {
+                "title": "ProductType",
+                "description": "Erp ProductType model",
+                "properties": {
+                    "product_type": {
+                        "description": "Name of the product type",
+                        "type": "string"
+                    },
+                    "updated_by": {
+                        "description": "ID of the user who last updated the product type",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "ErpProductUsageLogInputOutput": {
+                "title": "ErpProductStatus",
+                "description": "Erp Product Status model",
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier for the product status",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "erp_product_id": {
+                        "description": "The id of product used",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "adjustment": {
+                        "description": "amount inventory count of product was adjusted",
+                        "type": "integer"
+                    },
+                    "adjustment_type": {
+                        "description": "the type of adjustment",
+                        "type": "string",
+                        "example": "Active"
+                    },
+                    "reason": {
+                        "description": "reason for the adjustment",
+                        "type": "string",
+                        "example": "Active"
+                    },
+                    "updated_by": {
+                        "description": "ID of the user who entered this record",
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "The date and time when the product status was created",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "description": "The date and time when the product status was last updated",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    }
+                },
+                "type": "object"
+            }
+        },
         "responses": {
             "401": {
                 "description": "Unauthorized"
@@ -86,5 +2092,39 @@
                 "in": "header"
             }
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "Artisan Commands",
+            "description": "Artisan Commands"
+        },
+        {
+            "name": "BillOfMaterials",
+            "description": "BillOfMaterials"
+        },
+        {
+            "name": "Categories",
+            "description": "Categories"
+        },
+        {
+            "name": "Inventory",
+            "description": "Inventory"
+        },
+        {
+            "name": "Products",
+            "description": "Products"
+        },
+        {
+            "name": "Lookups",
+            "description": "Lookups"
+        },
+        {
+            "name": "ProductStatuses",
+            "description": "ProductStatuses"
+        },
+        {
+            "name": "ProductTypes",
+            "description": "ProductTypes"
+        }
+    ]
 }
