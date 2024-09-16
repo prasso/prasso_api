@@ -27,7 +27,6 @@ class Site extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'id',
         'site_name',
         'description',
         'host',
@@ -36,8 +35,12 @@ class Site extends Model
         'database',
         'favicon',
         'supports_registration',
+        'subteams_enabled',
         'app_specific_js',
-        'app_specific_css'
+        'app_specific_css',
+        'does_livestreaming',
+        'invitation_only',
+        'image_folder',
     ];
 
     public function livestream_settings()
@@ -48,6 +51,37 @@ class Site extends Model
         return $this->hasMany(\App\Models\SiteMedia::class, "fk_site_id", "id");
     }
 
+    public function teams(){
+        return $this->belongsToMany(Team::class, 'team_site', 'site_id', 'team_id');
+    }
+
+    public function app()
+    {
+        return $this->hasOne(Apps::class);
+    }
+ 
+    public function sitePages()
+    {
+        return $this->hasMany(\App\Models\SitePages::class, "fk_site_id", "id");
+    }
+
+    public function getApp()
+    {
+        return optional($this->app)->id;
+    }
+
+    public static function isPrasso($host) 
+    {
+        $site = Site::getClient($host);
+        if ($site == null)
+        {
+            Log::info('Site get client failed for host: ' . $host);
+            abort(404);
+            return null;
+        }
+        return $site->id == 1? 'true' : 'false';
+    }
+    
     public static function getClient( $host) 
     {
         if ($host == null)
@@ -94,10 +128,7 @@ class Site extends Model
         {
             $team = $this->createTeam($current_user_id);
         }
-        Auth::user()->setCurrentTeam();
-
-         //and the teamsite table needs to be updated
-         TeamSite::create(['team_id' => $team->id, 'site_id' => $this->id]);
+        
          $team->refresh();
          return $team;
     }
@@ -118,6 +149,12 @@ class Site extends Model
             throw Exception('Team id is null in Site::createTeam');
         }
         
+        //and the teamsite table needs to be updated, if not prasso
+        if ($this->id != 1)
+        {
+            $teamsite = TeamSite::where('team_id' , $team->id)->where( 'site_id' , $this->id)->first();
+            if (!isset($teamsite)){TeamSite::create(['team_id' => $team->id, 'site_id' => $this->id]);}
+        }
         return $team;
     }
 
@@ -132,7 +169,8 @@ class Site extends Model
             $content = file_get_contents(resource_path() . '/templates/welcome_no_register.txt');
         }
         $welcomepage = SitePages::firstOrCreate(['fk_site_id'=>$this->id,'section'=>'Welcome'],
-            ['description'=>$content,  'title'=>'Welcome','url'=>'html','login_required'=>false,'headers'=>'','masterpage'=>'sitepage.templates.blankpage']);
+            ['description'=>$content,  'title'=>'Welcome','url'=>'html','login_required'=>false,'user_level'=>false,'headers'=>'','masterpage'=>'sitepage.templates.blankpage'
+            ,'template'=>'sitepage.templates.blankpage','style'=>'','where_value'=>'','page_notifications_on'=>false]);
         $welcomepage->save();
 
         //if this site supports registration, then create a dashboard page
@@ -144,33 +182,77 @@ class Site extends Model
             $dashboardpage->save();
         }
     }
-    // a function to get the site pages for this site
-    public function getSitePages()
-    {
-        $sitepages = SitePages::where('fk_site_id',$this->id)->get();
-        return $sitepages;
+
+    private function user_is_admin(){
+        $is_admin_for_site =  Auth::user() !=null && ( Auth::user()->isInstructor() || Auth::user()->isThisSiteTeamOwner($this->id) );
+        return $is_admin_for_site;
     }
 
-    public function getSiteMapList()
+    /*
+    Use this function when the team needs to be traded out, old for new. 
+    And the user must have specific admin abilities.
+     */
+    public function updateTeam($teamId)
     {
-        $sitepages = $this->getSitePages();
+        $currentTeam = null;
+        $currentTeam = $this->teams()->firstOr(function () {
+                return null;
+            });
+
+        $user = Auth::user();
+        if ($user->isSuperAdmin() && $teamId != null) {
+        
+            if ($currentTeam) {
+                $this->teams()->detach($currentTeam);
+            }
+            $currentTeam = Team::find($teamId);
+            $this->teams()->attach($currentTeam);
+            
+        }
+        else {
+            if ($this->teams()->count() == 0) {
+                $currentTeam = $this->assignToUserTeam($user->id);
+            }
+        }
+        return $currentTeam;
+    }
+
+    public function getSiteMapList($current_page = null)
+    {
+        $sitepages = $this->sitePages()->get();
         $sitemap = array();
         foreach ($sitepages as $page)
         {
-            $sitemap[$page->section] = $page->title;
+            $lcase_section = strtolower($page->section);
+            $lcase_page = strtolower($current_page);
+            
+            //dont put menu items out that are the page this user is on
+            if ($page != null && ('/page/'.$lcase_section == $lcase_page || $lcase_section == $lcase_page))
+            {
+                continue;
+            }
+            //dont put menu items out that this user can not access
+            if ( $page->user_level == false || $this->user_is_admin() )
+            {
+                $sitemap[$page->section] = $page->title;
+            }
+            
         }
         //format $sitemap into a list of LIs
         $list = '';
         foreach ($sitemap as $key => $value)
         {
-            $list .= '<li><a href="/page/' . $key . '">' . $value . '</a></li>';
+            $list .= '<li><a class="block pl-3 pr-4 py-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition duration-150 ease-in-out" href="/page/' . $key . '">' . $value . '</a></li>';
         }
         
         // if this user is an admin or a team owner then add the site editor
-        if ( Auth::user() !=null && 
-            ( Auth::user()->isInstructor() || Auth::user()->isThisSiteTeamOwner($this->id) ) )
+        if ( $this->user_is_admin() )
         {
-            $list .= '<li><a href="/site/edit">Site Editor</a></li>';
+            $list .= '<li><a class="block pl-3 pr-4 py-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition duration-150 ease-in-out" href="/site/edit">Site Editor</a></li>';
+            $this->load('app');
+            $this->app->load('team');
+        
+            $list .= '<li><a class="block pl-3 pr-4 py-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition duration-150 ease-in-out" href="/team/'.$this->app->team->id.'/apps/'.$this->app->id.'">App Editor</a></li>';
         }
 
     
@@ -232,4 +314,24 @@ class Site extends Model
         $logo_image = config('constants.CLOUDFRONT_ASSET_URL') . config('constants.APP_LOGO_PATH') .'logos-'.$this->id.'/'. $photo->hashName();
         return $logo_image;
     }
+
+    public function teamFromSite(){
+       //get the first team from the site, it was added when the site was created
+        $teamSite = $this->teams()->first();
+        if ($teamSite == null) {
+            Log::error('TeamSite not found for site: ' . $this->id);
+            $teamSite = TeamSite::where('site_id', 1)->first();
+        }
+        return optional($teamSite);
+    }
+
+    /**
+     * returns the user who owns the first team of this site
+     */
+    public function getTeamOwner($site){
+        $ownerTeam = $this->teamFromSite();
+        $owner = User::find($ownerTeam->user_id)->firstOr(function(){return null;});
+        return $owner;
+    }
 }
+

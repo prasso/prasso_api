@@ -23,6 +23,13 @@ class LivestreamSettings extends Model
     {
         return $this->belongsTo(\App\Models\Site::class,'fk_site_id','id');
     } 
+
+    public static function remove( $site_id){
+        $livestream_settings = LivestreamSettings::where('fk_site_id',$site_id)->first();
+        if ($livestream_settings != null){
+            $livestream_settings->delete();
+        }
+    }
     
     public static function addOrUpdate($site){
         $host = str_replace('.prasso.io','',$site->host).'/';

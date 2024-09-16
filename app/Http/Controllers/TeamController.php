@@ -23,6 +23,7 @@ class TeamController extends Controller
     {
         parent::__construct( $request);
         $this->middleware('instructorusergroup');
+
     }
 
     /**
@@ -36,10 +37,13 @@ class TeamController extends Controller
 
         $activeApp = UserActiveApp::where('user_id',$user['id'])->first();
   
-        $team = Team::where('id',$user->current_team_id)->first();
+        $team = Team::where('id',$user->current_team_id)->with('apps')->first();
      
-        $teams = $user->teams->toArray();
-  
+        $teams_owned = $user->team_owner;
+        // Validate that $teams_owned is not null or empty
+        if (empty($teams_owned)) {
+            return redirect()->back()->withErrors(['error' => 'Team owner information is missing.']);
+        }
         $teamapps = $team->apps;
         
         $activeAppId = '0';
@@ -50,7 +54,7 @@ class TeamController extends Controller
 
         return view('apps.show')
             ->with('user', $user)
-            ->with('teams',$teams)
+            ->with('teams',$teams_owned)
             ->with('teamapps', $teamapps)
             ->with('team', $team)
             ->with('activeappid',$activeAppId);
@@ -68,23 +72,23 @@ class TeamController extends Controller
         if ($team == null){
             throw new \Exception('newSiteAndApp: Team not found in current_team_id');
         }
+
+        $team_selection = $team->pluck('name','id');
         return view('apps.new-site-wizard')
             ->with('user', $user)
-            ->with('team', $team);
+            ->with('team', $team)
+            ->with('team_selection', $team_selection);
     }
     
     public function editTeam($teamid)
     {
         $user = Auth::user(); 
-        if ($user->current_team_id != $teamid)
+        if (!$user->isSuperAdmin() && !$user->isTeamOwnerForSite($this->site))
         {
-            $response['message'] = trans('messages.invalid_token');
-            $response['success'] = false;
-            $response['status_code'] = \Symfony\Component\HttpFoundation\Response::HTTP_UNAUTHORIZED;
-            return $this->sendError('Unauthorized.', ['error' => 'Please login again.'], 400);
+            abort(403, 'Unauthorized action.');
         }
-        $team = $user->currentTeam;
-        
+
+        $team = Team::where('id',$teamid)->with('site')->with('users')->first();
         return view('teams.show')->with('team', $team);
     }
 
@@ -99,7 +103,7 @@ class TeamController extends Controller
        // Log::info('In setupForTeamMessages');
         $user_access_token = isset($user->personalAccessToken) ? $user->personalAccessToken->token : null;
 
-        $team = $user->teams->where('id', $teamid)->first();
+        $team = $user->team_owner->where('id', $teamid)->first();
 
         if (count($team->users)>0)
         {
@@ -236,10 +240,17 @@ class TeamController extends Controller
     public function editApp(AppsService $appsService,$teamid, $appid)
     {
         $user = Auth::user(); 
-        $team = $user->teams->where('id',$teamid)->first();
+        if ($user->current_team_id != $teamid)
+        {
+            $response['message'] = trans('messages.invalid_token');
+            $response['success'] = false;
+            $response['status_code'] = \Symfony\Component\HttpFoundation\Response::HTTP_UNAUTHORIZED;
+            return $this->sendError('Unauthorized.', ['error' => 'Please login again.'], 400);
+        }
+        $team = Team::where('id',$teamid)->first();
         $teamapps = $team->apps;     
         $teamapp = $teamapps->where('id',$appid)->first();
-        $team_selection = $user->teams->pluck('name','id');
+        $team_selection = $team->pluck('name','id');
         if ($appid == 0 || $teamapp ==  null)
         {
             $teamapp = $appsService->getBlankApp($user);
@@ -311,7 +322,7 @@ class TeamController extends Controller
         return $this->getEditTab($teamid, $appid, 'new');
     }
   
-    public function deleteTab($appid, $tabid)
+    public function deleteTab($teamid,$appid, $tabid)
     {
         $tab = Tabs::findOrFail($tabid);
         if ($tab)
@@ -341,7 +352,7 @@ class TeamController extends Controller
     private function getEditTab($teamid, $appid, $tabid)
     {
         $user = Auth::user(); 
-        $team = $user->teams->where('id',$teamid)->first();
+        $team = Team::where('id',$teamid)->first();
         $teamapps = $team->apps;     
         $teamapp = $teamapps->where('id',$appid)->first();
 

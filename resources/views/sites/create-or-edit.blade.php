@@ -12,11 +12,41 @@
     <div><div>
             <div class="align-bottom bg-white rounded-lg text-left transition-all sm:my-8 sm:align-middle " >
         @endif
-        <form> 
+        <div class="border-t border-gray-200"></div>
+            <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
+                {{ __('Add to Image Library') }}
+                <div class="flex">
+                    <div class="px-4 py-2 border-r border-gray-200" x-data="{fileSelected: false}">
+                        <form action="{{ route('images.upload') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" type="file" id="fileInput" name="image" x-ref="fileInput"
+                                @change="fileSelected = $refs.fileInput.files.length > 0">
+                            <button :disabled="!fileSelected" class="teambutton cursor-pointer mt-2 border p-2 rounded-xl px-2 py-1  text-sm  text-white transition duration-500 ease-in-out transform rounded-lg shadow-xl" type="submit">Upload</button>
+                        </form>
+                    </div>
+                    <div class="px-4 py-2 ml-2">
+                        <a class="cursor-pointer rounded-xl transition duration-500 ease-in-out transform rounded-lg shadow-xl" href="{{ route('image.library') }}" title="Image Library"><i alt="image library" class="material-icons">photo_library</i></a>
+                    </div>
+                </div>
+            </div>
+            <form> 
                 
-                <input type="hidden" wire:model="siteid" />
+            <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
+    <!-- a link to this user's app -->
+    <x-responsive-nav-link href="{{ route('apps.show', Auth::user()->current_team_id) }}">
+        <div class="flex items-center">
+            <!-- Mobile phone icon -->
+            <svg class="h-5 w-5 text-gray-600 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 2.75a2 2 0 00-2 2v14.5a2 2 0 002 2h10a2 2 0 002-2V4.75a2 2 0 00-2-2H7zM7 2.75h10M11 18h2M12 10.25h.01"/>
+            </svg>
+            {{ __('Edit Mobile App') }}
+        </div>
+    </x-responsive-nav-link>
+</div>
+
+                <input type="hidden" wire:model="site_id" />
                           
-                @include('sites.site-inputs')
+                @include('sites.site-inputs', ['team_selection' => $team_selection])
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
                         <button wire:click.prevent="store()" type="button" class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5">

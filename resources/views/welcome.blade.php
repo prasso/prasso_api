@@ -20,380 +20,150 @@
     <script src="{{ asset('/js/app.js') }}" defer></script>
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
     <link rel="stylesheet" href="/js/jqueryui.1.12.1.min.css">
-
- 
-
+<style>#rec308048048 .t396__artboard{height: 400px;;}#rec308048048 .t396__filter{height: 550px;background:#ffffff;}#rec308048048 .t396__carrier{height: 550px;background-position: center center;background-attachment: scroll;background-size:cover;background-repeat:no-repeat;}@media screen and (max-width: 1199px){#rec308048048 .t396__artboard{}#rec308048048 .t396__filter{}#rec308048048 .t396__carrier{background-attachment:scroll;}}@media screen and (max-width: 959px){#rec308048048 .t396__artboard{height: 790px;}#rec308048048 .t396__filter{height: 790px;}#rec308048048 .t396__carrier{height: 790px;}}@media screen and (max-width: 639px){}@media screen and (max-width: 479px){}#rec308048048 .tn-elem[data-elem-id="1470209944682"]{color:#000000;z-index:2;top: 60px;left: calc(50% - 600px + 20px);width:660px;}#rec308048048 .tn-elem[data-elem-id="1470209944682"] .tn-atom{color:#000000;font-size:100px;font-family:'Arial',Arial,sans-serif;line-height:0.95;font-weight:700;background-position:center center;border-color:transparent;border-style:solid;}@media screen and (max-width: 1199px){}@media screen and (max-width: 959px){#rec308048048 .tn-elem[data-elem-id="1470209944682"]{top: 55px;left: calc(50% - 320px + 10px);}}@media screen and (max-width: 639px){}@media screen and (max-width: 479px){#rec308048048 .tn-elem[data-elem-id="1470209944682"]{top: 55px;left: calc(50% - 160px + 10px);width:304px;}#rec308048048 .tn-elem[data-elem-id="1470209944682"] .tn-atom{font-size:90px;}}#rec308048048 .tn-elem[data-elem-id="1470210011265"]{color:#000000;z-index:3;top: 70px;left: calc(50% - 600px + 852px);width:340px;}#rec308048048 .tn-elem[data-elem-id="1470210011265"] .tn-atom{color:#000000;font-size:20px;font-family:'Arial',Arial,sans-serif;line-height:1.55;font-weight:400;background-position:center center;border-color:transparent;border-style:solid;}@media screen and (max-width: 1199px){#rec308048048 .tn-elem[data-elem-id="1470210011265"]{top: 65px;left: calc(50% - 480px + 620px);width:330px;}}@media screen and (max-width: 959px){#rec308048048 .tn-elem[data-elem-id="1470210011265"]{top: 345px;left: calc(50% - 320px + 300px);}}@media screen and (max-width: 639px){#rec308048048 .tn-elem[data-elem-id="1470210011265"]{top: 360px;left: calc(50% - 240px + 150px);}}@media screen and (max-width: 479px){#rec308048048 .tn-elem[data-elem-id="1470210011265"]{top: 300px;left: calc(50% - 160px + 20px);width:280px;}}#rec308048048 .tn-elem[data-elem-id="1470210033144"]{z-index:5;top: 220px;left: calc(50% - 600px + 900px);width:160px;}#rec308048048 .tn-elem[data-elem-id="1470210033144"] .tn-atom{background-position:center center;border-color:transparent;border-style:solid;}@media screen and (max-width: 1199px){#rec308048048 .tn-elem[data-elem-id="1470210033144"]{top: 193px;left: calc(50% - 480px + 729px);}}@media screen and (max-width: 959px){#rec308048048 .tn-elem[data-elem-id="1470210033144"]{top: 480px;left: calc(50% - 320px + 110px);}}@media screen and (max-width: 639px){}@media screen and (max-width: 479px){}#rec308048048 .tn-elem[data-elem-id="1470210128180"]{color:#000000;z-index:6;top: 470px;left: calc(50% - 600px + 783px);width:190px;}#rec308048048 .tn-elem[data-elem-id="1470210128180"] .tn-atom{color:#000000;font-size:18px;font-family:'Arial',Arial,sans-serif;line-height:1.55;font-weight:400;opacity:0.2;background-position:center center;border-color:transparent;border-style:solid;}@media screen and (max-width: 1199px){}@media screen and (max-width: 959px){#rec308048048 .tn-elem[data-elem-id="1470210128180"]{top: 700px;left: calc(50% - 320px + 420px);}}@media screen and (max-width: 639px){#rec308048048 .tn-elem[data-elem-id="1470210128180"]{top: 730px;left: calc(50% - 240px + 310px);width:140px;}}@media screen and (max-width: 479px){#rec308048048 .tn-elem[data-elem-id="1470210128180"]{top: 730px;left: calc(50% - 160px + 240px);}}#rec308048048 .tn-elem[data-elem-id="1470210224069"]{z-index:1;top: 260px;left: calc(50% - 600px + 862px);width:173px;height:150px;}#rec308048048 .tn-elem[data-elem-id="1470210224069"] .tn-atom{background-color:#e25d1b;background-position:center center;border-color:transparent;border-style:solid;}@media screen and (max-width: 1199px){#rec308048048 .tn-elem[data-elem-id="1470210224069"]{top: 233px;left: calc(50% - 480px + 691px);}}@media screen and (max-width: 959px){#rec308048048 .tn-elem[data-elem-id="1470210224069"]{top: 520px;left: calc(50% - 320px + 72px);}}@media screen and (max-width: 639px){}@media screen and (max-width: 479px){}#rec308048048 .tn-elem[data-elem-id="1470233923389"]{color:#000000;z-index:7;top: 196px;left: calc(50% - 600px + 20px);width:410px;}#rec308048048 .tn-elem[data-elem-id="1470233923389"] .tn-atom{color:#000000;font-size:44px;font-family:'Arial',Arial,sans-serif;line-height:1.15;font-weight:400;opacity:0.2;background-position:center center;border-color:transparent;border-style:solid;}@media screen and (max-width: 1199px){}@media screen and (max-width: 959px){}@media screen and (max-width: 639px){}@media screen and (max-width: 479px){#rec308048048 .tn-elem[data-elem-id="1470233923389"]{top: 145px;left: calc(50% - 160px + 20px);width:280px;}#rec308048048 .tn-elem[data-elem-id="1470233923389"] .tn-atom{font-size:38px;}}#rec308048048 .tn-elem[data-elem-id="1619224079929"]{z-index:4;top: 192px;left: calc(50% - 600px + 925px);width:165px;height:156px;}#rec308048048 .tn-elem[data-elem-id="1619224079929"] .tn-atom{background-color:#499421;background-position:center center;border-color:transparent;border-style:solid;}@media screen and (max-width: 1199px){#rec308048048 .tn-elem[data-elem-id="1619224079929"]{top: 165px;left: calc(50% - 480px + 754px);}}@media screen and (max-width: 959px){#rec308048048 .tn-elem[data-elem-id="1619224079929"]{top: 452px;left: calc(50% - 320px + 135px);}}@media screen and (max-width: 639px){}@media screen and (max-width: 479px){}</style>  
 
 </head>
 
 <body style="margin:0px;" data-lang="EN" data-country="US"> 
-
+@if ($errors->any())
+<div class="flex justify-center"> <div class="relative px-3 py-3 mb-4 border rounded text-teal-800 border-teal-900 bg-teal-300">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div></div>
+        @endif
+        @if(Session::get('message'))
+        <div class="flex justify-center">
+    <div class="relative px-3 py-3 mb-4 border rounded text-teal-800 border-teal-900 bg-teal-300">
+        <ul>
+            <li>{{ Session::get('message') }}</li>
+        </ul>
+    </div>
+</div>
+        @endif
 <!--allrecords-->
 <div id="allrecords" class="t-records" data-hook="blocks-collection-content-node" data-tilda-project-id="4017550" data-tilda-page-id="19079171"     data-tilda-mode="preview"   >
 
 <div id="rec308048048" class="r t-rec" style=" " data-animationappear="off" data-record-type="396"   >
 <!-- T396 -->
-<style>#rec308048048 .t396__artboard{height: 550px;;}#rec308048048 .t396__filter{height: 550px;background:#ffffff;}#rec308048048 .t396__carrier{height: 550px;background-position: center center;background-attachment: scroll;background-size:cover;background-repeat:no-repeat;}@media screen and (max-width: 1199px){#rec308048048 .t396__artboard{}#rec308048048 .t396__filter{}#rec308048048 .t396__carrier{background-attachment:scroll;}}@media screen and (max-width: 959px){#rec308048048 .t396__artboard{height: 790px;}#rec308048048 .t396__filter{height: 790px;}#rec308048048 .t396__carrier{height: 790px;}}@media screen and (max-width: 639px){}@media screen and (max-width: 479px){}#rec308048048 .tn-elem[data-elem-id="1470209944682"]{color:#000000;z-index:2;top: 60px;left: calc(50% - 600px + 20px);width:660px;}#rec308048048 .tn-elem[data-elem-id="1470209944682"] .tn-atom{color:#000000;font-size:100px;font-family:'Arial',Arial,sans-serif;line-height:0.95;font-weight:700;background-position:center center;border-color:transparent;border-style:solid;}@media screen and (max-width: 1199px){}@media screen and (max-width: 959px){#rec308048048 .tn-elem[data-elem-id="1470209944682"]{top: 55px;left: calc(50% - 320px + 10px);}}@media screen and (max-width: 639px){}@media screen and (max-width: 479px){#rec308048048 .tn-elem[data-elem-id="1470209944682"]{top: 55px;left: calc(50% - 160px + 10px);width:304px;}#rec308048048 .tn-elem[data-elem-id="1470209944682"] .tn-atom{font-size:90px;}}#rec308048048 .tn-elem[data-elem-id="1470210011265"]{color:#000000;z-index:3;top: 70px;left: calc(50% - 600px + 852px);width:340px;}#rec308048048 .tn-elem[data-elem-id="1470210011265"] .tn-atom{color:#000000;font-size:20px;font-family:'Arial',Arial,sans-serif;line-height:1.55;font-weight:400;background-position:center center;border-color:transparent;border-style:solid;}@media screen and (max-width: 1199px){#rec308048048 .tn-elem[data-elem-id="1470210011265"]{top: 65px;left: calc(50% - 480px + 620px);width:330px;}}@media screen and (max-width: 959px){#rec308048048 .tn-elem[data-elem-id="1470210011265"]{top: 345px;left: calc(50% - 320px + 300px);}}@media screen and (max-width: 639px){#rec308048048 .tn-elem[data-elem-id="1470210011265"]{top: 360px;left: calc(50% - 240px + 150px);}}@media screen and (max-width: 479px){#rec308048048 .tn-elem[data-elem-id="1470210011265"]{top: 300px;left: calc(50% - 160px + 20px);width:280px;}}#rec308048048 .tn-elem[data-elem-id="1470210033144"]{z-index:5;top: 220px;left: calc(50% - 600px + 900px);width:160px;}#rec308048048 .tn-elem[data-elem-id="1470210033144"] .tn-atom{background-position:center center;border-color:transparent;border-style:solid;}@media screen and (max-width: 1199px){#rec308048048 .tn-elem[data-elem-id="1470210033144"]{top: 193px;left: calc(50% - 480px + 729px);}}@media screen and (max-width: 959px){#rec308048048 .tn-elem[data-elem-id="1470210033144"]{top: 480px;left: calc(50% - 320px + 110px);}}@media screen and (max-width: 639px){}@media screen and (max-width: 479px){}#rec308048048 .tn-elem[data-elem-id="1470210128180"]{color:#000000;z-index:6;top: 470px;left: calc(50% - 600px + 783px);width:190px;}#rec308048048 .tn-elem[data-elem-id="1470210128180"] .tn-atom{color:#000000;font-size:18px;font-family:'Arial',Arial,sans-serif;line-height:1.55;font-weight:400;opacity:0.2;background-position:center center;border-color:transparent;border-style:solid;}@media screen and (max-width: 1199px){}@media screen and (max-width: 959px){#rec308048048 .tn-elem[data-elem-id="1470210128180"]{top: 700px;left: calc(50% - 320px + 420px);}}@media screen and (max-width: 639px){#rec308048048 .tn-elem[data-elem-id="1470210128180"]{top: 730px;left: calc(50% - 240px + 310px);width:140px;}}@media screen and (max-width: 479px){#rec308048048 .tn-elem[data-elem-id="1470210128180"]{top: 730px;left: calc(50% - 160px + 240px);}}#rec308048048 .tn-elem[data-elem-id="1470210224069"]{z-index:1;top: 260px;left: calc(50% - 600px + 862px);width:173px;height:150px;}#rec308048048 .tn-elem[data-elem-id="1470210224069"] .tn-atom{background-color:#e25d1b;background-position:center center;border-color:transparent;border-style:solid;}@media screen and (max-width: 1199px){#rec308048048 .tn-elem[data-elem-id="1470210224069"]{top: 233px;left: calc(50% - 480px + 691px);}}@media screen and (max-width: 959px){#rec308048048 .tn-elem[data-elem-id="1470210224069"]{top: 520px;left: calc(50% - 320px + 72px);}}@media screen and (max-width: 639px){}@media screen and (max-width: 479px){}#rec308048048 .tn-elem[data-elem-id="1470233923389"]{color:#000000;z-index:7;top: 196px;left: calc(50% - 600px + 20px);width:410px;}#rec308048048 .tn-elem[data-elem-id="1470233923389"] .tn-atom{color:#000000;font-size:44px;font-family:'Arial',Arial,sans-serif;line-height:1.15;font-weight:400;opacity:0.2;background-position:center center;border-color:transparent;border-style:solid;}@media screen and (max-width: 1199px){}@media screen and (max-width: 959px){}@media screen and (max-width: 639px){}@media screen and (max-width: 479px){#rec308048048 .tn-elem[data-elem-id="1470233923389"]{top: 145px;left: calc(50% - 160px + 20px);width:280px;}#rec308048048 .tn-elem[data-elem-id="1470233923389"] .tn-atom{font-size:38px;}}#rec308048048 .tn-elem[data-elem-id="1619224079929"]{z-index:4;top: 192px;left: calc(50% - 600px + 925px);width:165px;height:156px;}#rec308048048 .tn-elem[data-elem-id="1619224079929"] .tn-atom{background-color:#499421;background-position:center center;border-color:transparent;border-style:solid;}@media screen and (max-width: 1199px){#rec308048048 .tn-elem[data-elem-id="1619224079929"]{top: 165px;left: calc(50% - 480px + 754px);}}@media screen and (max-width: 959px){#rec308048048 .tn-elem[data-elem-id="1619224079929"]{top: 452px;left: calc(50% - 320px + 135px);}}@media screen and (max-width: 639px){}@media screen and (max-width: 479px){}</style>  
 
 <div class='t396'>
- <div class="t396__artboard" data-artboard-recid="308048048"
-data-artboard-height="550"
-data-artboard-height-res-640="790"				
-data-artboard-height_vh=""
-
-data-artboard-valign="center"
-
-data-artboard-ovrflw="" >
+ <div class="t396__artboard" data-artboard-recid="308048048" >
 
 <div class="t396__carrier" data-artboard-recid="308048048"><div style="display:block;width:25%;float:right; margin:1em;"><a href="/login" >login</a></div> </div>      
       	        
 <div class='t396__elem tn-elem  tn-elem__3080480481470209944682' data-elem-id='1470209944682' data-elem-type='text'
-data-field-top-value="60"
-data-field-top-res-640-value="55"				data-field-top-res-320-value="55"			 
-data-field-left-value="20"
-data-field-left-res-640-value="10"				data-field-left-res-320-value="10"			
- 
-
-data-field-width-value="660"
-data-field-width-res-320-value="304"			
-
-data-field-axisy-value="top"  
-data-field-axisx-value="left" 
-
-data-field-container-value="grid" 
-
-data-field-topunits-value="px" 
-
-data-field-leftunits-value="px"  
-data-field-heightunits-value="" 
-data-field-widthunits-value="px" 
- 
- 
- 
- 
-
-
- 
- 
- 
- 
-  
- 
-
-
- 
- 
-             
- 
  >
  
-<div class='tn-atom' field='tn_text_1470209944682'   >Prasso</div>
+<div class='prasso-h1 prasso-orange-accent' field='tn_text_1470209944682'   >Prasso</div>
  
-       
-      
-   
-     
- 
-     
-    
-  
- 
-
 </div>
         
-     <div class='t396__elem tn-elem  tn-elem__3080480481470210011265' data-elem-id='1470210011265' data-elem-type='text'
-data-field-top-value="70"
-data-field-top-res-960-value="65"		data-field-top-res-640-value="345"		data-field-top-res-480-value="360"		data-field-top-res-320-value="300"			 
-data-field-left-value="852"
-data-field-left-res-960-value="620"		data-field-left-res-640-value="300"		data-field-left-res-480-value="150"		data-field-left-res-320-value="20"			
- 
-
-data-field-width-value="340"
-data-field-width-res-960-value="330"						data-field-width-res-320-value="280"			
-
-data-field-axisy-value="top"  
-data-field-axisx-value="left" 
-
-data-field-container-value="grid" 
-
-data-field-topunits-value="px" 
-
-data-field-leftunits-value="px"  
-data-field-heightunits-value="" 
-data-field-widthunits-value="px" 
- 
- 
- 
- 
-
-
- 
- 
- 
- 
-  
- 
-
-
- 
- 
-             
- 
+     <div class='t396__elem tn-elem  tn-elem__3080480481470210011265' data-elem-id='1470210011265' data-elem-type='image'
  >
- 
-<div class='tn-atom' field='tn_text_1470210011265'   >
-              Open Source! Rapidly prototype your mobile app then publish it for your company to use.</div>
- 
-       
-      
-   
-     
- 
-     
-    
-  
- 
-
-</div>
-        
-     <div class='t396__elem tn-elem  tn-elem__3080480481470210033144' data-elem-id='1470210033144' data-elem-type='image'
-data-field-top-value="220"
-data-field-top-res-960-value="193"		data-field-top-res-640-value="480"							 
-data-field-left-value="900"
-data-field-left-res-960-value="729"		data-field-left-res-640-value="110"							
- 
-
-data-field-width-value="160" 
-
-data-field-axisy-value="top"  
-data-field-axisx-value="left" 
-
-data-field-container-value="grid" 
-
-data-field-topunits-value="px" 
-
-data-field-leftunits-value="px"  
-data-field-heightunits-value="" 
-data-field-widthunits-value="px" 
- 
- 
- 
- 
-
-
- 
- 
- 
- 
-  
- 
- 
-data-field-filewidth-value="1024"		data-field-fileheight-value="1024"			
- 
-             
- 
- >
- 
-
-  
-        
-          <div class='tn-atom'    > 
-        <img class='tn-atom__img' src='https://static.tildacdn.com/tild6632-3563-4661-b432-333761656164/prasso_logo-1024.png'  imgfield='tn_img_1470210033144'> 
+ <div class='tn-atom'    > 
+        <img class='tn-atom__img' src='/images/prasso_palm.png'  imgfield='tn_img_1470210033144'> 
       </div>
-         
-       
-      
-   
-     
- 
-     
-    
-  
- 
 
 </div>
         
-     <div class='t396__elem tn-elem  tn-elem__3080480481470210128180' data-elem-id='1470210128180' data-elem-type='text'
-data-field-top-value="470"
-data-field-top-res-640-value="700"		data-field-top-res-480-value="730"		data-field-top-res-320-value="730"			 
-data-field-left-value="783"
-data-field-left-res-640-value="420"		data-field-left-res-480-value="310"		data-field-left-res-320-value="240"			
- 
-
-data-field-width-value="190"
-data-field-width-res-480-value="140"					
-
-data-field-axisy-value="top"  
-data-field-axisx-value="left" 
-
-data-field-container-value="grid" 
-
-data-field-topunits-value="px" 
-
-data-field-leftunits-value="px"  
-data-field-heightunits-value="" 
-data-field-widthunits-value="px" 
- 
- 
- 
- 
-
-
- 
- 
- 
- 
-  
- 
-
-
- 
- 
-             
- 
+     <div  data-elem-id='1470210033144' 
  >
- 
-<div class='tn-atom' field='tn_text_1470210128180'   >by faxt with help from <a href="https://tilda.cc" target="_blank">tilda.cc</a> and <a href="https://storyset.com/business" target="_blank">Freepik Storyset</a></div>
 
-       
-      
-   
-     
- 
-     
-    
-  
- 
-
-</div>
-        
-     <div class='t396__elem tn-elem  tn-elem__3080480481470210224069' data-elem-id='1470210224069' data-elem-type='shape'
-data-field-top-value="260"
-data-field-top-res-960-value="233"		data-field-top-res-640-value="520"							 
-data-field-left-value="862"
-data-field-left-res-960-value="691"		data-field-left-res-640-value="72"							
-
-data-field-height-value="150"											
-
-data-field-width-value="173" 
-
-data-field-axisy-value="top"  
-data-field-axisx-value="left" 
-
-data-field-container-value="grid" 
-
-data-field-topunits-value="px" 
-
-data-field-leftunits-value="px"  
-data-field-heightunits-value="px" 
-data-field-widthunits-value="px" 
- 
- 
- 
- 
-
-
- 
- 
- 
- 
-  
- 
-
-
- 
- 
-             
- 
- >
+     <div class='t396__elem tn-elem  tn-elem__3080480481470210224069' data-elem-id='1470210224069' data-elem-type='shape' >
   
     
-   <div
-class='tn-atom'  
-  
->
-          </div>
-        
-      
-   
-     
- 
-     
-    
-  
- 
-
 </div>
         
-     <div class='t396__elem tn-elem  tn-elem__3080480481470233923389' data-elem-id='1470233923389' data-elem-type='text'
-data-field-top-value="196"
-data-field-top-res-320-value="145"			 
-data-field-left-value="20"
-data-field-left-res-320-value="20"			
+     <div class='t396__elem tn-elem  tn-elem__3080480481470209944682' data-elem-id='1470233923389' data-elem-type='text'>
  
-
-data-field-width-value="410"
-data-field-width-res-320-value="280"			
-
-data-field-axisy-value="top"  
-data-field-axisx-value="left" 
-
-data-field-container-value="grid" 
-
-data-field-topunits-value="px" 
-
-data-field-leftunits-value="px"  
-data-field-heightunits-value="" 
-data-field-widthunits-value="px" 
-
- >
- 
-<div class='tn-atom' field='tn_text_1470233923389'   >create your own mobile app from scratch</div>
+<div class='tn-atom' style="font-size:32px !important;" >accelerated development of software to support your business</div>
 
 </div>
-        
-     <div class='t396__elem tn-elem  tn-elem__3080480481619224079929' data-elem-id='1619224079929' data-elem-type='shape'
-data-field-top-value="192"
-data-field-top-res-960-value="165"		data-field-top-res-640-value="452"							 
-data-field-left-value="925"
-data-field-left-res-960-value="754"		data-field-left-res-640-value="135"							
-
-data-field-height-value="156"											
-
-data-field-width-value="165" 
-
-data-field-axisy-value="top"  
-data-field-axisx-value="left" 
-
-data-field-container-value="grid" 
-
-data-field-topunits-value="px" 
-
-data-field-leftunits-value="px"  
-data-field-heightunits-value="px" 
-data-field-widthunits-value="px" >
-  
-    
-   <div
-class='tn-atom'  
-  
->
-          </div>
 
 </div>
-          </div>
   
 </div>   
 
 <!-- /T396 -->
 </div> 
-<div id="rec308049658" class="r t-rec t-rec_pt_180 t-rec_pb_180" style="padding-top:100px;padding-bottom:100px;background-color:#f0f0f0; "  data-record-type="467"   data-bg-color="#f0f0f0">
+
+
+<div class="r t-rec t-rec_pt_180 t-rec_pb_180" style="padding-top:10px;padding-bottom:10px;background-color:#ffffff;">
+
+        <div class="r t-rec t-rec_pt_180 t-rec_pb_180" style="padding-top:100px;padding-bottom:100px;background-color:#f9f9f9;">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="flex justify-center items-center">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/bBe3Qu7fxeY?si=gEcL8QaAVll59U0k" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+                <div class="t467__descr t-descr t-descr_xl t-margin_auto">
+                    <h2 class="t467__title t-title t-title_lg t-margin_auto prasso-green-font " >In Summary</h2>
+                    <div>Prasso streamlines the creation of mobile apps that are intricately linked to their corresponding sites. When a site is created through the wizard, a mobile app is automatically generated to work with the site's API. This app is configured via the API admin, where web pages are added as tabs. The app host identifies the site and tab data, sends this information back as JSON, which the mobile app then parses to display the content dynamically. This process ensures a unified and seamless user experience across both web and mobile platforms, providing up-to-date information and features directly to users' devices.</div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+
+
+
+
+
+<div id="rec308049658" class="r t-rec t-rec_pt_180 t-rec_pb_180" style="padding-top:100px;padding-bottom:100px;background-color:#f9f9f9; "  data-record-type="467"   data-bg-color="#f0f0f0">
 <!-- T467 --> 
 
 <div class="t467">
   <div class="t-container t-align_center">
     <div class="t-col t-col_10 t-prefix_1">
-      <div class="t467__title t-title t-title_lg t-margin_auto" field="title" style="">How It Works</div>      <div class="t467__descr t-descr t-descr_xl t-margin_auto" field="descr" style="">Create your prototype. Review the results in the Prasso app. Personalize your mobile app with branding and content. After you approve the prototype, we will publish your app and you can start sharing it with your audience. Or if you desire a fully self hosted option - get the source code from the link below.</div>	          <a href="https://github.com/prasso" target="_blank" class="t-btn  "  style="color:#ffffff;background-color:#1f5bff;border-radius:50px; -moz-border-radius:50px; -webkit-border-radius:50px;"><table style="width:100%; height:100%;"><tr><td>Get the Source</td></tr></table></a>
+      <div class="t467__title t-title t-title_lg t-margin_auto prasso-green-font " field="title" style="">How It Works</div>      
+      <div class="t467__descr t-descr t-descr_xl t-margin_auto" field="descr" style="">
+<ul class="pl-4">
+  <li class="text-left mt-3 border-b">
+  <div class="grid grid-cols-2 gap-8 ">
+  <div class="m-auto"><span class="material-icons prasso-orange-accent" style="font-size: 100px;">
+construction
+</span></div>
+<div>
+    <b>Smart Construction: </b>Easily create customized mobile and web applications using Prasso's all-in-one platform template. Benefit from our streamlined app prototype process, single setup form, and rapid prototyping tool, all engineered to boost your development workflow.
+</div>
+</li>
+  <li class="text-left mt-3 border-b">
+  <div class="grid grid-cols-2 gap-8 ">
+  <div class="m-auto">
+  <span class="material-icons prasso-orange-accent" style="font-size: 100px;">
+  verified_user
+</span></div>
+<div>
+<b>Verified Stability:</b> Benefit from a stable Laravel framework-based API backend, seamless user registration, app configuration with tabs and views, and team-based association and roles, ensuring your app's stability and reliability.
+</div>
+</li>
+  <li class="text-left mt-3 border-b">
+  <div class="grid grid-cols-2 gap-8 ">
+  <div class="m-auto">
+    <span class="material-icons prasso-orange-accent" style="font-size: 100px;">code</span> </div>
+<div>
+<b>Effortless Coding:</b> Experience the ease of Prasso's Low-Code functionality, transforming your ideas into fully functional apps. Our template seamlessly combines a robust backend API with a mobile app interface, ready to manage every aspect of your business operations with simplicity and efficiency.
+</div>
+</li>
+  <li class="text-left mt-3 border-b">
+  <div class="grid grid-cols-2 gap-8 ">
+  <div class="m-auto">
+  <span class="material-icons prasso-orange-accent" style="font-size: 100px;">trending_up</span> </div>
+<div>
+<b>Rapid Validation:</b> Validate your app concept swiftly through rapid deployment, visually edit site pages with GrapesJs, and showcase business information while effortlessly serving Prasso apps through the API.
+</div>
+</li>
+  <li class="text-left mt-3 border-b">
+  <div class="grid grid-cols-2 gap-8 ">
+  <div class="m-auto"><span class="material-icons prasso-orange-accent" style="font-size: 100px;">favorite</span></div>
+<div> <b>User-Friendly Experience:</b> Enjoy easy setup and integration with Firebase, access extensive documentation, and receive friendly support every step of the way. Prasso.io is open-source and licensed under MIT for seamless customization and collaboration.</div>
+</li>
+</ul>
+    </div>	          <a href="https://github.com/prasso" target="_blank" class="t-btn prasso-orange-accent"  style="background:#ffffff; border-radius:50px; -moz-border-radius:50px; -webkit-border-radius:50px;"><table style="width:100%; height:100%;"><tr><td>View the Source</td></tr></table></a>
           </div>
   </div>
 </div> 
@@ -406,27 +176,27 @@ class='tn-atom'
         <div class="t412__col t-col t-col_4 t412__col"> 
         <div class="t412__content" style="border-color: #000000;border-width: 2px;">
             <div class="t412__wrapper"> 
-              <img class="t412__img t412__img_circle t-img" src="https://static.tildacdn.com/tild6163-6539-4661-b165-343965393566/Landing_page-pana.png" data-tu-max-width="300" data-tu-max-height="300" style="" imgfield="img" /> 
+              <img class="" src="https://static.tildacdn.com/tild6163-6539-4661-b165-343965393566/Landing_page-pana.png" data-tu-max-width="300" data-tu-max-height="300" style="" imgfield="img" /> 
             <div class="t412__title t-name t-name_xl" style="" field="title" >Rapid Prototype</div>
-              <div class="t412__descr t-text" style="" field="descr" >Prasso is first a rapid prototyping tool. Assemble your app using no-code pages which have been built to prove your concept. Then release it to prove the concept works.<br /><br /><br /><br /></div> 
+              <div class="t412__descr t-text" style="" field="descr" >Prasso serves as a premier rapid prototyping tool, offering a versatile template designed for swift development. Utilize the Prasso template to swiftly build and validate your app concept, leveraging its open-source nature. Seamlessly transition from prototype to fully functional software, with the template's integrated API and mobile app components, ensuring a smooth transition from idea to execution.<br /><br /><br /><br /></div> 
           </div>
             </div> 
     </div> 
 <div class="t412__col t-col t-col_4 t412__col"> 
         <div class="t412__content" style="border-color: #000000;border-width: 2px;">
             <div class="t412__wrapper">           
-              <img class="t412__img t412__img_circle t-img" src="https://static.tildacdn.com/tild3965-3336-4534-a131-626334616330/Remote_team-amico.png" data-tu-max-width="300" data-tu-max-height="300" style="" imgfield="img2" /> 
-            <div class="t412__title t-name t-name_xl" style="" field="title2" >No Code Options</div>
-              <div class="t412__descr t-text" style="" field="descr2" >Prasso unites multiple web tools into one mobile app. For example, a flarum.cloud forum could be a tab, a YouTube channel could be a tab, a calendar scheduler could be a tab. Together the tabs assemble into a personalized app.<br /><br /><br /></div> 
+              <img class="" src="https://static.tildacdn.com/tild3965-3336-4534-a131-626334616330/Remote_team-amico.png" data-tu-max-width="300" data-tu-max-height="300" style="" imgfield="img2" /> 
+            <div class="t412__title t-name t-name_xl" style="" field="title2" >Template Integration</div>
+              <div class="t412__descr t-text" style="" field="descr2" >Prasso seamlessly integrates various web tools into a unified mobile app experience. Imagine your forum from flarum.cloud as a tab, your YouTube channel as another, and a calendar scheduler as yet another. These tabs come together within the Prasso template, creating a personalized and cohesive app tailored to your needs.<br /><br /><br /></div> 
           </div>
             </div>  
     </div>  
 <div class="t412__col t-col t-col_4 t412__col"> 
         <div class="t412__content" style="border-color: #000000;border-width: 2px;">
             <div class="t412__wrapper">           
-              <img class="t412__img t412__img_circle t-img" src="https://static.tildacdn.com/tild6362-3131-4533-b461-643631633533/Blog_post-bro.png" data-tu-max-width="300" data-tu-max-height="300" style="" imgfield="img3" /> 
-            <div class="t412__title t-name t-name_xl" style="" field="title3" >Functionality</div>
-              <div class="t412__descr t-text" style="" field="descr3" >A Prasso site is both business information site and Prasso api site. The api serves the Prasso apps. Apps can be assembled/ built at a Prasso site using the admin tools. And then when a user with an assigned team and app logs into the mobile app, the assembled presentation becomes their personalized mobile app.</div> 
+              <img class="" src="https://static.tildacdn.com/tild6362-3131-4533-b461-643631633533/Blog_post-bro.png" data-tu-max-width="300" data-tu-max-height="300" style="" imgfield="img3" /> 
+            <div class="t412__title t-name t-name_xl" style="" field="title3" >Integration and Functionality</div>
+              <div class="t412__descr t-text" style="" field="descr3" >At its core, a Prasso site functions as both a comprehensive business information hub and a Prasso API platform. The API seamlessly powers all Prasso apps, ensuring consistency across platforms. With our admin tools, you can effortlessly assemble and build apps directly on your Prasso site. When users access the mobile app with their assigned team and app credentials, they are greeted with a personalized mobile experience, crafted from the assembled presentation on the Prasso site.</div> 
           </div>
             </div>  
     </div> 
@@ -453,6 +223,8 @@ class='tn-atom'
 			  <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
 				<div class="bg-white rounded-lg shadow-md overflow-hidden text-center">
 				  <div class="px-6 py-4">
+          <img class="m-auto" src="https://images.prasso.io/faith/FaithLakeCityLogo-250.png" style="min-height:150px;" /> 
+           
 					<h3 class="text-lg font-semibold text-gray-800 mb-2">Faith Lake City
 					</h3>
 					<p class="text-gray-600 leading-6">Family-Oriented and Biblical church in Lake City, Florida 
@@ -464,6 +236,7 @@ class='tn-atom'
 				</div>
 				<div class="bg-white rounded-lg shadow-md overflow-hidden text-center">
 				  <div class="px-6 py-4">
+          <img class="m-auto" src="https://d2bj0u1jhmvqgo.cloudfront.net/prasso/-app-photos/logos-1/k9V1XYRZxpnTBR6AUKWPqQyUvVND18a9ET3zSQ2v.png" style="max-height:150px;" /> 
 					<h3 class="text-lg font-semibold text-gray-800 mb-2">Go Go Delivery
 					</h3>
 					<p class="text-gray-600 leading-6">Easily schedule and track your deliveries with our platform.
@@ -475,13 +248,14 @@ class='tn-atom'
 				</div>
 				<div class="bg-white rounded-lg shadow-md overflow-hidden text-center">
 				  <div class="px-6 py-4">
-					<h3 class="text-lg font-semibold text-gray-800 mb-2">FAXT
+            <img class="m-auto" src="	https://images.prasso.io/prasso/user-files/109/colorpluslogo.jpg" style="max-height:150px; min-height:150px;" />
+					<h3 class="text-lg font-semibold text-gray-800 mb-2">Printshop ERP
 					</h3>
-					<p class="text-gray-600 leading-6">Developer site that highlights Prasso functionality.
+					<p class="text-gray-600 leading-6">Manage manufacturing and sales for a packaging print shop.
 					</p>
 				  </div>
 				  <div class="px-6 py-4">
-					<a href="https://faxt.com/" class="inline-block prasso-green text-white rounded-full px-3 py-1 text-sm font-semibold">#Web</a>
+					<a href="https://printshoperp.prasso.io/" class="inline-block prasso-green text-white rounded-full px-3 py-1 text-sm font-semibold">#Web</a>
 				  </div>
 				</div>
 			  </div>
@@ -500,8 +274,8 @@ class='tn-atom'
             
         </div>      <div class="t017__title t-title t-title_xxs" field="title" style="">
             
-            <H1>Start Now for Free</h1>
-           <button class="t-btn t-btn_xxs t-animate" onclick="window.location.href='./register';" style="color:#ffffff;background-color:#000000;border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;">
+            <H1 class="prasso-orange-accent">Request a Quote</h1>
+           <button class="t-btn t-btn_xxs t-animate prasso-green" onclick="window.location.href='./contact';" style="border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;">
             <span class="t-btn__wrapper t-valign_middle">
               <span class="t-btn__text">Get Started</span>
             </span>
@@ -513,10 +287,12 @@ class='tn-atom'
 </div>
 <div class="bt-1 bg-white shadow text-gray-500">
     <div class="p-14 flex sm:justify-center items-center  ">
-       <a href="privacy">privacy</a> | <a href="terms">terms</a>
+       <a href="/privacy">privacy</a> | <a href="/terms">terms</a>
     </div>
     <div class="flex sm:justify-center items-center sm:pt-0 ">
-        <small>&copy faxt 1999-<?php echo date('Y'); ?> and DeductionTraq</small>
+        <small>&copy faxt 1999-<?php echo date('Y'); ?> and DeductionTraq<br/>
+        with help from <a href="https://tilda.cc" target="_blank">tilda.cc</a> and <a href="https://storyset.com/business" target="_blank">Freepik Storyset</a>
+      </small>
     </div>
 </div>
  

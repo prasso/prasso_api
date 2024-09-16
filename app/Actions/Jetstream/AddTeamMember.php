@@ -2,11 +2,13 @@
 
 namespace App\Actions\Jetstream;
 
-use App\Models\Invitation;
+use App\Models\TeamInvitation;
 use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Jetstream\Contracts\AddsTeamMembers;
+use Laravel\Jetstream\Events\AddingTeamMember;
 use Laravel\Jetstream\Events\TeamMemberAdded;
 use Laravel\Jetstream\Jetstream;
 use Laravel\Jetstream\Rules\Role;
@@ -26,7 +28,6 @@ class AddTeamMember implements AddsTeamMembers
     public function add($user, $team, string $email, string $role = null)
     {
         Gate::forUser($user)->authorize('addTeamMember', $team);
-
         if (!isset($role))
         {
             $role=config('constants.TEAM_USER_ROLE');
@@ -34,24 +35,27 @@ class AddTeamMember implements AddsTeamMembers
         $this->validate($team, $email, $role);
 
         $newTeamMember = User::where('email', $email)->first();
+
         if ($newTeamMember) {
+            AddingTeamMember::dispatch($team, $newTeamMember);
 
             $team->users()->attach(
                 $newTeamMember = Jetstream::findUserByEmailOrFail($email),
                 ['role' => $role]
             );
-
-            TeamMemberAdded::dispatch($team, $newTeamMember);
-            ##  - Send invite if user is not in the system ##
-        } else {
-            $invitation = Invitation::create([
-                'user_id' => $user->id,
-                'team_id' => $team->id,
-                'role' => $role,
-                'email' => $email,
+            UserRole::create([
+                'user_id' => $newTeamMember->id,
+                'role_id' => $role === 'user' ? 1 : 2,
             ]);
-            $invitation->sendEmailInviteNotification();
+            
+       
+            $newTeamMember->current_team_id = $team->id;
+            $newTeamMember->save();
+            
+            TeamMemberAdded::dispatch($team, $newTeamMember);
+           
         }
+
 
     }
 
@@ -70,8 +74,7 @@ class AddTeamMember implements AddsTeamMembers
             'role' => $role,
         ], $this->rules(), [
             'email.exists' => __('We were unable to find a registered user with this email address.'),
-        ])->after(
-            $this->ensureUserIsNotAlreadyOnTeam($team, $email)
+        ]
         )->validateWithBag('addTeamMember');
     }
 

@@ -30,18 +30,23 @@
                             @error('main_color') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
-                            <x-jet-label value="{{ __('Logo Image') }}" />
+                            <label for="image_folderInput" class="block text-gray-700 text-sm font-bold mb-2">Image Foldername:</label>
+                            <input type="text" id="image_folderInput" placeholder="Enter Image Folder Name"  wire:model="image_folder" >
+                            @error('image_folder') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
+                        <div class="mb-4">
+                            <x-label value="{{ __('Logo Image') }}" />
                             <div class=" items-center mt-2"   style="max-width:400px;">
                                 @if (isset($photo) && !empty ($photo->temporaryUrl()) )
                                 <img class=" h-12 rounded-full object-cover" src="{{ $photo->temporaryUrl() }}" alt="{{ $site_name }}">
                                 @else
                                     @if( !empty($logo_image))
-                                    <img class=" h-12 rounded-full object-cover" src="{{ $logo_image }}" alt="{{ $site_name }}">
+                                    <img class=" h-12 rounded-full object-cover" src="{{ $logo_image ?? '' }}" alt="{{ $site_name }}">
                                     @else
                                         No logo supplied                    
                                     @endif
                                 @endif
-                                <div class="text-xs">{{ $logo_image }}</div>
+                                <div class="text-xs">{{ $logo_image ?? '' }}</div>
                                 <div>
                                     <input type="file" wire:model="photo"  class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
                 
@@ -53,6 +58,20 @@
                             <label for="faviconInput" class="block text-gray-700 text-sm font-bold mb-2">favicon: </label>
                             <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="faviconInput" placeholder="Enter favicon" wire:model="favicon">
                             @error('favicon') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
+                        <div class="mb-4">
+                            <x-label value="{{ __('Team') }}" />
+                            <div class="flex items-center mt-2">
+                                @if (Auth::user()->isSuperAdmin())
+                                <select name="teams" id="teams" class="mt-1 block w-full border-2 border-indigo-600/100 p-2" wire:model="team_id" >
+                                    @foreach($team_selection as $id=>$name) 
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                    @endforeach
+                                </select>
+                                @else
+                                    {{ $team->user_id . ": ". $team->name }}
+                                @endif
+                            </div>
                         </div>
                         <div class="mb-4">
                             <label for="app_specific_jsInput" class="block text-gray-700 text-sm font-bold mb-2">Custom Script:<br><sm>(file location or code)</sm> </label>
@@ -72,11 +91,29 @@
                             @error('supports_registration') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
+                            <label for="subteams_enabledInput" class="block text-gray-700 text-sm font-bold mb-2">Subteams Enabled: </label>
+                            <input type="radio" name="subteams_enabledInput" id="subteams_enabledInput" wire:model.defer="subteams_enabled" value="1"  />Yes
+                            <input type="radio" name="subteams_enabledInput" id="subteams_enabledInput" wire:model.defer="subteams_enabled" value="0" />No
+                
+                            @error('subteams_enabled') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
+                        <div class="mb-4">
                             <label for="does_livestreamingInput" class="block text-gray-700 text-sm font-bold mb-2">Site hosts a live stream: </label>
                             <input type="radio" name="does_livestreamingInput" id="does_livestreamingInput" wire:model.defer="does_livestreaming" value="1"  />Yes
                             <input type="radio" name="does_livestreamingInput" id="does_livestreamingInput" wire:model.defer="does_livestreaming" value="0" />No
                 
                             @error('does_livestreaming') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
+
+
+                        <div class="mb-4">
+                            <label for="invitation_onlyInput" class="block text-gray-700 text-sm font-bold mb-2">Site registration is invitation only: </label>
+                            <input type="radio" name="invitation_onlyInput" id="invitation_onlyInput" wire:model.defer="invitation_only" value="1"  />Yes
+                            <input type="radio" name="invitation_onlyInput" id="invitation_onlyInput" wire:model.defer="invitation_only" value="0" />No
+                
+                            @error('invitation_only') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
+
+
                     </div>
                 </div>

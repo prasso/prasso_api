@@ -37,16 +37,52 @@ class MySiteController extends BaseController
      */
     public function editMySite(Request $request)
     {
+        // the way this is written, there's no straightforward method of debugging
+        // with localhost when the site is not setup in sites as localhost
+        // so, set this up in the site->hosts field for the user's site
         if (!Controller::userOkToViewPageByHost($this->userService))
         {
             return redirect('/login');
         }
         $mysite = Controller::getClientFromHost();
         $user = Auth::user();
+        if (!$user->isInstructor() && !$user->isTeamOwnerForSite($mysite))
+        {
+            
+            abort(403, 'Unauthorized action.');
+            
+        }
         
-       
-        return view('sites.my-site-editor')->with('site', $mysite)->with('user', $user)->with('team', $user->currentTeam);
+        $team = $mysite->teams()->first();
+        $team_selection = $team->pluck('name','id');
+        return view('sites.my-site-editor')
+            ->with('site', $mysite)
+            ->with('user', $user)
+            ->with('team', $user->currentTeam)
+            ->with('team_selection', $team_selection);
+
     }   
 
+
+
+    public function editSite($siteid)
+    {
+        $user = Auth::user();
+        $site = Site::where('id',$siteid)->with('teams')->first();
+        
+        $team = $site->teams()->first();
+        if (!$user->canManageTeamForSite($team->id))
+        {
+            abort(403, 'Unauthorized action.');
+        }
+        
+
+        $team_selection = $team->pluck('name','id');
+        return  view('sites.my-site-editor')    
+            ->with('site', $site)
+            ->with('user', $user)
+            ->with('team', $team)
+            ->with('team_selection', $team_selection);
+    }
 
 }

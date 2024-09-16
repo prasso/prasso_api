@@ -30,18 +30,20 @@ class Apps extends Model
         ->orderBy('sort_order');
     }
 
-    // for app users that have either instructor or admin, will exclude subscribepage links
+    // for app users that have either instructor or admin
     public function instructorroletabs()
     {
-        info('instructorroletabs');
-
         return $this->hasMany(\App\Models\Tabs::class, "app_id", "id")
-        ->where("team_role","=", config('constants.INSTRUCTOR'))
-        ->orWhere(function($query) 
+        ->where(function($query) 
         {
-           $query->where("team_role","=", null)
-           ->where('restrict_role',"=",false);
+            $query->where("team_role","=", config('constants.INSTRUCTOR'))
+            ->orWhere(function($query) 
+            {
+                $query->where("team_role","=", null)
+                ->where('restrict_role',"=",false);
+            });
         })
+        ->union($this->nullroletabs())
         ->orderBy('sort_order');
     }
 
@@ -65,45 +67,37 @@ class Apps extends Model
 
     public static function getBlankApp(User $user)
     {
-        $app0 = Apps::with('tabs')->with('team')->with('activeApp')
-        ->where('team_id',1)
-        ->first();
-
-        $blankapp = Apps::copyApp($app0, $user);
+        $blankapp = new Apps();
         return $blankapp;
     }
 
-    public static function copyApp(Apps $app, User $user)
-    {
-        $newapp = Apps::forceCreate(
-            ['team_id' => $user->teams[0]->id, 
-            'appicon' => $app->appicon, 
-            'app_name' => $app->app_name, 
-            'page_title' => $app->page_title,
-            'page_url' => $app->page_url,
-            'sort_order' => $app->sort_order ]
-        );
-        $user->refresh();
 
-        foreach ($app->tabs as $tab)
-        {
-            Tabs::forceCreate(
-                ['app_id' => $newapp->id]
-            );
-        }
-
-        return $newapp;
-    }
     public static function processUpdates( $appModel)
     {
-        $updatedSitePage = Apps::updateOrCreate(['id' => $appModel['id']] , 
-        ['team_id' => $appModel['team_id'], 
-        'site_id' => $appModel['site_id'],
-        'appicon' => $appModel['appicon'], 
-        'app_name' => $appModel['app_name'], 
-        'page_title' => $appModel['page_title'],
-        'page_url' => $appModel['page_url'],
-        'sort_order' => $appModel['sort_order'] ] );
+        $updatedSitePage = null;
+        if (isset($appModel['id']) && $appModel['id'] != null) {
+            $updateModel = Apps::find($appModel['id']);
+            info('updating existing app '. $appModel['id']);
+            $updatedSitePage = $updateModel->update( 
+            ['team_id' => $appModel['team_id'], 
+            'site_id' => $appModel['site_id'],
+            'appicon' => $appModel['appicon'], 
+            'app_name' => $appModel['app_name'], 
+            'page_title' => $appModel['page_title'],
+            'page_url' => $appModel['page_url'],
+            'sort_order' => $appModel['sort_order'] ] );
+            info('creating new app');}
+            else
+        {
+            $updatedSitePage = Apps::create(['team_id' => $appModel['team_id'], 
+            'site_id' => $appModel['site_id'],
+            'appicon' => $appModel['appicon'], 
+            'app_name' => $appModel['app_name'], 
+            'page_title' => $appModel['page_title'],
+            'page_url' => $appModel['page_url'],
+            'sort_order' => $appModel['sort_order'] ] );
+        }
+        
 
         $message = $updatedSitePage ? 'Site Page Updated Successfully.' : 'Site Page Created Successfully.';
         return json_encode($message);

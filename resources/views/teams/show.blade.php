@@ -3,11 +3,12 @@
     <x-slot name="title">Team Settings</x-slot>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Team Settings') }}
+            {{ __($team->name.' Team Settings') }}
         </h2>
-        <x-jet-dropdown-link href="{{ route('apps.show', Auth::user()->allTeams()->first()->id)  }}">
-            {{ __('Return to Apps') }}
-            </x-jet-responsive-nav-link>
+
+        <x-dropdown-link href="{{ route('dashboard')  }}">
+            {{ __('Return to Dashboard') }}
+            </x-responsive-nav-link>
     </x-slot>
 
     <div>
@@ -18,7 +19,7 @@
             @livewire('teams.team-member-manager', ['team' => $team])
 
             @if (Gate::check('delete', $team) && ! $team->personal_team)
-            <x-jet-section-border />
+            <x-section-border />
 
             <div class="mt-10 sm:mt-0">
                 @livewire('teams.delete-team-form', ['team' => $team])

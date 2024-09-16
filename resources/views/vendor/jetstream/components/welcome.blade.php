@@ -1,87 +1,76 @@
-<div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-    <div>
-        <img src="{{ $site->logo_image }}" class="block h-12 w-auto" />
+
+                <div class="font-sans text-gray-900 antialiased">
+        <header class="header">
+
+    <div class="header-text">
+      <h1>Build Mobile Apps With Ease Using Prasso by faxt</h1>
+  
+      <p>Prasso by faxt offers a revolutionary low-code approach to mobile app development. Our intuitive platform allows us to quickly assemble fully-functional mobile apps. Focus on your idea while we handle the technology.</p>
     </div>
-
-    <div class="mt-8 text-2xl">
-    <h1>Fast API eXtraction Technologies</h1>
+  
+  </header>
+  <main>
+  
+    <section class="border-b">
+      <h2 class="mt-8">Key Benefits of Building With Prasso by faxt</h2>
+    <div class="pl-5">
+      <h3 class="text-left text-green-600">Rapid Prototyping</h3>
+      <p class="text-left">Test and validate your app concept rapidly. Our wizard-based tools facilitate app prototyping to gather user feedback fast.</p>
+    
+      <h3 class="text-left text-green-600">Simplified Workflows</h3>
+      <p class="text-left">Our guided workflows and pre-built components help you create custom native iOS and Android apps efficiently.</p>
+    
+      <h3 class="text-left text-green-600">Robust Scalability</h3>
+      <p class="text-left">Prasso by faxt leverages proven technologies like Laravel Flutter and Firebase to ensure your app has a robust, enterprise-grade foundation.</p>
+    
+      <h3 class="text-left text-green-600">Seamless User Experience</h3>
+      <p class="text-left">Unify tools like forums, YouTube, calendars into a single cohesive mobile experience for your users.</p>
+    
+      <h3 class="text-left text-green-600">Total Customization</h3>
+      <p class="text-left">Tailor your app's look, feel and functionality to match your brand. Our low-code approach empowers your creativity.</p>
+    
+      <h3 class="text-left text-green-600">User Management</h3>
+      <p class="text-left">Leverage our integrations for simplified user registration and management. Focus on your app, not infrastructure.</p>
     </div>
+    </section>
+    <section class="py-12 bg-gray-100"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="lg:text-center"><h2 class="text-base text-green-600 font-semibold tracking-wide uppercase">Businesses We've Helped
+    </h2><p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+    Our Portfolio
+    </p><p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+    Here are some examples of the amazing apps we've created for small businesses just like yours.
+    </p></div><div class="mt-10"><div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"><div class="bg-white rounded-lg shadow-md overflow-hidden"><div class="px-6 py-4"><h3 class="text-lg font-semibold text-gray-800 mb-2">Optamize
+      </h3><p class="text-gray-600 leading-6">A tool for building heathy eating habits.
+      </p></div><div class="px-6 py-4"><a href="https://www.optamize.app/" class="inline-block faxt-green text-white rounded-full px-3 py-1 text-sm font-semibold">#Web</a></div></div><div class="bg-white rounded-lg shadow-md overflow-hidden"><div class="px-6 py-4"><h3 class="text-lg font-semibold text-gray-800 mb-2">Faith Lake City
+      </h3><p class="text-gray-600 leading-6">Family-Oriented and Biblical church in Lake City, Florida 
+      </p></div><div class="px-6 py-4"><a href="https://faithlakecity.com" class="inline-block faxt-green text-white rounded-full px-3 py-1 text-sm font-semibold">#Web</a></div></div><div class="bg-white rounded-lg shadow-md overflow-hidden"><div class="px-6 py-4"><h3 class="text-lg font-semibold text-gray-800 mb-2">Go Go Delivery
+      </h3><p class="text-gray-600 leading-6">Easily schedule and track your deliveries with our platform.
+      </p></div><div class="px-6 py-4"><a href="https://www.gogodeliveryonline.com/" class="inline-block faxt-green text-white rounded-full px-3 py-1 text-sm font-semibold">#Web</a></div></div></div></div></div></section>
 
-    <div class="mt-6 text-gray-500">
-        <h2>Your No-Code solution to an app for your business.</h2>
+    <section>
+      <h2>Realize Your Mobile App Vision Without Code</h2>
+  
+      <p>Try Prasso by faxt today and start building the mobile app you’ve always envisioned—no coding required. Our user-friendly low-code platform helps put your app idea into the hands of users faster.</p>
+  
+      <a href="/register" id="ii5lqb" class="button">Sign Up</a>
+  
+      <p>Let us know if you would like us to modify or expand our services and offerings in any way. We're happy to help realize your mobile app vision.</p>
+  
+    </section>
+    
+  </main>
+  
+  <footer>
+    <p>Copyright © 2024 faxt</p>
+    <p><a href="https://storyset.com/online">Online illustrations by Storyset</a></p>
+  </footer>
+        </div>
+        
+<div class="bt-1 bg-white shadow text-gray-500">
+    <div class="p-14 flex sm:justify-center items-center  ">
+       <a href="/privacy">privacy</a> | <a href="/terms">terms</a>
     </div>
-</div>
-
-<div class="bg-gray-200 bg-opacity-25 grid grid-cols-1 md:grid-cols-2">
-    <div class="p-6">
-        <div class="flex items-center">
-            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="w-8 h-8 text-gray-400"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-            <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold"><a href="https://laravel.com/docs">Documentation</a></div>
-        </div>
-
-        <div class="ml-12">
-            <div class="mt-2 text-sm text-gray-500">
-                Laravel has wonderful documentation covering every aspect of the framework. Whether you're new to the framework or have previous experience, we recommend reading all of the documentation from beginning to end.
-            </div>
-
-            <a href="https://laravel.com/docs">
-                <div class="mt-3 flex items-center text-sm font-semibold text-indigo-700">
-                        <div>Explore the documentation</div>
-
-                        <div class="ml-1 text-indigo-500">
-                            <svg viewBox="0 0 20 20" fill="currentColor" class="arrow-right w-4 h-4"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                        </div>
-                </div>
-            </a>
-        </div>
-    </div>
-
-    <div class="p-6 border-t border-gray-200 md:border-t-0 md:border-l">
-        <div class="flex items-center">
-            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="w-8 h-8 text-gray-400"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-            <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold"><a href="https://laracasts.com">Laracasts</a></div>
-        </div>
-
-        <div class="ml-12">
-            <div class="mt-2 text-sm text-gray-500">
-                Laracasts offers thousands of video tutorials on Laravel, PHP, and JavaScript development. Check them out, see for yourself, and massively level up your development skills in the process.
-            </div>
-
-            <a href="https://laracasts.com">
-                <div class="mt-3 flex items-center text-sm font-semibold text-indigo-700">
-                        <div>Start watching Laracasts</div>
-
-                        <div class="ml-1 text-indigo-500">
-                            <svg viewBox="0 0 20 20" fill="currentColor" class="arrow-right w-4 h-4"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                        </div>
-                </div>
-            </a>
-        </div>
-    </div>
-
-    <div class="p-6 border-t border-gray-200">
-        <div class="flex items-center">
-            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="w-8 h-8 text-gray-400"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-            <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold"><a href="https://tailwindcss.com/">Tailwind</a></div>
-        </div>
-
-        <div class="ml-12">
-            <div class="mt-2 text-sm text-gray-500">
-                Laravel Jetstream is built with Tailwind, an amazing utility first CSS framework that doesn't get in your way. You'll be amazed how easily you can build and maintain fresh, modern designs with this wonderful framework at your fingertips.
-            </div>
-        </div>
-    </div>
-
-    <div class="p-6 border-t border-gray-200 md:border-l">
-        <div class="flex items-center">
-            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="w-8 h-8 text-gray-400"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-            <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold">Authentication</div>
-        </div>
-
-        <div class="ml-12">
-            <div class="mt-2 text-sm text-gray-500">
-                Authentication and registration views are included with Laravel Jetstream, as well as support for user email verification and resetting forgotten passwords. So, you're free to get started what matters most: building your application.
-            </div>
-        </div>
+    <div class="flex sm:justify-center items-center sm:pt-0 ">
+        <small>© faxt 1999-2023 and DeductionTraq</small>
     </div>
 </div>
+    

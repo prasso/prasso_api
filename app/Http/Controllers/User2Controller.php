@@ -18,6 +18,17 @@ class User2Controller extends BaseController
         $this->middleware('instructorusergroup');
     }
 
+    public function update_user($userid)
+    {
+        $user = Auth::user();
+        if (!$user->isSuperAdmin()) {
+            return redirect('/dashboard');
+        }
+        $usr = User::where('id',$userid)->first();
+
+        return view('profile.update-user-form')->with('user',$usr);
+    }
+
     public function prasso_profile()
     {
         $user = Auth::user(); 

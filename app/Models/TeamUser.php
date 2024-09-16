@@ -13,7 +13,11 @@ class TeamUser extends Model
     
     protected $table = 'team_user';
     public $timestamps = true;
-
+    protected $fillable = [
+        'user_id',
+        'team_id'
+    ];
+    
 
     public function team()
     {
@@ -24,23 +28,29 @@ class TeamUser extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public static function addToBaseTeam($user)
+    /**
+     * //$assign_team_id will keep user's current team the api site team if false
+     */
+    public static function addToBaseTeam($user, $assign_team_id = true)
     {
         //put this person on the main team for us to welcome until we know who they will settle in with
-        if ($team = Team::where('user_id',1)->get()) {
-            TeamUser::forceCreate([
-                'user_id' => $user->id,
-                'team_id' => 1,
-                'role' => config('constants.TEAM_USER_ROLE')
-            ]);
-           
-            $user->current_team_id = 1;
-            $user->save();
-            TeamMemberAdded::dispatch($team, $user);
-        }
-        else
-        {
-            Log::info('base team not found in create new user');
+        if (!$user->teams->contains(1)) {
+            if ($team = Team::where('user_id',1)->get()) {
+                TeamUser::forceCreate([
+                    'user_id' => $user->id,
+                    'team_id' => 1,
+                    'role' => config('constants.TEAM_USER_ROLE')
+                ]);
+
+                if ($assign_team_id) {
+                    $user->current_team_id = 1;
+                }
+                $user->save();
+                TeamMemberAdded::dispatch($team, $user);
+            }
+            else {
+                Log::info('base team not found in create new user');
+            }
         }
     }
 
@@ -64,7 +74,7 @@ class TeamUser extends Model
         }
         $user->current_team_id = $team_id;
         $user->save();
-        $team = Team::where('team_id',$team_id)->get();
+        $team = Team::where('id',$team_id)->get();
         TeamMemberAdded::dispatch($team, $user);
 
     }

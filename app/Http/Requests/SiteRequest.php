@@ -18,7 +18,7 @@ class SiteRequest extends BaseRequest {
     public function rules() {
         return array_merge(parent::rules(), [
             'site_name' => 'required',
-            'description' => 'required',
+            'description' => ['required','max:150'],
             'host' => [
                 'required',
                 Rule::unique('sites', 'host')->ignore($this->id),
@@ -28,7 +28,13 @@ class SiteRequest extends BaseRequest {
             'database' => 'required',
             'favicon' => 'required',
             'photo' => 'required_without:logo_image|max:1024',
-            'supports_registration' => 'required'
+            'supports_registration' => 'required',
+            'subteams_enabled' => 'required',
+            'app_specific_js' => 'nullable',
+            'app_specific_css' => 'nullable',
+            'does_livestreaming' => 'required',
+            'invitation_only' => 'required',
+            'image_folder' => 'required|ends_with:/',
         ]);
     }
 }

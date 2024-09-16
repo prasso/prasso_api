@@ -1,21 +1,2 @@
 
-<div class="shadow overflow-hidden sm:rounded-md">
-     <div class="p-12 bg-white col-span-12 items-center ">
-        <div class="max-w-xs p-0 m-auto">
-            <nav>
-              <ul>
-                  SITE_MAP
-              </ul>
-            </nav>
-            <div class="border-t border-gray-200"></div>
-            <div class="m-auto text-center">
-                <form method="POST" action="/logout">
-                    <input type="hidden" name="_token" value="CSRF_TOKEN" />
-                    <input type="submit" value="logout" />
-                </form>
-            </div>
-        </div>
-    </div>
-   
-</div>
- 
+<div><ul>SITE_MAP</ul></div>

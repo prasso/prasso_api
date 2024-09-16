@@ -1,10 +1,10 @@
 <div>
     @if (Gate::check('addApp', $teamapp))
-        <x-jet-section-border />
+        <x-section-border />
 
         <!-- Add App -->
         <div class="mt-10 sm:mt-0">
-            <x-jet-form-section submit="addApp">
+            <x-form-section submit="addApp">
                 <x-slot name="title">
                     {{ __('Add App') }}
                 </x-slot>
@@ -22,33 +22,33 @@
 
                     <!-- App Name -->
                     <div class="col-span-6 sm:col-span-4">
-                        <x-jet-label for="app_name" value="{{ __('App Name') }}" />
-                        <x-jet-input id="name" type="text" class="mt-1 block w-full" wire:model.defer="addAppForm.app_name" />
-                        <x-jet-input-error for="app_name" class="mt-2" />
+                        <x-label for="app_name" value="{{ __('App Name') }}" />
+                        <x-input id="name" type="text" class="mt-1 block w-full" wire:model.defer="addAppForm.app_name" />
+                        <x-input-error for="app_name" class="mt-2" />
                     </div>
 
                     
                 </x-slot>
 
                 <x-slot name="actions">
-                    <x-jet-action-message class="mr-3" on="saved">
+                    <x-action-message class="mr-3" on="saved">
                         {{ __('Added.') }}
-                    </x-jet-action-message>
+                    </x-action-message>
 
-                    <x-jet-button>
+                    <x-button>
                         {{ __('Add') }}
-                    </x-jet-button>
+                    </x-button>
                 </x-slot>
-            </x-jet-form-section>
+            </x-form-section>
         </div>
     @endif
 
     @if ($team->apps->isNotEmpty())
-        <x-jet-section-border />
+        <x-section-border />
 
         <!-- Manage Apps -->
         <div class="mt-10 sm:mt-0">
-            <x-jet-action-section>
+            <x-action-section>
                 <x-slot name="title">
                     {{ __('Apps') }}
                 </x-slot>
@@ -75,12 +75,12 @@
                         @endforeach
                     </div>
                 </x-slot>
-            </x-jet-action-section>
+            </x-action-section>
         </div>
     @endif
 
     <!-- Role Management Modal -->
-    <x-jet-dialog-modal wire:model="currentlyManagingRole">
+    <x-dialog-modal wire:model="currentlyManagingRole">
         <x-slot name="title">
             {{ __('Manage Role') }}
         </x-slot>
@@ -92,18 +92,18 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button wire:click="stopManagingRole" wire:loading.attr="disabled">
+            <x-secondary-button wire:click="stopManagingRole" wire:loading.attr="disabled">
                 {{ __('Nevermind') }}
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button class="ml-2" wire:click="updateRole" wire:loading.attr="disabled">
+            <x-button class="ml-2" wire:click="updateRole" wire:loading.attr="disabled">
                 {{ __('Save') }}
-            </x-jet-button>
+            </x-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
     <!-- Leave app Confirmation Modal -->
-    <x-jet-confirmation-modal wire:model="confirmingLeavingapp">
+    <x-confirmation-modal wire:model="confirmingLeavingapp">
         <x-slot name="title">
             {{ __('Leave app') }}
         </x-slot>
@@ -113,18 +113,18 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button wire:click="$toggle('confirmingLeavingapp')" wire:loading.attr="disabled">
+            <x-secondary-button wire:click="$toggle('confirmingLeavingapp')" wire:loading.attr="disabled">
                 {{ __('Nevermind') }}
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-danger-button class="ml-2" wire:click="leaveapp" wire:loading.attr="disabled">
+            <x-danger-button class="ml-2" wire:click="leaveapp" wire:loading.attr="disabled">
                 {{ __('Leave') }}
-            </x-jet-danger-button>
+            </x-danger-button>
         </x-slot>
-    </x-jet-confirmation-modal>
+    </x-confirmation-modal>
 
     <!-- Remove App Confirmation Modal -->
-    <x-jet-confirmation-modal wire:model="confirmingAppRemoval">
+    <x-confirmation-modal wire:model="confirmingAppRemoval">
         <x-slot name="title">
             {{ __('Remove App') }}
         </x-slot>
@@ -134,13 +134,13 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button wire:click="$toggle('confirmingAppRemoval')" wire:loading.attr="disabled">
+            <x-secondary-button wire:click="$toggle('confirmingAppRemoval')" wire:loading.attr="disabled">
                 {{ __('Nevermind') }}
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-danger-button class="ml-2" wire:click="removeApp" wire:loading.attr="disabled">
+            <x-danger-button class="ml-2" wire:click="removeApp" wire:loading.attr="disabled">
                 {{ __('Remove') }}
-            </x-jet-danger-button>
+            </x-danger-button>
         </x-slot>
-    </x-jet-confirmation-modal>
+    </x-confirmation-modal>
 </div>

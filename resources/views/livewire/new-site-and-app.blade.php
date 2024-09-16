@@ -1,12 +1,12 @@
 <div>
 <x-slot name="header">
 
-    <x-jet-dropdown-link href="{{ route('dashboard')  }}">
+    <x-dropdown-link href="{{ route('dashboard')  }}">
                 {{ __('Return to Dashboard') }}
-            </x-jet-responsive-nav-link>
+            </x-responsive-nav-link>
 </x-slot>
 
-<x-jet-form-section submit="createSiteAndApp" id="wizard-form">
+<x-form-section submit="createSiteAndApp" id="wizard-form">
 <x-slot name="title">
         {{ __('New Site and App') }}
     </x-slot>
@@ -68,6 +68,11 @@
     <label for="primary-color">Primary Color:</label>
     <input wire:model.defer='main_color' class='rounded-md shadow-sm  block' type="color" id="primary-color" name="primary-color">
     <br>
+    <h2>Your image folder name:</h2>
+   
+   <label for="image_folder">Image Folder:</label>
+   <input wire:model.defer='image_folder' class='rounded-md shadow-sm  block' type="text" id="image-folder" name="image-folder">
+   <br>
 
     <button type="button" wire:click="wizardProgress('PREV')"  class="prev-button cursor-pointer ml-6 border p-2 rounded-xl">PREV</button>
     <button type="button" wire:click="wizardProgress('NEXT')"  class="next-button cursor-pointer ml-6 border p-2 rounded-xl">Next</button>
@@ -80,7 +85,7 @@
   <div class="step  inset-0  ease-out duration-400" id="step-4">
     <h2>Review and confirm</h2>
     <label>Site Info</label>
-    @include('sites.site-inputs')
+    @include('sites.site-inputs', ['team_selection' => $team_selection])
    
     <br>
 
@@ -94,13 +99,13 @@
 
 <x-slot name="actions">
 @if($step4 )
-    <x-jet-action-message class="mr-3" on="saved">
+    <x-action-message class="mr-3" on="saved">
         {{ __('Saved.') }}
-    </x-jet-action-message>
-    <x-jet-button wire:loading.remove wire:processing.attr="disabled" >
+    </x-action-message>
+    <x-button wire:loading.remove wire:processing.attr="disabled" >
       <i wire:loading wire:target='submitForm' class="fas fa-spin fa-spinner mr-2"></i> 
         {{ __('Create Your Site and App') }}
-    </x-jet-button>
+    </x-button>
     <div wire:loading>
       <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
           Creating your site...
@@ -108,5 +113,5 @@
     </div>
 @endif
 </x-slot>
-</x-jet-form-section>
+</x-form-section>
 </div>

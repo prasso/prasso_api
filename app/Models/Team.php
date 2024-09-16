@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Jetstream\Events\TeamCreated;
 use Laravel\Jetstream\Events\TeamDeleted;
 use Laravel\Jetstream\Events\TeamUpdated;
@@ -11,6 +12,7 @@ use Laravel\Jetstream\Team as JetstreamTeam;
 class Team extends JetstreamTeam
 {
     use HasTimestamps;
+    use HasFactory;
     
     /**
      * 
@@ -30,6 +32,8 @@ class Team extends JetstreamTeam
     protected $fillable = [
         'name',
         'personal_team',
+        'phone',
+        'parent_id'
     ];
     /**
      * The attributes that should be hidden for arrays.
@@ -63,7 +67,13 @@ class Team extends JetstreamTeam
     {
         return $this->hasMany(\App\Models\TeamUser::class, 'team_id', 'id');
     }
-
+    
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'team_user', 'team_id', 'user_id')
+                    ->withPivot('role');
+    }
+    
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -71,5 +81,19 @@ class Team extends JetstreamTeam
     
     public function invitations() {
         return $this->hasMany('App\Models\Invitation');
+    }
+
+    public function images()
+    {
+        return $this->hasMany(TeamImage::class);
+    }
+
+    public function subteams(){
+        return $this->hasMany(Team::class, 'parent_id', 'id');
+    }
+
+    public function parentTeam(){
+
+        return $this->belongsTo(Team::class, 'parent_id');
     }
 }

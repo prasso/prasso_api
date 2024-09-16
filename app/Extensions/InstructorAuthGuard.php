@@ -7,14 +7,15 @@ use Illuminate\Contracts\Auth\Guard;
 use App\Extensions\InstructorUserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Auth\SessionGuard;
  
-class InstructorAuthGuard implements Guard
+class InstructorAuthGuard extends SessionGuard implements Guard
 {
   protected $request;
   protected $provider;
   protected $user;
 
-  public $name='InstructorAuthGuard';
+  public $guardName='InstructorAuthGuard';
  
   /**
    * Create a new authentication guard.

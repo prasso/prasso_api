@@ -19,10 +19,13 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use App\Mail\welcome_user;
 use App\Mail\contact_form;
 use App\Mail\prasso_user_welcome;
 use App\Mail\livestream_notification;
+use App\Mail\site_data_updated_email;
 use Laravel\Cashier\Billable;
 use Twilio\Rest\Client;
 
@@ -36,13 +39,11 @@ use Twilio\Rest\Client;
  * @property string $firebase_uid
  * @property string $pn_token
  * @property string $profile_photo_path
- * @property bool $enableMealReminders
- * @property string reminderTimesJson
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  *
  */
-class User extends Authenticatable {
+class User extends Authenticatable implements FilamentUser {
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
@@ -57,8 +58,8 @@ class User extends Authenticatable {
      *
      * @var array
      */
-    protected $fillable = [
-        'name', 'email', 'password', 'profile_photo_path', 'firebase_uid', 'pn_token', 'enableMealReminders', 'reminderTimesJson', 'timeZone', 'version','phone'
+    protected $fillable = [    'name', 'email', 'password', 'profile_photo_path', 'firebase_uid', 'pn_token', 'version','phone'
+    
     ];
 
     /**
@@ -81,6 +82,7 @@ class User extends Authenticatable {
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
     /**
@@ -89,7 +91,7 @@ class User extends Authenticatable {
      * @var array
 
     protected $appends = [
-        'profile_photo_path', 'enableMealReminders', 'timeZone'
+        'profile_photo_path'
     ];
     
     /**
@@ -108,19 +110,33 @@ class User extends Authenticatable {
         return false;
     }
 
-    public function getProfilePhoto() {
-        if ($this->profile_photo_path == null) {
+    public function getProfilePhotoUrlAttribute()
+    {
+        if (!$this->profile_photo_path) {
             return $this->defaultProfilePhotoUrl();
         }
-        if (str_starts_with($this->profile_photo_path, 'http')) {
-            return  $this->profile_photo_path;
+        if (stripos($this->profile_photo_path, 'http') === 0) {
+            return rtrim($this->profile_photo_path, '/') ;
         }
-        return  config('app.photo_url') . $this->profile_photo_path;
+        
+        return rtrim(config('app.photo_url'), '/') . '/' . ltrim($this->profile_photo_path, '/');
+    }
+    public function getProfilePhoto()
+    {
+       return $this->getProfilePhotoUrlAttribute();
     }
 
-    public function teams() {
+
+    public function team_owner() {
         return $this->hasMany(Team::class, 'user_id', 'id')
-            ->with('apps')->with('site');
+            ->whereHas('team_members', function ($query) {
+                $query->where('role', 'instructor');
+            })
+            ->with(['apps', 'site' => function ($query) {
+                $query->when(auth()->user()->role != 'super_admin', function ($query) {
+                    $query->where('site_id', '!=', 1);
+                });
+            }]);
     }
 
     public function team_member() {
@@ -132,8 +148,9 @@ class User extends Authenticatable {
         return $this->hasMany('App\Models\Invitation');
     }
 
-    public function roles() {
-        return $this->hasMany(UserRole::class, 'user_id', 'id');
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'user_role', 'user_id', 'role_id');
     }
 
     public function activeApp() {
@@ -144,14 +161,29 @@ class User extends Authenticatable {
         return $this->hasOne(PersonalAccessToken::class, 'tokenable_id', 'id');
     }
 
-    public function yourHealthToken() {
-        return $this->hasOne(YourHealthToken::class, 'user_id', 'id');
-    }
-
     public function getRouteKeyName() {
         return 'firebase_uid';
     }
 
+    public function assignRole($roleName)
+    {
+        // Find the role with the specified name.
+        $role = Role::where('role_name', $roleName)->first();
+
+        // If the role doesn't exist, throw an exception.
+        if (!$role) {
+            throw new \InvalidArgumentException("Role not found: $roleName");
+        }
+
+        // Check if the user already has the role.
+        if ($this->roles->contains($role)) {
+            return;
+        }
+
+        // Assign the role to the user.
+        $new_role = UserRole::create(['user_id' => $this->id, 'role_id' => $role->id]);
+        $new_role->save($role->toArray());
+    }
 
     public function getCoachUid() {
         $coachrecord = Team::find($this->current_team_id)->first();
@@ -169,20 +201,18 @@ class User extends Authenticatable {
         return $user;
     }
 
-    public function hasRole(...$role_looking_for) {
-        //Log::info('received roles: ' . json_encode($role_looking_for));
-
+    public function hasRole(...$role_looking_for)
+    {
         foreach ($this->roles as $role) {
-
-            //Log::info('role: ' . json_encode($role));
-
-            if (in_array($role->role_id, $role_looking_for)) {
+            $roleId = (int) $role->id; // Cast role_id to integer
+            if (in_array($roleId, $role_looking_for)) {
                 return true;
             }
         }
-
+    
         return false;
     }
+
 
     public function isSuperAdmin() {
         if ($this->hasRole(config('constants.SUPER_ADMIN'))) {
@@ -191,7 +221,7 @@ class User extends Authenticatable {
         return false;
     }
     public function isInstructor() {
-        // Log::info('checking for isInstructor: ' );
+        $this->load('roles');
 
         if ($this->hasRole(config('constants.INSTRUCTOR'))) {
             return true;
@@ -202,14 +232,65 @@ class User extends Authenticatable {
         return false;
     }
 
+    public function isTeamOwner($team){
+        return $this->id == $team->user_id;
+    }
+    public function isTeamOwnerForSite($site){
+        $firstTeam = $site->teams()->first();
+        if ($firstTeam && $this->team_owner->pluck('id')->contains($firstTeam->id)) {
+            // The user is the owner of the first team that belongs to the site.
+            // the first team is assigned on site creation and is the only team that will edit the site setup
+            return true;
+        } 
+        return false;
+    }
+
+    // User.php
+    public function isTeamMember($teamId) {
+        return $this->team_member()->where('team_id', $teamId)->exists();
+    }
+
+    public function isTeamMemberOrOwner($teamId) {
+        $isMember = $this->team_member()->where('team_id', $teamId)->exists();
+        $isOwner = $this->team_owner()->where('id', $teamId)->exists();
+        return $isMember || $isOwner;
+    }
+
+    /**
+     * Determine if the user belongs to the given team.
+     *
+     * @param  mixed  $team
+     * @return bool
+     */
+    public function belongsToTeam($team)
+    {
+        info('local belongs to team');
+        if (is_null($team)) {
+            return false;
+        }
+        if ($this->isSuperAdmin()){
+            return true;
+        }
+
+        return $this->ownsTeam($team) || $this->teams->contains(function ($t) use ($team) {
+            return $t->id === $team->id;
+        });
+    }
+
+    /**filament interface, can the user access filament admin */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->isSuperAdmin();
+    }
+
     public function getUserAppInfo()
     {
         $user_app_info=[];
         $activeApp = $this->activeApp();
   
-        $user_app_info['team'] = $this->teams[0];
+        $user_app_info['team'] = $this->team_owner[0];
       
-        $user_app_info['teams'] = $this->teams->toArray();
+        $user_app_info['teams'] = $this->team_owner->toArray();
   
         $user_app_info['teamapps'] = $user_app_info['team']->apps;
         
@@ -257,10 +338,22 @@ class User extends Authenticatable {
             }
         }
     }
+
+    public function app()
+    {
+        return $this->hasOne(Apps::class);
+    }
+    
     public function getSiteCount() {
-
-        $teams = $this->teams->toArray();
-
+        if ($this->isSuperAdmin())
+        {
+            return 1;
+        }
+        if ($this->team_owner == null)
+        {
+            return 0;
+        }
+        $teams = $this->team_owner->toArray();
         $site_count = 0;
         foreach($teams as $team)
         {
@@ -268,49 +361,99 @@ class User extends Authenticatable {
         }
         return $site_count;
     }
-
+    public function canManageTeamForSite($team_id){
+        if ($this->isSuperAdmin())
+        {
+            return true;
+        }
+        if ($this->team_owner == null)
+        {
+            info('team_owner is null');
+            return false;
+        }
+        $teams = $this->team_owner->toArray();
+        foreach($teams as $team)
+        {
+            if ($team_id == $team['id'] && $team['user_id'] == $this->id )
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
     /**
-     * Get/Set the user's current team. This is the first team that is owned by the user
+     * Get/Set the user's current team. This is the first team that is owned by the user, if it exists
      * at the time of this writing, only one team per user that is not a super admin is allowed
      */
-    public function setCurrentTeam(){
-
-        $teams = $this->teams->toArray();
+    public function setCurrentToOwnedTeam()
+    {
+        if ($this->id == 1){
+            //super admin, ok
+            return;
+        }
+        $this->load('team_owner');
+        if (isset($this->current_team_id) && $this->current_team_id > 1) {
+            return;
+        }
+        $teams = [];
+        if ($this->team_owner != null && count($this->team_owner)>0){
+            info('user: '.$this->id.' has owned teams.');
+            $teams = $this->team_owner->toArray();
+        }
         if ($this->current_team_id == null) {
             $this->current_team_id = 1;
         }
-        if($this->current_team_id == 1)
-        {
-            foreach($teams as $team)
-            {
-                if ($team['user_id'] == $this->id)
-                {
-                    $this->current_team_id = $team['id'];
-                    $this->save(); 
+        
+        if (count($teams) == 0) {
+
+            info('user: '.$this->id.' has 0 owned teams.');
+            $teamids = $this->team_member->toArray();
+            info('teamids: ' . json_encode($teamids));
+            if (count($teamids) > 0) {
+                $this->current_team_id = $teamids[0]['team_id'];
+            }
+        } else {
+            if ($this->current_team_id == 1) {
+
+                foreach ($teams as $team) {
+                    if ($team['user_id'] == $this->id) {
+                        $this->current_team_id = $team['id'];
+                        info('team owner of: ' . $team['id']);
+                        break;
+                    }
                 }
-                break;
             }
         }
+        $this->save();
     }
 
     /**
-     * Get the user's site url. This is the first team that is owned by the user
+     * Get the user's site url. 
+     * determined by two things. 
+     *  1. if this is prasso then the site url is the first team that is owned by the user
+     *  2. if this is not prasso then if the user owns the current site's team then the same site as is showing
      * at the time of this writing, only one team per user that is not a super admin is allowed
      */
-    public function getUserSiteUrl(){
-        $this->setCurrentTeam();
-        
+    public function getUserOwnerSiteId(){
+        $this->setCurrentToOwnedTeam();
         $teamsite = TeamSite::where('team_id', $this->current_team_id)->first();
-        $site = Site::where('id', $teamsite->site_id)->first();
+        return $teamsite->site_id;
         
-        $site_url = $site['host'];
-        
-        
-        return "https://$site_url";
     }
 
     public function isThisSiteTeamOwner($site_id) {
-        $teams = $this->teams->toArray();
+        if ($site_id == 1){return false;} // only super-admins own prasso and that is checked first
+   /*
+   
+   if the site has subteams rules are the same as when the site does not
+    the site owner user_id is stored with the team record
+
+    is the problem knowing which team owns. then look at parent record of the team
+    */     
+        $this->load('team_owner');
+        $teams = $this->team_owner->toArray();
+
         foreach($teams as $team)
         {
             if ($team['user_id'] == $this->id)
@@ -325,12 +468,12 @@ class User extends Authenticatable {
         return false;
     }
 
-    public function sendWelcomeEmail() {
+    public function sendWelcomeEmail($site_team_id) {
         $emailbcc = 'info@faxt.com'; //because .env setting is not being read on prod server!
         Mail::to($this)->send(new welcome_user($this));
 
         try {
-            Mail::to($emailbcc, 'Prasso Sign Up')->send(new prasso_user_welcome($this));
+            Mail::to($emailbcc, 'Prasso Sign Up')->send(new prasso_user_welcome($this, $site_team_id));
         } catch (\Throwable $err) {
             Log::info('error sending user welcome sent email: ' . $err);
         }
@@ -345,6 +488,22 @@ class User extends Authenticatable {
     public function sendCoachEmail($subject, $body, $fromemail, $fromname) {
 
         Mail::to($this)->send(new coach_message($this, $subject, $body, $fromemail, $fromname));
+    }
+
+    public function sendDataUpdated($message, $site){
+        //email from current user and to team admin from updates to site page data
+        try {
+            $team_admin =  $site->getTeamOwner();
+            if ($team_admin == null){
+                info('team admin not found: '.$site->site_name);
+                return;
+            }
+            //site team-0 owner
+            Mail::to($team_admin)->send(new site_data_updated_email($this,
+                $site->site_name.config('constants.DATA_UPDATED_SUBJECT'),$message, $this->email, $this->name));
+        } catch (\Throwable $err) {
+            Log::info('error sending user welcome sent email: ' . $err);
+        }
     }
 
     public function sendLivestreamNotification($subject, $body, $fromemail, $fromname) {

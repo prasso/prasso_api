@@ -55,18 +55,27 @@ class AuthController extends BaseController
         $sendInvitation = false; //will send welcome email
         
         //$user = User::create($input);
-        $user = User::create([
-            'name' => $input['name'],
-            'email' => $input['email'],
-            'password' => Hash::make($input['password']),
-            'phone' => '',
-            'version' => '']);
-        $success_p1 = $this->userService->register($user,'user', $sendInvitation);
+        try{
+            $user = User::create([
+                'name' => $input['name'],
+                'email' => $input['email'],
+                'password' => Hash::make($input['password']),
+                'phone' => '',
+                'version' => '',
+            'firebase_uid' => $input['firebase_uid']]);
+            
+        } catch (\Throwable $e) {
+            Log::info($e);
+            //if the error is Integrity constraint violation: 1062 Duplicate entry then go log this user in instead
+            return $this->login($request);
+        }
+        $success_p1 = $this->userService->registerForSite($user,$this->site, config('constants.TEAM_USER_ROLE'), $sendInvitation);
 
         $success_p2 = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);
 
         $success = array_merge($success_p1,$success_p2);
         $success['ShowIntro'] = 'SHOW';
+
         return $this->sendResponse($success, 'User registered successfully.');
     }
 
@@ -85,7 +94,12 @@ class AuthController extends BaseController
         $user = null;
         if (isset($firebase_uid ))
         {
+            //if user uses more than one prasso app, this will not match. the firebase uid will belong to most recent app that user used
             $user = User::where("firebase_uid",$firebase_uid)->first();
+            if ($user == null)
+            {
+                $user = User::where("email",$email)->first();
+            }
         }
         $user_logged_in=false;
         if(  Auth::attempt(['email' => $email, 'password' => $password]))
@@ -103,7 +117,6 @@ class AuthController extends BaseController
                 { 
                     $user_logged_in = true;
                 }
-             //   $this->userService->updateCommunityUser($user);
             }
         }
     
@@ -127,7 +140,8 @@ class AuthController extends BaseController
             $user = $this->setUpUser($request,$user);
             $success = $this->userService->buildConfigReturn($user, $this->appsService, $this->site);
             $success['pn_token'] = $user->pn_token;
-            $success['thirdPartyToken'] = '';      
+            $success['thirdPartyToken'] = '';
+            
             return $this->sendResponse($success, 'User has logged in.');
         } 
         else{ 
@@ -187,43 +201,18 @@ class AuthController extends BaseController
     public function getAppSettings($apptoken,Request $request)
     {
         $user = $this->setUpUser($request,null);
-        $app_data = $this->appsService->getAppSettingsBySite($this->site, $user,$user->personalAccessToken->token);
+        if ($user == null)
+        {
+            $user = new User();
+        }
+      $token = $user->personalAccessToken? $user->personalAccessToken->token : null;
+      $app_data = $this->appsService->getAppSettingsBySite($this->site, $user,$token);
 
         return $app_data;
 
     }
     
-    private function setUpUser($request,$user)
-    {
-        $accessToken  = $request->header(config('constants.AUTHORIZATION_'));
-        $accessToken = str_replace("Bearer ","",$accessToken);
     
-        if (!isset($accessToken) && isset($_COOKIE[config('constants.AUTHORIZATION_')]))
-        {
-            $accessToken = $_COOKIE[config('constants.AUTHORIZATION_')];
-        }
-        else
-        if ((!isset($accessToken) || $accessToken == 'Bearer') && $user != null) 
-        {
-
-            $accessToken = $request->user()->createToken(config('app.name'))->accessToken->token;
-
-        }
-        if (isset($accessToken))
-        {
-            $this->setAccessTokenCookie($accessToken);
-            if ($user == null)
-            {
-                $user = User::getUserByAccessToken($accessToken);
-            }
-
-            if ($user != null) 
-            {
-                \Auth::login($user); 
-            }
-        }
-       return $user;
-    }
 
     private function uploadImage(Request $request, $filePath, $userid)
     {
@@ -275,22 +264,5 @@ class AuthController extends BaseController
 
     }
        
-    /**
-    * function is used to accessToken email cookie to browser
-    */
-    protected function unsetAccessTokenCookie()
-    {
-        setcookie(config('constants.ACCESSTOKEN_'), '', time() - 3600, "/"); 
-    }
 
-    /**
-     * function is used to set accessToken cookie to browser
-     */
-    protected function setAccessTokenCookie($accessToken)
-    {
-        setcookie(config('constants.ACCESSTOKEN_'), $accessToken, time() + (86400 * 30), "/");
-        
-        setcookie(config('constants.COMMUNITYTOKEN'), $accessToken, time() + (86400 * 30), "/");
-        setcookie(config('constants.COMMUNTIYREMEMBER'), $accessToken, time() + (86400 * 30), "/");
-    }
 }

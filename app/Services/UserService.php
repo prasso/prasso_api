@@ -6,6 +6,7 @@ use App\Models\CommunityAccessTokens;
 use Illuminate\Support\Facades\Log;
 use App\Models\Invitation;
 use App\Models\Team;
+use App\Models\Site;
 use App\Models\TeamUser;
 use App\Models\TeamSite;
 use App\Models\CommunityUser;
@@ -26,6 +27,48 @@ class UserService
       $this->instruc = $suser;
     }
 
+    public function UpdateSitesMember($user, $team, $id_of_selected_site){
+
+        // Find the TeamSite model with the specified site ID and eager load the associated team.
+        $teamSite = null;
+        if (isset($team)){
+          $teamSite = TeamSite::where('site_id', $id_of_selected_site)->where('team_id',$team->id)->with('team')->first();
+        }
+        else{
+          $teamSite = TeamSite::where('site_id', $id_of_selected_site)->with('team')->first();
+        }
+
+        // If the TeamSite model doesn't exist, create a new one.
+        if ($teamSite == null) {
+            $teamSite = new TeamSite();
+            $teamSite->site_id = $id_of_selected_site;
+        }
+
+        // If the team ID field of the TeamSite model is null, create a new team.
+        if ($teamSite->team_id == null) {
+          if (!isset($team))
+          { 
+            $team = new Team();
+            $team->user_id = $user->id;
+            $team->name = Site::find($id_of_selected_site)->site_name;
+            $team->personal_team = false;
+            $team->phone = ' ';
+            $team->save();
+          }
+
+        }
+
+        $teamSite->team_id = $team->id;
+        $teamSite->save();
+
+        // Create a new team member for the team.
+        $teamSite->team->team_members()->create([
+            'user_id' => $user->id,
+            'role' => config('constants.TEAM_USER_ROLE'),
+        ]);
+
+    }
+
     /**
      *       special rules for site access if it's the base, prasso.io site
      *       1. users that are registered through prasso.io can log in there, 
@@ -34,28 +77,33 @@ class UserService
     public function isUserOnTeam($user)
     {
       //if the user is super admin he can log into any site ( that's me for now)
-      if ($user->hasRole(config('constants.SUPER_ADMIN')))
+      if ($user->isSuperAdmin())
       {
         return true;
       }
 
+      //the url used in the request determines the Site
       $site = Controller::getClientFromHost();
       if ($site == null)
       {
         return false;
       }
 
-      //get the team from the site
-      $teamsite = TeamSite::where('site_id', $site->id)->first();
-      if ($teamsite == null)
+      //Sites have teams ( may be one or may be many ) and users are attached to teams
+      // that determines if the user is a member of the site
+      $team = $site->teams->first();
+      if ($team->user_id == $user->id)
       {
-          Log::error('TeamSite not found for site: ' . $site->id);
-          $teamsite = TeamSite::where('site_id', 1)->first();
+        //the user is the owner of the team, so they are on the team and as owner they have access to edit 
+        return true;
       }
-      $team = Team::where('id', $teamsite->team_id)->first();
-  
-      $teamuser = TeamUser::where('user_id', $user->id)->where('team_id', $team->id)->first();
+      // Build the query
+      $query = TeamUser::where('user_id', $user->id)->where('team_id', $team->id);
 
+      // // if need to troubleshoot user login: Get the SQL query with placeholders
+      // $sql = $query->toSql();
+      // Log::info($sql);
+      $teamuser = $query->first();
       if ($teamuser != null)
       {
         return true;
@@ -143,103 +191,8 @@ info('addOrUpdateSubscription: '.json_encode($user));
 
     }
 
-    public function subscribeNewsletter($email)
-    {
-      $usr = User::where('email',$email)->first();
-      if ($usr == null)
-      {
-        //add the user
-        $keeper_password = Str::random(10);
-        $bcrypt_password = bcrypt($keeper_password);
-        
-        $user = new User();
-        $user->name = $email;
-        $user->email = $email;
-        $user->password = $bcrypt_password;
-        $user->firebase_uid = $bcrypt_password; //how will we get this straight later when they log in from the app
-        $user->save();
-      }
-      $this->register($user,config('constants.NEWSLETTER_ROLE_TEXT'), true); //this leverages the invitation feature to get email confirmed for the newsletter
-   
-    }
+    
 
-    public function subscribeInstructor($json)
-    {
-      $usr = User::where('email',$json->data->object->email)->first();
-      if ($usr != null)
-      {//add the role
-        //store the subscription so we can checkit
-        $usr->addRole(config('constants.INSTRUCTOR_ROLE_TEXT'));
-      }
-      else
-      {
-        //add the user
-        $keeper_password = Str::random(10);
-        $bcrypt_password = bcrypt($keeper_password);
-        
-        $user = new User();
-        $user->name = $json->data->object->name;
-        $user->email = $json->data->object->email;
-        $user->password = $bcrypt_password;
-        $user->firebase_uid = $bcrypt_password; //how will we get this straight later when they log in from the app
-        $user->save();
-        $this->register($user,config('constants.INSTRUCTOR_ROLE_TEXT'), true);
-      }
-    }
-
-    public function register($user,$role, $sendInvitation)
-    {
-        if (!isset($role))
-        {
-            $role=config('constants.TEAM_USER_ROLE');
-        }
-        if ($role == config('constants.NEWSLETTER_ROLE_TEXT'))
-        {
-            //add them to team 2 (newsletter team) if signing up for the newsletter;
-            TeamUser::addToTeam($user,config('constants.NEWSLETTER_TEAM_ID')); 
-        }
-        else
-        {
-          $new_team = $user->ownedTeams()->save(Team::forceCreate([
-              'user_id' => $user->id,
-              'name' => explode(' ', $user->name, 2)[0]."'s Team",
-              'personal_team' => true,
-              'phone' => $user->phone,
-          ]));
-          $user->refresh();
-          TeamUser::addToTeam($user,$new_team->id); 
-        }
-        $user->save();
-
-        if ($sendInvitation)
-        {
-            $invitation = Invitation::create([
-              'user_id' => $user->id,
-
-              'team_id' => $user->current_team_id,
-
-              'role' => $role,
-              'email' => $user->email,
-            ]);
-            $invitation->sendEmailInviteNotification();
-            if ($role == config('constants.NEWSLETTER_ROLE_TEXT'))
-            {
-                //no community, no third party. we are done if our guys are newsletter
-                return;
-            }
-        }
-        else
-        {
-          $user->sendWelcomeEmail();
-          TeamUser::addToBaseTeam($user);     
-        }
-       
-      //  $this->makeCommunityUser($user);
-
-       // ObtainThirdPartyToken::dispatch($user);
-        $success[config('constants.thirdPartyToken')] = 'initializing';  //the job will obtain one for future use
-        return $success;
-    }
 
     /**
      * Consolidate code used in multiple places
@@ -279,9 +232,10 @@ info('addOrUpdateSubscription: '.json_encode($user));
         }
         if ($user->current_team_id == null )
         {
-          $user->current_team_id = $user->teams[0]->id;
-          $success['personal_team_id'] = $user->teams[0]->id;
-          $success['team_coach_id'] = $user->teams[0]->user_id;
+          //currently is first owned team
+          $user->current_team_id = $user->team_owner[0]->id;
+          $success['personal_team_id'] = $user->team_owner[0]->id;
+          $success['team_coach_id'] = $user->team_owner[0]->user_id;
           $success['coach_uid'] = $user->getCoachUid();
         }
         else
@@ -291,25 +245,23 @@ info('addOrUpdateSubscription: '.json_encode($user));
           $success['coach_uid'] = $user->getCoachUid();
         }
 
+        $success['team_members'] = [];
         if ($user->isInstructor())
         { 
+          if (count($user->teams) > 0 && isset($user->teams[0]))
+          {
           try{
-              $success['team_members'] = json_encode(Instructor::getTeamMembersFor($user->teams[0]->id));
+              $success['team_members'] = json_encode(Instructor::getTeamMembersFor($user->current_team_id));
             } catch (\Throwable $e) {
               Log::info($e);
               $success['team_members'] = [];
             }
           }
-        else
-        {
-          $success['team_members'] = [];
         }
         
         $app_data = $appsService->getAppSettingsBySite($site, $user,$user_access_token);
-        
         $success['app_data'] = $app_data; //configuration for setting up the app is here
 
-    //Log::info('app data being returned: ' . json_encode($success)); 
         return $success;
     }
 

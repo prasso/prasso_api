@@ -9,11 +9,11 @@
 
     <div class="items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
    
-        <x-jet-section-border />
+        <x-section-border />
        
 <section class="text-gray-700 body-font">
    
-    <div class="container px-8 pt-20 pb-24 mx-auto lg:px-4">
+    <div class="container  pt-20 pb-24 mx-auto px-4">
         <div class="shadow overflow-hidden sm:rounded-md">
             <div class="p-6 bg-white col-span-6">
                 <div class="flex flex-col w-full mb-12 text-left lg:text-center">
@@ -29,14 +29,16 @@
             
                     <x-teams-layout :selectedteam="$user->currentTeam->id" :teams="$teams" />
                 </div>
-                <div class="flex flex-col w-full p-5 mx-auto m-5 border rounded-lg l md:w-1/2 md:ml-auto md:mt-0">
+                <div class="flex flex-col w-full p-5 mx-auto m-5 border rounded-lg l ">
                 <div class="p-6 bg-white col-span-6">
-                <div class="max-w-xl text-sm text-gray-600" >
+                @if (isset($teams) && count($teams) > 0)    
+                <div class="text-sm text-gray-600" >
                     <span class="mt-5 float-right ">  <a href="{{ route('apps.edit',['teamid' => $teams[0]['id'], 'appid' => 0])   }}">
                             <i class="material-icons md-36">playlist_add</i>
                         </a>
                     </span>
                 </div>  
+                @endif
                 @if ($teamapps->isNotEmpty())
                         <h2 class="mb-5 text-xs font-semibold tracking-widest text-blue-600 uppercase title-font">
                         {{ __('Edit Application Configuration') }}

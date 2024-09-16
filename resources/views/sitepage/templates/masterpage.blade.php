@@ -17,7 +17,12 @@
         <meta name="twitter:title" content="{{ $site->site_name }} - {{ $title??'' }}" />
         <meta name="twitter:description" content="{{ $title??'' }}" />
         <meta name="twitter:image" content="{{ $site->logo_image }}" />
-        <link rel="shortcut icon" type="image/x-icon" href="{{ $site->favicon }}">
+        <link rel="icon" type="image/png" href="{{$site->favicon??''}}" />
+        <link rel="icon" type="image/png" href="{{ config('app.photo_url').$site->image_folder}}favicon-16x16.png" sizes="16x16">
+        <link rel="icon" type="image/png" href="{{ config('app.photo_url').$site->image_folder}}favicon-32x32.png" sizes="32x32">
+        <link rel="icon" sizes="192x192" href="{{ config('app.photo_url').$site->image_folder}}android-chrome-192x192.png">
+        <link rel="icon" sizes="512x512" href="{{ config('app.photo_url').$site->image_folder}}android-chrome-512x512.png">
+        <link rel="apple-touch-icon" href="{{ config('app.photo_url').$site->image_folder}}apple-touch-icon.png">
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -113,10 +118,11 @@
             }
             
             header nav ul li {float:right; padding:10px;font-weight: 900;}
-            header nav {height: 50px;margin:0; padding:3px; background:{{ $site->getNavBackgroundFromMainColor() }}; border: 1px solid {{ $site->getBorderColorFromMainColor() }};}
+            
+            header nav {padding:3px; }
             nav ul li a {color:#212429;}
             nav ul li {padding:10px;font-weight: 900;}
-            nav {min-height: 50px;margin:0; padding:3px; background: {{ $site->getNavBackgroundFromMainColor() }};border: 1px solid {{ $site->getBorderColorFromMainColor() }};}
+            nav {min-height: 50px;margin:0; padding:3px;}
 
             section {clear:both; border-bottom: solid 1px #184594; padding: 20px; margin: 20px 0;}
             section h2 {color:{{ $site->main_color }};font-size: 36px; text-align:center; margin: 0; padding: 5px;}
@@ -135,21 +141,56 @@
     </head>
     <body>
         <div class="p-12 bg-white col-span-12 items-center ">
-            <header class="flex justify-between items-center">
+            <header class="flex justify-between items-start">
                 <div class="relative col-span-3 left-0">
                 @if ($site->logo_image)
                     <img src="{{ $site->logo_image }}" alt="{{ $site->site_name }}"  class="block h-9 w-auto" />
                 @endif
                 </div>
-                <div class="p-0 m-auto">
+
+<!-- new nav with dropdown -->
+<div class="p-4 border border-solid border-gray-500">
+@if ($sitePage->section != "Dashboard")
+    <nav id="lg" class="overflow-ellipsis w-full">
+        <!-- Mobile Navigation -->
+        <div class="lg:hidden">
+            <button id="mobile-menu-btn" class="flex items-center px-3 py-2 border rounded text-gray-600 border-gray-600 hover:text-gray-800 hover:border-gray-800 focus:outline-none focus:text-gray-800 focus:border-gray-800 transition duration-150 ease-in-out">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+            <div id="mobile-menu" class="hidden bg-gray-100 mt-2">
+                <ul>
+                {!! $site->getSiteMapList() !!}
+                 <!--   <li><a class="block pl-3 pr-4 py-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition duration-150 ease-in-out" href="/page/Welcome-OLDPRASSO">Prasso - application framework</a></li>
+                 -->   
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Desktop Navigation -->
+        <ul class="hidden lg:flex">
+            {!! $site->getSiteMapList() !!}
+          <!--   <li><a class="block px-3 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out" href="/page/Welcome-OLDPRASSO">Prasso - application framework</a></li>
+           -->
+        </ul>
+    </nav>
+    @endif
+</div>
+
+
+                <!-- old
+                <div class="p-0 ml-10 m-auto  border border-solid border-gray-500">
                 @if ($sitePage->section != "Dashboard")
-                    <nav>
+                    <nav id='lg' class="overflow-ellipsis w-3/4 ml-10">
                         <ul>
                         {!! $site->getSiteMapList() !!}
                         </ul>
                     </nav>
                 @endif
                 </div>
+                -->
+
                 @if (Auth::user()!=null)
                 <div class="relative col-span-12  right-0 flex px-4">
                         <div class="flex-shrink-0">
@@ -175,6 +216,12 @@
         
         </div>
         <!-- COPYRIGHT -->
-              
+        <script>
+    // Toggle mobile menu visibility
+    document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+        document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+</script>
+
     </body>
 </html>

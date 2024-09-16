@@ -14,18 +14,6 @@ use Illuminate\Http\Request;
 class AppsService 
 {
 
-    // for apps that have no role determinations.
-    //this serves the first app only app serves only one at this time ( will possibly add more later)
-    public function getBarimorphosisAppSettings($user)
-    {
-      //  Log::info('getBarimorphosisAppSettings app id: '. config('constants.BARIMORPHOSIS_APP'));
-        $app_data = Apps::with('tabs')->with('team')
-            ->where('id',config('constants.BARIMORPHOSIS_APP'))
-            ->first();
-      //  Log::info(json_encode($app_data));
-        return json_encode($app_data);
-    }
-
      //get tabs based on the role this user plays in the app
     //(instructor will have app management features. users will not)
     public function getAppSettingsBySite(Site $site, $user,$user_access_token) 
@@ -55,8 +43,6 @@ class AppsService
             $returnval = str_replace('instructorroletabs','tabs',json_encode($app_data));
           
         }
-        //update any user specific headers
-        $returnval = str_replace(config('constants.USER_TOKEN'), $user_access_token, $returnval);
       
         if (isset($user->thirdPartyToken))
         {
@@ -88,7 +74,7 @@ class AppsService
         }
         else
         { 
-           if ( count($user->teams)<1 )
+           if ( count($user->team_owner)<1 )
            {
                //add a team for this user. it didn't happen when registered. maybe an early user
                $user->ownedTeams()->save(Team::forceCreate([
@@ -105,7 +91,7 @@ class AppsService
             if ($app_data == null )
             {
                 $app_data = $this->getBlankApp($user);
-                $app_data->team_id=$user->teams[0]->id;
+                $app_data->team_id=$user->team_owner[0]->id;
             }
         }
        
@@ -131,12 +117,11 @@ class AppsService
         {
             return '';
         }
-
+        // in this method, currently, the app is determined by the first owned team.
         $app_data = Apps::with('tabs')
-            ->where('team_id',$user->teams[0]->id)
+            ->where('team_id',$user->team_owner[0]->id)
             ->get();
 
-            
        return json_encode($app_data);
     }
 

@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SubscriptionController;
+use Laravel\Cashier\Http\Controllers\WebhookController;
+use Illuminate\Http\Request;
+
 
 Route::get('logout', function () {
     return redirect('/login');
@@ -13,25 +17,47 @@ Route::get('terms', function () {
 Route::get('privacy', function () {
     return view('privacy');
 });
-/* Route::get('contact', function () {
+Route::get('contact', function () {
     return view('contact');
 });
- */
+
 Route::post('/send-email', 'EmailController@sendEmail')->name('send-email');
 Route::get('/page/faqs', 'SiteController@seeFaqs')->name('see-faqs');
 Route::post('/question', 'SiteController@processQuestion')->name('send-question');
-Route::post('/newsletter', 'EmailController@registerEmailForNewsletter')->name('newsletter-register');
 Route::get('/confirm_newsletter_subscription', 'EmailController@confirm_newsletter_subscription')->name('confirm-newsletter-subscription');
 
 
 Route::get('/page/{section}','SitePageController@viewSitePage');
+Route::get('/page/{section}/{dataid}','SitePageController@editSitePageData');
+Route::post('/sitepages/{siteid}/{pageid}/lateTemplateData', 'SitePageController@lateTemplateData')->name('site-page.late-template-data');
+Route::post('/v1/sites/{site_name}/page_views', 'SitePageController@pageView')->name('site-page.page-view');
+
 Route::get('/give','SitePageController@giveToDonate');
 
 Route::get('/dashboard', 'SitePageController@index')->name('dashboard');
 
+Route::get('subscribe', [SubscriptionController::class, 'showSubscriptionForm'])->name('subscription.form');
+Route::post('subscribe', [SubscriptionController::class, 'createSubscription'])->name('subscription.create');
+Route::post('stripe/webhook', [WebhookController::class, 'handleWebhook']);
+Route::get('/payment/setup-intent', function (Request $request) {
+    return $request->user()->createSetupIntent();
+});
+Route::post('/payment', function (Request $request) {
+    $user = $request->user();
+    $paymentMethod = $request->input('payment_method');
 
-Route::group(['middleware'=> 'instructorusergroup'], function() {
+    $user->newSubscription('default', 'plan_id')
+        ->create($paymentMethod);
+});
 
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+    'instructorusergroup'
+])->group(function () {
+    
     Route::get('/team/{teamid}', 'TeamController@editTeam')->name('team.edit');
     Route::get('/team/{teamid}/messages', 'TeamController@setupForTeamMessages')->name('team.getmessages');
     Route::post('/team/{teamid}/postmessages', 'TeamController@processTeamMessages')->name('team.postmessages');
@@ -50,6 +76,7 @@ Route::group(['middleware'=> 'instructorusergroup'], function() {
     Route::post('/profile/profile_update_image','User2Controller@uploadProfileImage')->name('upload.post.image');
     
     Route::get('/site/edit', 'MySiteController@editMySite')->name('site.edit.mysite');
+    Route::get('/site/{siteid}/edit', 'MySiteController@editSite')->name('site.edit');
     Route::get('/site/{siteid}/livestream-mtce', 'AdminController@livestreamMtce')->name('site.mtce.livestream');
     Route::get('/site/{siteid}/livestream-mtce/{sitemediaid}', 'SiteMediaController@siteMediaEdit')->name('site.mtce.media.edit');
     Route::post('/site/{siteid}/livestream-mtce/move-to-permanent-storage', 'SiteMediaController@siteMediaCreate')->name('site.mtce.media.create');
@@ -57,14 +84,33 @@ Route::group(['middleware'=> 'instructorusergroup'], function() {
     Route::get('/visual-editor/{pageid}', 'SitePageController@visualEditor');
     Route::get('/visual-editor/getCombinedHtml/{pageid}', 'SitePageController@getCombinedHtml');
     Route::post('/site/{siteid}/{pageid}/sitePageDataPost', 'SitePageController@sitePageDataPost');
+    Route::post('/images/upload', 'ImageController@upload')->name('images.upload');
+    Route::get('/image-library', 'ImageController@index')->name('image.library');
+
+    Route::get('/getLatLonFromAddress', 'ProxyController@getLatLonFromAddress');
+
 });
 
-Route::group(['middleware'=> 'superadmin'], function() {
+
+Route::middleware([
+        'auth:sanctum',
+        config('jetstream.auth_session'),
+        'verified',
+        'superadmin'
+    ])->group(function () {
+      
+    Route::get('/profile/{userid}/update-user','User2Controller@update_user')->name('profile.updateuser');
+   
+    Route::get('/site-page-data-templates', 'SitePageDataTemplateController@index')->name('site-page-data-templates.index');
+    Route::get('/site-page-data-templates/create', 'SitePageDataTemplateController@create')->name('site-page-data-templates.create');
+    Route::get('/site-page-data-templates/{id}/edit', 'SitePageDataTemplateController@edit');
+    Route::delete('/site-page-data-templates/{id}', 'SitePageDataTemplateController@destroy');
+
     Route::get('/sitepages/{siteid}', 'SitePageController@editSitePages');
+    Route::get('/sitepages/{siteid}/{pageid}/read-tsv-into-site-page-data', 'SitePageController@readTsvIntoSitePageData')->name('site-page.read-tsv-into-site-page-data');
+
     Route::post('/save-site-page', 'SitePageController@saveSitePage');
 
-    Route::resource('Sites', SiteController::class);
+    Route::resource('Sites', \App\Http\Controllers\SiteController::class);
     Route::get('/sites', 'SiteController@index')->name('sites.show');
 });
-
-

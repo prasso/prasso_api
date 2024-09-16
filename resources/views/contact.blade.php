@@ -5,7 +5,7 @@
             {{ __('Contact') }}
         </h2>
     </x-slot>
-    <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 xl:max-w-screen-xl xl:w-3/4">
                 <div class="tyJCtd mGzaTb baZpAe lkHyyc">
         <form method="post" action="{{ route('send-email') }}">
         @csrf
@@ -27,10 +27,9 @@
         @endif
         <div class="form-group row col-8">
             <div class="form-group col-12">
-                <label for="email">Email Address(es)</label>
-                <input type="text" class="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-grey-darker border border-grey rounded" name="email" id="email" placeholder="Example: johndoe@email.com,JohnDoe@email.com, " required>
-                <small id="email" class="form-text text-muted">Enter your email address, if more than one separate with a comma</small>
-            </div>
+                <label for="email">Email Address</label>
+                <input type="text" class="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-grey-darker border border-grey rounded" name="email" id="email" placeholder="Example: johndoe@email.com" required>
+                </div>
             <div class="form-group col-12">
                 <label for="subject">Subject</label>
                 <input type="text" class="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-grey-darker border border-grey rounded"" name="subject" id="subject" placeholder="Email Subject" required>
@@ -44,7 +43,7 @@
             <div class="hidden">
             <input type="text"  name="details" id="details"  >
             </div>
-            <button type="submit" class="btn-blue hover:bg-gray-800 text-white w-full p-2">Send Inquiry</button>
+            <button type="submit" class="t-btn t-btn_xxs t-animate prasso-green hover:bg-gray-800 text-white w-full p-2">Send Inquiry</button>
         </div>
     </form>                          
                 </div>

@@ -9,9 +9,11 @@
 
             <button wire:click="create()" class="teambutton text-white font-bold py-2 px-4 rounded my-3">Create New Site</button>
             @if($isOpen)
-                @include('sites.create-or-edit')
+                @include('sites.create-or-edit', ['team_selection' => $team_selection])
             @endif          
-
+            @if($showSyncDialog)
+                @include('sites.sync-site-and-app')
+            @endif
             <table class="table-fixed w-full">
                 <thead>
                     <tr class="bg-gray-100">
@@ -29,12 +31,16 @@
                         <td class="border px-4 py-2 overflow-hidden">{{ $site->site_name }}</td>
                         <td class="border px-4 py-2 overflow-hidden">{{ $site->host }}</td>
                         <td class="border px-4 py-2"><img src="{{ $site->logo_image }}" class="block h-9 w-auto" /></td>
-                        <td class="border px-4 py-2">
-                        <button wire:click="edit({{ $site->id }})" class=" py-2 px-3 "> <i class="material-icons md-36">mode_edit</i></button>
+                        <td class="border px-2 py-2">
+                        <button wire:click="edit({{ $site->id }})" class="py-2 px-3 "> <i class="material-icons md-36">mode_edit</i></button>
                         <a href="/sitepages/{{ $site->id }}" ><i class="material-icons md-36 text-black ">list</i></a>
-                        <button onclick="return window.confirm('Are you sure you want to delete this site?')" wire:click="delete({{ $site->id }})" class="ml-3 py-2 px-3 rounded"><i class="material-icons md-36">delete_forever</i></button>
+                        <button onclick="confirmDeletion({{ $site->id }})" class="ml-3 py-2 px-3 rounded">
+                            <i class="material-icons md-36">delete_forever</i>
+                        </button>
+                        <button wire:click="showTheSyncDialog({{ $site->id }})" class="py-2 px-3"><i class="material-icons md-36">sync</i></button>
+                        
                         @if ($site->livestream_settings != null)
-                        <a href="/site/{{ $site->id }}/livestream-mtce" class="ml-3 py-2 px-3 rounded"><i class="material-icons md-36">live_tv</i></a>
+                        <a href="/site/{{ $site->id }}/livestream-mtce" class="py-2 px-3"><i class="material-icons md-36">live_tv</i></a>
                         @endif
                     </td>
                     </tr>
@@ -50,4 +56,11 @@
 
 
 
+    <script>
+    function confirmDeletion(siteId) {
+        if (window.confirm('Are you sure you want to delete this site?')) {
+            Livewire.dispatch('deleteSite', [siteId]);
+        }
+    }
+</script>
 

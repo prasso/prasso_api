@@ -6,8 +6,7 @@
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div >
-
-            @include('sites.create-or-edit')
+        @include('sites.create-or-edit', ['team_selection' => $team_selection])
         </div>
     </div>
 </div>

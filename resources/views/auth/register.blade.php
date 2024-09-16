@@ -1,12 +1,13 @@
 <x-guest-layout>
-
     <x-slot name="title">Register</x-slot>
-    <x-jet-authentication-card>
+@if(isset($site))
+@if ($site->supports_registration) 
+    <x-authentication-card>
         <x-slot name="logo">
             <img style='max-width:150px' src="{{ $site->logo_image }}" />
         </x-slot>
 
-        <x-jet-validation-errors class="mb-4" />
+        <x-validation-errors class="mb-4" />
         @if(Session::get('message'))
         <div class="relative px-3 py-3 mb-4 border rounded text-teal-800 border-teal-900 bg-teal-300">
                 <ul>
@@ -18,31 +19,32 @@
             @csrf
 
             <div>
-                <x-jet-label value="{{ __('Name') }}" />
-                <x-jet-input class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+                <x-label value="{{ __('Name') }}" />
+                <x-input class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
             </div>
 
             <div class="mt-4">
-                <x-jet-label for="email" value="{{ __('Email') }}" />
+                <x-label for="email" value="{{ __('Email') }}" />
                 @if (app('request')->input('email'))
-                <x-jet-input id="email" class="block mt-1 w-full" type="email" name="email" value="{{ app('request')->input('email') }}" required />
+                <x-input id="email" class="block mt-1 w-full" type="email" name="email" value="{{ app('request')->input('email') }}" required />
                 @else
-                <x-jet-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
+                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
                 @endif
-            </div>
+                <input type="hidden" name="billing_address"  />
+             </div>
             @if (app('request')->input('invite'))
-            <x-jet-input id="invite" class="hidden" type="hidden" name="invite" value="{{ app('request')->input('invite') }}" required />
+            <x-input id="invite" class="hidden" type="hidden" name="invite" value="{{ app('request')->input('invite') }}" required />
             @endif
 
 
             <div class="mt-4">
-                <x-jet-label value="{{ __('Password') }}" />
-                <x-jet-input class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
+                <x-label value="{{ __('Password') }}" />
+                <x-input class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
             </div>
 
             <div class="mt-4">
-                <x-jet-label value="{{ __('Confirm Password') }}" />
-                <x-jet-input class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
+                <x-label value="{{ __('Confirm Password') }}" />
+                <x-input class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
             </div>
 
             <div class="flex items-center justify-end mt-4">
@@ -50,10 +52,12 @@
                     {{ __('Already registered?') }}
                 </a>
 
-                <x-jet-button class="ml-4">
+                <x-button class="ml-4">
                     {{ __('Register') }}
-                </x-jet-button>
+                </x-button>
             </div>
         </form>
-    </x-jet-authentication-card>
+    </x-authentication-card>
+@endif
+@endif
 </x-guest-layout>
