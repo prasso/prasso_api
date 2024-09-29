@@ -1,5 +1,6 @@
 
 ### Site Page Data Templates Overview
+provided from original source by https://chatgpt.com/share/66f55184-4bd4-8008-be62-a981ea812b70
 
 Site Page Data Templates are a powerful feature in the Prasso developer framework used to define how data is retrieved, processed, and displayed on specific pages. These templates streamline the interaction between the backend and frontend by specifying a clear, structured approach for querying and formatting data.
 
@@ -58,7 +59,7 @@ Below is an example of how a data template is structured in the system:
    Specifies what will be returned if no data matches the query. This is useful to ensure that the frontend receives a predictable response, even when there is no data. The example leaves it blank, meaning an empty JSON object (`{}`) will be returned if the query yields no results.
 
 #### 9. **Template Data Query**
-   Specifies the field that will be used to extract the data from the query. In the example, the field is `json_data`, suggesting that the data is stored in JSON format, and this is the key from which data will be extracted.
+   Specifies the field that will be used to extract the data from the query. In the example, the field is `json_data`, suggesting that the data is stored in JSON format, and this is the field/key name from which data will be extracted.
 
 ### Example Use Case
 
