@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Models\SitePages;
 use App\Models\MasterPage;
 use Faxt\Invenbin\Support\Facades\InvenbinPanel;
+use Prasso\Messaging\Support\Facades\MessagingPanel;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -27,7 +28,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-     InvenbinPanel::register();
+      MessagingPanel::register();
+      InvenbinPanel::register();
     }
 
     /**

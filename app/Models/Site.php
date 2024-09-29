@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use Faxt\Invenbin\Models\ErpProduct;
 use Auth;
 use Schema;
 /**
@@ -63,6 +64,31 @@ class Site extends Model
     public function sitePages()
     {
         return $this->hasMany(\App\Models\SitePages::class, "fk_site_id", "id");
+    }
+
+    // Site.php Model
+    public function stripe()
+    {
+        return $this->hasOne(Stripe::class); // Or whatever the actual relationship is
+    }
+    /**
+     * Get the Stripe key for the site. If no related stripe record exists, return the default key from config.
+     *
+     * @return string
+     */
+    public function getStripeKeyAttribute()
+    {
+        // If the site has a related Stripe record, return the key, otherwise return the default key from config
+        return $this->stripe ? $this->stripe->key : config('services.stripe.key');
+    }
+
+    /**
+     * The products that are associated with the site.
+     */
+    public function erpProducts()
+    {
+        return $this->belongsToMany(ErpProduct::class, 'site_erp_products', 'site_id', 'erp_product_id')
+                    ->withTimestamps();
     }
 
     public function getApp()

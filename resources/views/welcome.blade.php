@@ -79,7 +79,7 @@
         
      <div class='t396__elem tn-elem  tn-elem__3080480481470209944682' data-elem-id='1470233923389' data-elem-type='text'>
  
-<div class='tn-atom' style="font-size:32px !important;" >accelerated development of software to support your business</div>
+<div class='tn-atom' style="font-size:32px !important;" >accelerating success with tailored hosting and development</div>
 
 </div>
 
@@ -100,9 +100,22 @@
                     <iframe width="560" height="315" src="https://www.youtube.com/embed/bBe3Qu7fxeY?si=gEcL8QaAVll59U0k" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
                 <div class="t467__descr t-descr t-descr_xl t-margin_auto">
-                    <h2 class="t467__title t-title t-title_lg t-margin_auto prasso-green-font " >In Summary</h2>
-                    <div>Prasso streamlines the creation of mobile apps that are intricately linked to their corresponding sites. When a site is created through the wizard, a mobile app is automatically generated to work with the site's API. This app is configured via the API admin, where web pages are added as tabs. The app host identifies the site and tab data, sends this information back as JSON, which the mobile app then parses to display the content dynamically. This process ensures a unified and seamless user experience across both web and mobile platforms, providing up-to-date information and features directly to users' devices.</div>
-                </div>
+                  <h2 class="t467__title t-title t-title_lg t-margin_auto prasso-green-font">In Summary</h2>
+                  <div>
+                  Prasso simplifies digital transformation by offering seamless integration between mobile apps and websites. 
+                  With Prasso, when you create a new site, a fully functional mobile app can also be generated. 
+                  Our solution enables businesses to manage web content and mobile app features from a single API dashboard. 
+                  This eliminates the need for separate development efforts, reducing time and costs.
+                  </div>
+              </div>
+
+
+
+
+
+
+
+
             </div>
             
         </div>

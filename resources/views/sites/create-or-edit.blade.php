@@ -42,6 +42,17 @@
             {{ __('Edit Mobile App') }}
         </div>
     </x-responsive-nav-link>
+    <!-- Link to the ErpProduct Editor -->
+    <x-responsive-nav-link href="{{ url('/admin/erp-products') }}">
+    <div class="flex items-center">
+        <!-- Inventory icon (you can replace this with any icon you want) -->
+        <svg class="h-5 w-5 text-gray-600 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 3.5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2v-14zM10 8h4M10 12h4"/>
+        </svg>
+        {{ __('Edit Erp Products') }}
+    </div>
+</x-responsive-nav-link>
+
 </div>
 
                 <input type="hidden" wire:model="site_id" />

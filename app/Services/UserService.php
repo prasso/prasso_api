@@ -91,42 +91,56 @@ class UserService
 
       //Sites have teams ( may be one or may be many ) and users are attached to teams
       // that determines if the user is a member of the site
-      $team = $site->teams->first();
-      if ($team->user_id == $user->id)
-      {
-        //the user is the owner of the team, so they are on the team and as owner they have access to edit 
-        return true;
-      }
-      // Build the query
-      $query = TeamUser::where('user_id', $user->id)->where('team_id', $team->id);
+      foreach ($site->teams as $team) {
+        // Check if the user is the owner of the team
+        if ($team->user_id == $user->id) {
+            // The user is the owner of the team, so they have access to edit
+            return true;
+        }
 
-      // // if need to troubleshoot user login: Get the SQL query with placeholders
-      // $sql = $query->toSql();
-      // Log::info($sql);
-      $teamuser = $query->first();
-      if ($teamuser != null)
-      {
-        return true;
+        // Build the query to check if the user is a member of the team
+        $isMember = TeamUser::where('user_id', $user->id)
+                            ->where('team_id', $team->id)
+                            ->exists();
+
+        if ($isMember) {
+            // The user is a member of one of the teams, grant access
+            return true;
+        }
       }
+
+      // If no matching team found, deny access
       return false;
+
     }
 
     // create the instructor access and return success
     public function addOrUpdateSubscription($request, $user, $appsService, $site)
     {
-      $inputs =  $request->json()->all();
-info('addOrUpdateSubscription: '.json_encode($user));
-        //if subscribed, add the instructor role to user_roles if this user doesn't have it
+        $inputs = $request->json()->all();
+        info('addOrUpdateSubscription: ' . json_encode($user));
+
+        // If subscribed, add the instructor role to user_roles if this user doesn't have it
         $instructoruser = $this->instruc->fetchUserByCredentials($user->email);
-        if ($instructoruser == null)
-        {
-          $this->instruc->setupAsInstructor($user);
+        
+        if ($instructoruser == null) {
+            $this->instruc->setupAsInstructor($user);
         }
-        $success = $this->buildConfigReturn($user, $appsService, $site);
-       $success['status'] = 'success'; 
-       return $success;
-      
+
+        // Initialize the success response
+        $success = [];
+
+        // Conditionally call buildConfigReturn if $site is not null
+        if ($site) {
+            $success = $this->buildConfigReturn($user, $appsService, $site);
+        }
+
+        // Set the success status regardless of the $site
+        $success['status'] = 'success'; 
+
+        return $success;
     }
+
 
 
     public function saveUser($request)

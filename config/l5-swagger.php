@@ -53,6 +53,7 @@ return [
                 'annotations' => [
                     base_path('app'),
                     base_path('packages/faxt/invenbin/src'),
+                    base_path('packages/prasso/messaging/src'),
                 ],
 
             ],

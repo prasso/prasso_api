@@ -177,7 +177,7 @@ class NewSiteAndApp extends Component
         $site = $this->newSite::create($newSite);
 
         $this->current_user = Auth::user();
-        $team = Team::firstOr( $this->team_id);
+        $team = Team::firstWhere('id', $this->team_id);
 
         //need a team site record
         //need a team member record for this user when the team is created for this user_error
