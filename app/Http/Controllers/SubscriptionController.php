@@ -20,55 +20,46 @@ class SubscriptionController extends BaseController
     public function __construct(Request $request, UserService $userServ, AppsService $appsServ)
     {
         parent::__construct( $request);
-
-        $this->middleware('instructorusergroup');
         $this->userService = $userServ;
         $this->appsService = $appsServ;
     }
-    
-    /*public function showSubscriptionForm()
-    {
-        $user = Auth::user();
-
-        // Ensure the user is a Stripe customer
-        if (!$user->hasStripeId()) {
-            $user->createAsStripeCustomer();
-        }
-
-    // Create a PaymentIntent with a specific amount
-    $intent = Cashier::stripe()->paymentIntents->create([
-        'amount' => 1000, // Example amount in cents (adjust as necessary)
-        'currency' => 'usd',
-        'customer' => $user->stripe_id,
-    ]);
-
-    
-        return view('subscription.form', compact('intent'));
-    }*/
 
     public function showSubscriptionForm(Request $request)
-{
-    // Generate a SetupIntent for the authenticated user
-    $setupIntent = $request->user()->createSetupIntent();
-    
-    // Get the list of Stripe products/plans (this could be fetched from your database or an external source)
-    $products = [
-        'none' => 'Select a Plan',
-        config('constants.STRIPE_MONTHLY_HOSTING_SMALL_BUSINESS_PRICE') => 'Small Business Monthly Hosting',
-        config('constants.STRIPE_DEVELOPER_10_HR_MO_PRICE') => 'Developer Support (Tier 1)',
+    {
+        // Get the current site (you might retrieve it differently, depending on your app's structure)
+        $site = $this->site;
 
-    ];
+        // Retrieve the Stripe key from the Site model's Stripe relationship
+        $stripeKey = $site->stripe_key; // Assuming the 'stripe' relationship returns the Stripe details
 
-    // Return the view with the setupIntent and products
-    return view('subscription.form', [
-        'setupIntent' => $setupIntent,
-        'products' => $products
-    ]);
-}
+        // Generate a SetupIntent for the authenticated user using the site's Stripe configuration
+        $setupIntent = $request->user()->createSetupIntent();
+
+        // Retrieve subscription products from the ErpProduct model based on site_id and related product_type
+        $productList = [
+            'none' => 'Select a Plan'  // Add the default option at the start of the array
+        ];
+
+        // Get subscription products related to the site
+        $subscriptionProducts = $site->erpProducts()
+            ->whereHas('type', function ($query) {
+                $query->where('product_type', 'Subscription');
+            })
+            ->get();
+
+        // Map the retrieved products to the format ['id' => 'product_name']
+        $productList += $subscriptionProducts->pluck('product_name', 'sku')->toArray();
+
+        // Return the view with the setupIntent and products
+        return view('subscription.form', [
+            'setupIntent' => $setupIntent,
+            'products' => $productList,
+            'stripeKey' => $stripeKey, // Pass the Stripe key to the view for JavaScript initialization
+        ]);
+    }
 
     public function createSubscription(Request $request)
     {
-        info('in subscribe');
         $user = Auth::user();
         $data = $request->all();
 
@@ -84,15 +75,15 @@ class SubscriptionController extends BaseController
             $user->updateDefaultPaymentMethod($paymentMethod);
 
             $user->newSubscription('default', $subscriptionProduct)->create($paymentMethod);
-info('succeeded');
-           // return redirect('/dashboard')->with('message', 'Subscription created successfully!'); 
+            //add instructor level if product is subscription
+            $this->userService->addOrUpdateSubscription($request, $user, $this->appsService, null); //set site to null, it is not necessary for this code to work
+
             $success['message'] = 'Subscription created successfully!';
 
             return $this->sendResponse($success, 'User subscribed.');
         } catch (\Exception $e) {
             info('failed with error: '.$e->getMessage());
             $this->adminNotifyOnError($e->getMessage());
-           // return response()->json(['status' => 'Subscription failed', 'error' => $e->getMessage()], 500);
             return $this->sendError('Subscription failed.',  $e->getMessage());   
         }
    

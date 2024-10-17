@@ -44,10 +44,23 @@
 <link rel="stylesheet" media="all" href="https://images.prasso.io/fbc/cdn.files/_user_generated_stylesheets/published_fonts_1210c48d-3bc6-4059-b211-ccceae4a8d6a_275370be77490640d1a637c4ba2f42bf.css" id="font-css" />
 <link rel="stylesheet" media="all" href="https://images.prasso.io/fbc/cdn.files/_user_generated_stylesheets/published_tweaks_1210c48d-3bc6-4059-b211-ccceae4a8d6a_74e0c2dd5e4fed4f834f88c72f6ba20d.css" id="tweak-css" />
 <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+@if (isset($site->app_specific_js) && str_starts_with($site->app_specific_js, 'http') )
+         <script src="{!! $site->app_specific_js !!}"></script>
+      @else
+         <script>{!! $site->app_specific_js !!}</script>
+      @endif
 
-   @if (isset($sitePage->style)  )
-            <style>{!! $sitePage->style !!}</style>
-        @endif
+   
+      <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+      @if (isset($site->app_specific_css) && str_starts_with($site->app_specific_css, 'http') )
+         <link rel="stylesheet" href="{{$site->app_specific_css}}">
+      @else
+         <style>{!! $site->app_specific_css !!}</style>
+      @endif
+
+@if (isset($sitePage->style)  )
+         <style>{!! $sitePage->style !!}</style>
+      @endif
 
 
         <script data-turbolinks-eval="false">
