@@ -40,7 +40,7 @@ class Instructor extends User
 
      public function setupAsInstructor($user)
      {
-         $userExistingInstructorRole = $user->roles()->where('name', 'instructor')->first();
+         $userExistingInstructorRole = $user->roles()->where('role_name', 'instructor')->first();
         if (!isset($userExistingInstructorRole))
         {
             UserRole::forceCreate([
@@ -48,9 +48,15 @@ class Instructor extends User
             'role_id' => config('constants.INSTRUCTOR')
           ]);
         }
-        TeamUser::removeTeamMembership($user, config('constants.DEFAULT_COACH_TEAM_ID'));
-        $personalteam = TeamUser::where('user_id','=', $user->id)->first();
-        $user->current_team_id = $personalteam->team_id;
+        // Keep the user in the default team and don't remove them from it
+        $defaultTeamId = config('constants.DEFAULT_COACH_TEAM_ID');
+
+        // Query for the user's teams excluding the default team
+        $personalTeam = TeamUser::where('user_id', $user->id)
+                                ->where('team_id', '!=', $defaultTeamId)
+                                ->first();
+
+        $user->current_team_id = $personalTeam->team_id;
         $user->save();
         //this user's personal team is now this user's team
         

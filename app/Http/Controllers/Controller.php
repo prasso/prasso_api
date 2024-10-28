@@ -68,7 +68,7 @@ class Controller extends FrameworkController
         ];
 
         if(!empty($errorMessages)){
-            $response['data'] = $errorMessages;
+            $response['error_message'] = json_encode($errorMessages);
         }
 
         return response()->json($response, $code);
@@ -77,7 +77,7 @@ class Controller extends FrameworkController
     public function adminNotifyOnError($message){
         //notify me admin error
         try{
-            Mail::to('info@prasso.io', 'Prasso Admin')->send(new admin_error_notification($this));
+            Mail::to('info@prasso.io', 'Prasso Admin')->send(new admin_error_notification($message));
         }catch(\Throwable $e){
             Log::info("Error sending email: {$message}");
             Log::info($e);

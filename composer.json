@@ -11,7 +11,6 @@
         "php": "^8.2",
         "darkaonline/l5-swagger": "^8.6",
         "faxt/invenbin": "dev-main",
-        "prasso/messaging": "dev-main",
         "filament/filament": "^3.2",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/cashier": "^15.4",
@@ -21,6 +20,7 @@
         "laravel/tinker": "^2.8",
         "league/flysystem-aws-s3-v3": "^3.19",
         "livewire/livewire": "^3.0",
+        "prasso/messaging": "dev-main",
         "twilio/sdk": "^6.27"
     },
     "repositories": [

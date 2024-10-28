@@ -86,11 +86,11 @@ php artisan serve
 
 **[Text Overlay:**
 ```
-composer require faxt/invenbin:dev-master
+composer require faxt/invenbin:dev-main
 ``]**
 
 **Host (Voiceover):**  
-"If you want a specific version, just replace 'dev-master' with the desired version."
+"If you want a specific version, just replace 'dev-main' with the desired version."
 
 ---
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Actions\Fortify;
+namespace Tests\Unit;
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Models\User;
