@@ -106,7 +106,7 @@ class SitePageService
                 ->get();
              //process consolidation to share code that ensures consistent format
              if ($data->isEmpty()) {
-                $json_data = $template_data->default_blank ?? "";
+                $json_data = $template_data->default_blank ?? "[]";
             } else {
                 $json_data = $data->toJson();
             }
