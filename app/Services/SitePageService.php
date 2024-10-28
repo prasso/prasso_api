@@ -92,7 +92,7 @@ class SitePageService
                 $query = $query->orderBy($fieldInOrder, $ascDesc);
             }
             
-            if ($user != null) {
+            if ($user != null && !$user->isSuperAdmin()) {
                 $subteamIds = [];
                 if ($user != null){
                     $subteamIds = $user->team_member->pluck('team_id')->toArray();
