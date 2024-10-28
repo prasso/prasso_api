@@ -34,7 +34,7 @@
          <link href="/js/google-fonts-material-icon.css" rel="stylesheet">
          <link rel="stylesheet" href="/js/google-material-design-iconic-font.2.2.0.min.css">
          <link href="/js/google-fonts-Roboto.css" rel="stylesheet"> 
-         <script src="/js/jqueryui.1.12.1.min.css"></script>
+         <link rel="stylesheet" href="/js/jqueryui.1.12.1.min.css">
          <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
          <!-- Scripts -->
          <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.2.1/dist/alpine.js" defer></script>
