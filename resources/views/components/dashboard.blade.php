@@ -32,7 +32,13 @@
                 </div>
             </div>
            @else
-                @if ((\App\Models\Site::isPrasso(parse_url(url()->current(), PHP_URL_HOST)) && Auth::user()->isSuperAdmin()) || (Auth::user()->isInstructor() && Auth::user()->getSiteCount() == 0))
+                @php
+                    $isPrassoSite = \App\Models\Site::isPrasso(parse_url(url()->current(), PHP_URL_HOST));
+                    $isSuperAdmin = Auth::user()->isSuperAdmin();
+                    $isInstructorWithNoSites = Auth::user()->isInstructor() && Auth::user()->getSiteCount() == 0;
+                @endphp
+
+                @if ($isPrassoSite && ($isSuperAdmin || $isInstructorWithNoSites))
                 <div class="max-w-md m-auto">
                     <x-responsive-nav-link href="{{ route('apps.newsiteandapp', Auth::user()->current_team_id)  }}">
                         <div class="text-center bg-gray-50 border-2 border-indigo-600/100">
@@ -69,10 +75,11 @@
                         </div>
                     </x-responsive-nav-link>
 
-                    {!! $user_content !!}
                 </div>
                 @endif
                 @endif
+
+                {!! $user_content !!}
             @endif
             <div class="grid max-w-xs m-auto">
                 <div class="row">

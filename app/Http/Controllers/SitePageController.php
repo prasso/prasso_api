@@ -80,15 +80,21 @@ class SitePageController extends BaseController
             return redirect('/login');
         }
         $user_content='';
+       
         // if the site supports registration, check to see if the site has a DASHBOARD site_page
-        if ( $this->site != null && strcmp($this->site->site_name, config('app.name')) != 0)
-        {
-            $dashboardpage = SitePages::where('fk_site_id',$this->site->id)->where('section','Dashboard')->first();
-            if ($dashboardpage != null)
-            {    
-                $user_content = $this->prepareTemplate($dashboardpage, $request->path());
+        // Check if the current site exists and is not the main application site
+        if ($this->site !== null && strcmp($this->site->site_name, config('app.name')) !== 0) {
+            // Try to find a custom dashboard page for the current site
+            $dashboardPage = SitePages::where('fk_site_id', $this->site->id)
+                ->where('section', 'Dashboard')
+                ->first();
+
+            // If a custom dashboard page exists, prepare its content
+            if ($dashboardPage !== null) {    
+                $user_content = $this->prepareTemplate($dashboardPage, $request->path());
             }
         }
+        // Render the dashboard view with either custom content or default content
         return view('dashboard')->with('user_content', $user_content);
     }
     private function getMaster($sitepage) {
