@@ -116,4 +116,12 @@
 
 
                     </div>
+                     <!-- New Stripe Key and Secret fields -->
+                    <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
+                        <label for="stripe_key" class="block text-sm font-medium text-gray-700">Stripe Key</label>
+                        <input type="text" id="stripe_key" wire:model="stripe_key" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="Enter Stripe Key">
+                        
+                        <label for="stripe_secret" class="block mt-4 text-sm font-medium text-gray-700">Stripe Secret</label>
+                        <input type="password" id="stripe_secret" wire:model="stripe_secret" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="Enter Stripe Secret">
+                    </div>
                 </div>

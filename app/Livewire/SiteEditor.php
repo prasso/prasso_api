@@ -11,6 +11,7 @@ use App\Http\Requests\SiteRequest;
 use App\Models\Site;
 use App\Models\Apps;
 use App\Models\Tabs;
+use App\Models\Stripe;
 use Auth;
 use Livewire\WithFileUploads;
 use App\Services\AppSyncService;
@@ -25,6 +26,8 @@ class SiteEditor extends Component
     public $sites, $site_id,$site_name,$description, $host,$main_color,$logo_image, 
             $database, $favicon, $supports_registration, $subteams_enabled, $app_specific_js, $app_specific_css,
             $does_livestreaming,$https_host, $image_folder,$invitation_only;
+    public $stripe_key, $stripe_secret;
+
     public $sitePages;
     public $current_user;
     public $isOpen = 0;
@@ -102,6 +105,14 @@ class SiteEditor extends Component
         $this->app_specific_css = $site->app_specific_css;
         $this->image_folder = $site->image_folder;
 
+        // Initialize stripe_key and stripe_secret if the stripe relationship has data
+        if ($site->stripe) {
+            $this->stripe_key = $site->stripe->key;
+            $this->stripe_secret = $site->stripe->secret;
+        } else {
+            $this->stripe_key = '';
+            $this->stripe_secret = '';
+        }
 
         $this->sitePages = $site->sitePages;
         $this->showSyncDialog = true;
@@ -139,6 +150,10 @@ class SiteEditor extends Component
         $this->app_specific_css = '';
         $this->photo = null;
         $this->image_folder = '';
+        
+        $this->stripe_key = '';
+        $this->stripe_secret = '';
+    
     }
      
     /**
@@ -178,7 +193,16 @@ class SiteEditor extends Component
             'app_specific_css' => $this->app_specific_css,
             'image_folder' => $this->image_folder,
         ]);
-  
+        
+        $this->site_id = $site->id;
+
+        // Save to stripe table only if stripe_key and stripe_secret are not empty
+        if (!empty($this->stripe_key) && !empty($this->stripe_secret)) {
+            Stripe::updateOrCreate(
+                ['site_id' => $this->site_id],
+                ['key' => $this->stripe_key, 'secret' => $this->stripe_secret]
+            );
+        }
 
         $this->current_user = Auth::user();
         // new sites need a new team for their users
@@ -249,6 +273,14 @@ class SiteEditor extends Component
         $this->app_specific_js = $site->app_specific_js;
         $this->app_specific_css = $site->app_specific_css;
         $this->image_folder = $site->image_folder;
+
+        if ($site->stripe) {
+            $this->stripe_key = $site->stripe->key;
+            $this->stripe_secret = $site->stripe->secret;
+        } else {
+            $this->stripe_key = '';
+            $this->stripe_secret = '';
+        }      
 
         $this->openModal();
     }
