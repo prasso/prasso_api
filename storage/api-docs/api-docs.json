@@ -1181,9 +1181,9 @@
                 "operationId": "8880204a34698a053e06cf321e2664c5",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "guid",
                         "in": "path",
-                        "description": "ID of the product",
+                        "description": "GUID of the product",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1583,6 +1583,2827 @@
                     }
                 ]
             }
+        },
+        "/api/alerts/emergency": {
+            "post": {
+                "tags": [
+                    "Alerts"
+                ],
+                "summary": "Send an emergency alert",
+                "description": "Send an emergency alert via SMS, email, or voice broadcast to selected recipients.",
+                "operationId": "24c53f9fa1137402eabd1f6d2a722ee8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "message",
+                                    "recipients",
+                                    "channels"
+                                ],
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "This is an emergency alert."
+                                    },
+                                    "recipients": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "channels": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "sms"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Emergency alert sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Emergency alert sent successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/alerts/news": {
+            "post": {
+                "tags": [
+                    "Alerts"
+                ],
+                "summary": "Send a news update",
+                "description": "Send a news update via SMS, email, or voice broadcast to selected recipients.",
+                "operationId": "2a01d6fa27c9d319bed5ab566c2c79d2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "message",
+                                    "recipients",
+                                    "channels"
+                                ],
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "This is a news update."
+                                    },
+                                    "recipients": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "channels": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "email"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "News update sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "News update sent successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/campaigns": {
+            "get": {
+                "tags": [
+                    "Campaigns"
+                ],
+                "summary": "Get all campaigns",
+                "description": "Retrieve a list of all campaigns.",
+                "operationId": "329032805d16752287989d9e9a7b5477",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Easter Event Campaign"
+                                            },
+                                            "status": {
+                                                "type": "string",
+                                                "example": "draft"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2024-09-30T12:34:56Z"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Campaigns"
+                ],
+                "summary": "Create a new campaign",
+                "description": "Create and store a new campaign.",
+                "operationId": "5f076329e1a1f9b4a4e196ed48961d1a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Easter Event Campaign"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Campaign created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Easter Event Campaign"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "draft"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/campaigns/{id}": {
+            "get": {
+                "tags": [
+                    "Campaigns"
+                ],
+                "summary": "Get a specific campaign",
+                "description": "Retrieve a single campaign by its ID.",
+                "operationId": "8744b9451d6bd9019d926895e53a3ea1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Easter Event Campaign"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "draft"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Campaign not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Campaigns"
+                ],
+                "summary": "Update campaign details",
+                "description": "Update the details of a specific campaign.",
+                "operationId": "ffff2f170f7f6dd889da0feea6e4c486",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Campaign Name"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Campaign updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Updated Campaign Name"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "draft"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Campaign not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Campaigns"
+                ],
+                "summary": "Delete a campaign",
+                "description": "Delete a specific campaign by its ID.",
+                "operationId": "4278fc51a5afaae9a114db2da8b273d2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Campaign deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Campaign deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Campaign not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/campaigns/{id}/messages": {
+            "post": {
+                "tags": [
+                    "Campaigns"
+                ],
+                "summary": "Add a message to a campaign",
+                "description": "Associate a message with a campaign.",
+                "operationId": "77cf59d81f9a04bdfd74284b9618f989",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "message_id"
+                                ],
+                                "properties": {
+                                    "message_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Message added to campaign successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Message added to campaign successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Campaign or Message not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/campaigns/{id}/launch": {
+            "post": {
+                "tags": [
+                    "Campaigns"
+                ],
+                "summary": "Launch a campaign",
+                "description": "Launch the campaign and send all scheduled messages.",
+                "operationId": "ecbe566fc3d1cdbd59052165c89c14e5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Campaign launched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Campaign launched successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Campaign not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/engagements": {
+            "get": {
+                "tags": [
+                    "Engagements"
+                ],
+                "summary": "Get all engagements",
+                "description": "Retrieve a list of all engagements, including contests, polls, and surveys.",
+                "operationId": "3fa675178a06910ad48b6216c27df82b",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "title": {
+                                                "type": "string",
+                                                "example": "Weekly Survey"
+                                            },
+                                            "type": {
+                                                "type": "string",
+                                                "example": "survey"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2024-09-30T12:34:56Z"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Engagements"
+                ],
+                "summary": "Create a new engagement",
+                "description": "Create a new engagement, such as a contest, poll, or survey.",
+                "operationId": "60c54d8b8f57eb5ccd86f82e9161d7eb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "type"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Weekly Survey"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "example": "survey"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Engagement created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Weekly Survey"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "example": "survey"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/engagements/{id}": {
+            "get": {
+                "tags": [
+                    "Engagements"
+                ],
+                "summary": "Get a specific engagement",
+                "description": "Retrieve details of a specific engagement by its ID.",
+                "operationId": "2e98ca402842ee84b62fe58a71b92681",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Weekly Survey"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "example": "survey"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Engagement not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Engagements"
+                ],
+                "summary": "Update an engagement",
+                "description": "Update the details of a specific engagement by its ID.",
+                "operationId": "5e713d3e6e2ed625ff6781c93e309f1f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "type"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Updated Survey"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "example": "survey"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Engagement updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Updated Survey"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "example": "survey"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Engagement not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Engagements"
+                ],
+                "summary": "Delete an engagement",
+                "description": "Delete a specific engagement by its ID.",
+                "operationId": "9d8329b65877a84a0fbc1227ae4e1496",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Engagement deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Engagement deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Engagement not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/engagements/{id}/responses": {
+            "post": {
+                "tags": [
+                    "Engagements"
+                ],
+                "summary": "Record a guest's response to an engagement",
+                "description": "Record the response of a guest to a specific engagement, such as a poll, survey, or contest.",
+                "operationId": "284d9c70608b46c8e5ac71d62d3054b0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "guest_id",
+                                    "response"
+                                ],
+                                "properties": {
+                                    "guest_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "response": {
+                                        "type": "string",
+                                        "example": "Yes"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Response recorded successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Response recorded successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Engagement not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/events": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "List all events",
+                "description": "Retrieve a list of all events in the system.",
+                "operationId": "5bd8f44c6eb1fb2232461b96ea5aa77f",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Annual Conference"
+                                            },
+                                            "date": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "2024-12-10"
+                                            },
+                                            "location": {
+                                                "type": "string",
+                                                "example": "Main Hall"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No events found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Create a new event",
+                "description": "Create a new event by providing event details.",
+                "operationId": "093cfec10df8dc90b4fe7ae0afe8a0cf",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "date",
+                                    "location"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Annual Conference"
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-12-10"
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "example": "Main Hall"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Event created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Annual Conference"
+                                        },
+                                        "date": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2024-12-10"
+                                        },
+                                        "location": {
+                                            "type": "string",
+                                            "example": "Main Hall"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/events/{id}": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "View a specific event",
+                "description": "Retrieve details of a specific event by its ID.",
+                "operationId": "3ffb59343bb205a17f4fb788e75bda86",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Event ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Event details retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Annual Conference"
+                                        },
+                                        "date": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2024-12-10"
+                                        },
+                                        "location": {
+                                            "type": "string",
+                                            "example": "Main Hall"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Event not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Update event details",
+                "description": "Update details of an existing event by its ID.",
+                "operationId": "601c27a9696cdb07afd58abe9dcea750",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Event ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Event Name"
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-12-15"
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "example": "Updated Location"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Event updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Updated Event Name"
+                                        },
+                                        "date": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2024-12-15"
+                                        },
+                                        "location": {
+                                            "type": "string",
+                                            "example": "Updated Location"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Event not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Delete an event",
+                "description": "Delete an event by its ID.",
+                "operationId": "8d343d6ac14433f5bb3b68c3a126e507",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Event ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Event deleted successfully"
+                    },
+                    "404": {
+                        "description": "Event not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/events/{id}/reminders": {
+            "post": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Schedule event reminders",
+                "description": "Schedule reminders for an event, to be sent before the event date.",
+                "operationId": "dd523def39e1107171d0f3169ffe3da2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Event ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "reminder_date"
+                                ],
+                                "properties": {
+                                    "reminder_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-12-09"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Reminder scheduled successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Reminder scheduled successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Event not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/guests": {
+            "get": {
+                "tags": [
+                    "Guests"
+                ],
+                "summary": "Get all guests",
+                "description": "Retrieve a list of all guests.",
+                "operationId": "9067951c5674e36e9ca7c1ee7055c8da",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "John Doe"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "example": "johndoe@example.com"
+                                            },
+                                            "phone": {
+                                                "type": "string",
+                                                "example": "123-456-7890"
+                                            },
+                                            "is_converted": {
+                                                "type": "boolean",
+                                                "example": false
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Guests"
+                ],
+                "summary": "Create a new guest",
+                "description": "Add a new guest to the system.",
+                "operationId": "206f73e14b959c1a2506a855a810acae",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Jane Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "janedoe@example.com"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "123-456-7890"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Guest created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Jane Doe"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "janedoe@example.com"
+                                        },
+                                        "phone": {
+                                            "type": "string",
+                                            "example": "123-456-7890"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/guests/{id}": {
+            "get": {
+                "tags": [
+                    "Guests"
+                ],
+                "summary": "Get a specific guest",
+                "description": "Retrieve a single guest by their ID.",
+                "operationId": "51763bf6e82e67cc24382146037efdcc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Jane Doe"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "janedoe@example.com"
+                                        },
+                                        "phone": {
+                                            "type": "string",
+                                            "example": "123-456-7890"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Guest not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Guests"
+                ],
+                "summary": "Update guest details",
+                "description": "Update the details of a specific guest by ID.",
+                "operationId": "93bfca63a75b495d7e6e3bc0204a561c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Smith"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "johnsmith@example.com"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "987-654-3210"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Guest updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "John Smith"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "johnsmith@example.com"
+                                        },
+                                        "phone": {
+                                            "type": "string",
+                                            "example": "987-654-3210"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Guest not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Guests"
+                ],
+                "summary": "Delete a guest",
+                "description": "Delete a guest by their ID.",
+                "operationId": "0e9e461223e8fd07beb0c499021c366a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Guest deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Guest deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Guest not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/guests/{id}/convert": {
+            "post": {
+                "tags": [
+                    "Guests"
+                ],
+                "summary": "Convert a guest",
+                "description": "Mark a guest as converted (e.g., first-time guest to regular attendee).",
+                "operationId": "a50ea8b9d1c93b79c95a0e8e44c4311c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Guest converted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Guest converted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Guest not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/guests/{id}/engage": {
+            "post": {
+                "tags": [
+                    "Guests"
+                ],
+                "summary": "Engage a guest with a message or campaign",
+                "description": "Engage a guest by sending a message or enrolling them in a campaign.",
+                "operationId": "d838f1d3336fc42ec3594f30a54fd158",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "message_id"
+                                ],
+                                "properties": {
+                                    "message_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Guest engaged successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Guest engaged successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Guest or message not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/guest-messages": {
+            "get": {
+                "tags": [
+                    "Guest Messages"
+                ],
+                "summary": "Get all guest messages",
+                "description": "Retrieve a list of all messages sent to guests.",
+                "operationId": "62add8a65f03d8a6e02da8479fd4ce1a",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "guest_id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "message": {
+                                                "type": "string",
+                                                "example": "Welcome to our service!"
+                                            },
+                                            "status": {
+                                                "type": "string",
+                                                "example": "sent"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2024-09-30T12:34:56Z"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Guest Messages"
+                ],
+                "summary": "Log a new guest message",
+                "description": "Create a new guest message record after a message has been sent.",
+                "operationId": "6db72c6cdccfa81ad8f4d50503e98d5b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "guest_id",
+                                    "message",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "guest_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Welcome to our service!"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "sent"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Message logged successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "guest_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Welcome to our service!"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "sent"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/guest-messages/{id}": {
+            "get": {
+                "tags": [
+                    "Guest Messages"
+                ],
+                "summary": "Get a specific guest message",
+                "description": "Retrieve details of a specific guest message by its ID.",
+                "operationId": "e77458e44db7a930d175da5694dc5373",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "guest_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Welcome to our service!"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "sent"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Guest message not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Guest Messages"
+                ],
+                "summary": "Update guest message log",
+                "description": "Update details of a guest message log, such as status (e.g., mark as sent or failed).",
+                "operationId": "65fe34bd443cdaeb5313d06ed74480fb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "example": "sent"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Guest message updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "guest_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Welcome to our service!"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "sent"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Guest message not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Guest Messages"
+                ],
+                "summary": "Delete a guest message log",
+                "description": "Delete a specific guest message log by its ID.",
+                "operationId": "de3e3548d185c68c7881232f23b3dffc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Guest message deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Guest message deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Guest message not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/messages": {
+            "get": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Get all messages",
+                "description": "Retrieve a list of all messages.",
+                "operationId": "ba2ec7498de3857f2d644a57eef276b0",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "subject": {
+                                                "type": "string",
+                                                "example": "Event Reminder"
+                                            },
+                                            "body": {
+                                                "type": "string",
+                                                "example": "Don't forget to attend the event tomorrow."
+                                            },
+                                            "type": {
+                                                "type": "string",
+                                                "example": "email"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2024-09-30T12:34:56Z"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Create a new message",
+                "description": "Create and store a new message.",
+                "operationId": "590a54d676cfbe9ad6effc85107be5c2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "subject",
+                                    "body",
+                                    "type"
+                                ],
+                                "properties": {
+                                    "subject": {
+                                        "type": "string",
+                                        "example": "Event Reminder"
+                                    },
+                                    "body": {
+                                        "type": "string",
+                                        "example": "Don't forget to attend the event tomorrow."
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "example": "email"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Message created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "subject": {
+                                            "type": "string",
+                                            "example": "Event Reminder"
+                                        },
+                                        "body": {
+                                            "type": "string",
+                                            "example": "Don't forget to attend the event tomorrow."
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "example": "email"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/messages/{id}": {
+            "get": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Get a specific message",
+                "description": "Retrieve a single message by its ID.",
+                "operationId": "1073a924be51398510a9a75909df7c32",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "subject": {
+                                            "type": "string",
+                                            "example": "Event Reminder"
+                                        },
+                                        "body": {
+                                            "type": "string",
+                                            "example": "Don't forget to attend the event tomorrow."
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "example": "email"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Message not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Update message details",
+                "description": "Update the details of a specific message.",
+                "operationId": "e67a06429d22208ddd54ac69aae6bce8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "subject": {
+                                        "type": "string",
+                                        "example": "Event Reminder"
+                                    },
+                                    "body": {
+                                        "type": "string",
+                                        "example": "Don't forget to attend the event tomorrow."
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "example": "email"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Message updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "subject": {
+                                            "type": "string",
+                                            "example": "Updated Subject"
+                                        },
+                                        "body": {
+                                            "type": "string",
+                                            "example": "Updated Body"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "example": "sms"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Message not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Delete a message",
+                "description": "Delete a specific message by its ID.",
+                "operationId": "a6c82baaf61340633fbacaf6413c5230",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Message deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Message deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Message not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/messages/send": {
+            "post": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Send a message to selected guests",
+                "description": "Send a specific message to selected guests based on provided guest IDs.",
+                "operationId": "75c069b4b493344cfa4466ef23b48e2b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "message_id",
+                                    "guest_ids"
+                                ],
+                                "properties": {
+                                    "message_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "guest_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2,
+                                            3
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Message sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Message sent successfully to selected guests"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Message or guest not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/voice-broadcasts/send": {
+            "post": {
+                "tags": [
+                    "Voice Broadcasts"
+                ],
+                "summary": "Send a voice broadcast to selected guests",
+                "description": "Send a voice broadcast message to a list of guests. You can specify the message, and the list of guests by IDs.",
+                "operationId": "61d6c007c93fdf75dafea1bb0fd604f7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "message",
+                                    "guest_ids"
+                                ],
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "This is a test broadcast message"
+                                    },
+                                    "guest_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2,
+                                            3
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Voice broadcast sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Broadcast sent successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data"
+                    },
+                    "500": {
+                        "description": "Failed to send broadcast"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/workflows": {
+            "get": {
+                "tags": [
+                    "Workflows"
+                ],
+                "summary": "Get all workflows",
+                "description": "Retrieve a list of all workflows.",
+                "operationId": "2671e9e6453e6c242c773eb11a95014a",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "New Guest Workflow"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2024-09-30T12:34:56Z"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Workflows"
+                ],
+                "summary": "Create a new workflow",
+                "description": "Create a new workflow to automate tasks or messages.",
+                "operationId": "5271bdd2362fa0707e72be91f3c47880",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "New Guest Workflow"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Workflow created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "New Guest Workflow"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/workflows/{id}": {
+            "get": {
+                "tags": [
+                    "Workflows"
+                ],
+                "summary": "Get a specific workflow",
+                "description": "Retrieve details of a specific workflow by its ID.",
+                "operationId": "46e00e98474fab3cfa1fe02c54fb5efa",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "New Guest Workflow"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Workflow not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Workflows"
+                ],
+                "summary": "Update a workflow",
+                "description": "Update the details of a specific workflow by its ID.",
+                "operationId": "8875f5dd554d0200234a541f9fa56b58",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Guest Workflow"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Workflow updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Updated Guest Workflow"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Workflow not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Workflows"
+                ],
+                "summary": "Delete a workflow",
+                "description": "Delete a specific workflow by its ID.",
+                "operationId": "c7b3ea4893429adb4d89ffd732b3e114",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Workflow deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Workflow deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Workflow not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/workflows/{id}/steps": {
+            "post": {
+                "tags": [
+                    "Workflows"
+                ],
+                "summary": "Add steps to a workflow",
+                "description": "Add specific steps to a workflow by its ID.",
+                "operationId": "a42a12b7bf71de7f54e6ff9b126cfc1d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "steps"
+                                ],
+                                "properties": {
+                                    "steps": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": [
+                                            "Step 1",
+                                            "Step 2"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Steps added successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Steps added successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Workflow not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/workflows/{id}/start": {
+            "post": {
+                "tags": [
+                    "Workflows"
+                ],
+                "summary": "Start a workflow",
+                "description": "Start the execution of a workflow.",
+                "operationId": "413ff09fccb54d4123a1fcf502f2974c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Workflow started successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Workflow started successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Workflow not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -1792,22 +4613,6 @@
                             "type": "object"
                         }
                     },
-                    "vendor": {
-                        "type": "array",
-                        "items": {
-                            "properties": {
-                                "id": {
-                                    "type": "integer",
-                                    "example": 62
-                                },
-                                "name": {
-                                    "type": "string",
-                                    "example": "Acme Co"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    },
                     "admin_comments": {
                         "description": "Comments/Notes about the product",
                         "type": "string"
@@ -1880,11 +4685,6 @@
                         "type": "number",
                         "format": "float"
                     },
-                    "vendor_id": {
-                        "description": "ID of vendor for the product ",
-                        "type": "numeric",
-                        "example": "1"
-                    },
                     "erp_bom_id": {
                         "description": "Bill Of Materials to associate product with (optional)",
                         "type": "integer"
@@ -1946,11 +4746,6 @@
                     },
                     "category_id": {
                         "description": "ID of category for the product ",
-                        "type": "numeric",
-                        "example": "1"
-                    },
-                    "vendor_id": {
-                        "description": "ID of vendor for the product ",
                         "type": "numeric",
                         "example": "1"
                     },
@@ -2125,6 +4920,42 @@
         {
             "name": "ProductTypes",
             "description": "ProductTypes"
+        },
+        {
+            "name": "Alerts",
+            "description": "Alerts"
+        },
+        {
+            "name": "Campaigns",
+            "description": "Campaigns"
+        },
+        {
+            "name": "Engagements",
+            "description": "Engagements"
+        },
+        {
+            "name": "Events",
+            "description": "Events"
+        },
+        {
+            "name": "Guests",
+            "description": "Guests"
+        },
+        {
+            "name": "Guest Messages",
+            "description": "Guest Messages"
+        },
+        {
+            "name": "Messages",
+            "description": "Messages"
+        },
+        {
+            "name": "Voice Broadcasts",
+            "description": "Voice Broadcasts"
+        },
+        {
+            "name": "Workflows",
+            "description": "Workflows"
         }
     ]
 }

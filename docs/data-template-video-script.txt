@@ -1,0 +1,128 @@
+To create an engaging and informative video explaining the **Site Page Data Templates** concept within the Prasso developer framework, here’s a breakdown of the key scenes you’ll need to include:
+
+### **Scene 1: Introduction**
+- **Visual**: Show the Prasso Developer Framework logo or branding, with background music.
+- **Narration**: "Welcome to this video on Site Page Data Templates, a powerful feature in the Prasso developer framework. In this video, we’ll explore how to retrieve, process, and display data on web pages using this feature."
+
+---
+
+### **Scene 2: Overview of Site Page Data Templates**
+- **Visual**: Show a flowchart of the data moving from the database to the frontend, passing through the **Data Template**.
+- **Text Overlay**: “Site Page Data Templates Overview”
+- **Narration**: "Site Page Data Templates allow developers to define how data is retrieved, processed, and presented on site pages. These templates manage data flow efficiently and ensure consistency across pages."
+
+---
+
+### **Scene 3: Key Concepts**
+- **Visual**: Display each key concept with corresponding icons (e.g., database icon for Data Model, filter icon for Where Clause, etc.).
+- **Text Overlay**: "Key Concepts"
+- **Narration**: "Each data template is made up of several key components, including the Data Model, SQL Where Clause, Fields Selection, Data Ordering, CSRF Token Inclusion, and the Default Blank Response."
+  
+---
+
+### **Scene 4: Breakdown of Data Template Fields**
+- **Visual**: Show a table with field names and values as described earlier (you can split it into sections, so the viewer isn’t overwhelmed). 
+- **Text Overlay**: "Template Structure"
+- **Narration**: "Let’s take a closer look at the structure of a data template. Each template is defined by various fields such as Template Name, Data Model, Where Clause, and more."
+
+---
+
+### **Scene 5: Example Template**
+- **Visual**: On the left, show the example template. On the right, show a web page displaying the completed freight orders for GoGo Delivery.
+- **Text Overlay**: "Example: GoGo Delivery Completed Orders"
+- **Narration**: "For example, this template retrieves and displays completed freight orders for GoGo Delivery. The template filters the data using a SQL-like Where Clause and orders it by creation date."
+
+---
+
+### **Scene 6.1: Detailed Explanations **
+- **Visual**: Switch to a split screen with you (or an avatar) explaining on one side, and live coding or a diagram expanding on each key concept on the other.
+- **Narration**: "Now, let’s break down each part of this template, 
+    starting with the Template Name, which acts as a unique identifier for the data template. 
+        This is typically namespaced according to the site page and its purpose. 
+        For instance, in the example, the template name is `sitepage.datatemplates.gogodone`,
+        The `datatemplates` portion of the name is a system identifier and triggers the logic that processes the template.
+        The third section `gogodone` identifies it's use, it’s used for a GoGo Delivery page listing completed orders.
+    
+### **Scene 6.2: Detailed Explanations, Title **
+    The Title is a human-readable identifier for the template, which helps developers quickly understand the template's purpose.
+     In this case, the title is `GoGo Delivery Completed Freight Orders`, indicating it deals with completed freight orders for GoGo Delivery.
+
+### **Scene 6.3: Detailed Explanations, Description
+   The Descripton is text describing the template's functionality. It serves as a summary of what the template does. 
+   In this example, it produces a list of completed shipments.
+
+### **Scene 6.4: Detailed Explanations, Data Model
+    Next, we have the Data Model from which the data is queried. This points to a Laravel model (in this case, `App\Models\SitePageData`), 
+    which provides the structure and logic for interacting with the underlying database.
+
+#### 5. **Template Where Clause**
+   The SQL-like where clause that specifies the conditions applied to the query. For example, `fk_site_page_id=??? AND JSON_EXTRACT(json_data, '$.status') ='Completed'` filters the data to include only completed shipments for a specific page, where `???` would be dynamically replaced by the appropriate site page ID.
+
+#### 6. **Order By Clause**
+   Specifies how the data should be ordered once retrieved. In the example, the data will be ordered by the `created_at` field in ascending order (`created_at:asc`), meaning the oldest records will appear first.
+
+#### 7. **Include CSRF**
+   Indicates whether a CSRF token should be included in the data. Laravel requires a CSRF token for form submissions to prevent CSRF attacks. A value of `0` means the token is not included, while a value of `1` would include it.
+
+#### 8. **Default Blank**
+   Specifies what will be returned if no data matches the query. This is useful to ensure that the frontend receives a predictable response, even when there is no data. The example leaves it blank, meaning an empty JSON object (`{}`) will be returned if the query yields no results.
+
+#### 9. **Template Data Query**
+   Specifies the field that will be used to extract the data from the query. In the example, the field is `json_data`, suggesting that the data is stored in JSON format, and this is the field/key name from which data will be extracted.
+---
+
+### **Scene 7: CSRF Explanation**
+- **Visual**: Show a simple form submission and a CSRF token in a Laravel form.
+- **Text Overlay**: "CSRF Token"
+- **Narration**: "In Laravel, a CSRF token is essential for secure form submissions. Depending on your template's needs, you can choose whether or not to include this token."
+
+---
+
+### **Scene 8: Default Blank Response**
+- **Visual**: Show a scenario where the query returns no data, and the default JSON value `{}` is returned on a web page.
+- **Text Overlay**: "Default Blank Response"
+- **Narration**: "If a query returns no data, you can specify a default value to be sent back to the front-end. This helps ensure predictable behavior, even when no data matches the conditions."
+
+---
+
+### **Scene 9: Example Use Case**
+- **Visual**: Walk through a real-world example of retrieving data for a page showing completed shipments. You can show a form with filters applied and the completed shipments list getting updated in real-time.
+- **Text Overlay**: "Use Case Example: Completed Freight Orders"
+- **Narration**: "Here’s how it works in practice. For this GoGo Delivery page, the template filters for completed orders and retrieves the relevant data, which is displayed in the list. When no data is found, it returns a default blank value."
+
+---
+
+### **Scene 10: How to Integrate a Data Template**
+- **Visual**: Show a quick step-by-step guide, either using code snippets or visual instructions on setting up a data template.
+- **Text Overlay**: "Integrating Data Templates"
+- **Narration**: "Integrating a data template into your site page is straightforward. Simply define the template by specifying your model, query conditions, and fields, and let the framework handle the rest."
+
+---
+
+### **Scene 11: Existing System Integration**
+- **Visual**: Show the data template being used in an existing system—highlight how seamless it is.
+- **Text Overlay**: "Existing System Integration"
+- **Narration**: "Site Page Data Templates are already integrated into the Prasso system. This ensures efficient data handling and retrieval across various site pages."
+
+---
+
+### **Scene 12: Conclusion**
+- **Visual**: End with the Prasso Developer Framework logo and key takeaways from the video.
+- **Text Overlay**: “Learn More: Visit our documentation”
+- **Narration**: "Thank you for watching this video on Site Page Data Templates. With this feature, you can easily control how data is retrieved, processed, and displayed across your site. For more information, check out the full documentation."
+
+---
+
+### **Scene 13: Call to Action**
+- **Visual**: Show a CTA (Call to Action) screen: “Subscribe for more developer tips” or “Check out the documentation below”.
+- **Narration**: "Don’t forget to subscribe for more tips on using the Prasso developer framework, and be sure to check out the documentation for deeper insights."
+
+---
+
+### **Scene 14: End Screen**
+- **Visual**: Final screen with social media links, additional resources, or website link.
+- **Music**: Background music fades out.
+
+---
+
+By following this scene breakdown, you can create a comprehensive and engaging video that covers the essential aspects of Site Page Data Templates while keeping your audience interested and informed.

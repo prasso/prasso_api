@@ -13,16 +13,32 @@
                 </div>
             </div>
             @if (!Auth::user()->isSuperAdmin() && !Auth::user()->isInstructor())
-            <div class="max-w-md m-auto">    <div class="font-sans px-4 py-2">
-                    <h2 class="text-lg font-semibold text-gray-600 mb-4">Welcome to Prasso! </h2>
-                    <ul class="list-disc list-inside font-medium text-sm text-gray-500">
-                        <li>We will reach out to the registered email with next steps.</li>
-                    </ul>
-                    <p class="mt-4 text-lg font-semibold text-gray-600 mb-4">Feel free to reach out. We're here to make the process smooth and enjoyable.</p>
+            <div class="max-w-md m-auto">
+                <div class="font-sans px-4 py-2">
+                <h2 class="text-lg font-semibold text-gray-600 mb-4">Welcome to Prasso!</h2>
+                <ul class="list-disc list-inside font-medium text-sm text-gray-500">
+                    <li>We will reach out to the registered email with next steps.</li>
+                </ul>
+                <p class="mt-4 text-lg font-semibold text-gray-600 mb-4">
+                    Feel free to reach out. We're here to make the process smooth and enjoyable.
+                </p>
+
+                <!-- Special Subscribe Link -->
+                <div class="text-center mt-6">
+                    <a href="/subscribe" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:from-purple-600 hover:to-blue-500 transform hover:scale-105 transition duration-300 ease-in-out">
+                    Subscribe Now
+                    </a>
+                </div>
                 </div>
             </div>
            @else
-                @if ((\App\Models\Site::isPrasso(parse_url(url()->current(), PHP_URL_HOST)) && Auth::user()->isSuperAdmin()) || (Auth::user()->isInstructor() && Auth::user()->getSiteCount() == 0))
+                @php
+                    $isPrassoSite = \App\Models\Site::isPrasso(parse_url(url()->current(), PHP_URL_HOST));
+                    $isSuperAdmin = Auth::user()->isSuperAdmin();
+                    $isInstructorWithNoSites = Auth::user()->isInstructor() && Auth::user()->getSiteCount() == 0;
+                @endphp
+
+                @if ($isPrassoSite && ($isSuperAdmin || $isInstructorWithNoSites))
                 <div class="max-w-md m-auto">
                     <x-responsive-nav-link href="{{ route('apps.newsiteandapp', Auth::user()->current_team_id)  }}">
                         <div class="text-center bg-gray-50 border-2 border-indigo-600/100">
@@ -59,10 +75,11 @@
                         </div>
                     </x-responsive-nav-link>
 
-                    {!! $user_content !!}
                 </div>
                 @endif
                 @endif
+
+                {!! $user_content !!}
             @endif
             <div class="grid max-w-xs m-auto">
                 <div class="row">

@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Site;
 use App\Models\User;
 use App\Models\Team;
+use App\Models\Stripe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\SiteRequest;
@@ -39,6 +40,7 @@ class CreateOrEdit extends Component
     public $team_selection;
     public $team_id;
     public $site;
+    public $stripe_key, $stripe_secret;
 
 
     public function mount(Site $site, User $user, Team $team, $show_modal, $team_selection)
@@ -69,6 +71,15 @@ class CreateOrEdit extends Component
         $this->app_specific_js = $site->app_specific_js;
         $this->app_specific_css = $site->app_specific_css;
         $this->image_folder = $site->image_folder;
+        // Initialize stripe_key and stripe_secret if the stripe relationship has data
+        if ($site->stripe) {
+            $this->stripe_key = $site->stripe->key;
+            $this->stripe_secret = $site->stripe->secret;
+        } else {
+            $this->stripe_key = '';
+            $this->stripe_secret = '';
+        }
+
     }
 
     /**
@@ -95,6 +106,16 @@ class CreateOrEdit extends Component
         }
 
         $site = $this->save();
+        info($this->stripe_key.$this->stripe_secret);
+
+        // Save to stripe table only if stripe_key and stripe_secret are not empty
+        if (!empty($this->stripe_key) && !empty($this->stripe_secret)) {
+            Stripe::updateOrCreate(
+                ['site_id' => $this->site_id],
+                ['key' => $this->stripe_key, 'secret' => $this->stripe_secret]
+            );
+        }
+
 
         if (isset($this->photo)) {
             $this->siteid = $site->id;

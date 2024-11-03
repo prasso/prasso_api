@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use Faxt\Invenbin\Models\ErpProduct;
 use Auth;
 use Schema;
 /**
@@ -20,6 +21,8 @@ use Schema;
 class Site extends Model
 {
     use HasFactory;
+
+    const HOSTING_SITE_ID = 1;
 
     protected $currentsite;
 
@@ -63,6 +66,31 @@ class Site extends Model
     public function sitePages()
     {
         return $this->hasMany(\App\Models\SitePages::class, "fk_site_id", "id");
+    }
+
+    // Site.php Model
+    public function stripe()
+    {
+        return $this->hasOne(Stripe::class); // Or whatever the actual relationship is
+    }
+    /**
+     * Get the Stripe key for the site. If no related stripe record exists, return the default key from config.
+     *
+     * @return string
+     */
+    public function getStripeKeyAttribute()
+    {
+        // If the site has a related Stripe record, return the key, otherwise return the default key from config
+        return $this->stripe ? $this->stripe->key : config('services.stripe.key');
+    }
+
+    /**
+     * The products that are associated with the site.
+     */
+    public function erpProducts()
+    {
+        return $this->belongsToMany(ErpProduct::class, 'site_erp_products', 'site_id', 'erp_product_id')
+                    ->withTimestamps();
     }
 
     public function getApp()
@@ -159,7 +187,7 @@ class Site extends Model
     }
 
     public function addDefaultSitePages(){
-        //two templates, welcome.txt and dashboard.txt
+        //uses templates, welcome.txt, dashboard.txt
         $content = '';
         if ($this->supports_registration)
         {
@@ -187,6 +215,23 @@ class Site extends Model
         $is_admin_for_site =  Auth::user() !=null && ( Auth::user()->isInstructor() || Auth::user()->isThisSiteTeamOwner($this->id) );
         return $is_admin_for_site;
     }
+    
+    public function superAdmin()
+    {
+        // Find the first super-admin user in the team that owns this site
+        return User::whereHas('roles', function ($query) {
+                $query->where('role_name', config('constants.SUPER_ADMIN_ROLE_TEXT'));
+            })
+            ->first();
+    }
+    
+    // Helper function to get the hosting site instance
+    public static function hostingSite()
+    {
+        return static::find(self::HOSTING_SITE_ID);
+    }
+
+    
 
     /*
     Use this function when the team needs to be traded out, old for new. 
@@ -250,9 +295,12 @@ class Site extends Model
         {
             $list .= '<li><a class="block pl-3 pr-4 py-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition duration-150 ease-in-out" href="/site/edit">Site Editor</a></li>';
             $this->load('app');
-            $this->app->load('team');
+if ($this->app){
+                $this->app->load('team');
+            if ($this->app->team)
+                $list .= '<li><a class="block pl-3 pr-4 py-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition duration-150 ease-in-out" href="/team/'.$this->app->team->id.'/apps/'.$this->app->id.'">App Editor</a></li>';
+            } 
         
-            $list .= '<li><a class="block pl-3 pr-4 py-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition duration-150 ease-in-out" href="/team/'.$this->app->team->id.'/apps/'.$this->app->id.'">App Editor</a></li>';
         }
 
     

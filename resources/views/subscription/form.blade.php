@@ -155,8 +155,8 @@
 </form>
 
 <script>
-    // Initialize Stripe
-    const stripe = Stripe('{{ config('services.stripe.key') }}');
+    // Initialize Stripe using the Stripe key from the Site model
+    const stripe = Stripe('{{ $stripeKey }}');
     const elements = stripe.elements();
 
     // Define card element styling
@@ -237,7 +237,6 @@
 
     // Handle errors by displaying feedback and resetting the button state
     function handleError(message) {
-       
         feedbackMessage.textContent = message;
         feedbackMessage.classList.remove('hidden', 'bg-green-500');
         feedbackMessage.classList.add('bg-red-500');
@@ -255,17 +254,17 @@
             feedbackMessage.classList.remove('hidden', 'bg-red-500');
             feedbackMessage.classList.add('bg-green-500');
 
-             // Redirect to /dashboard after 2 seconds
-        setTimeout(() => {
-            window.location.href = '/dashboard';
-        }, 2000);
-        
+            // Redirect to /dashboard after 2 seconds
+            setTimeout(() => {
+                window.location.href = '/dashboard';
+            }, 2000);
         } catch (error) {
             handleError("An error occurred during subscription.");
             console.error(error);
         }
     }
 </script>
+
 
 </x-app-layout>
 

@@ -8,6 +8,8 @@ use App\Extensions\SuperAdminAuthGuard;
 use App\Extensions\SuperAdminUserProvider;
 use App\Extensions\InstructorAuthGuard;
 use App\Extensions\InstructorUserProvider;
+use Faxt\Invenbin\Models\ErpProduct;
+use App\Policies\ErpProductPolicy;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -20,6 +22,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Team::class => TeamPolicy::class,
+        ErpProduct::class => ErpProductPolicy::class,
     ];
 
     /**

@@ -21,6 +21,7 @@ return [
     'twilio_sid' => env('TWILIO_ACCOUNT_SID'),
     'twilio_token' => env('TWILIO_AUTH_TOKEN'),
     'aws_route53_zone_id' => env('AWS_HOSTED_ZONE_ID'),
+    'date_format' => 'm/d/Y',
     'providers' => [
 
         /*
@@ -62,6 +63,7 @@ return [
         App\Providers\JetstreamServiceProvider::class,
         App\Extensions\SuperAdminUserProvider::class,
         App\Extensions\InstructorUserProvider::class,
+
 
     ],
 

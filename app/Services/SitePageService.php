@@ -42,9 +42,10 @@ class SitePageService
         return $site_page_description;
        
     }
-/**
- * troubleshooting data missing: check that the where clause in the site page is set to the id of the site
- */
+    
+    /**
+     * when troubleshooting data missing: check that the where clause in the site page is set to the id of the site
+     */
     public function getTemplateDataJSON($site_page, $user=null){
        
         $template_data = SitePageTemplate::where('templatename', $site_page->template)->first();
@@ -54,7 +55,7 @@ class SitePageService
         }
         $modelClassName = $template_data->template_data_model;
         $model = resolve($modelClassName);
-
+      
         if ($site_page->where_value != null && $site_page->where_value != '' && $site_page->where_value != -1)
         { 
 
@@ -91,7 +92,7 @@ class SitePageService
                 $query = $query->orderBy($fieldInOrder, $ascDesc);
             }
             
-            if ($user != null) {
+            if ($user != null && !$user->isSuperAdmin()) {
                 $subteamIds = [];
                 if ($user != null){
                     $subteamIds = $user->team_member->pluck('team_id')->toArray();
@@ -105,15 +106,17 @@ class SitePageService
                 ->get();
              //process consolidation to share code that ensures consistent format
              if ($data->isEmpty()) {
-                $json_data = $template_data->default_blank ?? "";
+                $json_data = $template_data->default_blank ?? "[]";
             } else {
                 $json_data = $data->toJson();
             }
-            $site_page_data = SitePageData::factory()->create([
+           
+            $site_page_data = SitePageData::factory()->make([
                 'fk_site_page_id' => $site_page->id,
                 'data_key' => uniqid(),
                 'json_data' => $json_data,
             ]);
+
             $jsonData = $this->processJSONData($site_page_data, $template_data);
            // Controller::dd_with_callstack($jsonData);
         
