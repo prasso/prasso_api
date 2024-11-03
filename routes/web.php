@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\StripeController;
 use Laravel\Cashier\Http\Controllers\WebhookController;
 use Illuminate\Http\Request;
 
@@ -36,8 +36,16 @@ Route::get('/give','SitePageController@giveToDonate');
 
 Route::get('/dashboard', 'SitePageController@index')->name('dashboard');
 
-Route::get('subscribe', [SubscriptionController::class, 'showSubscriptionForm'])->name('subscription.form');
-Route::post('subscribe', [SubscriptionController::class, 'createSubscription'])->name('subscription.create');
+// middleware('auth') ensures user has logged in
+Route::get('checkout', [StripeController::class, 'showCheckoutForm'])->name('checkout.form')->middleware('auth');
+Route::post('checkout', [StripeController::class, 'purchaseFromCheckout'])->name('checkout.purchase');
+Route::post('/create-payment-intent', [StripeController::class, 'createPaymentIntent'])->name('create.paymentIntent');
+Route::get('/donate', [StripeController::class, 'showDonationForm'])->name('donation.form');
+Route::post('/donate', [StripeController::class, 'submitDonation'])->name('donation.submit');
+
+
+Route::get('subscribe', [StripeController::class, 'showSubscriptionForm'])->name('subscription.form')->middleware('auth');
+Route::post('subscribe', [StripeController::class, 'createSubscription'])->name('subscription.create');
 Route::post('stripe/webhook', [WebhookController::class, 'handleWebhook']);
 Route::get('/payment/setup-intent', function (Request $request) {
     return $request->user()->createSetupIntent();

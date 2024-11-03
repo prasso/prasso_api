@@ -40,7 +40,7 @@ class Instructor extends User
 
      public function setupAsInstructor($user)
      {
-         $userExistingInstructorRole = $user->roles()->where('role_name', 'instructor')->first();
+         $userExistingInstructorRole = $user->roles()->where('role_name', config('constants.INSTRUCTOR_ROLE_TEXT'))->first();
         if (!isset($userExistingInstructorRole))
         {
             UserRole::forceCreate([

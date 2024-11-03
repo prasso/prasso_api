@@ -22,6 +22,8 @@ class Site extends Model
 {
     use HasFactory;
 
+    const HOSTING_SITE_ID = 1;
+
     protected $currentsite;
 
     protected $table = 'sites';
@@ -185,7 +187,7 @@ class Site extends Model
     }
 
     public function addDefaultSitePages(){
-        //two templates, welcome.txt and dashboard.txt
+        //uses templates, welcome.txt, dashboard.txt
         $content = '';
         if ($this->supports_registration)
         {
@@ -213,6 +215,23 @@ class Site extends Model
         $is_admin_for_site =  Auth::user() !=null && ( Auth::user()->isInstructor() || Auth::user()->isThisSiteTeamOwner($this->id) );
         return $is_admin_for_site;
     }
+    
+    public function superAdmin()
+    {
+        // Find the first super-admin user in the team that owns this site
+        return User::whereHas('roles', function ($query) {
+                $query->where('role_name', config('constants.SUPER_ADMIN_ROLE_TEXT'));
+            })
+            ->first();
+    }
+    
+    // Helper function to get the hosting site instance
+    public static function hostingSite()
+    {
+        return static::find(self::HOSTING_SITE_ID);
+    }
+
+    
 
     /*
     Use this function when the team needs to be traded out, old for new. 
