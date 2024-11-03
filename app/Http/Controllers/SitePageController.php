@@ -64,15 +64,22 @@ class SitePageController extends BaseController
             ->with('masterPage',$masterpage);
     }
 
-    /**
+     /**
      * this code verifies that the user is a member of the current site's team
      * loads up the dashboard if the user is logged in and belongs to this site's team
      */
     private function getDashboardForCurrentSite($user){
-        
+
+        $user_content = $this->getPage('Dashboard',$user);
+        // Render the dashboard view with either custom content or default content
+        return view('dashboard')->with('user_content', $user_content);
+    }
+    
+    private function getPage($page, $user){
+
         $user->setCurrentToOwnedTeam();
         $request = Request::capture();
-       
+    
         if ( !$this->userService->isUserOnTeam($user) )
         {
             Auth::logout();
@@ -80,23 +87,25 @@ class SitePageController extends BaseController
             return redirect('/login');
         }
         $user_content='';
-       
-        // if the site supports registration, check to see if the site has a DASHBOARD site_page
+    
+        // if the site supports registration, check to see if the site has a $page site_page
         // Check if the current site exists and is not the main application site
         if ($this->site !== null && strcmp($this->site->site_name, config('app.name')) !== 0) {
-            // Try to find a custom dashboard page for the current site
-            $dashboardPage = SitePages::where('fk_site_id', $this->site->id)
-                ->where('section', 'Dashboard')
+            // Try to find a custom page for the current site
+            $pageFound = SitePages::where('fk_site_id', $this->site->id)
+                ->where('section', $page)
                 ->first();
 
-            // If a custom dashboard page exists, prepare its content
-            if ($dashboardPage !== null) {    
-                $user_content = $this->prepareTemplate($dashboardPage, $request->path());
+            // If a custom page exists, prepare its content
+            if ($pageFound !== null) {    
+                $user_content = $this->prepareTemplate($pageFound, $request->path());
             }
         }
-        // Render the dashboard view with either custom content or default content
-        return view('dashboard')->with('user_content', $user_content);
+        // return the prepared content
+        return $user_content;
     }
+
+
     private function getMaster($sitepage) {
         $masterPage = null;
         

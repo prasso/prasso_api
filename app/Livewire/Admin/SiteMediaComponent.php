@@ -18,6 +18,7 @@ class SiteMediaComponent extends Component
     public $media_title; //
     public $media_description; //
     public $media_date; //
+    public $site_id; 
 
 
         
@@ -32,6 +33,7 @@ class SiteMediaComponent extends Component
         $this->media_title = $media->media_title;
         $this->media_description = $media->media_description;
         $this->media_date = $media->media_date;
+        $this->site_id = $media->fk_site_id;
     }
 
     public function render()
@@ -51,12 +53,13 @@ class SiteMediaComponent extends Component
             'media_date' => 'nullable|string|max:500',
         ]);
 
-        if ($this->media_id) {
-            SiteMedia::find($this->media_id)->update($validatedData);
-        } else {
-            SiteMedia::create($validatedData);
-        }
+       $siteMedia = SiteMedia::find($this->media_id);
+       $siteMedia->update($validatedData);
+       
         $this->resetFields();
+        // Redirect to 'site.mtce.livestream' with the 'siteid' parameter
+        return redirect()->route('site.mtce.livestream', ['siteid' => $siteMedia->fk_site_id]);
+
     }
     public function media_edit($id)
     {
@@ -74,6 +77,7 @@ class SiteMediaComponent extends Component
         $this->media_title = $media->media_title;
         $this->media_description = $media->media_description;
         $this->media_date = $media->media_date;
+        $this->site_id = $media->fk_site_id;
     }
 
     public function media_delete($id)
@@ -96,5 +100,7 @@ class SiteMediaComponent extends Component
         $this->media_title = null;
         $this->media_description = null;
         $this->media_date = null;
+
+        $this->site_id = 0;
     }
 }
