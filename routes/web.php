@@ -38,14 +38,13 @@ Route::get('/dashboard', 'SitePageController@index')->name('dashboard');
 
 // middleware('auth') ensures user has logged in
 Route::get('checkout', [StripeController::class, 'showCheckoutForm'])->name('checkout.form')->middleware('auth');
-Route::post('checkout', [StripeController::class, 'purchaseFromCheckout'])->name('checkout.purchase');
+Route::post('checkout', [StripeController::class, 'purchaseFromCheckout'])->name('checkout.purchase')->middleware('auth');
 Route::post('/create-payment-intent', [StripeController::class, 'createPaymentIntent'])->name('create.paymentIntent');
 Route::get('/donate', [StripeController::class, 'showDonationForm'])->name('donation.form');
 Route::post('/donate', [StripeController::class, 'submitDonation'])->name('donation.submit');
 
-
 Route::get('subscribe', [StripeController::class, 'showSubscriptionForm'])->name('subscription.form')->middleware('auth');
-Route::post('subscribe', [StripeController::class, 'createSubscription'])->name('subscription.create');
+Route::post('subscribe', [StripeController::class, 'createSubscription'])->name('subscription.create')->middleware('auth');
 Route::post('stripe/webhook', [WebhookController::class, 'handleWebhook']);
 Route::get('/payment/setup-intent', function (Request $request) {
     return $request->user()->createSetupIntent();
