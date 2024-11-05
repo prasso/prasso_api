@@ -215,9 +215,6 @@
                      <li class="">
                         <a href="/page/RecentSermons"><span>Recent Sermons</span></a>
                      </li>
-                     <li class="">
-                        <a href="/page/Sermons"><span>More Sermons</span></a>
-                     </li>
                      
                   </ul>
                </li>
@@ -283,9 +280,6 @@
                      </li>
                      <li class="">
                         <a href="/page/RecentSermons"><span>Recent Sermons</span></a>
-                     </li>
-                     <li class="">
-                        <a href="/page/Sermons"><span>More Sermons</span></a>
                      </li>
                         </ul>
                      </li>
