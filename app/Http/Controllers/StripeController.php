@@ -9,6 +9,8 @@ use Laravel\Cashier\Cashier;
 use App\Services\UserService;
 use App\Services\AppsService;
 use Laravel\Cashier\Payment;
+use Stripe\Stripe;
+use Stripe\SetupIntent;
 
 use Illuminate\Support\Facades\Log;
 
@@ -45,9 +47,13 @@ class StripeController extends BaseController
         // Map the products to ['sku' => 'product_name'] for use in a dropdown
         $donationList += $donationProducts->pluck('product_name', 'sku')->toArray();
 
-        // Generate a SetupIntent to confirm the card without charging
-        $setupIntent = $request->user()->createSetupIntent();
-
+        if ($request->user()) {
+            // If authenticated, use the user’s setup intent
+            $setupIntent = $request->user()->createSetupIntent();
+        } else {
+            // For unauthenticated users, create a SetupIntent directly
+            $setupIntent = SetupIntent::create();
+        }
         // Pass the donation items and setup intent to the form view
         return view('donate.form', [
             'setupIntent' => $setupIntent->client_secret,
@@ -57,33 +63,77 @@ class StripeController extends BaseController
     }
     
 
-public function submitDonation(Request $request)
-{
-    $request->validate([
-        'total_donation' => 'required|numeric|min:1',
-    ]);
+    public function submitDonation(Request $request)
+    {
+        
+        try {
+            // Run validation
+            $request->validate([
+                'total_donation' => 'required|numeric|min:1',
+                'donation_items' => 'required|array'
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Log validation error message
+            info('Validation failed: ' . json_encode($e->errors()));
+    
+            // Optionally, return a JSON response with the error (for API responses)
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $e->errors(),
+            ], 422);
+        }
+        try{
+            // Get the current site 
+            $site = $this->site;
 
-     // Get the current site 
-     $site = $this->site;
+            // Retrieve the product names for each donation item based on the provided IDs (SKUs)
+            $donationItemIds = array_column($request->input('donation_items'), 'id'); // Get all item IDs
 
-     $this->setStripeApi($site);
+            // Retrieve donation products that match the provided IDs
+            $donationProducts = $site->erpProducts()
+                ->whereIn('sku', $donationItemIds)
+                ->get(['sku', 'product_name'])
+                ->keyBy('sku'); // Key by SKU for easier access
 
-    // Create the PaymentIntent with the total donation amount
-    $paymentIntent = \Stripe\PaymentIntent::create([
-        'amount' => $request->input('total_donation') * 100, // Amount in cents
-        'currency' => 'usd',
-        'payment_method_types' => ['card'],
-        'metadata' => [
-            'user_id' => $request->user()->id,
-            'donation_items' => json_encode($request->input('donation_items', [])), // Save selected items for reference
-        ]
-    ]);
+            // Build the donation items metadata array with product names
+            $donationItemsWithNames = array_map(function ($item) use ($donationProducts) {
+                $sku = $item['id'];
+                return [
+                    'sku' => $sku,
+                    'amount' => $item['amount'],
+                    'product_name' => $donationProducts->get($sku)->product_name ?? 'Unknown Product', // Fallback if product not found
+                ];
+            }, $request->input('donation_items'));
 
-    return response()->json([
-        'client_secret' => $paymentIntent->client_secret,
-    ]);
-}
-
+        
+            // Configure Stripe API
+            $this->setStripeApi($site);
+        
+            // Determine user ID, or set to guest for guests
+            $userId = $request->user() ? $request->user()->id : 'guest';
+            // Create the PaymentIntent with the total donation amount
+            $paymentIntent = \Stripe\PaymentIntent::create([
+                'amount' => $request->input('total_donation') * 100, // Amount in cents
+                'currency' => 'usd',
+                'payment_method_types' => ['card'],
+                'metadata' => [
+                    'user_id' => $userId,
+                    'donation_items' => json_encode($donationItemsWithNames), // Save selected items for reference
+                ]
+            ]);
+        
+            
+            return response()->json([
+                'client_secret' => $paymentIntent->client_secret,
+            ]);
+        } catch (\Throwable $e) {
+            // Log  error message
+            info('operation failed: ' . json_encode($e->getMessage()));
+            return response()->json(['status' => 'Processing failed', 'error' => $e->getMessage()], 500);
+           
+        }
+    }
+    
 
     public function showCheckoutForm(Request $request)
     {
