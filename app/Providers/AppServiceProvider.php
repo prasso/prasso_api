@@ -30,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
     {
       MessagingPanel::register();
       InvenbinPanel::register();
+
     }
 
     /**

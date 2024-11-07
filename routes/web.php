@@ -26,7 +26,7 @@ Route::get('/page/faqs', 'SiteController@seeFaqs')->name('see-faqs');
 Route::post('/question', 'SiteController@processQuestion')->name('send-question');
 Route::get('/confirm_newsletter_subscription', 'EmailController@confirm_newsletter_subscription')->name('confirm-newsletter-subscription');
 
-
+Route::get('/page/component/{component}/{pageid}','SitePageController@loadLiveWireComponent');
 Route::get('/page/{section}','SitePageController@viewSitePage');
 Route::get('/page/{section}/{dataid}','SitePageController@editSitePageData');
 Route::post('/sitepages/{siteid}/{pageid}/lateTemplateData', 'SitePageController@lateTemplateData')->name('site-page.late-template-data');

@@ -58,7 +58,10 @@
         @if (isset($sitePage->style)  )
             <style>{!! $sitePage->style !!}</style>
         @endif
-
+    <!-- Include the Livewire AJAX loader script -->
+    @include('components.livewire-component-load')
+    
+    @livewireStyles
     </head>
     <body>
         @if (session()->has('message'))
@@ -74,4 +77,6 @@
         <x-footer></x-footer>
 
     </body>
+
+   @livewireScripts
 </html>

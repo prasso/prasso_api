@@ -8,7 +8,11 @@
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
+                    @if(isset($site->logo_image) && !empty($site->logo_image))
+                        <img src="{{ $site->logo_image }}" alt="Site Logo" class="block h-9 w-auto" />
+                    @else
                         <x-application-mark class="block h-9 w-auto" />
+                    @endif
                     </a>
                 </div>
 
@@ -192,6 +196,23 @@
                         <x-switchable-team :team="$team" component="responsive-nav-link" />
                     @endforeach
                 @endif
+            </div>
+        </div>
+    </div>
+    @else
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="{{ route('dashboard') }}">
+                    @if(isset($site->logo_image) && !empty($site->logo_image))
+                        <img src="{{ $site->logo_image }}" alt="Site Logo" class="block h-9 w-auto" />
+                    @else
+                        <x-application-mark class="block h-9 w-auto" />
+                    @endif
+                    </a>
+                </div>
             </div>
         </div>
     </div>

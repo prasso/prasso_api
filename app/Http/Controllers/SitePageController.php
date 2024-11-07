@@ -16,6 +16,9 @@ use App\Models\Site;
 use App\Models\SitePageData;
 use App\Models\SitePageTemplate;
 use App\Models\User;
+use Livewire\Livewire;
+use App\Http\Livewire\HeaderCarousel;
+use Livewire\Mechanisms\ComponentRegistry;
 
 class SitePageController extends BaseController
 {
@@ -63,7 +66,10 @@ class SitePageController extends BaseController
             ->with('page_short_url','/')
             ->with('masterPage',$masterpage);
     }
-
+    public function loadLiveWireComponent($component,$pageid)
+    {
+        return view('sitepage.site-page-component')->with('component',$component)->with('pageid',$pageid); 
+    }
      /**
      * this code verifies that the user is a member of the current site's team
      * loads up the dashboard if the user is logged in and belongs to this site's team
@@ -72,7 +78,8 @@ class SitePageController extends BaseController
 
         $user_content = $this->getPage('Dashboard',$user);
         // Render the dashboard view with either custom content or default content
-        return view('dashboard')->with('user_content', $user_content);
+        return view('dashboard')->with('user_content', $user_content)           
+        ->with('site',$this->site);
     }
     
     private function getPage($page, $user){
@@ -120,9 +127,9 @@ class SitePageController extends BaseController
         return $masterPage;
     }
 
-    private function prepareTemplate($dashboardpage, $path=null){
+    private function prepareTemplate($pageToProcess, $path=null){
         
-        $page_content = $dashboardpage->description;
+        $page_content = $pageToProcess->description;
         $user = Auth::user() ?? null;
 
         //replace the tokens in the dashboard page with the user's name, email, and profile photo
@@ -133,8 +140,22 @@ class SitePageController extends BaseController
         $page_content = str_replace('SITE_LOGO_FILE', $this->site->logo_image, $page_content);
         $page_content = str_replace('SITE_FAVICON_FILE', $this->site->favicon, $page_content);
         $page_content = str_replace('SITE_DESCRIPTION', $this->site->description, $page_content);
-        $page_content = str_replace('PAGE_NAME', $dashboardpage->title, $page_content);
-        $page_content = str_replace('PAGE_SLUG', $dashboardpage->section, $page_content);
+        $page_content = str_replace('PAGE_NAME', $pageToProcess->title, $page_content);
+        $page_content = str_replace('PAGE_SLUG', $pageToProcess->section, $page_content);
+
+        //Check if the carousel placeholder exists, then replace it with the Livewire component
+        if (strpos($page_content, '[CAROUSEL_COMPONENT]') !== false) {
+
+            $page_content = str_replace(
+                '[CAROUSEL_COMPONENT]',
+                '<div id="carouseldiv"></div>
+                <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    loadLivewireComponent("prasso-flipper", "carouseldiv", '.$pageToProcess->id.');
+                });</script>', 
+                $page_content
+            );
+        }
 
         if ($user != null){
             $page_content = str_replace('USER_NAME', $user->name, $page_content);
