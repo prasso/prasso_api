@@ -13,7 +13,7 @@ LICENSE AGREEMENT
 <br /><br />
 Last updated August 22, 2020
 <br /><br />
-faxt is licensed to You (End-User) by faxt Internet Development, LLC, located at PO Box 2922, Laporte, Minnesota 56541, United States (hereinafter: Licensor), for use only under the terms of this License Agreement.
+Prasso is licensed to You (End-User) by faxt Internet Development, LLC, located at Laporte, Minnesota 56541, United States (hereinafter: Licensor), for use only under the terms of this License Agreement.
 <br /><br />
 By downloading the Application from the Apple AppStore, and any update thereto (as permitted by this License Agreement), You indicate that You agree to be bound by all of the terms and conditions of this License Agreement, and that You accept this License Agreement.
 <br /><br />

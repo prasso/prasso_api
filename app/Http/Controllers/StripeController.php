@@ -56,6 +56,7 @@ class StripeController extends BaseController
         }
         // Pass the donation items and setup intent to the form view
         return view('donate.form', [
+            'site' =>  $this->site,
             'setupIntent' => $setupIntent->client_secret,
             'donationItems' => $donationList,
             'stripeKey' => $site->stripe->key,

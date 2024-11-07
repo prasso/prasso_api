@@ -837,6 +837,9 @@
     </style>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:,i,b&amp;display=block">
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Archivo:,i,b&amp;display=block">
+    @include('components.livewire-component-load')
+    
+    @livewireStyles
 </head>
 
 <body class="bg-background !opacity-100 transition-opacity duration-300" style="opacity:0"><!--$--><!--$-->
@@ -905,6 +908,7 @@
         </div>
     </div><!--/$--><!--/$-->
     
+   @livewireScripts
 </body>
 
 </html>

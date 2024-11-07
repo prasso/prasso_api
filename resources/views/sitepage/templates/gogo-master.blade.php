@@ -147,6 +147,10 @@
             </style>
         
 
+        @include('components.livewire-component-load')
+    
+        @livewireStyles
+    
     </head>
     <body>
         <div class="p-3 bg-white    ">
@@ -222,5 +226,6 @@
         </div>
         <!-- COPYRIGHT -->
               
+   @livewireScripts
     </body>
 </html>

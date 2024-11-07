@@ -31,7 +31,8 @@
     <link rel="apple-touch-icon" href="{{ config('app.photo_url').$site->image_folder}}apple-touch-icon.png">
 
     <style>{{$site->app_specific_css}}</style>
-
+    @include('components.livewire-component-load')
+    
 </head>
 
 <body class="font-sans antialiased">
@@ -55,7 +56,7 @@
 
             <x-footer></x-footer>
 
-
+@livewireScripts
 </body>
 
 </html>

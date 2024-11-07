@@ -31,7 +31,8 @@
     <link rel="icon" sizes="512x512" href="{{ config('app.photo_url').$site->image_folder}}android-chrome-512x512.png">
     <link rel="apple-touch-icon" href="{{ config('app.photo_url').$site->image_folder}}apple-touch-icon.png">
    @endif
-
+   @include('components.livewire-component-load')
+    
 </head>
 
 <body class="font-sans antialiased">
