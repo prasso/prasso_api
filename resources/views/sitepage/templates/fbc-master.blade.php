@@ -132,6 +132,8 @@
 
 //]]>
   </script>
+    <!-- Include the Livewire AJAX loader script -->
+    @include('components.livewire-component-load')
   <script data-turbolinks-eval="false">
     //<![CDATA[
 
@@ -140,6 +142,7 @@
 //]]>
   </script>
 
+@livewireStyles
 
 </head>
 <body class="palette nav-children-expand tabs-style-ribbon first-subpalette1 last-subpalette1 footer-subpalette4 dusk">
@@ -215,9 +218,6 @@
                      <li class="">
                         <a href="/page/RecentSermons"><span>Recent Sermons</span></a>
                      </li>
-                     <li class="">
-                        <a href="/page/Sermons"><span>More Sermons</span></a>
-                     </li>
                      
                   </ul>
                </li>
@@ -283,9 +283,6 @@
                      </li>
                      <li class="">
                         <a href="/page/RecentSermons"><span>Recent Sermons</span></a>
-                     </li>
-                     <li class="">
-                        <a href="/page/Sermons"><span>More Sermons</span></a>
                      </li>
                         </ul>
                      </li>
@@ -362,5 +359,6 @@
       ga('send', 'pageview');
       
    </script>
+   @livewireScripts
 </body>
 </html>

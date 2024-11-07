@@ -46,6 +46,9 @@
         @endif
 
 @endif
+@include('components.livewire-component-load')
+    
+    @livewireStyles
     </head>
     <body>
         @if (session()->has('message'))
@@ -59,6 +62,6 @@
             {{ $slot }}
         </div>
         <x-footer></x-footer>
-
+@livewireScripts
     </body>
 </html>

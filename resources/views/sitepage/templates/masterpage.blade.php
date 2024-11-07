@@ -137,7 +137,10 @@
             teambutton, button, [type="button"], [type="reset"], [type="submit"]{color:#f1f1f1;background-color:{{ $site->main_color }}; padding: 6px 3px 6px 3px ;border-radius: 5px;margin: 20px;}
             </style>
         
-
+            @include('components.livewire-component-load')
+    
+            @livewireStyles
+   
     </head>
     <body>
         <div class="p-12 bg-white col-span-12 items-center ">
@@ -223,5 +226,6 @@
     });
 </script>
 
+@livewireScripts
     </body>
 </html>

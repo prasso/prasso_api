@@ -57,7 +57,9 @@
         @if (isset($sitePage->style)  )
             <style>{!! $sitePage->style !!}</style>
         @endif
-
+        @include('components.livewire-component-load')
+    
+        @livewireStyles
     </head>
     <body>
         @if (session()->has('message'))
@@ -72,5 +74,6 @@
         </div>
         <x-footer></x-footer>
 
+        @livewireScripts
     </body>
 </html>
