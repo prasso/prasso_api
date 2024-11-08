@@ -584,4 +584,53 @@ class SitePageController extends BaseController
         // Return a response indicating success
         return response()->json(['message' => 'OK'], 200);
     }
+
+    public function editSitePageJsonData($siteId, $sitePageId)
+    {
+        // make sure the user has access to this site and page
+        if (!Controller::userOkToViewPageByHost($this->userService))
+        {
+            info('no access for this user. editSitePageJsonData: ' .  $sitePageId);
+            abort(403, 'Unauthorized action.');
+        }
+
+        $sitePage = SitePages::findOrFail($sitePageId);
+        $sitePageData = SitePageData::where('fk_site_page_id',$sitePageId)->first();
+// Check if the site page data is null
+if (is_null($sitePageData)) {
+    // Set a session flash message
+    session()->flash('message', 'The page has no data defined for it.');
+    
+        // Redirect back to the previous page with the flash message
+        return redirect()->back();
+        }
+        $jsonData = json_decode($sitePageData->json_data, true);
+
+        return view('sitepage.edit-site-page-json-data', [
+            'siteId' => $siteId,
+            'sitePage' => $sitePage,
+            'sitePageDataid' => $sitePageData->id,
+            'jsonData' => $jsonData ?? []
+        ]);
+    }
+
+    public function updateSitePageJsonData(Request $request, $siteId, $sitePageDataId)
+    {
+         // make sure the user has access to this site and page
+         if (!Controller::userOkToViewPageByHost($this->userService))
+         {
+             info('no access for this user. updateSitePageJsonData: $sitePageDataId ' .  $sitePageDataId);
+             abort(403, 'Unauthorized action.');
+         }
+
+        $sitePageData = SitePageData::findOrFail($sitePageDataId);
+        $updatedJsonData = $request->input('json_data');
+
+        // Ensure the updated data is encoded back to JSON
+        $sitePageData->json_data = json_encode($updatedJsonData);
+        $sitePageData->save();
+
+        return redirect()->route('sitepages.editSitePageJsonData', [$siteId, $sitePageData->fk_site_page_id])
+                         ->with('success', 'Site page json data updated successfully!');
+    }
 }
