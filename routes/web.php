@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StripeController;
 use Laravel\Cashier\Http\Controllers\WebhookController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\SitePageController;
 
 
 Route::get('logout', function () {
@@ -113,9 +114,12 @@ Route::middleware([
     Route::get('/site-page-data-templates/{id}/edit', 'SitePageDataTemplateController@edit');
     Route::delete('/site-page-data-templates/{id}', 'SitePageDataTemplateController@destroy');
 
-    Route::get('/sitepages/{siteid}', 'SitePageController@editSitePages');
+    Route::get('/sitepages/{siteid}', 'SitePageController@editSitePages')->name('site-page.list');;
     Route::get('/sitepages/{siteid}/{pageid}/read-tsv-into-site-page-data', 'SitePageController@readTsvIntoSitePageData')->name('site-page.read-tsv-into-site-page-data');
 
+    Route::get('/sitepages/{siteId}/{sitePageId}/edit-site-page-json-data', [SitePageController::class, 'editSitePageJsonData'])->name('sitepages.editSitePageJsonData');
+    Route::post('/sitepages/{siteId}/{sitePageId}/update-site-page-json-data', [SitePageController::class, 'updateSitePageJsonData'])->name('sitepages.updateSitePageJsonData');
+    
     Route::post('/save-site-page', 'SitePageController@saveSitePage');
 
     Route::resource('Sites', \App\Http\Controllers\SiteController::class);
