@@ -15,6 +15,7 @@ use App\Models\MasterPage;
 use App\Models\Site;
 use App\Models\SitePageData;
 use App\Models\SitePageTemplate;
+use Illuminate\Support\Str;
 use App\Models\User;
 use Livewire\Livewire;
 use App\Http\Livewire\HeaderCarousel;
@@ -134,6 +135,7 @@ class SitePageController extends BaseController
 
         //replace the tokens in the dashboard page with the user's name, email, and profile photo
         $page_content = str_replace('CSRF_TOKEN', csrf_token(), $page_content);
+        $page_content = str_replace('[TEAM_ID]', $this->site->teamFromSite()->id, $page_content);
         $page_content = str_replace('MAIN_SITE_COLOR', $this->site->main_color, $page_content);
         $page_content = str_replace('SITE_MAP', $this->site->getSiteMapList($path), $page_content);
         $page_content = str_replace('SITE_NAME', $this->site->site_name, $page_content);
@@ -142,7 +144,8 @@ class SitePageController extends BaseController
         $page_content = str_replace('SITE_DESCRIPTION', $this->site->description, $page_content);
         $page_content = str_replace('PAGE_NAME', $pageToProcess->title, $page_content);
         $page_content = str_replace('PAGE_SLUG', $pageToProcess->section, $page_content);
-
+        $page_content = str_replace('[SITE_ID]',$this->site->id, $page_content);
+        $page_content = str_replace('[DATA_PAGE_ID]',$pageToProcess->id, $page_content);
         //Check if the carousel placeholder exists, then replace it with the Livewire component
         if (strpos($page_content, '[CAROUSEL_COMPONENT]') !== false) {
 
@@ -295,13 +298,13 @@ class SitePageController extends BaseController
             if ($site_page_data == null)
             {
                 //multi-record result sets will be returned within the x-data attribute of the template in $page_content
-                $page_content= $this->sitePageService->getTemplateData($sitepage, $placeholder, $user);
-                //Controller::dd_with_callstack($page_content);
+                $page_content= $this->sitePageService->getTemplateData($sitepage, $placeholder, $user, $this->site);
+               
             }
             else{
 
                 $template_data = SitePageTemplate::where('templatename', $sitepage->template)->first();
-                $jsonData = $this->sitePageService->processJSONData($site_page_data, $template_data);
+                $jsonData = $this->sitePageService->processJSONData($site_page_data, $template_data, $this->site);
                
                 $page_content = str_replace($placeholder, $jsonData, $sitepage->description);
             }
@@ -309,7 +312,6 @@ class SitePageController extends BaseController
             //Controller::dd_with_callstack($sitepage);
         
         }
-        //Controller::dd_with_callstack($sitepage);
         return view($sitepage->masterpage)//use the template here
             ->with('sitePage',$sitepage)
             ->with('site',$this->site)
@@ -433,23 +435,32 @@ class SitePageController extends BaseController
      * will not depend on fixed form item names
      * the data will be stored in site_page_data table with siteid, data's key, json_data, and date created/updated
      */
-    public function sitePageDataPost(Request $request){
+    public function sitePageDataPost(Request $request,$siteid,$pageid){
         // make sure the user has access to this site and page
         if (!Controller::userOkToViewPageByHost($this->userService))
         {
             abort(403, 'Unauthorized action.');
         }
+        $id = $request->input('id');
+        $team_id = $request->input('team_id');
+        $data_key = $request->input('data_key');
 
-        $team_id = $request['team_id'];
-        $pageid = $request['pageid'];
-        $data_key = $request['data_key'];
         $newOne = false;
+        
+        //if id is in the data, use it to find this record.
+        $data = null;
+        if ($id) {
+            $data = SitePageData::where('id', $id)->first(); // Change from get() to first()
+        } elseif ($data_key) {
+            $data = SitePageData::where('fk_site_page_id', $pageid)->where('data_key', $data_key)->first();
+        }
+        
         if ($data_key == NULL){
-            $data_key = uniqid();
+            $data_key = Str::uuid();
             $newOne = true;
         }
-        $data = SitePageData::where('fk_site_page_id',$pageid)->where('data_key', $data_key)->first();
         if ($data == null){
+            
             $data = SitePageData::create(['fk_site_page_id'=>$pageid,'data_key'=>$data_key, 'fk_team_id'=>$this->site->teams[0]->id]);
         }
         else{
@@ -470,12 +481,27 @@ class SitePageController extends BaseController
         }
         $json = json_encode($json);
         $data->json_data = $json;
+        $data->fk_team_id = $team_id;
         $data->save();
 
+        if ($request['return_json']=='true'){
+           
+            //return all json with this pageid from site page data if that value is true
+            $site_page = SitePages::find($pageid);
+            $site = Site::find($siteid);
+            $jsonData = $this->sitePageService->getTemplateDataJSON($site_page,  Auth::user() ?? null, $site);
+
+            $message = 'success';
+            return $this->sendResponse($jsonData, $message) ;
+        
+        }
+
+        //page didn't request json return, redirect back with a message.
+        $page = SitePages::find($pageid);
         if ($newOne)
-        {$message = 'A freight order record has been added';}
+        {$message = 'A new '.$page->section.' record has been added';}
         else
-        {$message = 'A freight order record has been updated';}
+        {$message = 'A '.$page->section.' record has been updated';}
         if (SitePages::pageNotificationsRequested($pageid)){
             //user wants notifications when this data changes
             $user = \Auth::user();
@@ -524,7 +550,7 @@ class SitePageController extends BaseController
 
         if ($sitepage->template != null && strlen($sitepage->template) > 0) 
         {
-            $json_data= $this->sitePageService->getTemplateDataJSON($sitepage, $user);
+            $json_data= $this->sitePageService->getTemplateDataJSON($sitepage, $user, $this->site);
             return  $json_data;
         }
         
@@ -544,7 +570,7 @@ class SitePageController extends BaseController
 
         // Loop through each line of the file
         while (($line = fgets($file)) !== false) {
-            $data_key = uniqid();
+            $data_key = Str::uuid();
             $page = SitePageData::create(['fk_site_page_id'=>$pageid,'data_key'=>$data_key]);
             // Split the line into an array of values
             $values = explode("\t", $line);

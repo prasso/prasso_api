@@ -8,7 +8,7 @@
                      currentSlide = 0;
                      setTimeout(() => $el.querySelector('.carousel-content').classList.remove('no-transition'), 20);
                  }
-             }, 5000)">
+             }, 10000)">
     <!-- Carousel Content -->
     <div class="carousel-content w-full flex transition-transform duration-500 ease-in-out"
          :style="'transform: translateX(-' + (currentSlide * 100) + '%)'">
