@@ -5,6 +5,7 @@ use App\Http\Controllers\StripeController;
 use Laravel\Cashier\Http\Controllers\WebhookController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\SitePageController;
+use App\Http\Controllers\SitePageDataController;
 
 
 Route::get('logout', function () {
@@ -94,6 +95,7 @@ Route::middleware([
     Route::post('/site/{siteid}/{pageid}/sitePageDataPost', 'SitePageController@sitePageDataPost');
     Route::post('/images/upload', 'ImageController@upload')->name('images.upload');
     Route::get('/image-library', 'ImageController@index')->name('image.library');
+    Route::delete('/site-page-data/{pageid}/{id}', [SitePageDataController::class, 'destroy']);
 
     Route::get('/getLatLonFromAddress', 'ProxyController@getLatLonFromAddress');
 

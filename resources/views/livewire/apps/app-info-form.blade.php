@@ -1,10 +1,12 @@
-<x-app-layout>
+<div>
     <x-slot name="title">Edit Site Page Json Data</x-slot>
 
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+    @if (!empty($sitePage))
+       <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Site Page: '.$sitePage['section']) }}
         </h2>
+        @endif
         <x-dropdown-link href="{{ route('site-page.list', $site->id) }}">
             {{ __('Return to site editor') }}
         </x-dropdown-link>
@@ -35,7 +37,7 @@
                     </ul>
                 </div>
             @endif
-
+ @if (!empty($jsonData))
             <!-- JSON Data Inputs -->
             @foreach ($jsonData as $key => $value)
                 <div class="col-span-6 mt-4">
@@ -43,6 +45,7 @@
                     <x-input type="text" name="json_data[{{ $key }}]" id="json_data_{{ $key }}" class="mt-1 block w-full" value="{{ $value }}" />
                 </div>
             @endforeach
+            @endif
         </x-slot>
 
         <x-slot name="actions">
@@ -55,4 +58,4 @@
             </x-button>
         </x-slot>
     </x-form-section>
-</x-app-layout>
+</div>

@@ -181,6 +181,28 @@ $page_content = str_replace('USER_EMAIL', $user->email, $page_content);
 $page_content = str_replace('USER_PROFILE_PHOTO', $user->getProfilePhoto(), $page_content);
 ```
 
+### 12. Site-Specific Tags
+These tags are replaced to include details specific to the current site context and the data being processed:
+
+- `[SITE_ID]`: Replaces with the unique ID of the current site.
+- `[DATA_PAGE_ID]`: Replaces with the unique ID of the specific page being processed.
+- `[TEAM_ID]`: Replaces with the unique ID of the team associated with the current site.
+
+**Usage**:
+```html
+<p>Site Identifier: SITE_ID</p>
+<p>Page Identifier: DATA_PAGE_ID</p>
+<p>Team Identifier: TEAM_ID</p>
+```
+
+**Replacements**:
+```php
+$page_content = str_replace('[SITE_ID]', $this->site->id, $page_content);
+$page_content = str_replace('[DATA_PAGE_ID]', $pageToProcess->id, $page_content);
+$page_content = str_replace('[TEAM_ID]', $this->site->teamFromSite()->id, $page_content);
+```
+
+These replacements ensure that pages dynamically include contextual information about the site, the processed data page, and the associated team.
 ---
 
 ## Example Page Content Before Processing

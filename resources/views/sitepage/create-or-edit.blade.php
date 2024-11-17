@@ -7,6 +7,7 @@
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>?
         <div <div x-data="{ template_selection_made: {{ $masterpage ? 'true' : 'false' }}, dataTemplateSelectionMade:  {{ $template ? 'true' : 'false' }} }" 
             x-init="template_selection_made = {{ ($masterpage || $template) ? 'true' : 'false' }};" 
+            x-data @click.away="$wire.closeModal()" 
             class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle " role="dialog" aria-modal="true" aria-labelledby="modal-headline">
             <form> <input type="hidden" wire:model="fk_site_id" />
             @if($errors->any())

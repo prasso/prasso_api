@@ -32,9 +32,9 @@ class SitePageService
         return json_encode($message);
     }
 
-    public function getTemplateData($site_page, $placeholder, $user=null){
+    public function getTemplateData($site_page, $placeholder, $user=null, $site = null){
        
-        $jsonData = $this->getTemplateDataJSON($site_page, $user);
+        $jsonData = $this->getTemplateDataJSON($site_page, $user, $site);
 
         $site_page_description = str_replace($placeholder, $jsonData, $site_page->description);
 
@@ -46,23 +46,38 @@ class SitePageService
     /**
      * when troubleshooting data missing: check that the where clause in the site page is set to the id of the site
      */
-    public function getTemplateDataJSON($site_page, $user=null){
+    public function getTemplateDataJSON($site_page, $user=null, $site=null){
        
         $template_data = SitePageTemplate::where('templatename', $site_page->template)->first();
         if ($template_data == null)
         {
             return '';
         }
+
         $modelClassName = $template_data->template_data_model;
         $model = resolve($modelClassName);
-      
         if ($site_page->where_value != null && $site_page->where_value != '' && $site_page->where_value != -1)
         { 
 
             $sql = $template_data->template_data_query. ' as display, id ';
 
             $where_clause_field = str_replace('???', $site_page->where_value, $template_data->template_where_clause);
-   
+ 
+            //if where_clause_field contains [TEAM_ID] we will replace that with the site's team id
+            // to do so, we - get the team from the site $this->site->teamFromSite()->id
+            // but we need to get site first. we get site from the url.
+            // Assuming $site is passed as a parameter and has a method `teamFromSite()` that returns an object with an `id` property
+            if ($site) {
+
+                // Replace '[TEAM_ID]' with the actual team ID
+                if (strpos($where_clause_field, '[TEAM_ID]') !== false) {
+                    // Get the team ID from the site object
+                    $team_id = $site->teamFromSite()->id;
+
+                    $where_clause_field = str_replace('[TEAM_ID]', $team_id, $where_clause_field);
+                }
+            }
+
             $fieldValue = $site_page->getAttribute($where_clause_field);
             if ($fieldValue == null) //the where clause is not a field in the site page table
             {
@@ -100,7 +115,6 @@ class SitePageService
                 if ($subteamIds != [])
                 {$query = $query->whereIn('fk_team_id', $subteamIds);}
             }
-            
             $data = $query   
                 ->selectRaw($sql)
                 ->get();
@@ -133,25 +147,33 @@ class SitePageService
     }
    
     // make sure the json matches default_blank
-    public function processJSONData($site_page_data, $template_data){
+    public function processJSONData($site_page_data, $template_data,$site=null){
         // make sure the json matches default_blank
         $template_data_default_blank = json_decode($template_data->default_blank, true);
         if ($template_data_default_blank === null ) {
             return $site_page_data->json_data;
         }
-        
-       $jsonData = json_decode($site_page_data->json_data, true);
-
+    
+        $jsonData = json_decode($site_page_data->json_data, true);
+    
         $missingKeys = array_diff_key($template_data_default_blank, $jsonData);
         $jsonData = array_merge($jsonData, $missingKeys);
         $jsonData['data_key'] = $site_page_data->data_key;
-
-        if ($template_data->include_csrf){
+    
+        if($site)
+        {
+            info('putting in team id');
+            $jsonData['team_id'] = $site->teamFromSite()->id;
+        }
+    
+        if ($template_data->include_csrf) {
             $jsonData['csrftoken'] = csrf_token();
         }
+    
         $jsonDataEncoded = json_encode($jsonData);
         return $jsonDataEncoded;
     }
+    
 }
 
 
