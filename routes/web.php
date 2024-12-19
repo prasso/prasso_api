@@ -94,6 +94,7 @@ Route::middleware([
     Route::get('/visual-editor/getCombinedHtml/{pageid}', 'SitePageController@getCombinedHtml');
     Route::post('/site/{siteid}/{pageid}/sitePageDataPost', 'SitePageController@sitePageDataPost');
     Route::post('/images/upload', 'ImageController@upload')->name('images.upload');
+    Route::post('/images/confirm-resize', 'ImageController@confirmResize')->name('images.confirm-resize');
     Route::get('/image-library', 'ImageController@index')->name('image.library');
     Route::delete('/site-page-data/{pageid}/{id}', [SitePageDataController::class, 'destroy']);
 

@@ -83,13 +83,14 @@ class CreateOrEdit extends Component
     }
 
     /**
-     * @var array
-     */
-    public function closeModal()
-    {
-        // a placeholder cause the modal is not used
-        return redirect()->route('dashboard');
-    }
+    * Close the modal and reset state
+    */
+   public function closeModal()
+   {
+       $this->show_modal = false;
+       $this->reset();
+       
+   }
 
     /**
      * Store a newly created resource in storage.

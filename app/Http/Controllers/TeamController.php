@@ -275,7 +275,7 @@ class TeamController extends Controller
         info('saving an app image image. ');
 
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120', // 5MB = 5120KB
         ]);
 
         $input = $request->all(); 

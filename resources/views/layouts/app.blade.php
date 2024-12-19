@@ -65,7 +65,7 @@
         @stack('modals')
 
         <!-- Scripts -->
-        <script src="/js/jquery1.10.0.min.js"></script> 
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> 
         {{ $extrajs ?? ''}}
 
         @if (   isset($site) && isset($site->app_specific_css) && str_starts_with($site->app_specific_css, 'http') )
@@ -83,6 +83,7 @@
 
         @livewireScripts
 
+        @stack('scripts')
 </body>
 
 </html>

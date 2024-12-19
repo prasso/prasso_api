@@ -249,6 +249,9 @@ class User extends Authenticatable implements FilamentUser {
     }
 
     public function isTeamMemberOrOwner($teamId) {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
         $isMember = $this->team_member()->where('team_id', $teamId)->exists();
         $isOwner = $this->team_owner()->where('id', $teamId)->exists();
         return $isMember || $isOwner;
