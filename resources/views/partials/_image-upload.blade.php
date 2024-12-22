@@ -10,7 +10,8 @@
                 <div class="mt-1 flex items-center">
                     <input type="file" 
                            id="image" 
-                           name="image" 
+                           name="image[]" 
+                           multiple
                            accept="image/*"
                            class="block w-full text-sm text-gray-500
                                   file:mr-4 file:py-2 file:px-4
@@ -19,6 +20,15 @@
                                   file:bg-indigo-50 file:text-indigo-700
                                   hover:file:bg-indigo-100">
                 </div>
+            </div>
+            <div class="mt-4">
+                <label class="inline-flex items-center">
+                    <input type="checkbox" 
+                           id="resize" 
+                           name="resize" 
+                           class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out">
+                    <span class="ml-2 text-sm text-gray-600">Resize images if they are too large</span>
+                </label>
             </div>
             <button type="submit" 
         id="uploadButton"

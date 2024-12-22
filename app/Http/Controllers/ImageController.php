@@ -42,35 +42,86 @@ class ImageController extends BaseController
         if ( !\Auth::user()->isTeamMemberOrOwner($team->id)) {
             abort(403, 'Unauthorized action.');
         }
-        $file = $request->file('image');
+
+        $files = $request->file('image');
+        $shouldResize = $request->boolean('resize');
         
-        if (!$file) {
-            return response()->json(['error' => 'No image file provided.'], 400);
+        if (!$files || empty($files)) {
+            return response()->json(['error' => 'No image files provided.'], 400);
         }
 
-        // Get the file size in MB
-        $fileSize = $file->getSize() / 1024 / 1024;
-        
-        // Check if file is too large (use server's upload_max_filesize from php.ini)
-        if ($fileSize > ini_get('upload_max_filesize')) {
-            return response()->json([
-                'error' => 'The file is too large. Maximum allowed size is ' . ini_get('upload_max_filesize') . '.'
-            ], 400);
+        $results = [];
+        $errors = [];
+        $maxFileSize = $this->getMaxFileSize();
+
+        foreach ($files as $file) {
+            try {
+                // Validate file type and size
+                if (!$file->isValid() || !str_starts_with($file->getMimeType(), 'image/')) {
+                    $errors[] = "File '{$file->getClientOriginalName()}' is not a valid image.";
+                    continue;
+                }
+
+                $fileSize = $file->getSize() / 1024 / 1024; // Convert to MB
+                
+                if ($fileSize > $maxFileSize) {
+                    if (!$shouldResize) {
+                        $errors[] = "File '{$file->getClientOriginalName()}' is too large. Maximum allowed size is {$maxFileSize}MB.";
+                        continue;
+                    }
+
+                    // Resize the image
+                    $resizedPath = $this->imageResizeService->resize($file);
+                    if (!$resizedPath) {
+                        $errors[] = "Unable to resize '{$file->getClientOriginalName()}' while maintaining acceptable quality.";
+                        continue;
+                    }
+
+                    // Create a new UploadedFile instance from the resized image
+                    $file = new \Illuminate\Http\UploadedFile(
+                        $resizedPath,
+                        $file->getClientOriginalName(),
+                        $file->getClientMimeType(),
+                        null,
+                        true
+                    );
+                }
+
+                // Process the image upload
+                $result = $this->processImageUpload($file);
+                if ($result->getStatusCode() === 200) {
+                    $results[] = $file->getClientOriginalName();
+                } else {
+                    $errors[] = "Failed to upload '{$file->getClientOriginalName()}'.";
+                }
+            } catch (\Exception $e) {
+                \Log::error('Image upload error: ' . $e->getMessage());
+                $errors[] = "Error processing '{$file->getClientOriginalName()}': {$e->getMessage()}";
+            }
         }
 
-        // Check if image needs resizing
-        if ($this->imageResizeService->needsResize($file)) {
-            // Store original file in session for potential resizing
-            $request->session()->put('original_image', $file);
-            
-            return response()->json([
-                'warning' => 'Image size exceeds 5MB. Would you like to automatically resize it?',
-                'show_resize_options' => true,
-                'file_size' => round($fileSize, 2) . 'MB'
-            ], 200);
+        // Prepare the response
+        $response = [
+            'uploaded' => count($results),
+            'failed' => count($errors),
+            'message' => count($results) . ' image(s) uploaded successfully'
+        ];
+
+        if (!empty($errors)) {
+            $response['errors'] = $errors;
         }
 
-        return $this->processImageUpload($file);
+        $statusCode = empty($results) ? 400 : 200;
+        return response()->json($response, $statusCode);
+    }
+
+    protected function getMaxFileSize()
+    {
+        $maxSize = ini_get('upload_max_filesize');
+        if (str_ends_with($maxSize, 'M')) {
+            return (int)$maxSize;
+        }
+        return 8; // Default to 8MB if we can't determine the server setting
     }
 
     public function confirmResize(Request $request)
