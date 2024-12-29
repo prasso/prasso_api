@@ -23,8 +23,9 @@
         "laravel/tinker": "^2.8",
         "league/flysystem-aws-s3-v3": "^3.19",
         "livewire/livewire": "^3.0",
-        "prasso/autoprohub": "dev-autoprohub-Booking-system",
+        "prasso/autoprohub": "dev-main",
         "prasso/messaging": "dev-main",
+        "prasso/project_management": "dev-main",
         "twilio/sdk": "^6.27"
     },
     "repositories": [
@@ -39,6 +40,10 @@
         {
             "type": "path",
             "url": "packages/autoprohub"
+        },
+        {
+            "type": "path",
+            "url": "packages/prasso/project_management"
         }
     ],
     "require-dev": {
