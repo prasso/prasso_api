@@ -107,6 +107,10 @@
                             {{ __('Sites') }}
                         </x-responsive-nav-link>
 
+                        <x-responsive-nav-link href="{{ route('admin.site-packages.manage') }}" class="ml-4">
+                            {{ __('Site Packages') }}
+                        </x-responsive-nav-link>
+
                         @endif
                         @if (Auth::user()->isInstructor() )
                         <!-- Team Management -->

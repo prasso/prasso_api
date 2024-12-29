@@ -6,7 +6,16 @@ use Laravel\Cashier\Http\Controllers\WebhookController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\SitePageController;
 use App\Http\Controllers\SitePageDataController;
-
+use App\Http\Controllers\Admin\SitePackageController;
+use App\Http\Controllers\SiteController;
+use App\Http\Controllers\ImageController;
+use App\Http\Controllers\TeamController;
+use App\Http\Controllers\User2Controller;
+use App\Http\Controllers\MySiteController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SiteMediaController;
+use App\Http\Controllers\ProxyController;
+use App\Http\Controllers\SitePageDataTemplateController;
 
 Route::get('logout', function () {
     return redirect('/login');
@@ -130,4 +139,9 @@ Route::middleware([
 
     Route::resource('Sites', \App\Http\Controllers\SiteController::class);
     Route::get('/sites', 'SiteController@index')->name('sites.show');
+
+    Route::get('/site-packages', [SitePackageController::class, 'manage'])
+    ->name('admin.site-packages.manage');
+    Route::get('/sites/{site}/packages', [SitePackageController::class, 'getSitePackages']);
+
 });
