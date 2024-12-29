@@ -9,8 +9,11 @@
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div >
-        @include('sites.create-or-edit', ['team_selection' => $team_selection])
+        @include('sites.create-or-edit', [
+            'team_selection' => $team_selection,
+            'site_id' => $site_id,
+            'show_modal' => true
+        ])
         </div>
     </div>
 </div>
-            

@@ -42,7 +42,7 @@ class User2Controller extends BaseController
         $user = Auth::user(); 
 
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120', // 5MB = 5120KB
         ]);
         if($request->hasfile('image'))
         {

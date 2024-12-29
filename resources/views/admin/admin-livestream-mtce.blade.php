@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :site="$site ?? null">
     <x-slot name="title">Livestream Maintenance</x-slot>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">

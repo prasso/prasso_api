@@ -73,7 +73,7 @@
         {!! $sitePage->description !!}
         </div>
         <x-footer></x-footer>
-        <script src="/js/jquery1.10.0.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
         @livewireScripts
     </body>
