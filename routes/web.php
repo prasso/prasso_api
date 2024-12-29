@@ -45,6 +45,9 @@ Route::post('/create-payment-intent', [StripeController::class, 'createPaymentIn
 Route::get('/donate', [StripeController::class, 'showDonationForm'])->name('donation.form');
 Route::post('/donate', [StripeController::class, 'submitDonation'])->name('donation.submit');
 
+// Image upload route
+Route::post('/upload', 'ImageController@upload')->name('image.upload')->middleware(['auth', 'web']);
+
 Route::get('subscribe', [StripeController::class, 'showSubscriptionForm'])->name('subscription.form')->middleware('auth');
 Route::post('subscribe', [StripeController::class, 'createSubscription'])->name('subscription.create')->middleware('auth');
 Route::post('stripe/webhook', [WebhookController::class, 'handleWebhook']);

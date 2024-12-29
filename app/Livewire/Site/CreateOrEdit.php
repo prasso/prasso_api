@@ -154,6 +154,9 @@ class CreateOrEdit extends Component
 
     public function render()
     {
-        return view('livewire.site.create-or-edit');
+        return view('livewire.site.create-or-edit', [
+            'site_id' => $this->site_id,
+            'team_selection' => $this->team_selection
+        ]);
     }
 }

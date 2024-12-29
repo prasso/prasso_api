@@ -1,8 +1,11 @@
 <!-- Image Upload Form -->
 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
     <div class="p-6 bg-white border-b border-gray-200">
-        <form id="uploadForm" class="space-y-4">
+        <form id="uploadForm" class="space-y-4" data-site-id="{{ $site_id ?? '' }}">
             @csrf
+            @if(isset($site))
+            <input type="hidden" id="site_id" name="site_id" value="{{ $site->id }}" />
+            @endif
             <div>
                 <label class="block text-sm font-medium text-gray-700">
                     Upload Image
@@ -32,8 +35,7 @@
             </div>
             <button type="submit" 
         id="uploadButton"
-        disabled
-        class="teambutton inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed">
+        class="teambutton inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
     Upload Image
 </button>
         </form>

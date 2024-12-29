@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Facade;
+
 return [
 
 
@@ -51,6 +53,11 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 
         /*
+         * Package Service Providers...
+         */
+        Intervention\Image\ImageServiceProvider::class,
+
+        /*
          * Application Service Providers...
          */
 
@@ -63,14 +70,12 @@ return [
         App\Providers\JetstreamServiceProvider::class,
         App\Extensions\SuperAdminUserProvider::class,
         App\Extensions\InstructorUserProvider::class,
-        Intervention\Image\ImageServiceProvider::class,
 
 
 
     ],
 
-    'aliases' => [
-
+    'aliases' => Facade::defaultAliases()->merge([
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
@@ -108,8 +113,5 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Image' => Intervention\Image\Facades\Image::class,
-
-
-    ],
-
+    ])->toArray(),
 ];

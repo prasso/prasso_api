@@ -1,7 +1,7 @@
           <!-- if this is show_modal, then show the modal -->
-          @if( !isset($show_modal) || $show_modal)
-            <div class="fixed z-10 inset-0 overflow-y-auto ease-out duration-400" x-data>
-            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+@if( !isset($show_modal) || $show_modal)
+    <div class="fixed z-10 inset-0 overflow-y-auto ease-out duration-400" x-data>
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity">
             <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
         </div>
@@ -26,9 +26,9 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="px-4 py-2 ml-2">
-                        <a class="cursor-pointer rounded-xl transition duration-500 ease-in-out transform rounded-lg shadow-xl" href="{{ route('image.library') }}" title="Image Library"><i alt="image library" class="material-icons">photo_library</i></a>
+                        <a class="cursor-pointer rounded-xl transition duration-500 ease-in-out transform rounded-lg shadow-xl" href="{{ route('image.library', ['site_id' => $site_id]) }}" title="Image Library"><i alt="image library" class="material-icons">photo_library</i></a>
                     </div>
-                @include('partials._image-upload')
+                @include('partials._image-upload', ['site_id' => $site_id])
 
                 <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
     <!-- a link to this user's app -->
@@ -74,7 +74,5 @@
         </div>
     </div>
 
-    @push('scripts')
     <script src="{{ asset('js/image-upload.js') }}"></script>
-@endpush
 </div>
