@@ -1,5 +1,5 @@
 
-<x-app-layout>
+<x-app-layout :site="$site ?? null">
 
 <x-slot name="title">Edit Site Page Data Template {{ $template->templatename }}</x-slot>
     <x-slot name="header">

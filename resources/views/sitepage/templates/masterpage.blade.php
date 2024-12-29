@@ -30,7 +30,7 @@
         {!!  $masterPage->js !!}
         {!!  $masterPage->css !!}
         @else
-        <script src="/js/jquery1.10.0.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <link href="/js/google-fonts-inter.css" rel="stylesheet">
          <link href="/js/google-fonts-material-icon.css" rel="stylesheet">
          <link rel="stylesheet" href="/js/google-material-design-iconic-font.2.2.0.min.css">

@@ -1,37 +1,36 @@
-        <!-- if this is show_modal, then show the modal -->
-        @if( !isset($show_modal) || $show_modal)
-            <div class="fixed z-10 inset-0 overflow-y-auto ease-out duration-400">
-            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+          <!-- if this is show_modal, then show the modal -->
+@if( !isset($show_modal) || $show_modal)
+    <div class="fixed z-10 inset-0 overflow-y-auto ease-out duration-400" x-data>
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity">
             <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
         </div>
-            <!-- This element is to trick the browser into centering the modal contents. -->
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>?
-            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
-    @else
-    <div><div>
-            <div class="align-bottom bg-white rounded-lg text-left transition-all sm:my-8 sm:align-middle " >
-        @endif
-        <div class="border-t border-gray-200"></div>
-            <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
-                {{ __('Add to Image Library') }}
-                <div class="flex">
-                    <div class="px-4 py-2 border-r border-gray-200" x-data="{fileSelected: false}">
-                        <form action="{{ route('images.upload') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <input class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" type="file" id="fileInput" name="image" x-ref="fileInput"
-                                @change="fileSelected = $refs.fileInput.files.length > 0">
-                            <button :disabled="!fileSelected" class="teambutton cursor-pointer mt-2 border p-2 rounded-xl px-2 py-1  text-sm  text-white transition duration-500 ease-in-out transform rounded-lg shadow-xl" type="submit">Upload</button>
-                        </form>
+        <!-- This element is to trick the browser into centering the modal contents. -->
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>?
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline"
+        @click.away="$wire.closeModal()">
+@else
+<div><div>
+        <div class="align-bottom bg-white rounded-lg text-left transition-all sm:my-8 sm:align-middle " >
+@endif
+    <div class="border-t border-gray-200"></div>
+    <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
+        {{ __('Add to Image Library') }}
+        <div class="flex">
+
+        </div>
+    </div>
+
+        @include('partials._image-upload-styles')
+
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="px-4 py-2 ml-2">
+                        <a class="cursor-pointer rounded-xl transition duration-500 ease-in-out transform rounded-lg shadow-xl" href="{{ route('image.library', ['site_id' => $site_id]) }}" title="Image Library"><i alt="image library" class="material-icons">photo_library</i></a>
                     </div>
-                    <div class="px-4 py-2 ml-2">
-                        <a class="cursor-pointer rounded-xl transition duration-500 ease-in-out transform rounded-lg shadow-xl" href="{{ route('image.library') }}" title="Image Library"><i alt="image library" class="material-icons">photo_library</i></a>
-                    </div>
-                </div>
-            </div>
-            <form> 
-                
-            <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
+                @include('partials._image-upload', ['site_id' => $site_id])
+
+                <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
     <!-- a link to this user's app -->
     <x-responsive-nav-link href="{{ route('apps.show', Auth::user()->current_team_id) }}">
         <div class="flex items-center">
@@ -54,6 +53,7 @@
 </x-responsive-nav-link>
 
 </div>
+            <form> 
 
                 <input type="hidden" wire:model="site_id" />
                           
@@ -73,4 +73,6 @@
             </form>
         </div>
     </div>
+
+    <script src="{{ asset('js/image-upload.js') }}"></script>
 </div>

@@ -5,7 +5,17 @@ use App\Http\Controllers\StripeController;
 use Laravel\Cashier\Http\Controllers\WebhookController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\SitePageController;
-
+use App\Http\Controllers\SitePageDataController;
+use App\Http\Controllers\Admin\SitePackageController;
+use App\Http\Controllers\SiteController;
+use App\Http\Controllers\ImageController;
+use App\Http\Controllers\TeamController;
+use App\Http\Controllers\User2Controller;
+use App\Http\Controllers\MySiteController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SiteMediaController;
+use App\Http\Controllers\ProxyController;
+use App\Http\Controllers\SitePageDataTemplateController;
 
 Route::get('logout', function () {
     return redirect('/login');
@@ -43,6 +53,9 @@ Route::post('checkout', [StripeController::class, 'purchaseFromCheckout'])->name
 Route::post('/create-payment-intent', [StripeController::class, 'createPaymentIntent'])->name('create.paymentIntent');
 Route::get('/donate', [StripeController::class, 'showDonationForm'])->name('donation.form');
 Route::post('/donate', [StripeController::class, 'submitDonation'])->name('donation.submit');
+
+// Image upload route
+Route::post('/upload', 'ImageController@upload')->name('image.upload')->middleware(['auth', 'web']);
 
 Route::get('subscribe', [StripeController::class, 'showSubscriptionForm'])->name('subscription.form')->middleware('auth');
 Route::post('subscribe', [StripeController::class, 'createSubscription'])->name('subscription.create')->middleware('auth');
@@ -93,7 +106,9 @@ Route::middleware([
     Route::get('/visual-editor/getCombinedHtml/{pageid}', 'SitePageController@getCombinedHtml');
     Route::post('/site/{siteid}/{pageid}/sitePageDataPost', 'SitePageController@sitePageDataPost');
     Route::post('/images/upload', 'ImageController@upload')->name('images.upload');
+    Route::post('/images/confirm-resize', 'ImageController@confirmResize')->name('images.confirm-resize');
     Route::get('/image-library', 'ImageController@index')->name('image.library');
+    Route::delete('/site-page-data/{pageid}/{id}', [SitePageDataController::class, 'destroy']);
 
     Route::get('/getLatLonFromAddress', 'ProxyController@getLatLonFromAddress');
 
@@ -124,4 +139,9 @@ Route::middleware([
 
     Route::resource('Sites', \App\Http\Controllers\SiteController::class);
     Route::get('/sites', 'SiteController@index')->name('sites.show');
+
+    Route::get('/site-packages', [SitePackageController::class, 'manage'])
+    ->name('admin.site-packages.manage');
+    Route::get('/sites/{site}/packages', [SitePackageController::class, 'getSitePackages']);
+
 });

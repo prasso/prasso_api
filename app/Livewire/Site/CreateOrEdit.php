@@ -16,7 +16,7 @@ class CreateOrEdit extends Component
 {
     use WithFileUploads;
 
-    public $siteid;
+    public $site_id;
     public $site_name; //
     public $description; //
     public $host; //
@@ -55,7 +55,7 @@ class CreateOrEdit extends Component
         $this->current_user = $user;
         $this->team = $team;
         $this->team_id = $team->id;
-        $this->siteid = $site->id;
+        $this->site_id = $site->id;
         $this->site_name = $site->site_name;
         $this->description = $site->description;
         $this->host = $site->host;
@@ -83,13 +83,14 @@ class CreateOrEdit extends Component
     }
 
     /**
-     * @var array
-     */
-    public function closeModal()
-    {
-        // a placeholder cause the modal is not used
-        return redirect()->route('dashboard');
-    }
+    * Close the modal and reset state
+    */
+   public function closeModal()
+   {
+       $this->show_modal = false;
+       $this->reset();
+       
+   }
 
     /**
      * Store a newly created resource in storage.
@@ -99,7 +100,7 @@ class CreateOrEdit extends Component
      */
     public function store()
     {
-        $siteRequest = new SiteRequest($this->siteid);
+        $siteRequest = new SiteRequest($this->site_id);
         $this->validate($siteRequest->rules());
         if (empty($this->id)) {
             $this->id = 0;
@@ -118,7 +119,7 @@ class CreateOrEdit extends Component
 
 
         if (isset($this->photo)) {
-            $this->siteid = $site->id;
+            $this->site_id = $site->id;
             $this->photo->store(config('constants.APP_LOGO_PATH') . 'logos-' . $site->id, 's3');
             $this->logo_image = config('constants.CLOUDFRONT_ASSET_URL') . config('constants.APP_LOGO_PATH') . 'logos-' . $site->id . '/' . $this->photo->hashName();
             $this->save();
@@ -134,7 +135,7 @@ class CreateOrEdit extends Component
 
     private function save()
     {
-        $site = Site::updateOrCreate(['id' => $this->siteid], [
+        $site = Site::updateOrCreate(['id' => $this->site_id], [
             'site_name' => $this->site_name,
             'description' => $this->description,
             'host' => $this->host,
@@ -153,6 +154,9 @@ class CreateOrEdit extends Component
 
     public function render()
     {
-        return view('livewire.site.create-or-edit');
+        return view('livewire.site.create-or-edit', [
+            'site_id' => $this->site_id,
+            'team_selection' => $this->team_selection
+        ]);
     }
 }

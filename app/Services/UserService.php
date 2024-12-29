@@ -61,11 +61,14 @@ class UserService
         $teamSite->team_id = $team->id;
         $teamSite->save();
 
-        // Create a new team member for the team.
-        $teamSite->team->team_members()->create([
-            'user_id' => $user->id,
-            'role' => config('constants.TEAM_USER_ROLE'),
-        ]);
+        // Only create a new team member if the user is not already associated with this team
+        if (!$teamSite->team->team_members()->where('user_id', $user->id)->exists()) {
+            // Create a new team member for the team.
+            $teamSite->team->team_members()->create([
+                'user_id' => $user->id,
+                'role' => config('constants.TEAM_USER_ROLE'),
+            ]);
+        }
 
     }
 
@@ -347,8 +350,3 @@ return; //todo fix
       return $yh_token; 
     }
 }
-
-
-
-
-

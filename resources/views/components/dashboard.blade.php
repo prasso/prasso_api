@@ -107,6 +107,10 @@
                             {{ __('Sites') }}
                         </x-responsive-nav-link>
 
+                        <x-responsive-nav-link href="{{ route('admin.site-packages.manage') }}" class="ml-4">
+                            {{ __('Site Packages') }}
+                        </x-responsive-nav-link>
+
                         @endif
                         @if (Auth::user()->isInstructor() )
                         <!-- Team Management -->
@@ -116,18 +120,11 @@
                         <div class="border-t border-gray-200"></div>
                         <div class="block py-2 text-lg font-semibold text-gray-600">
                             {{ __('Add to Image Library') }}
-                            <div class="flex">
-                                <div class="px-4 py-2 border-r border-gray-200" x-data="{fileSelected: false}">
-                                    <form action="{{ route('images.upload') }}" method="POST" enctype="multipart/form-data">
-                                        @csrf
-                                        <input class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" type="file" id="fileInput" name="image" x-ref="fileInput"
-                                            @change="fileSelected = $refs.fileInput.files.length > 0">
-                                        <button :disabled="!fileSelected" class="teambutton cursor-pointer mt-2 border p-2 rounded-xl px-2 py-1  text-sm  text-white transition duration-500 ease-in-out transform rounded-lg shadow-xl" type="submit">Upload</button>
-                                    </form>
-                                </div>
-                                <div class="px-4 py-2 ml-auto">
-                                    <a class="cursor-pointer rounded-xl transition duration-500 ease-in-out transform rounded-lg shadow-xl" href="{{ route('image.library') }}" title="Image Library"><i alt="image library" class="material-icons">photo_library</i></a>
-                                </div>
+                            <div class="flex">                <div class="px-4 py-2 ml-2">
+                        <a class="cursor-pointer rounded-xl transition duration-500 ease-in-out transform rounded-lg shadow-xl" href="{{ route('image.library') }}" title="Image Library"><i alt="image library" class="material-icons">photo_library</i></a>
+                    </div>
+@include('partials._image-upload-styles')
+@include('partials._image-upload')
                             </div>
                         </div>
                         @endif
@@ -197,4 +194,8 @@
         <!-- no login cookie -->
         <x-welcome></x-welcome>
         @endif
+
+        @push('scripts')
+            <script src="{{ asset('js/image-upload.js') }}"></script>
+        @endpush
     </div>

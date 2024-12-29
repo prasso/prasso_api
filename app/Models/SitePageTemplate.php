@@ -27,10 +27,10 @@ class SitePageTemplate extends Model
             'templatename' => 'sitepage.templates.xxx',
             'title' => '',
             'description' => '',
-            'template_data_model' => 'App\Models\SiteMedia',
-            'template_where_clause' => 'fk_site_id',
-            'template_data_query' => 'media_title',
-            'order_by_clause' => 'media_title:asc',
+            'template_data_model' => 'App\Models\SitePageData',
+            'template_where_clause' => 'fk_site_id = ???',
+            'template_data_query' => 'json_data',
+            'order_by_clause' => 'id:asc',
         ]);
     }
 }

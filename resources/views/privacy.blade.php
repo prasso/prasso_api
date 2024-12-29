@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :site="$site ?? null">
 
 <x-slot name="title">Privacy Policy</x-slot>
     <x-slot name="header">

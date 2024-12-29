@@ -98,6 +98,22 @@ class Site extends Model
         return optional($this->app)->id;
     }
 
+    public function packages()
+    {
+        return $this->belongsToMany(SitePackage::class, 'site_package_subscriptions', 'site_id', 'package_id')
+            ->withPivot(['subscribed_at', 'expires_at', 'is_active'])
+            ->withTimestamps();
+    }
+
+    public function hasPackage($packageSlug)
+    {
+        return $this->packages()
+            ->where('slug', $packageSlug)
+            ->wherePivot('is_active', true)
+            ->wherePivot('expires_at', '>', now())
+            ->exists();
+    }
+
     public static function isPrasso($host) 
     {
         $site = Site::getClient($host);
@@ -382,4 +398,3 @@ class Site extends Model
         return $owner;
     }
 }
-
