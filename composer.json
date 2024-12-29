@@ -7,6 +7,8 @@
         "framework"
     ],
     "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "php": "^8.2",
         "darkaonline/l5-swagger": "^8.6",
@@ -21,6 +23,7 @@
         "laravel/tinker": "^2.8",
         "league/flysystem-aws-s3-v3": "^3.19",
         "livewire/livewire": "^3.0",
+        "prasso/autoprohub": "dev-autoprohub-Booking-system",
         "prasso/messaging": "dev-main",
         "twilio/sdk": "^6.27"
     },
@@ -32,6 +35,10 @@
         {
             "type": "path",
             "url": "packages/prasso/messaging"
+        },
+        {
+            "type": "path",
+            "url": "packages/autoprohub"
         }
     ],
     "require-dev": {
@@ -84,7 +91,5 @@
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
         }
-    },
-    "minimum-stability": "stable",
-    "prefer-stable": true
+    }
 }
