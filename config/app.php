@@ -56,6 +56,7 @@ return [
          * Package Service Providers...
          */
         Intervention\Image\ImageServiceProvider::class,
+        Prasso\ProjectManagement\ProjectManagementServiceProvider::class,
 
         /*
          * Application Service Providers...
