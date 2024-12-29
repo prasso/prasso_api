@@ -280,46 +280,52 @@ class Site extends Model
 
     public function getSiteMapList($current_page = null)
     {
-        $sitepages = $this->sitePages()->get();
-        $sitemap = array();
-        foreach ($sitepages as $page)
+        // Get all visible top-level menu items
+        $topLevelPages = $this->sitePages()->topLevel()->visible()->get();
+        $list = '';
+        
+        foreach ($topLevelPages as $page)
         {
             $lcase_section = strtolower($page->section);
             $lcase_page = strtolower($current_page);
             
-            //dont put menu items out that are the page this user is on
-            if ($page != null && ('/page/'.$lcase_section == $lcase_page || $lcase_section == $lcase_page))
-            {
+            // Skip if this is the current page
+            if ($page != null && ('/page/'.$lcase_section == $lcase_page || $lcase_section == $lcase_page)) {
                 continue;
             }
-            //dont put menu items out that this user can not access
-            if ( $page->user_level == false || $this->user_is_admin() )
-            {
-                $sitemap[$page->section] = $page->title;
-            }
             
-        }
-        //format $sitemap into a list of LIs
-        $list = '';
-        foreach ($sitemap as $key => $value)
-        {
-            $list .= '<li><a class="block pl-3 pr-4 py-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition duration-150 ease-in-out" href="/page/' . $key . '">' . $value . '</a></li>';
+            // Check user access level
+            if ($page->user_level == false || $this->user_is_admin()) {
+                // Add top level menu item
+                $list .= '<li><a class="block pl-3 pr-4 py-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition duration-150 ease-in-out" href="/page/' . $page->section . '">' . $page->title . '</a>';
+                
+                // Get submenu items
+                $subMenuItems = $page->subMenuItems()->visible()->get();
+                if ($subMenuItems->count() > 0) {
+                    $list .= '<ul class="ml-4">';
+                    foreach ($subMenuItems as $subItem) {
+                        if ($subItem->user_level == false || $this->user_is_admin()) {
+                            $list .= '<li><a class="block pl-3 pr-4 py-2 text-base font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50 transition duration-150 ease-in-out" href="/page/' . $subItem->section . '">' . $subItem->title . '</a></li>';
+                        }
+                    }
+                    $list .= '</ul>';
+                }
+                $list .= '</li>';
+            }
         }
         
-        // if this user is an admin or a team owner then add the site editor
-        if ( $this->user_is_admin() )
-        {
+        // Add admin links if user is admin
+        if ($this->user_is_admin()) {
             $list .= '<li><a class="block pl-3 pr-4 py-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition duration-150 ease-in-out" href="/site/edit">Site Editor</a></li>';
             $this->load('app');
             if ($this->app) {
                 $this->app->load('team');
-                if ($this->app->team)
+                if ($this->app->team) {
                     $list .= '<li><a class="block pl-3 pr-4 py-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition duration-150 ease-in-out" href="/team/' . $this->app->team->id . '/apps/' . $this->app->id . '">App Editor</a></li>';
-            } 
-        
+                }
+            }
         }
 
-    
         return $list;
     }
 
