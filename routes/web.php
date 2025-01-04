@@ -16,6 +16,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SiteMediaController;
 use App\Http\Controllers\ProxyController;
 use App\Http\Controllers\SitePageDataTemplateController;
+use App\Http\Controllers\SiteMapController;
 
 Route::get('logout', function () {
     return redirect('/login');
@@ -145,3 +146,8 @@ Route::middleware([
     Route::get('/sites/{site}/packages', [SitePackageController::class, 'getSitePackages']);
 
 });
+
+Route::get('/sites/{site}/site-map', [SiteMapController::class, 'edit'])
+    ->name('sites.site-map.edit');
+Route::put('/sites/{site}/site-map', [SiteMapController::class, 'update'])
+    ->name('sites.site-map.update');

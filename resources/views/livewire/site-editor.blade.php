@@ -42,6 +42,14 @@
                         @if ($site->livestream_settings != null)
                         <a href="/site/{{ $site->id }}/livestream-mtce" class="py-2 px-3"><i class="material-icons md-36">live_tv</i></a>
                         @endif
+                        
+                        <a href="{{ route('sites.site-map.edit', $site) }}" 
+                           class="text-gray-600 hover:text-gray-900"
+                           title="Edit Site Map">
+                            <svg class="inline-block w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                            </svg>
+                        </a>
                     </td>
                     </tr>
                     @endforeach
