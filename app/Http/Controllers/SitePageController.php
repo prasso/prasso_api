@@ -659,4 +659,18 @@ if (is_null($sitePageData)) {
         return redirect()->route('sitepages.editSitePageJsonData', [$siteId, $sitePageData->fk_site_page_id])
                          ->with('success', 'Site page json data updated successfully!');
     }
+
+    // Add a new method to handle the deletion of a site page data item
+    public function deleteSitePageJsonData($siteId, $sitePageId, $dataId)
+    {
+        // Find the site page data item by ID and delete it
+        $sitePageData = SitePageData::find($dataId);
+        if ($sitePageData) {
+            $sitePageData->delete();
+        }
+
+        // Redirect back to the edit page with a success message
+        return redirect()->route('sitepages.edit-site-page-json-data', ['siteId' => $siteId, 'sitePageId' => $sitePageId])
+                         ->with('success', 'Item deleted successfully.');
+    }
 }
