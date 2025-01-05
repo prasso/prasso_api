@@ -124,7 +124,7 @@
                         <a class="cursor-pointer rounded-xl transition duration-500 ease-in-out transform rounded-lg shadow-xl" href="{{ route('image.library') }}" title="Image Library"><i alt="image library" class="material-icons">photo_library</i></a>
                     </div>
 @include('partials._image-upload-styles')
-@include('partials._image-upload')
+@include('partials._image-upload', ['site_id' => $site->id])
                             </div>
                         </div>
                         @endif

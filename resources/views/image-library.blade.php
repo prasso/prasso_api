@@ -17,7 +17,7 @@
             <!-- Upload Form -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    @include('partials._image-upload')
+                    @include('partials._image-upload', ['site_id' => $site->id])
                 </div>
             </div>
 

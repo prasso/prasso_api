@@ -135,6 +135,8 @@ Route::middleware([
 
     Route::get('/sitepages/{siteId}/{sitePageId}/edit-site-page-json-data', [SitePageController::class, 'editSitePageJsonData'])->name('sitepages.editSitePageJsonData');
     Route::post('/sitepages/{siteId}/{sitePageId}/update-site-page-json-data', [SitePageController::class, 'updateSitePageJsonData'])->name('sitepages.updateSitePageJsonData');
+    Route::delete('/sitepages/{siteId}/{sitePageId}/delete-site-page-json-data/{dataId}', [SitePageController::class, 'deleteSitePageJsonData'])
+        ->name('sitepages.delete-site-page-json-data');
     
     Route::post('/save-site-page', 'SitePageController@saveSitePage');
 
