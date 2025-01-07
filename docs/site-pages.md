@@ -198,6 +198,7 @@ These tags are replaced to include details specific to the current site context 
 - `[SITE_ID]`: Replaces with the unique ID of the current site.
 - `[DATA_PAGE_ID]`: Replaces with the unique ID of the specific page being processed.
 - `[TEAM_ID]`: Replaces with the unique ID of the team associated with the current site.
+- `[HEADER]`: A site_page with title of [HEADER] can be created. The description of the site_page replaces the [HEADER] tag in the page content.
 
 **Usage**:
 ```html
