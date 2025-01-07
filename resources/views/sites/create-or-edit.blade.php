@@ -31,6 +31,7 @@
                     <div class="grid grid-cols-3 gap-4">
                         <!-- Site Map -->
                         <div class="text-center">
+                            @if($site)
                             <a href="{{ route('sites.site-map.edit', ['site' => $site]) }}" 
                                class="flex flex-col items-center text-gray-600 hover:text-gray-900 p-4 rounded-lg hover:bg-gray-50"
                                title="Edit Site Map">
@@ -39,6 +40,7 @@
                                 </svg>
                                 <span class="text-sm font-semibold">{{ __('Edit Site Map') }}</span>
                             </a>
+                            @endif
                         </div>
 
                         <!-- Mobile App -->
