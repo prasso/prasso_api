@@ -147,6 +147,7 @@ class SitePageController extends BaseController
         $page_content = str_replace('CSRF_TOKEN', csrf_token(), $page_content);
         $page_content = str_replace('[TEAM_ID]', $this->site->teamFromSite()->id, $page_content);
         $page_content = str_replace('MAIN_SITE_COLOR', $this->site->main_color, $page_content);
+        $page_content = str_replace('[SITE_CSS]', $this->site->app_specific_css, $page_content);
         $page_content = str_replace('SITE_MAP', $this->site->getSiteMapList($path), $page_content);
         $page_content = str_replace('SITE_NAME', $this->site->site_name, $page_content);
         $page_content = str_replace('SITE_LOGO_FILE', $this->site->logo_image, $page_content);

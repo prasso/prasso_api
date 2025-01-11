@@ -1,4 +1,6 @@
 <x-app-layout :site="$site ?? null">
+    <style>[SITE_CSS]</style>
+
 <x-slot name="title">Contact Us</x-slot>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -7,7 +9,7 @@
     </x-slot>
     <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 xl:max-w-screen-xl xl:w-3/4">
                 <div class="tyJCtd mGzaTb baZpAe lkHyyc">
-        <form method="post" action="{{ route('send-email') }}">
+        <form method="post" action="{{ route('send-email', ['site' => $site]) }}">
         @csrf
         @if ($errors->any())
             <div class="relative px-3 py-3 mb-4 border rounded text-teal-800 border-teal-900 bg-teal-300">
