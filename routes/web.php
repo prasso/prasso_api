@@ -12,11 +12,13 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\User2Controller;
 use App\Http\Controllers\MySiteController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SiteMediaController;
 use App\Http\Controllers\ProxyController;
 use App\Http\Controllers\SitePageDataTemplateController;
 use App\Http\Controllers\SiteMapController;
+use App\Http\Controllers\Controller;
 
 Route::get('logout', function () {
     return redirect('/login');
@@ -30,10 +32,10 @@ Route::get('privacy', function () {
     return view('privacy');
 });
 Route::get('contact', function () {
-    return view('contact');
+    $site = Controller::getClientFromHost();
+    return view('contact', compact('site'));
 });
-
-Route::post('/send-email', 'EmailController@sendEmail')->name('send-email');
+Route::post('/send-email/{site}', [EmailController::class, 'sendEmail'])->name('send-email');
 Route::get('/page/faqs', 'SiteController@seeFaqs')->name('see-faqs');
 Route::post('/question', 'SiteController@processQuestion')->name('send-question');
 Route::get('/confirm_newsletter_subscription', 'EmailController@confirm_newsletter_subscription')->name('confirm-newsletter-subscription');

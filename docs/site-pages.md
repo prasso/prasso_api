@@ -194,7 +194,7 @@ $page_content = str_replace('USER_PROFILE_PHOTO', $user->getProfilePhoto(), $pag
 
 ### 12. Site-Specific Tags
 These tags are replaced to include details specific to the current site context and the data being processed:
-
+- `[SITE_CSS]`: Replaces with the custom CSS defined for the current site.
 - `[SITE_ID]`: Replaces with the unique ID of the current site.
 - `[DATA_PAGE_ID]`: Replaces with the unique ID of the specific page being processed.
 - `[TEAM_ID]`: Replaces with the unique ID of the team associated with the current site.
