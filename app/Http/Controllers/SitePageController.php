@@ -132,7 +132,17 @@ class SitePageController extends BaseController
         
         $page_content = $pageToProcess->description;
         $user = Auth::user() ?? null;
-
+        //First,Check if the header placeholder exists, 
+        //then replace it with the header page if defined
+        if (strpos($page_content, '[HEADER]') !== false) {
+            //the header text that will be placed into $page_content
+            // is an actual page for this site. a page that has the title of [HEADER]
+            $headerPage = SitePages::where('fk_site_id', $this->site->id)
+                ->where('title', '[HEADER]')->first();
+            if ($headerPage !== null) {
+            $page_content = str_replace('[HEADER]', $headerPage->description, $page_content);
+            }
+        }
         //replace the tokens in the dashboard page with the user's name, email, and profile photo
         $page_content = str_replace('CSRF_TOKEN', csrf_token(), $page_content);
         $page_content = str_replace('[TEAM_ID]', $this->site->teamFromSite()->id, $page_content);
@@ -147,18 +157,7 @@ class SitePageController extends BaseController
         $page_content = str_replace('[SITE_ID]',$this->site->id, $page_content);
         $page_content = str_replace('[DATA_PAGE_ID]',$pageToProcess->id, $page_content);
         
-        //Check if the header placeholder exists, then replace it with the Livewire component
-        if (strpos($page_content, '[HEADER]') !== false) {
-            //the header text that will be placed into $page_content
-            // is an actual page for this site. a page that has the title of [HEADER]
-            $headerPage = SitePages::where('fk_site_id', $this->site->id)
-                ->where('title', '[HEADER]')->first();
-            if ($headerPage !== null) {
-                info($headerPage->description);
-                $page_content = str_replace('[HEADER]', $headerPage->description, $page_content);
-            
-            }
-        }
+        
         //Check if the carousel placeholder exists, then replace it with the Livewire component
         if (strpos($page_content, '[CAROUSEL_COMPONENT]') !== false) {
 
