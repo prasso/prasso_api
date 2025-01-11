@@ -120,11 +120,9 @@
                         <div class="border-t border-gray-200"></div>
                         <div class="block py-2 text-lg font-semibold text-gray-600">
                             {{ __('Add to Image Library') }}
-                            <div class="flex">                <div class="px-4 py-2 ml-2">
-                        <a class="cursor-pointer rounded-xl transition duration-500 ease-in-out transform rounded-lg shadow-xl" href="{{ route('image.library') }}" title="Image Library"><i alt="image library" class="material-icons">photo_library</i></a>
-                    </div>
+            
 @include('partials._image-upload-styles')
-@include('partials._image-upload')
+@include('partials._image-upload', ['site_id' => $site->id])
                             </div>
                         </div>
                         @endif

@@ -31,6 +31,9 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+            ->discoverResources(in: base_path('packages/prasso/project_management/src/Filament/Resources'), for: 'Prasso\\ProjectManagement\\Filament\\Resources')
+            ->discoverResources(in: base_path('packages/prasso/messaging/src/Filament/Resources'), for: 'Prasso\\Messaging\\Filament\\Resources')
+            ->discoverResources(in: base_path('packages/faxt/invenbin/src/Filament/Resources'), for: 'Faxt\\Invenbin\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,

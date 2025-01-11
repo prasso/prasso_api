@@ -1,5 +1,3 @@
-
-
 # Documentation for Custom Site Page Tags
 
 ## Overview
@@ -161,6 +159,19 @@ if (strpos($page_content, '[CAROUSEL_COMPONENT]') !== false) {
 }
 ```
 
+**Editing the Carousel Component**:
+To edit the carousel component, follow these steps:
+
+1. **Navigate to the Site Pages List**: Go to the list of site pages in your application.
+2. **Select the Page**: Find the page that contains the `[CAROUSEL_COMPONENT]` placeholder.
+3. **Open the Custom Editor**: Click on the link to open the custom editor for the page. The URL format for the editor is:
+   ```
+   /sitepages/{site_page_id}/{page_id}/edit-site-page-json-data
+   ```
+   Replace `{site_page_id}` and `{page_id}` with the appropriate IDs for the site page you want to edit.
+4. **Edit the JSON Data**: In the custom editor, you will see the JSON data for the carousel component. Modify the JSON data to update the content and appearance of the carousel slides.
+5. **Save Changes**: Save your changes in the custom editor. The updated carousel component will be rendered on the page with the new content.
+
 ### 11. User-Specific Tags
 These tags are replaced if a user is authenticated:
 - `USER_NAME`: Replaces with the authenticated user's name.
@@ -187,6 +198,7 @@ These tags are replaced to include details specific to the current site context 
 - `[SITE_ID]`: Replaces with the unique ID of the current site.
 - `[DATA_PAGE_ID]`: Replaces with the unique ID of the specific page being processed.
 - `[TEAM_ID]`: Replaces with the unique ID of the team associated with the current site.
+- `[HEADER]`: A site_page with title of [HEADER] can be created. The description of the site_page replaces the [HEADER] tag in the page content.
 
 **Usage**:
 ```html

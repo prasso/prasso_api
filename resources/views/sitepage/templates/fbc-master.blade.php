@@ -333,21 +333,7 @@
       window.gon={};gon.parent_slug="sermons";gon.page_slug=null;gon.current_page_id=141799;gon.design_name="dusk";
       //]]>
    </script>
-   <script>
-      //<![CDATA[
-      
-         if ("{{ $sitePage->title }}" === 'Welcome') {
-            $(document).ready(function() {
-               SlickInterface.reinitializeSlideshows();
-            });
-
-            $(document).on('page:before-unload', function() {
-               SlickInterface.pauseSlideshows();
-            });
-            }
-                  
-      //]]>
-   </script>
+ 
    <!-- Google Analytics -->
    <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

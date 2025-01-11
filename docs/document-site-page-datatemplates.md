@@ -1,8 +1,25 @@
 
 ### Site Page Data Templates Overview
-provided from original source by https://chatgpt.com/share/66f55184-4bd4-8008-be62-a981ea812b70
+edited from original source by https://chatgpt.com/share/66f55184-4bd4-8008-be62-a981ea812b70
 
 Site Page Data Templates are a powerful feature in the Prasso developer framework used to define how data is retrieved, processed, and displayed on specific pages. These templates streamline the interaction between the backend and frontend by specifying a clear, structured approach for querying and formatting data.
+
+### Schema
+CREATE TABLE `site_page_templates` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `templatename` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `template_data_model` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `template_where_clause` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `template_data_query` text COLLATE utf8mb4_unicode_ci,
+  `order_by_clause` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `include_csrf` tinyint(4) DEFAULT '0',
+  `default_blank` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 ### Key Concepts
 

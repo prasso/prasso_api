@@ -131,29 +131,24 @@ class SiteEditor extends Component
      *
      * @var array
      */
-    private function resetInputFields(){
+    private function resetInputFields()
+    {
         $this->site_name = '';
-        $this->team_id = null;
         $this->description = '';
         $this->host = '';
         $this->main_color = '';
         $this->logo_image = '';
-        $this->database = 'prasso';
         $this->favicon = '';
-        $this->site_id = '';
-        $this->supports_registration = false;
-        $this->subteams_enabled = false;
-        $this->does_livestreaming = false;
-        $this->invitation_only = false;
-        
-        $this->app_specific_js ='';
+        $this->supports_registration = '';
+        $this->subteams_enabled = '';
+        $this->app_specific_js = '';
         $this->app_specific_css = '';
-        $this->photo = null;
+        $this->does_livestreaming = '';
         $this->image_folder = '';
-        
+        $this->invitation_only = '';
         $this->stripe_key = '';
         $this->stripe_secret = '';
-    
+        $this->photo = null;
     }
      
     /**

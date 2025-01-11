@@ -16,6 +16,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SiteMediaController;
 use App\Http\Controllers\ProxyController;
 use App\Http\Controllers\SitePageDataTemplateController;
+use App\Http\Controllers\SiteMapController;
 
 Route::get('logout', function () {
     return redirect('/login');
@@ -134,6 +135,8 @@ Route::middleware([
 
     Route::get('/sitepages/{siteId}/{sitePageId}/edit-site-page-json-data', [SitePageController::class, 'editSitePageJsonData'])->name('sitepages.editSitePageJsonData');
     Route::post('/sitepages/{siteId}/{sitePageId}/update-site-page-json-data', [SitePageController::class, 'updateSitePageJsonData'])->name('sitepages.updateSitePageJsonData');
+    Route::delete('/sitepages/{siteId}/{sitePageId}/delete-site-page-json-data/{dataId}', [SitePageController::class, 'deleteSitePageJsonData'])
+        ->name('sitepages.delete-site-page-json-data');
     
     Route::post('/save-site-page', 'SitePageController@saveSitePage');
 
@@ -145,3 +148,8 @@ Route::middleware([
     Route::get('/sites/{site}/packages', [SitePackageController::class, 'getSitePackages']);
 
 });
+
+Route::get('/sites/{site}/site-map', [SiteMapController::class, 'edit'])
+    ->name('sites.site-map.edit');
+Route::put('/sites/{site}/site-map', [SiteMapController::class, 'update'])
+    ->name('sites.site-map.update');

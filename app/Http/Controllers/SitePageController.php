@@ -132,7 +132,17 @@ class SitePageController extends BaseController
         
         $page_content = $pageToProcess->description;
         $user = Auth::user() ?? null;
-
+        //First,Check if the header placeholder exists, 
+        //then replace it with the header page if defined
+        if (strpos($page_content, '[HEADER]') !== false) {
+            //the header text that will be placed into $page_content
+            // is an actual page for this site. a page that has the title of [HEADER]
+            $headerPage = SitePages::where('fk_site_id', $this->site->id)
+                ->where('title', '[HEADER]')->first();
+            if ($headerPage !== null) {
+            $page_content = str_replace('[HEADER]', $headerPage->description, $page_content);
+            }
+        }
         //replace the tokens in the dashboard page with the user's name, email, and profile photo
         $page_content = str_replace('CSRF_TOKEN', csrf_token(), $page_content);
         $page_content = str_replace('[TEAM_ID]', $this->site->teamFromSite()->id, $page_content);
@@ -146,6 +156,8 @@ class SitePageController extends BaseController
         $page_content = str_replace('PAGE_SLUG', $pageToProcess->section, $page_content);
         $page_content = str_replace('[SITE_ID]',$this->site->id, $page_content);
         $page_content = str_replace('[DATA_PAGE_ID]',$pageToProcess->id, $page_content);
+        
+        
         //Check if the carousel placeholder exists, then replace it with the Livewire component
         if (strpos($page_content, '[CAROUSEL_COMPONENT]') !== false) {
 
@@ -658,5 +670,19 @@ if (is_null($sitePageData)) {
 
         return redirect()->route('sitepages.editSitePageJsonData', [$siteId, $sitePageData->fk_site_page_id])
                          ->with('success', 'Site page json data updated successfully!');
+    }
+
+    // Add a new method to handle the deletion of a site page data item
+    public function deleteSitePageJsonData($siteId, $sitePageId, $dataId)
+    {
+        // Find the site page data item by ID and delete it
+        $sitePageData = SitePageData::find($dataId);
+        if ($sitePageData) {
+            $sitePageData->delete();
+        }
+
+        // Redirect back to the edit page with a success message
+        return redirect()->route('sitepages.edit-site-page-json-data', ['siteId' => $siteId, 'sitePageId' => $sitePageId])
+                         ->with('success', 'Item deleted successfully.');
     }
 }
