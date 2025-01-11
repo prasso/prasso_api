@@ -128,7 +128,7 @@ class SitePageController extends BaseController
         return $masterPage;
     }
 
-    private function prepareTemplate($pageToProcess, $path=null){
+    private function prepareTemplate($pageToProcess, $path=null, $isHeader=false){
         
         $page_content = $pageToProcess->description;
         $user = Auth::user() ?? null;
@@ -154,9 +154,9 @@ class SitePageController extends BaseController
             $headerPage = SitePages::where('fk_site_id', $this->site->id)
                 ->where('title', '[HEADER]')->first();
             if ($headerPage !== null) {
-                info($headerPage->description);
+                $specifyIsHeader = true;
+                $page_content = $this->prepareTemplate($pageToProcess, $path, $specifyIsHeader);
                 $page_content = str_replace('[HEADER]', $headerPage->description, $page_content);
-            
             }
         }
         //Check if the carousel placeholder exists, then replace it with the Livewire component
