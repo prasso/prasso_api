@@ -886,7 +886,7 @@
             Test page content
             </main>
             <footer class="bg-gray-900 text-white px-4 lg:px-6 py-6 flex flex-col lg:flex-row items-center justify-between gap-4" data-id="25">
-                <p class="text-sm" data-id="26">© 2024 Acme Corp. All rights reserved.</p>
+                <p class="text-sm" data-id="26">© 2025 Acme Corp. All rights reserved.</p>
                 <div class="flex items-center gap-4" data-id="27"><a data-id="28" class="text-sm hover:underline underline-offset-4" href="#" rel="ugc">
                         Terms of Service
                     </a><a data-id="29" class="text-sm hover:underline underline-offset-4" href="#" rel="ugc">
