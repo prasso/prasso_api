@@ -60,7 +60,7 @@
   </main>
   
   <footer>
-    <p>Copyright © 2024 faxt</p>
+    <p>Copyright © 2025 faxt</p>
     <p><a href="https://storyset.com/online">Online illustrations by Storyset</a></p>
   </footer>
         </div>
