@@ -121,8 +121,8 @@
                         <div class="block py-2 text-lg font-semibold text-gray-600">
                             {{ __('Add to Image Library') }}
             
-@include('partials._image-upload-styles')
-@include('partials._image-upload', ['site_id' => $site->id])
+                            @include('partials._image-upload-styles')
+                            @include('partials._image-upload', ['site_id' => $site->id])
                             </div>
                         </div>
                         @endif

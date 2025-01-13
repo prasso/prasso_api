@@ -94,14 +94,16 @@ class CreateNewUser implements CreatesNewUsers
                     $user->id => ['role' => 'user']
                 ]);
 
-
-                $this->team->users()->attach(
-                    $user,
-                    ['role' => 'user']
-                );
-                $user->current_team_id = $this->team->id;
-                $user->save();
-                TeamMemberAdded::dispatch($this->team, $user);
+                // Only attach to team if there's no invitation (invitation handling comes later)
+                if (!isset($this->invitation)) {
+                    $this->team->users()->attach(
+                        $user,
+                        ['role' => 'user']
+                    );
+                    $user->current_team_id = $this->team->id;
+                    $user->save();
+                    TeamMemberAdded::dispatch($this->team, $user);
+                }
 
                 try{
                 $user->sendWelcomeEmail($this->site_team_id);

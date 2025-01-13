@@ -19,6 +19,8 @@ use App\Http\Controllers\ProxyController;
 use App\Http\Controllers\SitePageDataTemplateController;
 use App\Http\Controllers\SiteMapController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\TeamInvitationController;
 
 Route::get('logout', function () {
     return redirect('/login');
@@ -74,6 +76,7 @@ Route::post('/payment', function (Request $request) {
         ->create($paymentMethod);
 });
 
+Route::get('/calendar', [CalendarController::class, 'view'])->name('calendar.view');
 
 Route::middleware([
     'auth:sanctum',
@@ -115,8 +118,10 @@ Route::middleware([
 
     Route::get('/getLatLonFromAddress', 'ProxyController@getLatLonFromAddress');
 
+    Route::get('/team-invitations/{invitation}', [TeamInvitationController::class, 'accept'])
+        ->middleware(['signed'])
+        ->name('team-invitations.accept');
 });
-
 
 Route::middleware([
         'auth:sanctum',

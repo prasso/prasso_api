@@ -42,3 +42,4 @@ phpunit.xml.bak
 public/css/filament/*
 public/js/filament/*
 public/js/timeTracker.js
+app/google-calendar/*
