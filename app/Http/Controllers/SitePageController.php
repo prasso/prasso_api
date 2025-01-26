@@ -132,6 +132,7 @@ class SitePageController extends BaseController
         
         $page_content = $pageToProcess->description;
         $user = Auth::user() ?? null;
+        $team = $this->site->teamFromSite();
         //First,Check if the header placeholder exists, 
         //then replace it with the header page if defined
         if (strpos($page_content, '[HEADER]') !== false) {
@@ -144,8 +145,10 @@ class SitePageController extends BaseController
             }
         }
         //replace the tokens in the dashboard page with the user's name, email, and profile photo
+        $page_content = str_replace('@csrf', '<input type="hidden" name="_token" value="'.csrf_token().'">', $page_content);
         $page_content = str_replace('CSRF_TOKEN', csrf_token(), $page_content);
-        $page_content = str_replace('[TEAM_ID]', $this->site->teamFromSite()->id, $page_content);
+        $page_content = str_replace('[TEAM_ID]', $team->id, $page_content);
+        $page_content = str_replace('{{ $team_id }}', $team->id, $page_content);
         $page_content = str_replace('MAIN_SITE_COLOR', $this->site->main_color, $page_content);
         $page_content = str_replace('[SITE_CSS]', $this->site->app_specific_css, $page_content);
         $page_content = str_replace('SITE_MAP', $this->site->getSiteMapList($path), $page_content);

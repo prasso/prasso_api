@@ -24,7 +24,6 @@
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> 
         <script src="{{ asset('/js/app.js') }}" defer></script>
         <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
-        <link rel="stylesheet" href="/js/jqueryui.1.12.1.min.css">
     
          @if (isset($site))
          <link rel="icon" type="image/png" href="{{$site->favicon??''}}" />
