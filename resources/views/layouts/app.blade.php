@@ -19,8 +19,6 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"> 
    
-    <link rel="stylesheet" href="/js/jqueryui.1.12.1.min.css">
-    
     @livewireStyles
     {{ $extracss ?? '' }}
     @if(isset($site))

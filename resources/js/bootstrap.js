@@ -1,17 +1,16 @@
 window._ = require('lodash');
 
 /**
- * We'll load jQuery and the Bootstrap jQuery plugin which provides support
- * for JavaScript based Bootstrap features such as modals and tabs. This
- * code may be modified to fit the specific needs of your application.
+ * We'll load the Popper.js library which is needed for Bootstrap 5 features
+ * such as dropdowns, popovers, and tooltips.
  */
 
 try {
-    window.Popper = require('popper.js').default;
-    window.$ = window.jQuery = require('jquery');
-
+    window.Popper = require('@popperjs/core');
     require('bootstrap');
-} catch (e) {}
+} catch (e) {
+    console.error('Error loading Bootstrap dependencies:', e);
+}
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -20,7 +19,6 @@ try {
  */
 
 window.axios = require('axios');
-
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /**
