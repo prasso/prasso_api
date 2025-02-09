@@ -65,11 +65,12 @@ class SitePageEditor extends Component
             ->with('team_selection', $team_selection);
     }
 
+
     private function getHttpsHost($host) {
         if (empty($host)) {
             return '';
         }
-
+    
         if (strpos($host, ',') !== false) {
             $host_array = explode(',', $host);
             $host = $host_array[0];
@@ -77,15 +78,17 @@ class SitePageEditor extends Component
         if (strpos($host, 'https') !== false) {
             return $host;
         }
+        if (strpos($host, 'localhost:8000') !== false) {
+            return 'http://localhost:8000';
+        }
         $https_host = $host;
         if (strpos($host, 'http') !== false) {
             $https_host = str_replace('http', 'https', $host);
-        }
-        else{
+        } else {
             $https_host = 'https://' . $host;
         }
         return $https_host;
-    }   
+    }
 
     public function create()
     {

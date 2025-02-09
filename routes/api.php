@@ -21,13 +21,11 @@ Route::post('save_app', [\App\Http\Controllers\Api\AppController::class, 'saveAp
 
 Route::post('save_subscription', 'StripeController@save_subscription');
 Route::post('livestream_activity', 'SitePageController@livestream_activity');
-Route::middleware([
-    'siteusergroup'
-])->group(function () {
-    
-Route::post('/run-artisan-command', [CommandController::class, 'runCommand']);
-
-});
+Route::middleware(['siteusergroup'])
+    ->group(function () {
+        Route::post('/run-artisan-command', [CommandController::class, 'runCommand']);
+    }
+);
 
 // Calendar routes
 Route::get('/calendar/events', [CalendarController::class, 'index'])->name('calendar.events');

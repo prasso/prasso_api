@@ -147,6 +147,8 @@ class SitePageController extends BaseController
         //replace the tokens in the dashboard page with the user's name, email, and profile photo
         $page_content = str_replace('@csrf', '<input type="hidden" name="_token" value="'.csrf_token().'">', $page_content);
         $page_content = str_replace('CSRF_TOKEN', csrf_token(), $page_content);
+        $page_content = str_replace('@csrf_token()', csrf_token(), $page_content);
+        $page_content = str_replace('@csrf', '<input type="hidden" value="'.csrf_token().'" />', $page_content);
         $page_content = str_replace('[TEAM_ID]', $team->id, $page_content);
         $page_content = str_replace('{{ $team_id }}', $team->id, $page_content);
         $page_content = str_replace('MAIN_SITE_COLOR', $this->site->main_color, $page_content);

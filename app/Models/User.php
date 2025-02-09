@@ -28,6 +28,8 @@ use App\Mail\livestream_notification;
 use App\Mail\site_data_updated_email;
 use Laravel\Cashier\Billable;
 use Twilio\Rest\Client;
+use Laravel\Sanctum\PersonalAccessToken as SanctumPersonalAccessToken;
+
 
 /**
  * Class User.
@@ -155,6 +157,29 @@ class User extends Authenticatable implements FilamentUser {
 
     public function activeApp() {
         return $this->hasOne(UserActiveApp::class, 'user_id', 'id');
+    }
+
+    public function getPersonalAccessTokenAttribute()
+    {
+        $token = $this->personalAccessToken()->first();
+        if (!$token) {
+            $token = $this->createPersonalAccessToken();
+        }
+        return $token->token;
+    }
+
+    protected function createPersonalAccessToken()
+    {
+        $token = $this->createToken('default');
+        $personalAccessToken = new SanctumPersonalAccessToken();
+        $personalAccessToken->tokenable_id = $this->id;
+        $personalAccessToken->tokenable_type = get_class($this);
+        $personalAccessToken->name = 'default';
+        $personalAccessToken->token = $token->plainTextToken;
+        $personalAccessToken->abilities = ['*'];
+        $personalAccessToken->save();
+
+        return $personalAccessToken;
     }
 
     public function personalAccessToken() {
