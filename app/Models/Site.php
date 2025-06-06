@@ -380,8 +380,18 @@ class Site extends Model
      * @return string
      */
     public function uploadImage($photo){
-        $photo->store(config('constants.APP_LOGO_PATH') .'logos-'.$this->id, 's3');
-        $logo_image = config('constants.CLOUDFRONT_ASSET_URL') . config('constants.APP_LOGO_PATH') .'logos-'.$this->id.'/'. $photo->hashName();
+        // Get the original filename
+        $originalName = $photo->getClientOriginalName();
+        
+        // Store with original filename
+        $photo->storeAs(
+            config('constants.APP_LOGO_PATH') .'logos-'.$this->id, 
+            $originalName, 
+            's3'
+        );
+        
+        // Return the URL with the original filename
+        $logo_image = config('constants.CLOUDFRONT_ASSET_URL') . config('constants.APP_LOGO_PATH') .'logos-'.$this->id.'/'. $originalName;
         return $logo_image;
     }
 

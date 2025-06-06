@@ -71,7 +71,8 @@ return [
         App\Providers\JetstreamServiceProvider::class,
         App\Extensions\SuperAdminUserProvider::class,
         App\Extensions\InstructorUserProvider::class,
-
+        App\Providers\AwsServiceProvider::class,
+      //  App\Providers\GoogleCalendarServiceProvider::class, // Placeholder for Spatie Google Calendar
 
 
     ],

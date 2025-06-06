@@ -1,13 +1,60 @@
-# Documentation for Custom Site Page Tags
+# Documentation for Site Pages
 
 ## Overview
-The `site_pages` table holds the HTML content for each site page. Before a page is rendered, specific tags within the page content are dynamically replaced with relevant data such as user information, site settings, and dynamically loaded Livewire components.
+The `site_pages` table manages different types of pages that can be displayed on the site. Each page can be one of three types, allowing for flexible content management and integration with external resources.
 
-## Function Description
-The `prepareTemplate` function in the `SitePageController` processes the HTML content, replacing placeholders with corresponding data before sending the final content to the client. This allows for the seamless integration of site-specific and user-specific information directly into the page template.
+## Page Types
 
-### Code Reference: `prepareTemplate`
-The `prepareTemplate` function processes and returns the page content after replacing predefined tags with appropriate data. Here is a breakdown of the tags supported and their replacements.
+### 1. HTML Content (Type 1 - Default)
+- **Description**: Standard HTML content stored directly in the database
+- **Storage**: Content is stored in the `description` column
+- **Use Case**: Best for simple, static content that doesn't change frequently
+
+### 2. S3 File (Type 2)
+- **Description**: Content loaded from an S3 bucket
+- **Storage**: File path follows the pattern: `sites/{site_id}/pages/{page_name}.html`
+- **Fallback**: If S3 content is not found, falls back to HTML content
+- **Use Case**: For large files or when you want to manage content externally
+
+### 3. External URL (Type 3)
+- **Description**: Redirects to an external URL
+- **Configuration**: Requires `external_url` field to be set
+- **Use Case**: For integrating external applications or microsites
+
+## Database Schema
+
+The `site_pages` table includes the following relevant columns:
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `type` | tinyInteger | 1=HTML, 2=S3 File, 3=URL |
+| `description` | text | HTML content (for type 1) |
+| `external_url` | string | URL for redirect (for type 3) |
+| `section` | string | Page identifier/slug |
+| `title` | string | Page title |
+
+## Content Processing
+
+### The `getPage` Method
+This method in `SitePageController` determines how to handle each page type:
+
+1. **Type 1 (HTML)**: Serves content directly from the database
+2. **Type 2 (S3)**: Fetches content from S3, falls back to HTML if not found
+3. **Type 3 (URL)**: Performs a 302 redirect to the specified URL
+
+### The `prepareTemplate` Function
+Processes HTML content, replacing placeholders with dynamic data:
+- Processes template tags
+- Handles Livewire components
+- Integrates site and user-specific information
+
+## Best Practices
+
+1. **For Static Content**: Use Type 1 (HTML) for simple pages
+2. **For Large/Managed Files**: Use Type 2 (S3) for better performance
+3. **For External Integration**: Use Type 3 (URL) to link to external applications
+4. **Fallback Handling**: Always provide fallback content for S3 pages
+5. **Error Logging**: Check logs for any S3 access issues or missing URLs
 
 ---
 

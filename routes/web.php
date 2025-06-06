@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\StripeController;
 use Laravel\Cashier\Http\Controllers\WebhookController;
 use Illuminate\Http\Request;
@@ -160,3 +161,261 @@ Route::get('/sites/{site}/site-map', [SiteMapController::class, 'edit'])
     ->name('sites.site-map.edit');
 Route::put('/sites/{site}/site-map', [SiteMapController::class, 'update'])
     ->name('sites.site-map.update');
+
+    // In routes/web.php (add this temporarily)
+    Route::get('/test-s3-ssl', function () {
+        $ch = curl_init('https://prassouploads.s3.amazonaws.com/');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        
+        // This will capture the verbose output
+        $verbose = fopen('php://temp', 'w+');
+        curl_setopt($ch, CURLOPT_STDERR, $verbose);
+        
+        // Disable SSL verification for testing
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        
+        $result = curl_exec($ch);
+        $error = curl_error($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        // Get verbose information
+        rewind($verbose);
+        $verboseLog = stream_get_contents($verbose);
+        
+        return response()->json([
+            'success' => (bool)$result,
+            'http_code' => $httpCode,
+            'error' => $error,
+            'verbose_log' => $verboseLog,
+            'response' => $result ? substr($result, 0, 1000) : null
+        ]);
+    });
+    
+    // Test route with CA certificate bundle
+    Route::get('/test-s3-ssl-with-cert', function () {
+        $ch = curl_init('https://prassouploads.s3.amazonaws.com/');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        
+        // This will capture the verbose output
+        $verbose = fopen('php://temp', 'w+');
+        curl_setopt($ch, CURLOPT_STDERR, $verbose);
+        
+        // Use the downloaded CA certificate bundle
+        $certPath = base_path('cacert.pem');
+        curl_setopt($ch, CURLOPT_CAINFO, $certPath);
+        
+        $result = curl_exec($ch);
+        $error = curl_error($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        // Get verbose information
+        rewind($verbose);
+        $verboseLog = stream_get_contents($verbose);
+        
+        return response()->json([
+            'success' => (bool)$result,
+            'http_code' => $httpCode,
+            'error' => $error,
+            'verbose_log' => $verboseLog,
+            'response' => $result ? substr($result, 0, 1000) : null,
+            'cert_path' => $certPath,
+            'cert_exists' => file_exists($certPath)
+        ]);
+    });
+    
+    // Test route for S3 file upload with detailed debugging - BASIC VERSION
+    Route::get('/test-s3-upload', function () {
+        try {
+            // Create a simple test file
+            $content = 'This is a test file created at ' . date('Y-m-d H:i:s');
+            $filePath = 'prasso/test-file-' . time() . '.txt';
+            
+            // Get S3 client configuration for debugging
+            $s3Config = [
+                'key' => substr(config('filesystems.disks.s3.key'), 0, 5) . '...',
+                'region' => config('filesystems.disks.s3.region'),
+                'bucket' => config('filesystems.disks.s3.bucket'),
+                'verify' => config('filesystems.disks.s3.options.http.verify') ?? 'Not set'
+            ];
+            
+            // Create S3 client directly for more control
+            $s3Client = new \Aws\S3\S3Client([
+                'version' => 'latest',
+                'region' => config('filesystems.disks.s3.region'),
+                'credentials' => [
+                    'key' => config('filesystems.disks.s3.key'),
+                    'secret' => config('filesystems.disks.s3.secret'),
+                ],
+                'http' => [
+                    'verify' => base_path('cacert.pem')
+                ],
+                // Debug mode disabled to prevent headers already sent error
+                'debug' => false
+            ]);
+            
+            // Try to upload directly using the S3 client
+            $directResult = $s3Client->putObject([
+                'Bucket' => config('filesystems.disks.s3.bucket'),
+                'Key' => $filePath,
+                'Body' => $content,
+                'ACL' => 'public-read'
+            ]);
+            
+            return response()->json([
+                'success' => true,
+                'file_path' => $filePath,
+                'message' => 'File uploaded successfully using direct S3 client',
+                's3_config' => $s3Config,
+                's3_response' => [
+                    'ObjectURL' => $directResult['ObjectURL'] ?? null,
+                    'RequestId' => $directResult['RequestId'] ?? null,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'error_class' => get_class($e),
+                'trace' => explode("\n", $e->getTraceAsString())
+            ], 500);
+        }
+    });
+    
+    // Comprehensive S3 testing route with multiple methods
+    Route::get('/test-s3-comprehensive', function () {
+        // Import Log facade if needed
+        // Note: 'use' statements must be at the top level, not inside functions
+        try {
+            
+            $results = [];
+            $timestamp = time();
+            $testContent = 'Test file content created at ' . date('Y-m-d H:i:s');
+            
+            // Test 1: Using Laravel Storage facade
+            try {
+                $storagePath = 'prasso/test-laravel-' . $timestamp . '.txt';
+                $storageResult = Storage::disk('s3')->put($storagePath, $testContent);
+                $results['laravel_storage'] = [
+                    'success' => $storageResult,
+                    'path' => $storagePath,
+                    'error' => null
+                ];
+            } catch (\Exception $e) {
+                $results['laravel_storage'] = [
+                    'success' => false,
+                    'error' => $e->getMessage(),
+                    'error_class' => get_class($e)
+                ];
+            }
+            
+            // Test 2: Using AWS SDK directly
+            try {
+                $sdkPath = 'prasso/test-sdk-' . $timestamp . '.txt';
+                $s3Client = new \Aws\S3\S3Client([
+                    'version' => 'latest',
+                    'region' => config('filesystems.disks.s3.region'),
+                    'credentials' => [
+                        'key' => config('filesystems.disks.s3.key'),
+                        'secret' => config('filesystems.disks.s3.secret'),
+                    ],
+                    'http' => [
+                        'verify' => base_path('cacert.pem')
+                    ],
+                    'debug' => false
+                ]);
+                
+                $sdkResult = $s3Client->putObject([
+                    'Bucket' => config('filesystems.disks.s3.bucket'),
+                    'Key' => $sdkPath,
+                    'Body' => $testContent
+                ]);
+                
+                $results['aws_sdk'] = [
+                    'success' => true,
+                    'path' => $sdkPath,
+                    'response' => [
+                        'ObjectURL' => $sdkResult['ObjectURL'] ?? null,
+                        'RequestId' => $sdkResult['RequestId'] ?? null,
+                    ],
+                    'error' => null
+                ];
+            } catch (\Exception $e) {
+                $results['aws_sdk'] = [
+                    'success' => false,
+                    'error' => $e->getMessage(),
+                    'error_class' => get_class($e)
+                ];
+            }
+            
+            // Test 3: Using cURL directly
+            try {
+                $curlPath = 'prasso/test-curl-' . $timestamp . '.txt';
+                $bucket = config('filesystems.disks.s3.bucket');
+                $region = config('filesystems.disks.s3.region');
+                $accessKey = config('filesystems.disks.s3.key');
+                $secretKey = config('filesystems.disks.s3.secret');
+                
+                // Create a pre-signed URL for PUT
+                $cmd = $s3Client->getCommand('PutObject', [
+                    'Bucket' => $bucket,
+                    'Key' => $curlPath,
+                ]);
+                
+                $request = $s3Client->createPresignedRequest($cmd, '+20 minutes');
+                $presignedUrl = (string)$request->getUri();
+                
+                // Use cURL to upload with the pre-signed URL
+                $ch = curl_init($presignedUrl);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $testContent);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+                curl_setopt($ch, CURLOPT_CAINFO, base_path('cacert.pem'));
+                
+                $curlResponse = curl_exec($ch);
+                $curlError = curl_error($ch);
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+                
+                $results['curl'] = [
+                    'success' => ($httpCode >= 200 && $httpCode < 300),
+                    'path' => $curlPath,
+                    'http_code' => $httpCode,
+                    'error' => $curlError ?: null,
+                    'response' => $curlResponse
+                ];
+            } catch (\Exception $e) {
+                $results['curl'] = [
+                    'success' => false,
+                    'error' => $e->getMessage(),
+                    'error_class' => get_class($e)
+                ];
+            }
+            
+            // Configuration information
+            $results['config'] = [
+                'aws_key' => substr(config('filesystems.disks.s3.key'), 0, 5) . '...',
+                'aws_region' => config('filesystems.disks.s3.region'),
+                'aws_bucket' => config('filesystems.disks.s3.bucket'),
+                'cert_path' => base_path('cacert.pem'),
+                'cert_exists' => file_exists(base_path('cacert.pem')),
+                'php_version' => phpversion(),
+                'curl_version' => curl_version()['version'],
+                'ssl_version' => curl_version()['ssl_version']
+            ];
+            
+            return response()->json($results);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'error_class' => get_class($e),
+                'trace' => explode("\n", $e->getTraceAsString())
+            ], 500);
+        }
+    });

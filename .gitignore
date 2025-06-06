@@ -43,3 +43,5 @@ public/css/filament/*
 public/js/filament/*
 public/js/timeTracker.js
 app/google-calendar/*
+php.ini
+copyFBC-files.txt

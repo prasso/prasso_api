@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Spatie\GoogleCalendar\Event;
+//use Spatie\GoogleCalendar\Event;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -16,7 +16,7 @@ class CalendarController extends Controller
      */
     public function index()
     {
-        try {
+      /*  try {
             $events = Event::get();
             
             $formattedEvents = $events->map(function ($event) {
@@ -53,6 +53,7 @@ class CalendarController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+            */
     }
 
     /**

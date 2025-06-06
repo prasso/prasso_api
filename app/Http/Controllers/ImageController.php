@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\S3Helper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TeamImage;
@@ -236,7 +237,34 @@ class ImageController extends Controller
             }
             
             \Log::info('Uploading file to path: ' . $filePath);
-            \Storage::disk('s3')->put($filePath, file_get_contents($file));
+            
+            try {
+                // Get file contents with error handling
+                $fileContents = @file_get_contents($file);
+                if ($fileContents === false) {
+                    throw new \Exception('Could not read file contents');
+                }
+                
+                // Check if AWS credentials are configured
+                if (empty(env('AWS_ACCESS_KEY_ID')) || empty(env('AWS_SECRET_ACCESS_KEY'))) {
+                    throw new \Exception('AWS credentials are not properly configured');
+                }
+                
+                // Ensure the CA certificate exists
+                if (!S3Helper::ensureCertificateExists()) {
+                    \Log::warning('CA certificate not found, attempting upload anyway');
+                }
+                
+                // Attempt to upload using our helper class
+                $uploadResult = S3Helper::upload($filePath, $fileContents);
+                
+                if (!$uploadResult) {
+                    throw new \Exception('S3 upload failed - returned false');
+                }
+            } catch (\Exception $uploadException) {
+                \Log::error('S3 upload error: ' . $uploadException->getMessage());
+                throw $uploadException; // Re-throw to be caught by the outer try-catch
+            }
     
             // Save the image path to the database
             $image = new TeamImage;

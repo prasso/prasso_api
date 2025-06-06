@@ -7,6 +7,7 @@ use App\Providers\AppServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use App\Services\SitePageService;
 use App\Services\UserService;
 use App\Models\SitePages;
@@ -104,13 +105,98 @@ class SitePageController extends BaseController
                 ->where('section', $page)
                 ->first();
 
-            // If a custom page exists, prepare its content
-            if ($pageFound !== null) {    
+            // If a custom page exists, handle based on its type
+            if ($pageFound !== null) {
+                switch ($pageFound->type) {
+                    case 2: // S3 File
+                        $s3Content = $this->getS3PageContent($this->site->id, $page);
+                        if (!empty($s3Content)) {
+                            $pageFound->description = $s3Content;
+                        } else {
+                            // If S3 content is not found, fall back to HTML content
+                            $pageFound->type = 1;
+                            \Illuminate\Support\Facades\Log::warning("S3 content not found, falling back to HTML for page: " . $page);
+                        }
+                        break;
+                        
+                    case 3: // External URL
+                        if (!empty($pageFound->external_url)) {
+                            // Redirect to the external URL
+                            return redirect()->away($pageFound->external_url);
+                        }
+                        // If no URL is provided, fall through to HTML
+                        $pageFound->type = 1;
+                        \Illuminate\Support\Facades\Log::warning("External URL not provided for page: " . $page);
+                        break;
+                        
+                    // Default case (type 1: HTML) falls through
+                }
+                
                 $user_content = $this->prepareTemplate($pageFound, $request->path());
+            } else {
+                // For backward compatibility, check S3 for content
+                $s3Content = $this->getS3PageContent($this->site->id, $page);
+                
+                if (!empty($s3Content)) {
+                    // Create a temporary SitePages object to use with prepareTemplate
+                    $tempPage = new SitePages();
+                    $tempPage->fk_site_id = $this->site->id;
+                    $tempPage->section = $page;
+                    $tempPage->title = $page;
+                    $tempPage->description = $s3Content;
+                    $tempPage->type = 2; // Mark as S3 type
+                    
+                    $user_content = $this->prepareTemplate($tempPage, $request->path());
+                }
             }
         }
         // return the prepared content
         return $user_content;
+    }
+    
+    /**
+     * Get page content from S3 bucket
+     * 
+     * @param int $siteId The site ID
+     * @param string $pageName The page name/section
+     * @return string The page content or empty string if not found
+     */
+    /**
+     * Get page content from S3 storage
+     *
+     * @param int $siteId The site ID
+     * @param string $pageName The page name/section
+     * @return string The page content or empty string if not found
+     */
+    private function getS3PageContent($siteId, $pageName)
+    {
+        try {
+            // Format the file path in the S3 bucket
+            // Structure: sites/{site_id}/pages/{page_name}.html
+            $filePath = 'sites/' . $siteId . '/pages/' . $pageName . '.html';
+            
+            // Check if the file exists in S3
+            if (!\Illuminate\Support\Facades\Storage::disk('s3')->exists($filePath)) {
+                \Illuminate\Support\Facades\Log::warning("S3 content not found: " . $filePath);
+                return '';
+            }
+            
+            // Get the file content from S3
+            $content = \Illuminate\Support\Facades\Storage::disk('s3')->get($filePath);
+            
+            if (empty($content)) {
+                \Illuminate\Support\Facades\Log::warning("Empty content from S3: " . $filePath);
+                return '';
+            }
+            
+            return $content;
+            
+        } catch (\Exception $e) {
+            // Log the error but don't crash the application
+            \Illuminate\Support\Facades\Log::error('Error fetching S3 page content: ' . $e->getMessage() . 
+                ' [Site: ' . $siteId . ', Page: ' . $pageName . ']');
+            return '';
+        }
     }
 
 
