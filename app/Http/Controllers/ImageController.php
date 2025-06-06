@@ -234,21 +234,122 @@ class ImageController extends Controller
                 // Use the default team-based folder structure
                 $filePath = $site->image_folder . config('constants.USER_IMAGE_FOLDER') . $team->id . '/' . $filename;
             }
-            
-            \Log::info('Uploading file to path: ' . $filePath);
-            \Storage::disk('s3')->put($filePath, file_get_contents($file));
-    
-            // Save the image path to the database
-            $image = new TeamImage;
-            $image->team_id = $team->id;
-            $image->path = $filePath;
-            $image->save();
-    
-            return response()->json([
-                'success' => true,
-                'message' => 'Image uploaded successfully.',
-                'path' => $filePath
-            ], 200);
+
+            \Log::info('Starting file upload', [
+                'file_path' => $filePath,
+                'file_size' => $file->getSize(),
+                'mime_type' => $file->getMimeType(),
+                'original_name' => $file->getClientOriginalName(),
+                'temp_path' => $file->getRealPath(),
+                'bucket' => config('filesystems.disks.s3.bucket'),
+                'region' => config('filesystems.disks.s3.region'),
+                'url' => config('filesystems.disks.s3.url'),
+                'use_path_style' => config('filesystems.disks.s3.use_path_style_endpoint', false)
+            ]);
+
+            // Get file contents and verify
+            $fileContents = file_get_contents($file->getRealPath());
+            if ($fileContents === false) {
+                throw new \Exception('Failed to read file contents');
+            }
+
+            // Log first 100 bytes for verification
+            \Log::debug('File content sample (first 100 bytes): ' . substr($fileContents, 0, 100));
+
+            try {
+                // Get the S3 client instance
+                $s3 = app('aws.s3');
+
+                // Log bucket existence
+                try {
+                    try {
+            $bucketExists = $s3->doesBucketExist(config('filesystems.disks.s3.bucket'));
+        } catch (\Exception $e) {
+            \Log::error('S3 bucket check error: ' . $e->getMessage());
+            return response()->json(['error' => 'Unable to verify S3 bucket. Please try again later.'], 500);
+        }
+                    \Log::info('S3 Bucket check', [
+                        'bucket' => config('filesystems.disks.s3.bucket'),
+                        'exists' => $bucketExists,
+                        'region' => config('filesystems.disks.s3.region')
+                    ]);
+
+                    if (!$bucketExists) {
+                        throw new \Exception('S3 bucket does not exist or is not accessible');
+                    }
+                } catch (\Exception $e) {
+                    \Log::error('S3 Bucket check failed', [
+                        'error' => $e->getMessage(),
+                        'bucket' => config('filesystems.disks.s3.bucket'),
+                        'region' => config('filesystems.disks.s3.region')
+                    ]);
+                    throw $e;
+                }
+
+                // Upload to S3 using the client directly
+                $result = $s3->putObject([
+                    'Bucket' => config('filesystems.disks.s3.bucket'),
+                    'Key'    => $filePath,
+                    'Body'   => $fileContents,
+                    'ContentType' => $file->getMimeType(),
+                    'ACL'    => 'public-read'
+                ]);
+
+                \Log::info('S3 Upload result', [
+                    'result' => $result->toArray(),
+                    'status' => $result['@metadata']['statusCode'] ?? null,
+                    'effective_uri' => $result['@metadata']['effectiveUri'] ?? null,
+                    'object_url' => $result['ObjectURL'] ?? null
+                ]);
+
+                // Verify file exists in S3
+                try {
+                    $head = $s3->headObject([
+                        'Bucket' => config('filesystems.disks.s3.bucket'),
+                        'Key'    => $filePath
+                    ]);
+
+                    \Log::info('S3 File verification', [
+                        'exists' => true,
+                        'content_length' => $head['ContentLength'] ?? null,
+                        'content_type' => $head['ContentType'] ?? null,
+                        'last_modified' => $head['LastModified'] ?? null
+                    ]);
+
+                    // Save the image path to the database
+                    $image = new TeamImage;
+                    $image->team_id = $team->id;
+                    $image->path = $filePath;
+                    $image->save();
+
+                    \Log::info('Successfully saved image to database', [
+                        'image_id' => $image->id,
+                        'team_id' => $team->id,
+                        'path' => $filePath
+                    ]);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Image uploaded successfully.',
+                        'path' => $filePath,
+                        'url' => $result['ObjectURL'] ?? null
+                    ], 200);
+
+                } catch (\Aws\S3\Exception\S3Exception $e) {
+                    \Log::error('S3 File verification failed', [
+                        'error' => $e->getMessage(),
+                        'code' => $e->getAwsErrorCode(),
+                        'request_id' => $e->getAwsRequestId(),
+                        'type' => get_class($e)
+                    ]);
+                    throw new \Exception('Failed to verify file in S3 after upload: ' . $e->getMessage());
+                }
+            } catch (\Exception $e) {
+                \Log::error('Image upload error: ' . $e->getMessage());
+                return response()->json([
+                    'error' => 'Error uploading image: ' . $e->getMessage()
+                ], 500);
+            }
         } catch (\Exception $e) {
             \Log::error('Image upload error: ' . $e->getMessage());
             return response()->json([
