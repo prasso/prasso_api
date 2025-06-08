@@ -48,6 +48,14 @@ return [
             'level' => 'debug',
         ],
 
+        's3debug' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/s3-debug.log'),
+            'level' => 'debug',
+            'days' => 14,
+            'permission' => 0664,
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),

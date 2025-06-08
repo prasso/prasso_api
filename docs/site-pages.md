@@ -1,13 +1,88 @@
-# Documentation for Custom Site Page Tags
+# Documentation for Site Pages
 
 ## Overview
-The `site_pages` table holds the HTML content for each site page. Before a page is rendered, specific tags within the page content are dynamically replaced with relevant data such as user information, site settings, and dynamically loaded Livewire components.
+The `site_pages` table manages different types of pages that can be displayed on the site. Each page can be one of three types, allowing for flexible content management and integration with external resources.
 
-## Function Description
-The `prepareTemplate` function in the `SitePageController` processes the HTML content, replacing placeholders with corresponding data before sending the final content to the client. This allows for the seamless integration of site-specific and user-specific information directly into the page template.
+## Page Types
 
-### Code Reference: `prepareTemplate`
-The `prepareTemplate` function processes and returns the page content after replacing predefined tags with appropriate data. Here is a breakdown of the tags supported and their replacements.
+### 1. HTML Content (Type 1 - Default)
+- **Description**: Standard HTML content stored directly in the database
+- **Storage**: Content is stored in the `description` column
+- **Use Case**: Best for simple, static content that doesn't change frequently
+
+### 2. S3 File (Type 2)
+- **Description**: Content loaded from an S3 bucket
+- **Storage**: File path follows the pattern: `sites/{site_id}/pages/{page_name}.html`
+- **Fallback**: If S3 content is not found, falls back to HTML content
+- **Use Case**: For large files or when you want to manage content externally
+
+### 3. External URL (Type 3)
+- **Description**: Redirects to an external URL
+- **Configuration**: Requires `external_url` field to be set
+- **Fallback**: If external_url is not set, falls back to HTML content (Type 1)
+- **Use Case**: For integrating external applications or microsites
+
+## Site Editor Interface
+
+The site editor provides a user-friendly interface for managing page types:
+
+1. **Type Selection**:
+   - A dropdown menu allows selection between all three page types
+   - The type field defaults to Type 1 (HTML Content) for new pages
+
+2. **Dynamic Fields**:
+   - The interface adapts based on the selected type
+   - For Type 3 (External URL), an additional field appears to enter the URL
+   - For Type 1 and 2, the standard content editing fields are shown
+
+## Database Schema
+
+The `site_pages` table includes the following columns:
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | bigInteger | Primary key |
+| `fk_site_id` | bigInteger | Foreign key to sites table |
+| `section` | string | Page identifier/slug |
+| `title` | string | Page title |
+| `type` | tinyInteger | 1=HTML, 2=S3 File, 3=URL |
+| `description` | text | HTML content (for type 1) |
+| `external_url` | string | URL for redirect (for type 3) |
+| `url` | string | Legacy URL field |
+| `headers` | text | Custom HTTP headers |
+| `masterpage` | string | Wrapper template name |
+| `template` | string | Content template name |
+| `style` | text | Custom CSS styles |
+| `login_required` | boolean | Whether authentication is required |
+| `user_level` | boolean | Whether admin access is required |
+| `where_value` | string | Template query filter value |
+| `page_notifications_on` | boolean | Whether to notify admin on changes |
+| `menu_id` | bigInteger | Parent menu item ID |
+| `created_at` | timestamp | Creation timestamp |
+| `updated_at` | timestamp | Last update timestamp |
+
+## Content Processing
+
+### The `getPage` Method
+This method in `SitePageController` determines how to handle each page type:
+
+1. **Type 1 (HTML)**: Serves content directly from the database
+2. **Type 2 (S3)**: Fetches content from S3, falls back to HTML if not found
+3. **Type 3 (URL)**: Performs a 302 redirect to the specified URL
+
+### The `prepareTemplate` Function
+Processes HTML content, replacing placeholders with dynamic data:
+- Processes template tags
+- Handles Livewire components
+- Integrates site and user-specific information
+
+## Best Practices
+
+1. **For Static Content**: Use Type 1 (HTML) for simple pages
+2. **For Large/Managed Files**: Use Type 2 (S3) for better performance
+3. **For External Integration**: Use Type 3 (URL) to link to external applications
+4. **Fallback Handling**: Always provide fallback content for S3 pages
+5. **Error Logging**: Check logs for any S3 access issues or missing URLs
 
 ---
 

@@ -4,11 +4,12 @@
             <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
         </div>
         <!-- This element is to trick the browser into centering the modal contents. -->
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>?
-        <div <div x-data="{ template_selection_made: {{ $masterpage ? 'true' : 'false' }}, dataTemplateSelectionMade:  {{ $template ? 'true' : 'false' }} }" 
-            x-init="template_selection_made = {{ ($masterpage || $template) ? 'true' : 'false' }};" 
-            x-data @click.away="$wire.closeModal()" 
-            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle " role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
+        <div x-data="{ template_selection_made: {{ $masterpage ? 'true' : 'false' }}, dataTemplateSelectionMade: {{ $template ? 'true' : 'false' }}" 
+             x-init="template_selection_made = {{ ($masterpage || $template) ? 'true' : 'false' }};" 
+             @click.away="$wire.closeModal()" 
+             class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle" 
+             role="dialog" aria-modal="true" aria-labelledby="modal-headline">
             <form> <input type="hidden" wire:model="fk_site_id" />
             @if($errors->any())
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
@@ -27,6 +28,40 @@
                             <label for="titleInput" class="block text-gray-700 text-sm font-bold mb-2">Title: (this is in the top too)</label>
                             <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="titleInput" placeholder="Enter Title" wire:model="title">
                             @error('title') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="typeInput" class="block text-gray-700 text-sm font-bold mb-2">Page Type:</label>
+                            <select wire:model="type" name="typeInput" id="typeInput" class="mt-1 block w-full border-2 border-indigo-600/100 p-2">
+                                <option value="1">HTML Content</option>
+                                <option value="2">S3 File</option>
+                                <option value="3">External URL</option>
+                            </select>
+                            @error('type') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
+                        <div class="mb-4" x-show="$wire.type == 3">
+                            <label for="externalUrlInput" class="block text-gray-700 text-sm font-bold mb-2">External URL:</label>
+                            <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="externalUrlInput" placeholder="Enter External URL" wire:model="external_url">
+                            @error('external_url') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
+                        <div class="mb-4" x-show="$wire.type == 2">
+                            <label for="s3FileInput" class="block text-gray-700 text-sm font-bold mb-2">S3 File Content:</label>
+                            <div class="space-y-2">
+                                @if($s3_content)
+                                    <div class="bg-gray-100 p-4 rounded">
+                                        <h3 class="font-bold mb-2">Current Content Preview:</h3>
+                                        <pre class="text-sm overflow-auto max-h-40">{{ Str::limit($s3_content, 500) }}</pre>
+                                    </div>
+                                @endif
+                                <input type="file" class="block w-full text-sm text-gray-500
+                                    file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0
+                                    file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700
+                                    hover:file:bg-blue-100" 
+                                    id="s3FileInput" 
+                                    wire:model="s3_file"
+                                    accept=".html,.htm">
+                                <p class="text-sm text-gray-500 mt-1">Upload HTML file to store in S3. Path will be: {{ App\Models\Site::find($fk_site_id)?->site_name ?? 'sitename' }}/pages/{{ $section }}_{{$sitePage_id ?? '0'}}.html</p>
+                                @error('s3_file') <span class="text-red-500">{{ $message }}</span>@enderror
+                            </div>
                         </div>
                         <div class="mb-4">
                             <label for="masterpageInput" class="block text-gray-700 text-sm font-bold mb-2">Wrapper: </label>
