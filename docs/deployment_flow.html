@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Deployment Process Flow</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .mermaid {
+            margin: 20px 0;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Deployment Process Flow</h1>
+        
+        <div class="mermaid">
+        flowchart TD
+            A[Trigger: Push to master] --> B[Checkout code]
+            B --> C[Setup PHP 8.2 with extensions]
+            C --> D[Install Dependencies]
+            D --> E[Set up SSH]
+            E --> F[Add known hosts]
+            F --> G[Deploy to server]
+            
+            subgraph Server Deployment
+                G --> H[Create deploy.sh script]
+                H --> I[Make script executable]
+                I --> J[SCP script to server]
+                J --> K[SSH into server]
+                
+                subgraph Remote Server Execution
+                    K --> L[Change to deploy directory]
+                    L --> M[Pull latest changes]
+                    M --> N[Install dependencies]
+                    N --> O[Run migrations]
+                    O --> P[Optimize application]
+                    P --> Q[Restart services]
+                    Q --> R[Deployment complete]
+                end
+            end
+            
+            K --> S[Cleanup local files]
+        </div>
+        
+        <h2>Detailed Steps</h2>
+        <ol>
+            <li><strong>Checkout code</strong>: Get the latest code from the repository</li>
+            <li><strong>Setup PHP 8.2</strong>: Configure PHP with required extensions</li>
+            <li><strong>Install Dependencies</strong>: Run composer install and set up environment</li>
+            <li><strong>Set up SSH</strong>: Configure SSH agent with private key</li>
+            <li><strong>Add known hosts</strong>: Add server to known_hosts file</li>
+            <li><strong>Deploy to server</strong>:
+                <ol>
+                    <li>Create deployment script (deploy.sh)</li>
+                    <li>Make script executable</li>
+                    <li>Copy script to server via SCP</li>
+                    <li>Execute script on server via SSH</li>
+                </ol>
+            </li>
+            <li><strong>Cleanup</strong>: Remove local deployment script</li>
+        </ol>
+    </div>
+    
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
+</html>

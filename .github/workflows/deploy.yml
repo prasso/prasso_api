@@ -1,0 +1,91 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ develop ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, xml, ctype, json, tokenizer, pdo, pdo_mysql, fileinfo, dom, curl, gd, zip
+        coverage: none
+
+    - name: Install Dependencies
+      run: |
+        composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        cp .env.example .env
+        php artisan key:generate
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.8.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Add known hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+    - name: Deploy to server
+      env:
+        SERVER_IP: ${{ secrets.SERVER_IP }}
+        SERVER_USER: ${{ secrets.SERVER_USER }}
+        DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+      run: |
+        # Create deployment script
+        cat > deploy.sh << 'EOL'
+        #!/bin/bash
+        set -e
+        
+        echo "Changing to deploy directory..."
+        cd $DEPLOY_PATH
+        
+        echo "Pulling latest changes..."
+        git fetch --all
+        git reset --hard origin/master
+        
+        echo "Installing dependencies..."
+        composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+        
+        echo "Running migrations..."
+        php artisan migrate --force
+        
+        echo "Optimizing..."
+        php artisan optimize:clear
+        php artisan optimize
+        php artisan view:cache
+        php artisan route:cache
+        php artisan config:cache
+        
+        echo "Restarting services..."
+        sudo systemctl restart php8.2-fpm
+        sudo systemctl restart nginx
+        
+        echo "Deployment completed successfully!"
+        EOL
+
+        # Make the script executable
+        chmod +x deploy.sh
+
+        # Copy the script to the server
+        scp -r deploy.sh $SERVER_USER@$SERVER_IP:~/deploy.sh
+        
+        # Run the deployment script on the server
+        ssh $SERVER_USER@$SERVER_IP "chmod +x ~/deploy.sh && ~/deploy.sh"
+
+    - name: Cleanup
+      if: always()
+      run: |
+        # Clean up the local deployment script
+        rm -f deploy.sh
