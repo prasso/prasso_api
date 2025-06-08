@@ -15,12 +15,13 @@
     <link rel="stylesheet" href="/js/google-material-design-iconic-font.2.2.0.min.css">
     <link href="/js/google-fonts-Roboto.css" rel="stylesheet"> 
 
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
+    
     <!-- Styles -->   
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"> 
    
-    <link rel="stylesheet" href="/js/jqueryui.1.12.1.min.css">
-    
     @livewireStyles
     {{ $extracss ?? '' }}
     @if(isset($site))
@@ -64,9 +65,15 @@
 
         @stack('modals')
 
-        <!-- Scripts -->
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> 
+        <!-- Extra Scripts -->
         {{ $extrajs ?? ''}}
+        
+        <script>
+            // Ensure jQuery is loaded and DOM is ready
+            document.addEventListener('DOMContentLoaded', function() {
+                // Any jQuery initialization code can go here
+            });
+        </script>
 
         @if (   isset($site) && isset($site->app_specific_css) && str_starts_with($site->app_specific_css, 'http') )
             <link rel="stylesheet" href="{{$site->app_specific_css}}">

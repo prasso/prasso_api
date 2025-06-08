@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S3 Page Type Flow</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .mermaid { text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>S3 Page Type Processing Flow</h1>
+    <div class="mermaid">
+        graph TD
+            A[Start S3 Page Processing] --> B[Format S3 File Path]
+            B -->|sites/site_id/pages/page_name.html| C[File Exists in S3?]
+            
+            C -->|Yes| D[Get File Content from S3]
+            C -->|No| E[Log Warning: S3 content not found]
+            E --> F[Return Empty String]
+            
+            D --> G{Content Empty?}
+            G -->|Yes| H[Log Warning: Empty content]
+            H --> F
+            G -->|No| I[Return S3 Content]
+            
+            I --> J[Set as Page Description]
+            J --> K[Process with prepareTemplate]
+            K --> L[Return Processed Content]
+            
+            F --> M[Fall back to HTML Content]
+            M --> N[Set page.type = 1]
+            N --> O[Log Warning: Falling back to HTML]
+            O --> K
+            
+            style A fill:#f9f,stroke:#333,stroke-width:2px
+            style F fill:#fcc,stroke:#333,stroke-width:2px
+            style I fill:#cfc,stroke:#333,stroke-width:2px
+            style L fill:#cfc,stroke:#333,stroke-width:2px
+            style M fill:#ffc,stroke:#333,stroke-width:2px
+    </div>
+    <script>mermaid.initialize({ startOnLoad: true });</script>
+</body>
+</html>

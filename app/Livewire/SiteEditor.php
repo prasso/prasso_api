@@ -232,6 +232,11 @@ class SiteEditor extends Component
 
     public function updated($propertyName)
     {
+        if ($propertyName == 'photo' && $this->photo) {
+            $this->validate([
+                'photo' => 'file|mimes:jpg,jpeg,png,gif,bmp,svg,webp|max:2048',
+            ]);
+        }
        
         if ($propertyName == 'site_name' && $this->site_name != '' && $this->image_folder == '') {
             $words = explode(" ", $this->site_name);

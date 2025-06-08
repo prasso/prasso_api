@@ -7,6 +7,7 @@ use App\Providers\AppServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use App\Services\SitePageService;
 use App\Services\UserService;
 use App\Models\SitePages;
@@ -104,13 +105,106 @@ class SitePageController extends BaseController
                 ->where('section', $page)
                 ->first();
 
-            // If a custom page exists, prepare its content
-            if ($pageFound !== null) {    
+            // If a custom page exists, handle based on its type
+            if ($pageFound !== null) {
+                switch ($pageFound->type) {
+                    case 2: // S3 File
+                        $s3Content = $this->getS3PageContent($this->site->id, $page);
+                      //log the s3 content
+                        \Illuminate\Support\Facades\Log::info("S3 content: " . $s3Content);
+                        if (!empty($s3Content)) {
+                            $pageFound->description = $s3Content;
+                        } else {
+                            // If S3 content is not found, fall back to HTML content
+                            $pageFound->type = 1;
+                            \Illuminate\Support\Facades\Log::warning("S3 content not found, falling back to HTML for page: " . $page);
+                        }
+                        break;
+                        
+                    case 3: // External URL
+                        if (!empty($pageFound->external_url)) {
+                            // Redirect to the external URL
+                            return redirect()->away($pageFound->external_url);
+                        }
+                        // If no URL is provided, fall through to HTML
+                        $pageFound->type = 1;
+                        \Illuminate\Support\Facades\Log::warning("External URL not provided for page: " . $page);
+                        break;
+                        
+                    // Default case (type 1: HTML) falls through
+                }
+                
                 $user_content = $this->prepareTemplate($pageFound, $request->path());
+            } else {
+                // For backward compatibility, check S3 for content
+                $s3Content = $this->getS3PageContent($this->site->id, $page);
+                
+                if (!empty($s3Content)) {
+                    // Create a temporary SitePages object to use with prepareTemplate
+                    $tempPage = new SitePages();
+                    $tempPage->fk_site_id = $this->site->id;
+                    $tempPage->section = $page;
+                    $tempPage->title = $page;
+                    $tempPage->description = $s3Content;
+                    $tempPage->type = 2; // Mark as S3 type
+                    
+                    $user_content = $this->prepareTemplate($tempPage, $request->path());
+                }
             }
         }
         // return the prepared content
         return $user_content;
+    }
+    
+    /**
+     * Get page content from S3 bucket
+     * 
+     * @param int $siteId The site ID
+     * @param string $pageName The page name/section
+     * @return string The page content or empty string if not found
+     */
+    /**
+     * Get page content from S3 storage
+     *
+     * @param int $siteId The site ID
+     * @param string $pageName The page name/section
+     * @return string The page content or empty string if not found
+     */
+    protected function getS3PageContent($site_id, $page)
+    {
+        $site = Site::find($site_id);
+        if (!$site) {
+            \Log::error('Site not found for ID: ' . $site_id);
+            return null;
+        }
+        
+        // Get the page record to get its ID
+        $sitePage = SitePages::where('fk_site_id', $site_id)
+            ->where('section', $page)
+            ->first();
+            
+        if (!$sitePage) {
+            \Log::error('Page not found: ' . $page);
+            return null;
+        }
+        
+        $s3Path = $site->site_name . '/pages/' . $page . '_' . $sitePage->id . '.html';
+            
+        try {
+            // Check if the file exists in S3
+            if (!\Illuminate\Support\Facades\Storage::disk('s3')->exists($s3Path)) {
+                \Illuminate\Support\Facades\Log::warning("S3 content not found: " . $s3Path);
+                return '';
+            }
+            
+            // Get the file content from S3
+            return \Illuminate\Support\Facades\Storage::disk('s3')->get($s3Path);
+        } catch (\Exception $e) {
+            // Log the error but don't crash the application
+            \Illuminate\Support\Facades\Log::error('Error fetching S3 page content: ' . $e->getMessage() . 
+                ' [Site: ' . $siteId . ', Page: ' . $pageName . ']');
+            return '';
+        }
     }
 
 
@@ -132,6 +226,7 @@ class SitePageController extends BaseController
         
         $page_content = $pageToProcess->description;
         $user = Auth::user() ?? null;
+        $team = $this->site->teamFromSite();
         //First,Check if the header placeholder exists, 
         //then replace it with the header page if defined
         if (strpos($page_content, '[HEADER]') !== false) {
@@ -144,9 +239,14 @@ class SitePageController extends BaseController
             }
         }
         //replace the tokens in the dashboard page with the user's name, email, and profile photo
+        $page_content = str_replace('@csrf', '<input type="hidden" name="_token" value="'.csrf_token().'">', $page_content);
         $page_content = str_replace('CSRF_TOKEN', csrf_token(), $page_content);
-        $page_content = str_replace('[TEAM_ID]', $this->site->teamFromSite()->id, $page_content);
+        $page_content = str_replace('@csrf_token()', csrf_token(), $page_content);
+        $page_content = str_replace('@csrf', '<input type="hidden" value="'.csrf_token().'" />', $page_content);
+        $page_content = str_replace('[TEAM_ID]', $team->id, $page_content);
+        $page_content = str_replace('{{ $team_id }}', $team->id, $page_content);
         $page_content = str_replace('MAIN_SITE_COLOR', $this->site->main_color, $page_content);
+        $page_content = str_replace('[SITE_CSS]', $this->site->app_specific_css, $page_content);
         $page_content = str_replace('SITE_MAP', $this->site->getSiteMapList($path), $page_content);
         $page_content = str_replace('SITE_NAME', $this->site->site_name, $page_content);
         $page_content = str_replace('SITE_LOGO_FILE', $this->site->logo_image, $page_content);
@@ -300,35 +400,62 @@ class SitePageController extends BaseController
     }
 
     private function prepareAndReturnView($sitepage, $site_page_data, $user, $request){
-        $sitepage->description = $this->prepareTemplate($sitepage, $request->path());
+        // Handle different page types
+        switch ($sitepage->type) {
+            case 2: // S3 File
+                $s3Content = $this->getS3PageContent($this->site->id, $sitepage->section);
+                if (!empty($s3Content)) {
+                    $sitepage->description = $s3Content;
+                } else {
+                    // Fall back to HTML content if S3 content is not found
+                    $sitepage->description = $this->prepareTemplate($sitepage, $request->path());
+                }
+                break;
+                
+            case 3: // External URL
+                if (!empty($sitepage->external_url)) {
+                    return redirect()->away($sitepage->external_url);
+                }
+                // Fall through to HTML if no URL is provided
+                $sitepage->description = $this->prepareTemplate($sitepage, $request->path());
+                break;
+                
+            case 1: // HTML (default)
+            default:
+                $sitepage->description = $this->prepareTemplate($sitepage, $request->path());
+                break;
+        }
+        
         $masterpage = $this->getMaster($sitepage);
 
+        // Process template data if template is defined and contains [DATA] placeholder
         $placeholder = '[DATA]';
-        if ($sitepage->template != null && strlen($sitepage->template) > 0 && strpos($sitepage->description, '[DATA]') !== false)
-        {
-            $page_content='';
-            if ($site_page_data == null)
-            {
-                //multi-record result sets will be returned within the x-data attribute of the template in $page_content
-                $page_content= $this->sitePageService->getTemplateData($sitepage, $placeholder, $user, $this->site);
-               
-            }
-            else{
-
+        if ($sitepage->template != null && 
+            strlen($sitepage->template) > 0 && 
+            strpos($sitepage->description ?? '', $placeholder) !== false) {
+                
+            $page_content = '';
+            if ($site_page_data == null) {
+                // Multi-record result sets will be returned within the x-data attribute of the template
+                $page_content = $this->sitePageService->getTemplateData($sitepage, $placeholder, $user, $this->site);
+            } else {
                 $template_data = SitePageTemplate::where('templatename', $sitepage->template)->first();
-                $jsonData = $this->sitePageService->processJSONData($site_page_data, $template_data, $this->site);
-               
-                $page_content = str_replace($placeholder, $jsonData, $sitepage->description);
+                if ($template_data) {
+                    $jsonData = $this->sitePageService->processJSONData($site_page_data, $template_data, $this->site);
+                    $page_content = str_replace($placeholder, $jsonData, $sitepage->description);
+                }
             }
-            $sitepage->description = $page_content;
-            //Controller::dd_with_callstack($sitepage);
-        
+            
+            if (!empty($page_content)) {
+                $sitepage->description = $page_content;
+            }
         }
-        return view($sitepage->masterpage)//use the template here
-            ->with('sitePage',$sitepage)
-            ->with('site',$this->site)
-            ->with('page_short_url','/page/'.$sitepage->section)
-            ->with('masterPage',$masterpage);
+        
+        return view($sitepage->masterpage)
+            ->with('sitePage', $sitepage)
+            ->with('site', $this->site)
+            ->with('page_short_url', '/page/'.$sitepage->section)
+            ->with('masterPage', $masterpage);
     }
      /**
      * Show the app edit form 

@@ -16,7 +16,7 @@ class SitePages extends Model
      * @var array
     */
     protected $fillable = [
-        'fk_site_id', 'section', 'title', 'description', 'url','headers','masterpage','template','style','login_required','user_level','where_value','page_notifications_on', 'menu_id'
+        'fk_site_id', 'section', 'title', 'description', 'url','headers','masterpage','template','style','login_required','user_level','where_value','page_notifications_on', 'menu_id', 'type', 'external_url'
     ];
     
     public function site()

@@ -50,7 +50,9 @@ class EmailController extends BaseController
         $subject = $request->subject;
         $body = $request->body.' - from '.$emails;
 
-        $admin_user = \App\Models\User::where('email','bcp@faxt.com')->first();
+        $admin_user = \App\Models\User::whereHas('roles', function($query) {
+            $query->where('role_name', config('constants.SUPER_ADMIN_ROLE_TEXT'));
+        })->first();
         $admin_user -> sendContactFormEmail($subject, $body);
 
        /* /// txt message only works if the app is in the background of the device - at least on Android

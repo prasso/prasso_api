@@ -31,6 +31,12 @@ NOTE: to view local developer setup details see this document: [technical.md](te
    ```bash
    sudo -i
    ```
+   Required PHP Extensions:
+   - fileinfo
+   - intl
+   - zip
+   - mysqli
+   - pdo_mysql
 
 4. Change to the `/var/www/html` directory:
    ```bash

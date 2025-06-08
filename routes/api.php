@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CommandController;
+use App\Http\Controllers\CalendarController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -20,13 +21,14 @@ Route::post('save_app', [\App\Http\Controllers\Api\AppController::class, 'saveAp
 
 Route::post('save_subscription', 'StripeController@save_subscription');
 Route::post('livestream_activity', 'SitePageController@livestream_activity');
-Route::middleware([
-    'siteusergroup'
-])->group(function () {
-    
-Route::post('/run-artisan-command', [CommandController::class, 'runCommand']);
+Route::middleware(['siteusergroup'])
+    ->group(function () {
+        Route::post('/run-artisan-command', [CommandController::class, 'runCommand']);
+    }
+);
 
-});
+// Calendar routes
+Route::get('/calendar/events', [CalendarController::class, 'index'])->name('calendar.events');
 
 // Admin routes
 Route::group(['middleware' => ['auth:sanctum', 'superadmin'], 'prefix' => 'admin'], function () {

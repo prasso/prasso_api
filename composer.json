@@ -26,6 +26,7 @@
         "prasso/autoprohub": "dev-main",
         "prasso/messaging": "dev-main",
         "prasso/project_management": "dev-main",
+        "spatie/laravel-google-calendar": "^3.8",
         "twilio/sdk": "^6.27"
     },
     "repositories": [
