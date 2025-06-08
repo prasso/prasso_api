@@ -27,6 +27,7 @@ jobs:
         cp .env.example .env
         php artisan key:generate
 
+        
     - name: Set up SSH
       uses: webfactory/ssh-agent@v0.8.0
       with:
