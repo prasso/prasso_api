@@ -9,25 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'
-        extensions: mbstring, xml, ctype, json, tokenizer, pdo, pdo_mysql, fileinfo, dom, curl, gd, zip
-        coverage: none
-
-    - name: Install Dependencies
-      run: |
-        composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-        cp .env.example .env
-        php artisan key:generate
-
-        
     - name: Set up SSH
       uses: webfactory/ssh-agent@v0.8.0
       with:
