@@ -32,7 +32,18 @@ jobs:
         set -e
         
         echo "Changing to deploy directory..."
+        echo "DEPLOY_PATH value: $DEPLOY_PATH"
+        echo "Current directory before cd: $(pwd)"
         cd $DEPLOY_PATH
+        echo "Current directory after cd: $(pwd)"
+        
+        # Check if this is a git repository
+        if [ -d ".git" ]; then
+          echo "This is a git repository"
+        else
+          echo "ERROR: Not a git repository. Contents of directory:"
+          ls -la
+        fi
         
         echo "Pulling latest changes..."
         git fetch --all
