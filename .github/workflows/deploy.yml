@@ -26,8 +26,11 @@ jobs:
         SERVER_USER: ${{ secrets.SERVER_USER }}
         DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
       run: |
+        # Export the environment variables so they're available in the script
+        export DEPLOY_PATH="${{ secrets.DEPLOY_PATH }}"
+        
         # Create deployment script
-        cat > deploy.sh << 'EOL'
+        cat > deploy.sh << EOL
         #!/bin/bash
         set -e
         
