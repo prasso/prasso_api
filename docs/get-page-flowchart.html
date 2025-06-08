@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>getPage Method Flowchart</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .mermaid { text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Flowchart for <code>getPage</code> Method</h1>
+    <div class="mermaid">
+        graph TD
+        A[Start getPage] --> A1[Set Users Current Team]
+         A1 --> A2[Capture HTTP Request]
+         A2 --> B{User on Team?}
+         B -->|No| C[Logout User Auth::logout]
+         C --> D[Flash 'Login Again' Message]
+         D --> E[Redirect to /login]
+         E --> Z[End]
+         B -->|Yes| F[Initialize user_content = '']
+         F --> G{Site Exists AND Not Main App Site?}
+         G -->|No| Y[Return user_content]
+         G -->|Yes| H[Find Custom Page in DB]
+         H --> I{Custom Page Found?}
+         I -->|No| P[Check S3 for Content]
+         P --> Q{S3 Content Found?}
+         Q -->|No| Y
+         Q -->|Yes| R[Create Temp SitePages Object from S3 Content]
+         R --> X[Prepare Template with Temp Page]
+         X --> StoreUserContent1[user_content = Prepared Content]
+         StoreUserContent1 --> Y
+         I -->|Yes| J{Page Type?}
+         J -->|Type 2 S3 File| K[Get S3 Page Content]
+         K --> L{S3 Content Found?}
+         L -->|Yes| M[Set pageFound.description = S3 Content]
+         M --> X2[Prepare Template with pageFound]
+         X2 --> StoreUserContent2[user_content = Prepared Content]
+         StoreUserContent2 --> Y
+         L -->|No| N[Set pageFound.type = 1]
+         N --> LogS3NotFound[Log S3 Not Found Warning]
+         LogS3NotFound --> X2
+         J -->|Type 3 External URL| O{External URL Provided?}
+         O -->|Yes| OE[Redirect to External URL]
+         OE --> Z
+         O -->|No| OF[Set pageFound.type = 1]
+         OF --> LogExtUrlNotProvided[Log External URL Not Provided Warning]
+         LogExtUrlNotProvided --> X2
+         J -->|Type 1 HTML| X2
+         Y --> Z 
+    </div>
+    <script>mermaid.initialize({ startOnLoad: true });</script>
+</body>
+</html>

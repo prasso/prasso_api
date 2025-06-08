@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>getPage Method Flowchart</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        .mermaid {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>getPage Method Flow</h1>
+        <div class="mermaid">
+        flowchart TD
+            A[Start: getPage] --> B[Set user's current team]
+            B --> C[Capture current request]
+            C --> D{Is user on a team?}
+            D -->|No| E[Logout user and redirect to login]
+            D -->|Yes| F{Is site not main app?}
+            F -->|No| G[Return empty content]
+            F -->|Yes| H[Search for page in database]
+            H --> I{Page found?}
+            I -->|Yes| J[Check for S3 content]
+            I -->|No| K[Check S3 for content]
+            J --> L{S3 content exists?}
+            L -->|Yes| M[Use S3 content]
+            L -->|No| N[Use database content]
+            K --> O{S3 content exists?}
+            O -->|Yes| P[Create temp page with S3 content]
+            O -->|No| Q[Return empty content]
+            P --> R[Prepare template with temp page]
+            M --> S[Prepare template with updated content]
+            N --> S
+            R --> T[Return prepared content]
+            S --> T
+            G --> T
+            Q --> T
+            E --> U[End: Redirect to login]
+            T --> V[End: Return content]
+        </div>
+    </div>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
+</html>

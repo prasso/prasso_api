@@ -24,7 +24,9 @@ class SitePageService
             'user_level' => $request['user_level'],
             'template' => $request['template'],
             'style' => $request['style'],
-            'where_value' => $request['where_value']
+            'where_value' => $request['where_value'],
+            'type' => $request['type'] ?? 1, // Default to HTML content if not specified
+            'external_url' => $request['external_url'] ?? null // Only used for type 3
         ]);
         
         $message = $updatedSitePage ? 'Site Page Updated Successfully.' : 'Site Page Created Successfully.';
