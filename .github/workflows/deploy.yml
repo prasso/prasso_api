@@ -53,7 +53,7 @@ jobs:
         
         echo "Pulling latest changes..."
         git fetch --all
-        git reset --hard origin/master
+        git reset --hard origin/develop
         
         echo "Installing dependencies..."
         composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
