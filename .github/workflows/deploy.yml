@@ -56,6 +56,7 @@ jobs:
         git reset --hard origin/develop
         
         echo "Installing dependencies..."
+        composer require fakerphp/faker --no-interaction
         composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
         
         echo "Running migrations..."
@@ -67,11 +68,7 @@ jobs:
         php artisan view:cache
         php artisan route:cache
         php artisan config:cache
-        
-        echo "Restarting services..."
-        sudo systemctl restart php8.2-fpm
-        sudo systemctl restart nginx
-        
+         
         echo "Deployment completed successfully!"
         EOL
 
