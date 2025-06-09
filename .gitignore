@@ -20,7 +20,6 @@
 /public/pages/*
 packages/*
 
-composer.lock
 Homestead.json
 Homestead.yaml
 npm-debug.log
