@@ -36,6 +36,9 @@ Customize your site's appearance:
   - Upload the logo file to your server before starting the wizard
   - You'll need the URL path to your uploaded logo
 - Image Folder: Specify a folder for your site's images (automatically generated based on site name)
+- GitHub Repository: Optionally specify a GitHub repository in the format `username/repository` (e.g., `prasso/website-template`)
+  - When specified, site pages will be sourced from this repository instead of being configured manually
+  - See [GitHub Repository Sites](github-repository-sites.md) for detailed information
 - Custom CSS: Add any custom CSS styling (optional)
 - Custom JavaScript: Add any custom JavaScript functionality (optional)
 

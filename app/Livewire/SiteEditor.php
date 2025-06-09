@@ -25,7 +25,7 @@ class SiteEditor extends Component
 
     public $sites, $site_id,$site_name,$description, $host,$main_color,$logo_image, 
             $database, $favicon, $supports_registration, $subteams_enabled, $app_specific_js, $app_specific_css,
-            $does_livestreaming,$https_host, $image_folder,$invitation_only;
+            $does_livestreaming,$https_host, $image_folder,$invitation_only, $github_repository;
     public $stripe_key, $stripe_secret;
 
     public $sitePages;
@@ -53,6 +53,17 @@ class SiteEditor extends Component
         $this->sites = Site::all();
         return view('livewire.site-editor')
             ->with('team_selection', $this->team_selection);
+    }
+    
+    /**
+     * Update the GitHub repository field when a new repository is created
+     *
+     * @param string $repositoryPath
+     * @return void
+     */
+    public function updateGithubRepository($repositoryPath)
+    {
+        $this->github_repository = $repositoryPath;
     }
 
     public function create()
@@ -104,6 +115,7 @@ class SiteEditor extends Component
         $this->app_specific_js = $site->app_specific_js;
         $this->app_specific_css = $site->app_specific_css;
         $this->image_folder = $site->image_folder;
+        $this->github_repository = $site->github_repository;
 
         // Initialize stripe_key and stripe_secret if the stripe relationship has data
         if ($site->stripe) {
@@ -146,6 +158,7 @@ class SiteEditor extends Component
         $this->does_livestreaming = '';
         $this->image_folder = '';
         $this->invitation_only = '';
+        $this->github_repository = '';
         $this->stripe_key = '';
         $this->stripe_secret = '';
         $this->photo = null;
@@ -187,6 +200,7 @@ class SiteEditor extends Component
             'app_specific_js' => $this->app_specific_js,
             'app_specific_css' => $this->app_specific_css,
             'image_folder' => $this->image_folder,
+            'github_repository' => $this->github_repository,
         ]);
         
         $this->site_id = $site->id;
@@ -273,6 +287,7 @@ class SiteEditor extends Component
         $this->app_specific_js = $site->app_specific_js;
         $this->app_specific_css = $site->app_specific_css;
         $this->image_folder = $site->image_folder;
+        $this->github_repository = $site->github_repository;
 
         if ($site->stripe) {
             $this->stripe_key = $site->stripe->key;

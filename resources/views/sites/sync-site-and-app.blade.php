@@ -16,17 +16,28 @@
         </div>
         @endif
         <div class="mb-4">
-        <form wire:submit.prevent="syncAppToSite">
-            @foreach ($sitePages as $page)
-                <div>
-                    <input type="checkbox" wire:model="selectedPages" value="{{ $page->id }}">
-                    <label>{{ $page->title }}</label>
-                </div>
-            @endforeach
+        @if(!empty($github_repository))
+            <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
+                <p class="font-bold">GitHub Repository Configured</p>
+                <p>This site is configured to use GitHub repository: <strong>{{ $github_repository }}</strong></p>
+                <p class="mt-2">Site pages are managed via the GitHub repository and cannot be synced manually.</p>
+            </div>
+            <div class="mt-4 text-right">
+                <button type="button" class="px-4 py-2 bg-gray-300 text-gray-700 rounded" wire:click="hideSyncDialog">Close</button>
+            </div>
+        @else
+            <form wire:submit.prevent="syncAppToSite">
+                @foreach ($sitePages as $page)
+                    <div>
+                        <input type="checkbox" wire:model="selectedPages" value="{{ $page->id }}">
+                        <label>{{ $page->title }}</label>
+                    </div>
+                @endforeach
 
-            <button class="teambutton rounded" wire:click"syncAppToSite">Sync</button>
-            <button type="button" wire:click="hideSyncDialog">Cancel</button>
-        </form>
+                <button class="teambutton rounded" wire:click"syncAppToSite">Sync</button>
+                <button type="button" wire:click="hideSyncDialog">Cancel</button>
+            </form>
+        @endif
     </div>
 </div>
             </div></div>

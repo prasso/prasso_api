@@ -58,3 +58,6 @@ MIX_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
 
 FIREBASE_SERVER_KEY="firebaseserverkey"
 CONTACT_DEVICE_TOKEN="contactdevicetoken"
+# GitHub API Credentials
+GITHUB_TOKEN=your_personal_access_token
+GITHUB_USERNAME=your_github_username
