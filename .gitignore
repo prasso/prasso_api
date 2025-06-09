@@ -1,44 +1,65 @@
 
+# OS generated files
 *.xcf
 .DS_Store
+Thumbs.db
+
+# Environment files
 .env
+.env.backup
+.env.local.php
+.env*
+!.env.example
+
+# IDE and editor folders
 /.idea
-/.vagrant
-/access.log
-/error.log
+/.vscode
+.vscode/*
 /nbproject
 
+# Laravel specific
 /node_modules
 /public/hot
 /public/storage
-/public/temp/*
-/public/uploads/*
-/storage/*.key
-/storage/tmp/*
-/storage/uploads/*
-/vendor/*
-/public/pages/*
-packages/*
+/public/temp
+/public/uploads
+/public/pages
+/public/css/filament
+/public/js/filament
+/public/js/timeTracker.js
+/public/hosted_sites
+/storage/*.key  
+/storage/tmp
+/storage/uploads
+/vendor
+packages
 
-Homestead.json
-Homestead.yaml
+# Log files
+/access.log
+/error.log
+/storage/logs/*
+!storage/logs/.gitkeep
 npm-debug.log
 yarn-error.log
+
+# Laravel Homestead
+/.vagrant
+Homestead.json
+Homestead.yaml
+
+# Misc
+composer.lock
 .php.orig
-.env.local.php
-.env*
-/public/.DS_Store
-/public/.htaccess
-./vendor
-./.vscode
-.vscode/*
 firestore-database-rules.txt
 .phpunit.result.cache
-faxt_api_backup.sql
-resources/views/vendor/l5-swagger/.gitkeep
 .phpunit.cache/test-results
 phpunit.xml.bak
-public/css/filament/*
-public/js/filament/*
-public/js/timeTracker.js
-app/google-calendar/*
+faxt_api_backup.sql
+app/google-calendar
+
+# Keep .gitkeep files
+!resources/views/vendor/l5-swagger/.gitkeep
+!public/temp/.gitkeep
+!public/uploads/.gitkeep
+!storage/tmp/.gitkeep
+!storage/uploads/.gitkeep
