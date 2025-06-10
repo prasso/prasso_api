@@ -51,10 +51,33 @@ class GithubRepositoryService
                 $currentDir = getcwd();
                 chdir($targetDir);
                 
-                // Execute git pull
+                // First try with --ff-only which is safer but will fail if branches have diverged
                 $output = [];
                 $returnCode = 0;
-                exec('git pull 2>&1', $output, $returnCode);
+                exec('git pull --ff-only 2>&1', $output, $returnCode);
+                
+                // If the fast-forward pull fails, try a more aggressive approach
+                if ($returnCode !== 0) {
+                    Log::warning("Fast-forward pull failed for site {$site->id}, trying reset approach");
+                    
+                    // Store the current branch name
+                    $branchOutput = [];
+                    exec('git branch --show-current 2>&1', $branchOutput, $branchReturnCode);
+                    $currentBranch = $branchReturnCode === 0 ? trim($branchOutput[0]) : 'main';
+                    
+                    // Reset to origin and force pull
+                    $resetOutput = [];
+                    exec("git fetch origin 2>&1 && git reset --hard origin/{$currentBranch} 2>&1", $resetOutput, $resetReturnCode);
+                    
+                    if ($resetReturnCode === 0) {
+                        $output = array_merge($output, ["Fast-forward failed, used reset instead"], $resetOutput);
+                        $returnCode = 0; // Consider the operation successful
+                    } else {
+                        // If reset fails too, append the reset output to the original output
+                        $output = array_merge($output, ["Reset approach also failed"], $resetOutput);
+                    }
+                }
+                
                 $result['output'] = $output;
                 
                 // Change back to the original directory

@@ -37,46 +37,47 @@
             },
             
             selectedFiles: [],
-            
-            handleFolderSelection(event) {
-                const files = event.target.files;
-                if (files && files.length > 0) {
-                    this.selectedFiles = Array.from(files);
-                    
-                    // Get the common folder path from the first file's webkitRelativePath
-                    const firstFilePath = files[0].webkitRelativePath;
-                    const folderName = firstFilePath.split('/')[0];
-                    
-                    // Set the folder path to the folder name
-                    this.folderPath = folderName;
-                    
-                    // Set the repository name if empty
-                    if (!this.repositoryName) {
-                        this.repositoryName = folderName;
-                    }
-                    
-                    // Show success message with file count
-                    this.successMessage = `Selected folder: ${folderName} (${this.selectedFiles.length} files)\n\nFiles will be temporarily uploaded when creating the repository.`;
-                    
-                    // Clear success message after 5 seconds
-                    setTimeout(() => {
-                        if (this.successMessage && this.successMessage.includes('Selected folder:')) {
-                            this.successMessage = '';
-                        }
-                    }, 5000);
-                }
-            },
-            
-            async createRepository() {
+           // Fixed handleFolderSelection method
+handleFolderSelection(event) {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+        this.selectedFiles = Array.from(files);
+        
+        // Get the common folder path from the first file's webkitRelativePath
+        const firstFilePath = files[0].webkitRelativePath;
+        const folderName = firstFilePath.split('/')[0];
+        
+        // Set the folder path to the folder name
+        this.folderPath = folderName;
+        
+        // Set the repository name if empty
+        if (!this.repositoryName) {
+            this.repositoryName = folderName;
+        }
+        
+        // Show success message with file count
+        this.successMessage = `Selected folder: ${folderName} (${this.selectedFiles.length} files)\n\nFiles will be temporarily uploaded when creating the repository.`;
+        
+        // Clear success message after 5 seconds
+        setTimeout(() => {
+            if (this.successMessage && this.successMessage.includes('Selected folder:')) {
+                this.successMessage = '';
+            }
+        }, 5000);
+    }
+},
+
+// Fixed createRepository method
+async createRepository() {
     if (!this.folderPath || !this.repositoryName) {
         this.errorMessage = 'All fields are required';
         return;
     }
-    
+
     this.isLoading = true;
     this.errorMessage = '';
     this.successMessage = 'Preparing files for upload...';
-    
+
     try {
         let response;
         
@@ -90,11 +91,17 @@
             // Show progress message
             this.successMessage = `Uploading ${this.selectedFiles.length} files...`;
             
-            // Add all files to the form data, ensuring we preserve the folder structure
+            // Add all files to the form data, preserving folder structure
             for (let i = 0; i < this.selectedFiles.length; i++) {
                 const file = this.selectedFiles[i];
+                
                 // Use the webkitRelativePath to maintain folder structure
-                formData.append('files[]', file, file.webkitRelativePath);
+                const relativePath = file.webkitRelativePath;
+                
+                // Create a unique field name that includes the relative path
+                // This ensures each file has its path preserved
+                formData.append(`files[${i}]`, file);
+                formData.append(`paths[${i}]`, relativePath);
                 
                 // Update progress message for large uploads
                 if (i % 20 === 0 && i > 0) {
@@ -128,36 +135,35 @@
                 })
             });
         }
+
+        const result = await response.json();
         
- 
-                    
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        this.successMessage = result.message;
-                        // Emit event to update the github_repository field in the parent component
-                        window.dispatchEvent(new CustomEvent('github-repo-created', {
-                            detail: {
-                                repositoryPath: result.repository_path
-                            }
-                        }));
-                        
-                        // Close modal after 3 seconds
-                        setTimeout(() => {
-                            this.closeModal();
-                            // Reload the page to reflect changes
-                            window.location.reload();
-                        }, 3000);
-                    } else {
-                        this.errorMessage = result.message || 'An error occurred while creating the repository';
-                    }
-                } catch (error) {
-                    this.errorMessage = 'An error occurred while creating the repository';
-                    console.error(error);
-                } finally {
-                    this.isLoading = false;
+        if (result.success) {
+            this.successMessage = result.message;
+            
+            // Emit event to update the github_repository field in the parent component
+            window.dispatchEvent(new CustomEvent('github-repo-created', {
+                detail: {
+                    repositoryPath: result.repository_path
                 }
-            }
+            }));
+            
+            // Close modal after 3 seconds
+            setTimeout(() => {
+                this.closeModal();
+                // Reload the page to reflect changes
+                window.location.reload();
+            }, 3000);
+        } else {
+            this.errorMessage = result.message || 'An error occurred while creating the repository';
+        }
+    } catch (error) {
+        this.errorMessage = 'An error occurred while creating the repository';
+        console.error(error);
+    } finally {
+        this.isLoading = false;
+    }
+}
         }))
     })
 </script>

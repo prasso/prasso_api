@@ -13,6 +13,7 @@
 /public/storage
 /public/temp/*
 /public/uploads/*
+/public/hosted_sites/*
 /storage/*.key
 /storage/tmp/*
 /storage/uploads/*

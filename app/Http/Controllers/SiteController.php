@@ -222,9 +222,15 @@ class SiteController extends BaseController
         // Keep track of the root folder name to ensure all files are within it
         $rootFolderName = null;
         
+        // Log the file information for debugging
+        \Illuminate\Support\Facades\Log::info("Processing " . count($files) . " files");
+        
         foreach ($files as $file) {
             // The original path might be in the file name or in a custom header
             $originalPath = $file->getClientOriginalName();
+            
+            // Log the original path for debugging
+            \Illuminate\Support\Facades\Log::info("Original file path: {$originalPath}");
             
             // Check if we have a full path with webkitRelativePath format (folder/file.ext)
             if (strpos($originalPath, '/') !== false) {
@@ -247,17 +253,87 @@ class SiteController extends BaseController
                 
                 // Save the file to the correct location
                 $file->move($subDir, $filename);
+                
+                // Log the file save location for debugging
+                \Illuminate\Support\Facades\Log::info("Saved file to: {$subDir}/{$filename}");
             } else {
-                // If we don't have a path structure, just save directly to the target dir
-                // This is a fallback and shouldn't normally happen with folder selection
-                $file->move($targetDir, $originalPath);
+                // Try to get the path from the request
+                $relativePath = request()->input('file_paths.' . $file->getClientOriginalName());
+                
+                if ($relativePath) {
+                    // Extract the path parts
+                    $pathParts = explode('/', $relativePath);
+                    $filename = array_pop($pathParts); // Remove and get the filename
+                    $relativeDir = implode('/', $pathParts);
+                    
+                    // Create the subdirectory if needed
+                    $subDir = $targetDir . '/' . $relativeDir;
+                    if (!file_exists($subDir)) {
+                        mkdir($subDir, 0755, true);
+                    }
+                    
+                    // Save the file to the correct location
+                    $file->move($subDir, $filename);
+                    
+                    // Log the file save location for debugging
+                    \Illuminate\Support\Facades\Log::info("Saved file with path from request to: {$subDir}/{$filename}");
+                } else {
+                    // If we don't have a path structure, just save directly to the target dir
+                    // This is a fallback and shouldn't normally happen with folder selection
+                    $file->move($targetDir, $originalPath);
+                    
+                    // Log the fallback file save for debugging
+                    \Illuminate\Support\Facades\Log::info("Saved file directly to target dir: {$targetDir}/{$originalPath}");
+                }
             }
         }
+        
+        // Add .gitkeep files to empty directories to preserve folder structure
+        $this->preserveEmptyDirectories($targetDir);
         
         // Log information about the processed files
         \Illuminate\Support\Facades\Log::info("Processed " . count($files) . " files to {$targetDir}");
         
         return $targetDir;
+    }
+    
+    /**
+     * Add .gitkeep files to empty directories to preserve folder structure
+     *
+     * @param string $basePath Base path to start from
+     */
+    private function preserveEmptyDirectories($basePath)
+    {
+        $directories = new \RecursiveDirectoryIterator($basePath, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $recursiveIterator = new \RecursiveIteratorIterator($directories, \RecursiveIteratorIterator::SELF_FIRST);
+        
+        foreach ($recursiveIterator as $item) {
+            if ($item->isDir()) {
+                $dirPath = $item->getPathname();
+                
+                // Skip .git directory
+                if (strpos($dirPath, '/.git') !== false) {
+                    continue;
+                }
+                
+                // Check if directory is empty
+                $isEmpty = true;
+                $dirContents = scandir($dirPath);
+                foreach ($dirContents as $content) {
+                    if ($content != '.' && $content != '..') {
+                        $isEmpty = false;
+                        break;
+                    }
+                }
+                
+                // Add .gitkeep file to empty directory
+                if ($isEmpty) {
+                    $gitkeepPath = $dirPath . '/.gitkeep';
+                    file_put_contents($gitkeepPath, '');
+                    \Illuminate\Support\Facades\Log::info("Added .gitkeep to empty directory: {$dirPath}");
+                }
+            }
+        }
     }
     
     public function processQuestion(Request $request, Site $site)

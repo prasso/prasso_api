@@ -190,6 +190,9 @@ class GithubRepositoryCreationService
         $currentDir = getcwd();
         chdir($folderPath);
         
+        // First, add .gitkeep files to empty directories to preserve folder structure
+        $this->preserveEmptyDirectories($folderPath);
+        
         $output = [];
         $returnCode = 0;
         exec('git add . 2>&1', $output, $returnCode);
@@ -291,5 +294,43 @@ class GithubRepositoryCreationService
     {
         $outputStr = implode(' ', $output);
         return (strpos($outputStr, 'nothing to commit') !== false);
+    }
+    
+    /**
+     * Add .gitkeep files to empty directories to preserve folder structure
+     *
+     * @param string $basePath Base path to start from
+     */
+    private function preserveEmptyDirectories($basePath)
+    {
+        $directories = new \RecursiveDirectoryIterator($basePath, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $recursiveIterator = new \RecursiveIteratorIterator($directories, \RecursiveIteratorIterator::SELF_FIRST);
+        
+        foreach ($recursiveIterator as $item) {
+            if ($item->isDir()) {
+                $dirPath = $item->getPathname();
+                
+                // Skip .git directory
+                if (strpos($dirPath, '/.git') !== false) {
+                    continue;
+                }
+                
+                // Check if directory is empty
+                $isEmpty = true;
+                $dirContents = scandir($dirPath);
+                foreach ($dirContents as $content) {
+                    if ($content != '.' && $content != '..') {
+                        $isEmpty = false;
+                        break;
+                    }
+                }
+                
+                // Add .gitkeep file to empty directory
+                if ($isEmpty) {
+                    $gitkeepPath = $dirPath . '/.gitkeep';
+                    file_put_contents($gitkeepPath, '');
+                }
+            }
+        }
     }
 }
