@@ -1,65 +1,46 @@
 
-# OS generated files
 *.xcf
 .DS_Store
-Thumbs.db
-
-# Environment files
 .env
-.env.backup
-.env.local.php
-.env*
-!.env.example
-
-# IDE and editor folders
 /.idea
-/.vscode
-.vscode/*
+/.vagrant
+/access.log
+/error.log
 /nbproject
 
-# Laravel specific
 /node_modules
 /public/hot
 /public/storage
-/public/temp
-/public/uploads
-/public/pages
-/public/css/filament
-/public/js/filament
-/public/js/timeTracker.js
-/public/hosted_sites
-/storage/*.key  
-/storage/tmp
-/storage/uploads
-/vendor
-packages
+/public/temp/*
+/public/uploads/*
+/public/hosted_sites/*
+/storage/*.key
+/storage/tmp/*
+/storage/uploads/*
+/vendor/*
+/public/pages/*
+packages/*
 
-# Log files
-/access.log
-/error.log
-/storage/logs/*
-!storage/logs/.gitkeep
-npm-debug.log
-yarn-error.log
-
-# Laravel Homestead
-/.vagrant
+composer.lock
 Homestead.json
 Homestead.yaml
-
-# Misc
-composer.lock
+npm-debug.log
+yarn-error.log
 .php.orig
+.env.local.php
+.env*
+/public/.DS_Store
+/public/.htaccess
+./vendor
+./.vscode
+.vscode/*
 firestore-database-rules.txt
 .phpunit.result.cache
+faxt_api_backup.sql
+resources/views/vendor/l5-swagger/.gitkeep
 .phpunit.cache/test-results
 phpunit.xml.bak
-faxt_api_backup.sql
-app/google-calendar
-
-# Keep .gitkeep files
-!resources/views/vendor/l5-swagger/.gitkeep
-!public/temp/.gitkeep
-!public/uploads/.gitkeep
-!storage/tmp/.gitkeep
-!storage/uploads/.gitkeep
+public/css/filament/*
+public/js/filament/*
+public/js/timeTracker.js
+app/google-calendar/*

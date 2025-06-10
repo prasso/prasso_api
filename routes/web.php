@@ -41,6 +41,8 @@ Route::post('/send-email/{site}', [EmailController::class, 'sendEmail'])->name('
 Route::get('/page/faqs', 'SiteController@seeFaqs')->name('see-faqs');
 Route::post('/question', 'SiteController@processQuestion')->name('send-question');
 Route::get('/confirm_newsletter_subscription', 'EmailController@confirm_newsletter_subscription')->name('confirm-newsletter-subscription');
+Route::get('/sites/{id}/deploy-github', [SiteController::class, 'deployGithubRepository'])->name('sites.deploy-github');
+Route::post('/sites/create-github-repository', [SiteController::class, 'createGithubRepository'])->name('sites.create-github-repository');
 
 Route::get('/page/component/{component}/{pageid}','SitePageController@loadLiveWireComponent');
 Route::get('/page/{section}','SitePageController@viewSitePage');

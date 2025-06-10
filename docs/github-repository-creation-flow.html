@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Repository Creation Flow</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #0366d6;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            margin: 30px auto;
+        }
+        .description {
+            background-color: #f6f8fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 30px;
+        }
+        .description h2 {
+            color: #0366d6;
+            margin-top: 0;
+        }
+        .description ul {
+            padding-left: 20px;
+        }
+        .description li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>GitHub Repository Creation Flow</h1>
+    
+    <div class="mermaid">
+        %%{init: {'theme': 'neutral', 'flowchart': { 'curve': 'basis' } } }%%
+        flowchart TD
+            A[User selects folder] -->|Click Browse button| B[Browser shows folder picker]
+            B --> C[User selects local folder]
+            C --> D[JavaScript reads folder contents]
+            D --> E[Extract folder name for repository name]
+            E --> F[User confirms repository creation]
+            
+            F --> G[Create FormData with files]
+            G --> H[Upload files to server]
+            
+            H --> I[Server creates temp directory]
+            I --> J[Server preserves folder structure]
+            J --> K[Server creates GitHub repository]
+            
+            K --> L[Initialize Git repository]
+            L --> M[Add remote origin]
+            M --> N[Add all files]
+            N --> O[Commit files]
+            O --> P[Push to GitHub]
+            
+            P --> Q[Update site with repository path]
+            Q --> R[Return success response]
+            R --> S[Show success message to user]
+            
+            style A fill:#d1f0ff,stroke:#0366d6
+            style F fill:#d1f0ff,stroke:#0366d6
+            style H fill:#d1f0ff,stroke:#0366d6
+            style K fill:#ffe6cc,stroke:#d63c00
+            style P fill:#ffe6cc,stroke:#d63c00
+            style S fill:#d1ffcc,stroke:#2da44e
+    </div>
+    
+    <div class="description">
+        <h2>Process Description</h2>
+        <p>The diagram above illustrates the process of creating a GitHub repository from a local folder in the Prasso application:</p>
+        
+        <h3>Client-Side (Browser)</h3>
+        <ul>
+            <li><strong>Folder Selection:</strong> User clicks the "Browse for Folder" button and selects a folder from their local file system.</li>
+            <li><strong>File Processing:</strong> JavaScript reads the folder contents and extracts the folder name to suggest as the repository name.</li>
+            <li><strong>Upload Preparation:</strong> When the user confirms, the application creates a FormData object containing all the files with their relative paths preserved.</li>
+            <li><strong>File Upload:</strong> Files are uploaded to the server with progress indicators.</li>
+        </ul>
+        
+        <h3>Server-Side</h3>
+        <ul>
+            <li><strong>File Reception:</strong> The server receives the uploaded files and validates the request.</li>
+            <li><strong>Temporary Storage:</strong> A unique temporary directory is created to store the uploaded files.</li>
+            <li><strong>Structure Preservation:</strong> The folder structure from the client is preserved in the temporary directory.</li>
+            <li><strong>GitHub API Interaction:</strong> The server creates a new GitHub repository using the GitHub API.</li>
+            <li><strong>Git Operations:</strong> The server initializes a Git repository in the temporary directory, adds the remote origin, commits all files, and pushes to GitHub.</li>
+            <li><strong>Database Update:</strong> The site record is updated with the new GitHub repository path.</li>
+        </ul>
+        
+        <h3>Response Handling</h3>
+        <ul>
+            <li><strong>Success Response:</strong> The server returns a success response with details about the created repository.</li>
+            <li><strong>User Notification:</strong> The user is shown a success message with repository details.</li>
+            <li><strong>Page Refresh:</strong> The page is refreshed to show the updated site information.</li>
+        </ul>
+    </div>
+    
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>

@@ -3,6 +3,8 @@
 ## Overview
 The `site_pages` table manages different types of pages that can be displayed on the site. Each page can be one of three types, allowing for flexible content management and integration with external resources.
 
+> **Important Note**: If a site is configured to use a GitHub repository (via the `github_repository` field in the site settings), the site pages functionality described in this document will be disabled. In that case, all site content will be sourced directly from the GitHub repository. For details on GitHub repository integration, see [GitHub Repository Sites](github-repository-sites.md).
+
 ## Page Types
 
 ### 1. HTML Content (Type 1 - Default)

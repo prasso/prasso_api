@@ -44,6 +44,8 @@ class Site extends Model
         'does_livestreaming',
         'invitation_only',
         'image_folder',
+        'github_repository',
+        'deployment_path',
     ];
 
     public function livestream_settings()
