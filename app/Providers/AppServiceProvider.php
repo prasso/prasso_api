@@ -67,9 +67,12 @@ class AppServiceProvider extends ServiceProvider
         $site = Controller::getClientFromHost();        
       }
 
-      $masterpage = Controller::getMasterForSite($site);
+      // Skip setting masterpage for hosted sites
+      if (!($site != null && !empty($site->deployment_path) && !empty($site->github_repository))) {
+          $masterpage = Controller::getMasterForSite($site);
+          View::share('masterPage', $masterpage);
+      }
 
       View::share('site', $site);
-      View::share('masterPage', $masterpage);
   }
 }

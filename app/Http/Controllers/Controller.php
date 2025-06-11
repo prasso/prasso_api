@@ -34,9 +34,13 @@ class Controller extends FrameworkController
             return;
         }
 
-        $this->masterpage = $this->getMasterForSite($site);
+        // Skip setting masterpage for hosted sites
+        if (!($site != null && !empty($site->deployment_path) && !empty($site->github_repository))) {
+            $this->masterpage = $this->getMasterForSite($site);
+            View::share('masterPage', $this->masterpage);
+        }
+        
         View::share('site', $site);
-        View::share('masterPage', $this->masterpage);
     }
 
     /**
@@ -105,6 +109,15 @@ class Controller extends FrameworkController
     public static function getMasterForSite($site){
 
       $masterpage = null;
+      
+      // Check if this is a GitHub hosted site
+      if ($site != null && !empty($site->deployment_path) && !empty($site->github_repository)) {
+          // For GitHub hosted sites, we don't need a masterpage as the site has its own layout
+          // Return null to indicate no masterpage is needed
+          return $masterpage;
+      }
+      
+      // For regular sites, continue with the existing logic
       $dashboardpage = SitePages::where('fk_site_id',$site->id)->first();
       if ($dashboardpage != null)
       {    
