@@ -39,4 +39,23 @@ return [
         'username' => env('GITHUB_USERNAME'),
     ],
 
+    'aws' => [
+        'key' => env('AWS_ACCESS_KEY_ID'),
+        'secret' => env('AWS_SECRET_ACCESS_KEY'),
+        'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+        'bedrock' => [
+            // Available text models (make sure you've enabled access in AWS Bedrock console):
+            // - anthropic.claude-v2 (older but widely available)
+            // - anthropic.claude-instant-v1 (faster responses)
+            // - anthropic.claude-3-haiku-20240307-v1:0 (smaller Claude 3 model)
+            // - anthropic.claude-3-sonnet-20240229-v1:0 (larger Claude 3 model)
+            'text_model_id' => env('AWS_BEDROCK_TEXT_MODEL_ID', 'anthropic.claude-3-sonnet-20240229-v1:0'),
+            
+            // Available image models:
+            // - stability.stable-diffusion-xl-v1
+            // - stability.stable-diffusion-xl-v0
+            'image_model_id' => env('AWS_BEDROCK_IMAGE_MODEL_ID', 'stability.stable-diffusion-xl-v1'),
+        ],
+    ],
+
 ];

@@ -1,8 +1,20 @@
-@if( !isset($show_modal) || $show_modal)
-    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-@else
-    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-@endif
+<div x-data="{ isOpen: true }">
+    <button @click="isOpen = !isOpen" type="button" class="flex justify-between items-center w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md mb-2 transition-all duration-200">
+        <span class="font-medium text-gray-700">Site Configuration</span>
+        <svg x-show="!isOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+        <svg x-show="isOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+        </svg>
+    </button>
+    
+    <div x-show="isOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95">
+        @if( !isset($show_modal) || $show_modal)
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        @else
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        @endif
                     <div class="">
                     @if($errors->any())
                     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
@@ -19,21 +31,35 @@
                             <textarea rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="descriptionInput" wire:model.defer="description" placeholder="Enter Description"></textarea>
                             @error('description') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
+                        @if(isset($site_id) && $site_id)
                         <div class="mb-4">
                             <label for="hostInput" class="block text-gray-700 text-sm font-bold mb-2">Host:</label>
                             <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="hostInput" placeholder="Enter Host" wire:model="host">
                             @error('host') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
-                            <label for="main_colorInput" class="block text-gray-700 text-sm font-bold mb-2">Main Color:</label>
-                            <input type="color"  id="main_colorInput" placeholder="Enter Main Color"  wire:model="main_color" >
-                            @error('main_color') <span class="text-red-500">{{ $message }}</span>@enderror
-                        </div>
-                        <div class="mb-4">
                             <label for="image_folderInput" class="block text-gray-700 text-sm font-bold mb-2">Image Foldername:</label>
                             <input type="text" id="image_folderInput" placeholder="Enter Image Folder Name"  wire:model="image_folder" >
                             @error('image_folder') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
+                        @endif
+                        <div class="mb-4 flex justify-between items-center">
+                            <button type="button" wire:click="generateAIAssets" class="inline-flex items-center px-4 py-2 bg-purple-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-purple-700 active:bg-purple-900 focus:outline-none focus:border-purple-900 focus:ring focus:ring-purple-300 disabled:opacity-25 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                                </svg>
+                                AI Generate
+                            </button>
+                            <div wire:loading wire:target="generateAIAssets" class="text-sm text-gray-500">
+                                Generating assets...
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="main_colorInput" class="block text-gray-700 text-sm font-bold mb-2">Main Color:</label>
+                            <input type="color"  id="main_colorInput" placeholder="Enter Main Color"  wire:model="main_color" >
+                            @error('main_color') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
+                        
                         <div class="mb-4">
                             <x-label value="{{ __('Logo Image') }}" />
                             <div class=" items-center mt-2"   style="max-width:400px;">
@@ -46,7 +72,7 @@
                                         No logo supplied                    
                                     @endif
                                 @endif
-                                <div class="text-xs">{{ $logo_image ?? '' }}</div>
+                                <div class="text-xs">@if(!empty($logo_image))<a href="{{ $logo_image }}" target="_blank" class="text-blue-500 hover:underline">{{ $logo_image }}</a>@else{{ $logo_image ?? '' }}@endif</div>
                                 <div>
                                     <input type="file" wire:model="photo"  class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
                 
@@ -140,3 +166,6 @@
                         <input type="password" id="stripe_secret" wire:model="stripe_secret" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="Enter Stripe Secret">
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>

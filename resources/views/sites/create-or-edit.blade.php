@@ -19,19 +19,37 @@
 @endif
             <div class="border-t border-gray-200"></div>
             <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
-                {{ __('Add to Image Library') }}
-                @include('partials._image-upload-styles')
-                <div class="py-12">
-                    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                        @include('partials._image-upload', ['site_id' => $site_id])
-                    </div>
-                </div>
-
-                <div class="block px-4 py-2">
-                    <div class="grid grid-cols-3 gap-4">
+                @if(isset($site_id) && $site_id)
+                <!-- Collapsible section for image library and site actions -->
+                <div x-data="{ isToolsOpen: false }">
+                    <button @click="isToolsOpen = !isToolsOpen" type="button" class="flex justify-between items-center w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md mb-2 transition-all duration-200">
+                        <span class="font-medium text-gray-700">Site Tools & Resources</span>
+                        <svg x-show="!isToolsOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                        <svg x-show="isToolsOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    
+                    <div x-show="isToolsOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95">
+                        <!-- Image Library Section -->
+                        <div class="mb-6">
+                            <h3 class="text-lg font-medium text-gray-700 mb-2">{{ __('Add to Image Library') }}</h3>
+                            @include('partials._image-upload-styles')
+                            <div class="py-4">
+                                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                                    @include('partials._image-upload', ['site_id' => $site_id])
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Site Action Buttons -->
+                        <div class="block px-4 py-2">
+                            <h3 class="text-lg font-medium text-gray-700 mb-2">{{ __('Site Management Tools') }}</h3>
+                            <div class="grid grid-cols-3 gap-4">
                         <!-- Site Map -->
                         <div class="text-center">
-                            @if($site)
                             <a href="{{ route('sites.site-map.edit', ['site' => $site]) }}" 
                                class="flex flex-col items-center text-gray-600 hover:text-gray-900 p-4 rounded-lg hover:bg-gray-50"
                                title="Edit Site Map">
@@ -40,7 +58,6 @@
                                 </svg>
                                 <span class="text-sm font-semibold">{{ __('Edit Site Map') }}</span>
                             </a>
-                            @endif
                         </div>
 
                         <!-- Mobile App -->
@@ -66,6 +83,9 @@
                         </div>
                     </div>
                 </div>
+                    </div>
+                </div>
+                @endif
 
                 <form>
                     <input type="hidden" wire:model="site_id" />

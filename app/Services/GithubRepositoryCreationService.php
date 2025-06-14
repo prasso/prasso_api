@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use GuzzleHttp\Promise;
 
 class GithubRepositoryCreationService
 {
@@ -21,45 +22,75 @@ class GithubRepositoryCreationService
      */
     public function createFromFolder($folderPath, $repositoryName, $githubToken = null, $githubUsername = null)
     {
-            // Use environment variables if parameters are not provided
-            $githubToken = $githubToken ?? env('GITHUB_TOKEN');
-            $githubUsername = $githubUsername ?? env('GITHUB_USERNAME');
-            
-            // Validate inputs
-            if (empty($folderPath) || !File::exists($folderPath)) {
-                throw new \Exception("Source folder does not exist: {$folderPath}");
-            }
-            
-            if (empty($repositoryName)) {
-                throw new \Exception("Repository name is required");
-            }
-            
-            if (empty($githubToken) || empty($githubUsername)) {
-                throw new \Exception("GitHub credentials are required. Please set GITHUB_TOKEN and GITHUB_USERNAME in your .env file.");
-            }
-            
-         
+        // Use environment variables if parameters are not provided
+        $githubToken = $githubToken ?? env('GITHUB_TOKEN');
+        $githubUsername = $githubUsername ?? env('GITHUB_USERNAME');
+        $githubOrg = env('GITHUB_ORGANIZATION', $githubUsername);
+        
+        // Validate inputs
+        if (empty($folderPath) || !File::exists($folderPath)) {
+            throw new \Exception("Source folder does not exist: {$folderPath}");
+        }
+        
+        if (empty($repositoryName)) {
+            throw new \Exception("Repository name is required");
+        }
+        
+        if (empty($githubToken) || empty($githubUsername)) {
+            throw new \Exception("GitHub credentials are required. Please set GITHUB_TOKEN and GITHUB_USERNAME in your .env file.");
+        }
+        
         $result = [
             'repository_name' => $repositoryName,
-            'repository_path' => "{$githubUsername}/{$repositoryName}",
+            'repository_path' => "{$githubOrg}/{$repositoryName}",
             'folder_path' => $folderPath,
             'steps' => [],
             'output' => []
         ];
         
         try {
-            // Step 1: Create repository on GitHub
-            $result['steps'][] = "Creating repository on GitHub: {$repositoryName}";
-            $repoCreated = $this->createGithubRepository($repositoryName, $githubToken);
-            $result['output'][] = "Repository created: {$repoCreated['html_url']}";
+            // Check if the folder is already a git repository
+            $isGitRepo = $this->isGitRepository($folderPath);
             
-            // Step 2: Initialize git repository in the local folder
-            $result['steps'][] = "Initializing git repository in local folder";
-            $this->initializeLocalRepository($folderPath, $result);
+            if ($isGitRepo) {
+                $result['steps'][] = "Folder is already a git repository";
+                $result['output'][] = "Found existing git repository";
+                
+                // Check if it has a remote origin
+                $remoteOrigin = $this->getRemoteOrigin($folderPath);
+                
+                if (!empty($remoteOrigin)) {
+                    $result['steps'][] = "Repository already has a remote origin";
+                    $result['output'][] = "Remote origin: {$remoteOrigin}";
+                    
+                    // Extract repository details from remote origin
+                    $repoDetails = $this->extractRepositoryDetailsFromRemote($remoteOrigin);
+                    if ($repoDetails) {
+                        $result['repository_path'] = $repoDetails['full_name'];
+                        $result['repository_name'] = $repoDetails['name'];
+                        $result['success'] = true;
+                        $result['message'] = "Found existing GitHub repository";
+                        $result['html_url'] = $repoDetails['html_url'];
+                        return $result;
+                    }
+                }
+            }
+            
+            // If not a git repo or doesn't have a remote origin, create a new repository
+            $result['steps'][] = "Creating repository on GitHub: {$repositoryName}";
+            $repoCreated = $this->createGithubRepository($repositoryName, $githubToken, $githubOrg);
+            $result['output'][] = "Repository created: {$repoCreated['html_url']}";
+            $result['html_url'] = $repoCreated['html_url'];
+            
+            // Initialize git repository if needed
+            if (!$isGitRepo) {
+                $result['steps'][] = "Initializing git repository in local folder";
+                $this->initializeLocalRepository($folderPath, $result);
+            }
             
             // Step 3: Add remote origin
             $result['steps'][] = "Adding remote origin";
-            $remoteUrl = "https://{$githubUsername}:{$githubToken}@github.com/{$githubUsername}/{$repositoryName}.git";
+            $remoteUrl = "https://{$githubUsername}:{$githubToken}@github.com/{$githubOrg}/{$repositoryName}.git";
             $this->addRemoteOrigin($folderPath, $remoteUrl, $result);
             
             // Step 4: Add all files
@@ -91,14 +122,22 @@ class GithubRepositoryCreationService
      *
      * @param string $name Repository name
      * @param string $token GitHub personal access token
+     * @param string $org GitHub organization name (optional)
      * @return array Repository data
      */
-    private function createGithubRepository($name, $token)
+    private function createGithubRepository($name, $token, $org = null)
     {
-        $response = Http::withHeaders([
+        $headers = [
             'Authorization' => "token {$token}",
             'Accept' => 'application/vnd.github.v3+json',
-        ])->post('https://api.github.com/user/repos', [
+        ];
+        
+        // Determine if we're creating in an organization or user account
+        $endpoint = !empty($org) && $org !== env('GITHUB_USERNAME') 
+            ? "https://api.github.com/orgs/{$org}/repos" 
+            : 'https://api.github.com/user/repos';
+        
+        $response = Http::withHeaders($headers)->post($endpoint, [
             'name' => $name,
             'private' => false,
             'auto_init' => false,
@@ -294,6 +333,86 @@ class GithubRepositoryCreationService
     {
         $outputStr = implode(' ', $output);
         return (strpos($outputStr, 'nothing to commit') !== false);
+    }
+    
+    /**
+     * Check if a folder is a git repository
+     *
+     * @param string $folderPath Path to the folder
+     * @return bool True if the folder is a git repository
+     */
+    private function isGitRepository($folderPath)
+    {
+        return File::exists("{$folderPath}/.git") && File::isDirectory("{$folderPath}/.git");
+    }
+    
+    /**
+     * Get the remote origin URL of a git repository
+     *
+     * @param string $folderPath Path to the git repository
+     * @return string|null Remote origin URL or null if not found
+     */
+    private function getRemoteOrigin($folderPath)
+    {
+        $currentDir = getcwd();
+        chdir($folderPath);
+        
+        $output = [];
+        $returnCode = 0;
+        exec('git remote get-url origin 2>&1', $output, $returnCode);
+        
+        chdir($currentDir);
+        
+        if ($returnCode !== 0 || empty($output)) {
+            return null;
+        }
+        
+        return trim($output[0]);
+    }
+    
+    /**
+     * Extract repository details from a remote URL
+     *
+     * @param string $remoteUrl Remote URL
+     * @return array|null Repository details or null if extraction failed
+     */
+    private function extractRepositoryDetailsFromRemote($remoteUrl)
+    {
+        // Extract owner and repo name from URL
+        // Handles formats like:
+        // https://github.com/owner/repo.git
+        // git@github.com:owner/repo.git
+        // https://username:token@github.com/owner/repo.git
+        
+        $pattern = '/(?:github\.com[\/|:])([^\/]+)\/([^\/\.]+)(?:\.git)?$/i';
+        if (preg_match($pattern, $remoteUrl, $matches)) {
+            $owner = $matches[1];
+            $repo = $matches[2];
+            
+            try {
+                // Get repository details from GitHub API
+                $token = env('GITHUB_TOKEN');
+                $response = Http::withHeaders([
+                    'Authorization' => "token {$token}",
+                    'Accept' => 'application/vnd.github.v3+json',
+                ])->get("https://api.github.com/repos/{$owner}/{$repo}");
+                
+                if ($response->successful()) {
+                    return $response->json();
+                }
+                
+                return [
+                    'full_name' => "{$owner}/{$repo}",
+                    'name' => $repo,
+                    'html_url' => "https://github.com/{$owner}/{$repo}"
+                ];
+            } catch (\Exception $e) {
+                Log::error("Error fetching repository details: " . $e->getMessage());
+                return Promise::reject($e->getMessage());
+            }
+        }
+        
+        return null;
     }
     
     /**
