@@ -38,6 +38,13 @@ Customize your site's appearance:
 - Image Folder: Specify a folder for your site's images (automatically generated based on site name)
 - GitHub Repository: Optionally specify a GitHub repository in the format `username/repository` (e.g., `prasso/website-template`)
   - When specified, site pages will be sourced from this repository instead of being configured manually
+  - The repository must follow specific structure requirements:
+    - Create a `pages` directory at the root level of your repository
+    - Name files according to the URL path they should serve (e.g., `pages/about.html` will be served at `/about`)
+    - Create `pages/index.html` for the site's homepage
+    - Store assets in an `assets` directory
+    - Optional templates can be stored in a `templates` directory
+  - Supported file types include HTML, Markdown, text, CSS, JavaScript, and common image formats
   - See [GitHub Repository Sites](github-repository-sites.md) for detailed information
 - Custom CSS: Add any custom CSS styling (optional)
 - Custom JavaScript: Add any custom JavaScript functionality (optional)
@@ -61,11 +68,37 @@ Once your site is created:
 - You'll be set as the site administrator
 - Your site will be immediately accessible at your chosen domain (yoursite.prasso.io)
 
+### GitHub Repository Integration
+
+If you specified a GitHub repository:
+- The manual site pages editor will be automatically disabled
+- Content updates will be managed through GitHub's version control system
+- Changes to the repository will be automatically reflected on the site
+- You can leverage Git's version control for content management
+- Multiple contributors can work on the site content through GitHub
+- You can use pull requests to review content changes before they go live
+
 ## Important Notes
 
 - All site names will automatically be converted to lowercase and spaces will be removed for the host name
 - The host name will automatically append '.prasso.io' if not included
 - Logo images should be in a web-compatible format (PNG, JPG, etc.)
 - The system automatically creates necessary team and user permissions
+
+### GitHub Repository Limitations
+
+When using a GitHub repository for site content:
+- The manual site pages editor is disabled
+- Site page data templates cannot be used
+- Custom site page types (S3, URL) are not supported
+- Dynamic content processing is limited to standard site tags
+
+### GitHub Repository Best Practices
+
+1. Use a `main` or `production` branch for live content
+2. Make changes in a development branch before merging to production
+3. Include a README.md file with instructions for contributors
+4. Create reusable templates for consistent page structure
+5. Organize assets in subdirectories by type (images, css, js)
 
 For additional support or questions, please contact the system administrator.

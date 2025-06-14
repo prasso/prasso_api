@@ -23,7 +23,7 @@
             </script>
 
             @if (session()->has('error'))
-                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 relative z-[100]" role="alert" style="position: relative; z-index: 100;">
                     <p>{{ session('error') }}</p>
                 </div>
             @endif

@@ -15,12 +15,14 @@ use App\Models\Stripe;
 use Auth;
 use Livewire\WithFileUploads;
 use App\Services\AppSyncService;
+use App\Services\BedrockAIService;
+use Illuminate\Support\Facades\Storage;
 
 class SiteEditor extends Component
 {
     use WithFileUploads;
 
-    protected $listeners = ['deleteSite'];
+    protected $listeners = ['deleteSite', 'aiAssetsGenerated'];
 
 
     public $sites, $site_id,$site_name,$description, $host,$main_color,$logo_image, 
@@ -177,6 +179,13 @@ class SiteEditor extends Component
             $this->database = 'prasso';
         }
         $siteRequest = new SiteRequest($this->site_id);
+        //make sure $siteRequest hostInput is not empty before validation
+        // fill it in if it is empty with the same logic it is defaulted with when the field is focused
+        if (empty($this->host))
+        {
+            //use the site name but keep it formatted as a url (remove spaces and special characters and make it lower case)
+            $this->host = strtolower(str_replace(" ", "", $this->site_name));
+        }
         $this->validate($siteRequest->rules());
 
         $newsite=false;
@@ -331,6 +340,50 @@ class SiteEditor extends Component
     {
         Site::find($id)->delete();
         session()->flash('message', 'Site  Deleted Successfully.');
+    }
+    
+    /**
+     * Generate site assets (color, logo, favicon) using AI
+     *
+     * @return void
+     */
+    public function generateAIAssets()
+    {
+        // Validate that we have at least a site name
+        if (empty($this->site_name)) {
+            session()->flash('error', 'Please enter a site name before generating AI assets.');
+            return;
+        }
+        
+        try {
+            $bedrockService = new BedrockAIService();
+            
+            // Generate assets based on site name and description
+            $result = $bedrockService->generateSiteAssets(
+                $this->site_name,
+                $this->description ?? 'A professional website'
+            );
+            
+            if ($result['success']) {
+                // Update the form fields with the generated values
+                $this->main_color = $result['color'];
+                
+                // For the logo, we need to handle the file upload
+                if (!empty($result['logo_url'])) {
+                    $this->logo_image = $result['logo_url'];
+                }
+                
+                // Update favicon
+                $this->favicon = $result['favicon'];
+                
+                session()->flash('message', 'AI assets generated successfully!');
+            } else {
+                session()->flash('error', $result['message']);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error generating AI assets: ' . $e->getMessage());
+            session()->flash('error', 'Failed to generate AI assets. Please try again later.');
+        }
     }
 
 }
