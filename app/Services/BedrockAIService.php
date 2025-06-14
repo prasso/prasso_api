@@ -387,7 +387,7 @@ class BedrockAIService
         }
     }
 
-    protected function invokeModelWithImageGeneration($prompt, $base64Image = null)
+    public function invokeModelWithImageGeneration($prompt, $base64Image = null)
     {
         try {
             // For development/testing without actual AWS credentials
@@ -441,8 +441,6 @@ class BedrockAIService
             // Convert to JSON
             $payload = json_encode($requestBody);
             
-            // Log the full request payload for debugging
-            Log::info('Stability AI request payload: ' . $payload);
             
             try {
                 // Log the full request details before making the call
@@ -462,11 +460,7 @@ class BedrockAIService
                     'body' => $payload
                 ]);
                 
-                // Log response headers for debugging
-                Log::info('Stability AI response received with status: ' . ($response['@metadata']['statusCode'] ?? 'unknown'));
-                
                 $responseBody = $response['body']->getContents();
-                Log::info('Response body length: ' . strlen($responseBody));
                 
                 $result = json_decode($responseBody, true);
                 
