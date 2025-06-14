@@ -41,6 +41,8 @@ Route::post('/send-email/{site}', [EmailController::class, 'sendEmail'])->name('
 Route::get('/page/faqs', 'SiteController@seeFaqs')->name('see-faqs');
 Route::post('/question', 'SiteController@processQuestion')->name('send-question');
 Route::get('/confirm_newsletter_subscription', 'EmailController@confirm_newsletter_subscription')->name('confirm-newsletter-subscription');
+Route::get('/sites/{id}/deploy-github', [SiteController::class, 'deployGithubRepository'])->name('sites.deploy-github');
+Route::post('/sites/create-github-repository', [SiteController::class, 'createGithubRepository'])->name('sites.create-github-repository');
 
 Route::get('/page/component/{component}/{pageid}','SitePageController@loadLiveWireComponent');
 Route::get('/page/{section}','SitePageController@viewSitePage');
@@ -113,6 +115,7 @@ Route::middleware([
     Route::post('/site/{siteid}/{pageid}/sitePageDataPost', 'SitePageController@sitePageDataPost');
     Route::post('/images/upload', 'ImageController@upload')->name('images.upload');
     Route::post('/images/confirm-resize', 'ImageController@confirmResize')->name('images.confirm-resize');
+    Route::post('/images/generate-ai', 'ImageController@generateImageWithAI')->name('images.generate-ai');
     Route::get('/image-library', 'ImageController@index')->name('image.library');
     Route::delete('/site-page-data/{pageid}/{id}', [SitePageDataController::class, 'destroy']);
 

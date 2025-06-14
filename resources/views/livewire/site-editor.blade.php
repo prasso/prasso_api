@@ -4,6 +4,29 @@
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg px-4 py-4">
+            @if (session()->has('message'))
+                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+                    <pre class="whitespace-pre-wrap font-sans text-sm">{{ session('message') }}</pre>
+                </div>
+            @endif
+            
+            <!-- GitHub Repository Modal Component -->
+            <x-github-repository-modal />
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    window.addEventListener('github-repo-created', function(event) {
+                        // Call the Livewire method to update the github_repository field
+                        @this.updateGithubRepository(event.detail.repositoryPath);
+                    });
+                });
+            </script>
+
+            @if (session()->has('error'))
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 relative z-[100]" role="alert" style="position: relative; z-index: 100;">
+                    <p>{{ session('error') }}</p>
+                </div>
+            @endif
 
             <button wire:click="create()" class="teambutton text-white font-bold py-2 px-4 rounded my-3">Create New Site</button>
             @if($isOpen)
@@ -31,7 +54,12 @@
                         <td class="border px-2 py-2"><img src="{{ $site->logo_image }}" class="block h-9 " /></td>
                         <td class="border px-2 py-2">
                         <button wire:click="edit({{ $site->id }})" class="py-2 px-3 rounded hover:bg-gray-100" title="Edit Site"> <i class="material-icons md-36">mode_edit</i></button>
-                        <a title="Edit Site Pages" href="/sitepages/{{ $site->id }}" class="py-2 px-3 rounded hover:bg-gray-100"><i class="material-icons md-36 text-black ">list</i></a>
+                        @if(empty($site->github_repository))
+                            <a title="Edit Site Pages" href="/sitepages/{{ $site->id }}" class="py-2 px-3 rounded hover:bg-gray-100"><i class="material-icons md-36 text-black">list</i></a>
+                        @else
+                            <span title="Site Pages are managed via GitHub Repository" class="py-2 px-3 rounded text-gray-400 cursor-not-allowed"><i class="material-icons md-36">list</i></span>
+                            <a title="Deploy GitHub Repository" href="{{ route('sites.deploy-github', ['id' => $site->id]) }}" class="py-2 px-3 rounded hover:bg-blue-100"><i class="material-icons md-36 text-blue-600">cloud_download</i></a>
+                        @endif
                         <button title="Delete Site" onclick="confirmDeletion({{ $site->id }})" class="ml-3 py-2 px-3 rounded hover:bg-gray-100">
                             <i class="material-icons md-36">delete_forever</i>
                         </button>

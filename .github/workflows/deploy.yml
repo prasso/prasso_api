@@ -7,26 +7,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: main
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'
-        extensions: mbstring, xml, ctype, json, tokenizer, pdo, pdo_mysql, fileinfo, dom, curl, gd, zip
-        coverage: none
-
-    - name: Install Dependencies
-      run: |
-        composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-        cp .env.example .env
-        php artisan key:generate
-
     - name: Set up SSH
       uses: webfactory/ssh-agent@v0.8.0
       with:
@@ -43,17 +26,31 @@ jobs:
         SERVER_USER: ${{ secrets.SERVER_USER }}
         DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
       run: |
+        # Export the environment variables so they're available in the script
+        export DEPLOY_PATH="${{ secrets.DEPLOY_PATH }}"
+        
         # Create deployment script
-        cat > deploy.sh << 'EOL'
+        cat > deploy.sh << EOL
         #!/bin/bash
         set -e
         
         echo "Changing to deploy directory..."
+        echo "DEPLOY_PATH value: $DEPLOY_PATH"
+        echo "Current directory before cd: $(pwd)"
         cd $DEPLOY_PATH
+        echo "Current directory after cd: $(pwd)"
+        
+        # Check if this is a git repository
+        if [ -d ".git" ]; then
+          echo "This is a git repository"
+        else
+          echo "ERROR: Not a git repository. Contents of directory:"
+          ls -la
+        fi
         
         echo "Pulling latest changes..."
         git fetch --all
-        git reset --hard origin/master
+        git reset --hard origin/develop
         
         echo "Installing dependencies..."
         composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
@@ -67,10 +64,6 @@ jobs:
         php artisan view:cache
         php artisan route:cache
         php artisan config:cache
-        
-        echo "Restarting services..."
-        sudo systemctl restart php8.2-fpm
-        sudo systemctl restart nginx
         
         echo "Deployment completed successfully!"
         EOL

@@ -13,6 +13,8 @@
 /public/storage
 /public/temp/*
 /public/uploads/*
+/public/hosted_sites/
+/public/hosted_sites/POTSSymptomsTrackerWeb/
 /storage/*.key
 /storage/tmp/*
 /storage/uploads/*

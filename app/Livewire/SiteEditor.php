@@ -15,17 +15,24 @@ use App\Models\Stripe;
 use Auth;
 use Livewire\WithFileUploads;
 use App\Services\AppSyncService;
+use App\Services\BedrockAIService;
+use Illuminate\Support\Facades\Storage;
 
 class SiteEditor extends Component
 {
     use WithFileUploads;
 
-    protected $listeners = ['deleteSite'];
+    protected $listeners = ['deleteSite', 'aiAssetsGenerated', 'closeLogoUpdateModal'];
 
 
-    public $sites, $site_id,$site_name,$description, $host,$main_color,$logo_image, 
+    public $sites, $site_id, $site_name, $description, $host, $main_color, $logo_image, 
             $database, $favicon, $supports_registration, $subteams_enabled, $app_specific_js, $app_specific_css,
-            $does_livestreaming,$https_host, $image_folder,$invitation_only;
+            $does_livestreaming, $https_host, $image_folder, $invitation_only, $github_repository;
+            
+    // Logo update properties
+    public $showLogoUpdateModal = false;
+    public $logoUpdateFile;
+    public $colorPrompt = '';
     public $stripe_key, $stripe_secret;
 
     public $sitePages;
@@ -53,6 +60,109 @@ class SiteEditor extends Component
         $this->sites = Site::all();
         return view('livewire.site-editor')
             ->with('team_selection', $this->team_selection);
+    }
+    
+    /**
+     * Open the logo update modal
+     */
+    public function openLogoUpdateModal()
+    {
+        $this->reset(['logoUpdateFile', 'colorPrompt']);
+        $this->showLogoUpdateModal = true;
+    }
+    
+    /**
+     * Close the logo update modal
+     */
+    public function closeLogoUpdateModal()
+    {
+        $this->showLogoUpdateModal = false;
+    }
+    
+    /**
+     * Update the logo with new colors
+     */
+    public function updateLogo()
+    {
+        $this->validate([
+            'logoUpdateFile' => 'nullable|image|max:2048', // 2MB max
+            'colorPrompt' => 'nullable|string|max:255',
+        ]);
+        
+        try {
+            $bedrockAIService = app(\App\Services\BedrockAIService::class);
+            $tempPath = null;
+            
+            $imageSource = null;
+            $isLocalFile = false;
+            
+            // If a new file is uploaded, store it temporarily
+            if ($this->logoUpdateFile) {
+                // Store the uploaded file in a temporary location
+                $tempPath = $this->logoUpdateFile->store('temp', 'public');
+                $imageSource = storage_path('app/public/' . $tempPath);
+                $isLocalFile = true;
+                
+                \Log::info('Using uploaded file for modification', [
+                    'original_path' => $this->logoUpdateFile->getRealPath(),
+                    'stored_path' => $imageSource,
+                    'is_local_file' => $isLocalFile
+                ]);
+            } 
+            // Otherwise, use the existing logo URL directly
+            else if ($this->logo_image) {
+                $imageSource = $this->logo_image;
+                $isLocalFile = false;
+                
+                \Log::info('Using existing logo URL directly', [
+                    'url' => $imageSource,
+                    'is_local_file' => $isLocalFile
+                ]);
+            } else {
+                session()->flash('error', 'No logo file provided');
+                return;
+            }
+            
+            // For local files, verify the file exists before proceeding
+            if ($isLocalFile && !file_exists($imageSource)) {
+                throw new \Exception("Temporary file not found at path: {$imageSource}");
+            }
+            
+            // Call the Bedrock AI service to modify the image
+            $modifiedLogoUrl = $bedrockAIService->modifyImageWithColors(
+                $imageSource,
+                $this->colorPrompt,
+                $isLocalFile
+            );
+            
+            // Update the logo image URL
+            $this->logo_image = $modifiedLogoUrl;
+            
+            // Save the site with the updated logo
+            $site = Site::find($this->site_id);
+            if ($site) {
+                $site->logo_image = $modifiedLogoUrl;
+                $site->save();
+            }
+            
+            $this->closeLogoUpdateModal();
+            session()->flash('message', 'Logo updated successfully!');
+            
+        } catch (\Exception $e) {
+            Log::error('Error updating logo: ' . $e->getMessage());
+            session()->flash('error', 'Failed to update logo: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Update the GitHub repository field when a new repository is created
+     *
+     * @param string $repositoryPath
+     * @return void
+     */
+    public function updateGithubRepository($repositoryPath)
+    {
+        $this->github_repository = $repositoryPath;
     }
 
     public function create()
@@ -104,6 +214,7 @@ class SiteEditor extends Component
         $this->app_specific_js = $site->app_specific_js;
         $this->app_specific_css = $site->app_specific_css;
         $this->image_folder = $site->image_folder;
+        $this->github_repository = $site->github_repository;
 
         // Initialize stripe_key and stripe_secret if the stripe relationship has data
         if ($site->stripe) {
@@ -146,6 +257,7 @@ class SiteEditor extends Component
         $this->does_livestreaming = '';
         $this->image_folder = '';
         $this->invitation_only = '';
+        $this->github_repository = '';
         $this->stripe_key = '';
         $this->stripe_secret = '';
         $this->photo = null;
@@ -164,6 +276,13 @@ class SiteEditor extends Component
             $this->database = 'prasso';
         }
         $siteRequest = new SiteRequest($this->site_id);
+        //make sure $siteRequest hostInput is not empty before validation
+        // fill it in if it is empty with the same logic it is defaulted with when the field is focused
+        if (empty($this->host))
+        {
+            //use the site name but keep it formatted as a url (remove spaces and special characters and make it lower case)
+            $this->host = strtolower(str_replace(" ", "", $this->site_name));
+        }
         $this->validate($siteRequest->rules());
 
         $newsite=false;
@@ -187,6 +306,7 @@ class SiteEditor extends Component
             'app_specific_js' => $this->app_specific_js,
             'app_specific_css' => $this->app_specific_css,
             'image_folder' => $this->image_folder,
+            'github_repository' => $this->github_repository,
         ]);
         
         $this->site_id = $site->id;
@@ -273,6 +393,7 @@ class SiteEditor extends Component
         $this->app_specific_js = $site->app_specific_js;
         $this->app_specific_css = $site->app_specific_css;
         $this->image_folder = $site->image_folder;
+        $this->github_repository = $site->github_repository;
 
         if ($site->stripe) {
             $this->stripe_key = $site->stripe->key;
@@ -316,6 +437,50 @@ class SiteEditor extends Component
     {
         Site::find($id)->delete();
         session()->flash('message', 'Site  Deleted Successfully.');
+    }
+    
+    /**
+     * Generate site assets (color, logo, favicon) using AI
+     *
+     * @return void
+     */
+    public function generateAIAssets()
+    {
+        // Validate that we have at least a site name
+        if (empty($this->site_name)) {
+            session()->flash('error', 'Please enter a site name before generating AI assets.');
+            return;
+        }
+        
+        try {
+            $bedrockService = new BedrockAIService();
+            
+            // Generate assets based on site name and description
+            $result = $bedrockService->generateSiteAssets(
+                $this->site_name,
+                $this->description ?? 'A professional website'
+            );
+            
+            if ($result['success']) {
+                // Update the form fields with the generated values
+                $this->main_color = $result['color'];
+                
+                // For the logo, we need to handle the file upload
+                if (!empty($result['logo_url'])) {
+                    $this->logo_image = $result['logo_url'];
+                }
+                
+                // Update favicon
+                $this->favicon = $result['favicon'];
+                
+                session()->flash('message', 'AI assets generated successfully!');
+            } else {
+                session()->flash('error', $result['message']);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error generating AI assets: ' . $e->getMessage());
+            session()->flash('error', 'Failed to generate AI assets. Please try again later.');
+        }
     }
 
 }

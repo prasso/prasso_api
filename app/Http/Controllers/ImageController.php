@@ -5,6 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TeamImage;
+use App\Models\Site;
+use App\Models\Team;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use App\Services\ImageResizeService;
 
 class ImageController extends Controller
@@ -395,6 +401,142 @@ class ImageController extends Controller
         }
         
         return round($size);
+    }
+    
+    /**
+     * Generate an image using Bedrock AI based on a text prompt
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function generateImageWithAI(Request $request)
+    {
+        try {
+            // Validate the request
+            $validator = \Validator::make($request->all(), [
+                'prompt' => 'required|string|min:5|max:1000',
+                'site_id' => 'required|integer|exists:sites,id'
+            ]);
+            
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Invalid request: ' . implode(', ', $validator->errors()->all())
+                ], 422);
+            }
+            
+            // Get the site
+            $site = \App\Models\Site::findOrFail($request->site_id);
+            
+            // Verify user has access to this site
+            $hasAccess = false;
+            foreach ($site->teams as $team) {
+                if (\Auth::user()->isTeamMemberOrOwner($team->id)) {
+                    $hasAccess = true;
+                    $teamId = $team->id; // Save the team ID for later use
+                    break;
+                }
+            }
+            
+            if (!$hasAccess) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Unauthorized access to this site.'
+                ], 403);
+            }
+            
+            // Get the prompt
+            $prompt = $request->prompt;
+            
+            // Log the request
+            \Log::info('AI Image Generation Request', [
+                'site_id' => $site->id,
+                'team_id' => $teamId,
+                'user_id' => \Auth::id(),
+                'prompt' => $prompt
+            ]);
+            
+            // Create an instance of BedrockAIService
+            $bedrockAIService = app(\App\Services\BedrockAIService::class);
+            
+            // Generate the image using BedrockAIService
+            $base64Image = $bedrockAIService->invokeModelWithImageGeneration($prompt);
+            
+            if (empty($base64Image)) {
+                throw new \Exception('Failed to generate image. The AI service returned an empty response.');
+            }
+            
+            // Decode the base64 image
+            $imageData = base64_decode($base64Image);
+            if ($imageData === false) {
+                throw new \Exception('Failed to decode the AI-generated image.');
+            }
+            
+            // Generate a unique filename
+            $filename = 'ai_generated_' . time() . '_' . \Illuminate\Support\Str::random(8) . '.png';
+            
+            // Determine the storage path
+            if (!empty($site->image_folder)) {
+                $filePath = $site->image_folder . $filename;
+            } else {
+                $filePath = config('constants.USER_IMAGE_FOLDER') . $teamId . '/' . $filename;
+            }
+            
+            // Log the file path
+            \Log::info('Saving AI-generated image', [
+                'file_path' => $filePath,
+                'image_size' => strlen($imageData),
+                'bucket' => config('filesystems.disks.s3.bucket'),
+                'region' => config('filesystems.disks.s3.region')
+            ]);
+            
+            try {
+                // Get the S3 client instance
+                $s3 = app('aws.s3');
+                
+                // Upload to S3 using the client directly
+                $result = $s3->putObject([
+                    'Bucket' => config('filesystems.disks.s3.bucket'),
+                    'Key'    => $filePath,
+                    'Body'   => $imageData,
+                    'ContentType' => 'image/png',
+                    'ACL'    => 'public-read'
+                ]);
+                
+                // Save the image path to the database
+                $image = new TeamImage;
+                $image->team_id = $teamId;
+                $image->path = $filePath;
+                $image->save();
+                
+                \Log::info('Successfully saved AI-generated image', [
+                    'image_id' => $image->id,
+                    'team_id' => $teamId,
+                    'path' => $filePath,
+                    'object_url' => $result['ObjectURL'] ?? null
+                ]);
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Image generated and saved successfully.',
+                    'imageUrl' => $result['ObjectURL'] ?? config('constants.CLOUDFRONT_ASSET_URL').$filePath
+                ], 200);
+                
+            } catch (\Exception $e) {
+                \Log::error('Error saving AI-generated image: ' . $e->getMessage());
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Error saving generated image: ' . $e->getMessage()
+                ], 500);
+            }
+            
+        } catch (\Exception $e) {
+            \Log::error('AI image generation error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'error' => 'Error generating image: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function confirmResize(Request $request)

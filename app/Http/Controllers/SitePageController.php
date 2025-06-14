@@ -51,7 +51,18 @@ class SitePageController extends BaseController
             return $this->getDashboardForCurrentSite($user);
         }
         
-        if ( $this->site != null && strcmp($this->site->site_name, config('app.name')) != 0)
+        // Check if this site has a GitHub repository deployment path
+        if ($this->site != null && !empty($this->site->deployment_path) && !empty($this->site->github_repository)) {
+            $repoName = explode('/', $this->site->github_repository)[1] ?? $this->site->github_repository;
+            $indexPath = public_path('hosted_sites/' . $repoName . '/index.html');
+            
+            if (file_exists($indexPath)) {
+                Log::info("Serving GitHub repository index page for site {$this->site->id}");
+                return response()->file($indexPath);
+            }
+        }
+        
+        if ($this->site != null && strcmp($this->site->site_name, config('app.name')) != 0)
         {
             $welcomepage = SitePages::where('fk_site_id',$this->site->id)->where('section','Welcome')->first();
         }
@@ -290,9 +301,27 @@ class SitePageController extends BaseController
     {
         if ($section == 'favicon.ico')
         {
-            abort(404);
             return null;
         }
+        
+        // Check if this site has a GitHub repository deployment path
+        if ($this->site != null && !empty($this->site->deployment_path) && !empty($this->site->github_repository)) {
+            $repoName = explode('/', $this->site->github_repository)[1] ?? $this->site->github_repository;
+            $pagePath = public_path('hosted_sites/' . $repoName . '/' . $section);
+            
+            // Check if the requested page exists in the repository
+            if (file_exists($pagePath)) {
+                Log::info("Serving GitHub repository page {$section} for site {$this->site->id}");
+                return response()->file($pagePath);
+            } else if (file_exists($pagePath . '.html')) {
+                Log::info("Serving GitHub repository page {$section}.html for site {$this->site->id}");
+                return response()->file($pagePath . '.html');
+            } else if (is_dir($pagePath) && file_exists($pagePath . '/index.html')) {
+                Log::info("Serving GitHub repository directory index for {$section} for site {$this->site->id}");
+                return response()->file($pagePath . '/index.html');
+            }
+        }
+        
         $user = Auth::user() ?? null;
         if ($user == null)
         {
@@ -310,6 +339,19 @@ class SitePageController extends BaseController
                 AppServiceProvider::loadDefaultsForPagesNotUsingControllerClass($this->site);
                 return view($section);
             }
+            
+            // If we have a GitHub repository but the specific page wasn't found,
+            // try to serve the repository's index page as a fallback
+            if ($this->site != null && !empty($this->site->deployment_path) && !empty($this->site->github_repository)) {
+                $repoName = explode('/', $this->site->github_repository)[1] ?? $this->site->github_repository;
+                $indexPath = public_path('hosted_sites/' . $repoName . '/index.html');
+                
+                if (file_exists($indexPath)) {
+                    Log::info("Page {$section} not found, serving GitHub repository index page as fallback for site {$this->site->id}");
+                    return response()->file($indexPath);
+                }
+            }
+            
             info('viewSitePage page not found, using system welcome: '.$section.' site:'.$this->site->id); 
             return view('welcome');
         }
