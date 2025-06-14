@@ -22,12 +22,17 @@ class SiteEditor extends Component
 {
     use WithFileUploads;
 
-    protected $listeners = ['deleteSite', 'aiAssetsGenerated'];
+    protected $listeners = ['deleteSite', 'aiAssetsGenerated', 'closeLogoUpdateModal'];
 
 
-    public $sites, $site_id,$site_name,$description, $host,$main_color,$logo_image, 
+    public $sites, $site_id, $site_name, $description, $host, $main_color, $logo_image, 
             $database, $favicon, $supports_registration, $subteams_enabled, $app_specific_js, $app_specific_css,
-            $does_livestreaming,$https_host, $image_folder,$invitation_only, $github_repository;
+            $does_livestreaming, $https_host, $image_folder, $invitation_only, $github_repository;
+            
+    // Logo update properties
+    public $showLogoUpdateModal = false;
+    public $logoUpdateFile;
+    public $colorPrompt = '';
     public $stripe_key, $stripe_secret;
 
     public $sitePages;
@@ -55,6 +60,98 @@ class SiteEditor extends Component
         $this->sites = Site::all();
         return view('livewire.site-editor')
             ->with('team_selection', $this->team_selection);
+    }
+    
+    /**
+     * Open the logo update modal
+     */
+    public function openLogoUpdateModal()
+    {
+        $this->reset(['logoUpdateFile', 'colorPrompt']);
+        $this->showLogoUpdateModal = true;
+    }
+    
+    /**
+     * Close the logo update modal
+     */
+    public function closeLogoUpdateModal()
+    {
+        $this->showLogoUpdateModal = false;
+    }
+    
+    /**
+     * Update the logo with new colors
+     */
+    public function updateLogo()
+    {
+        $this->validate([
+            'logoUpdateFile' => 'nullable|image|max:2048', // 2MB max
+            'colorPrompt' => 'nullable|string|max:255',
+        ]);
+        
+        try {
+            $bedrockAIService = app(\App\Services\BedrockAIService::class);
+            $tempPath = null;
+            
+            $imageSource = null;
+            $isLocalFile = false;
+            
+            // If a new file is uploaded, store it temporarily
+            if ($this->logoUpdateFile) {
+                // Store the uploaded file in a temporary location
+                $tempPath = $this->logoUpdateFile->store('temp', 'public');
+                $imageSource = storage_path('app/public/' . $tempPath);
+                $isLocalFile = true;
+                
+                \Log::info('Using uploaded file for modification', [
+                    'original_path' => $this->logoUpdateFile->getRealPath(),
+                    'stored_path' => $imageSource,
+                    'is_local_file' => $isLocalFile
+                ]);
+            } 
+            // Otherwise, use the existing logo URL directly
+            else if ($this->logo_image) {
+                $imageSource = $this->logo_image;
+                $isLocalFile = false;
+                
+                \Log::info('Using existing logo URL directly', [
+                    'url' => $imageSource,
+                    'is_local_file' => $isLocalFile
+                ]);
+            } else {
+                session()->flash('error', 'No logo file provided');
+                return;
+            }
+            
+            // For local files, verify the file exists before proceeding
+            if ($isLocalFile && !file_exists($imageSource)) {
+                throw new \Exception("Temporary file not found at path: {$imageSource}");
+            }
+            
+            // Call the Bedrock AI service to modify the image
+            $modifiedLogoUrl = $bedrockAIService->modifyImageWithColors(
+                $imageSource,
+                $this->colorPrompt,
+                $isLocalFile
+            );
+            
+            // Update the logo image URL
+            $this->logo_image = $modifiedLogoUrl;
+            
+            // Save the site with the updated logo
+            $site = Site::find($this->site_id);
+            if ($site) {
+                $site->logo_image = $modifiedLogoUrl;
+                $site->save();
+            }
+            
+            $this->closeLogoUpdateModal();
+            session()->flash('message', 'Logo updated successfully!');
+            
+        } catch (\Exception $e) {
+            Log::error('Error updating logo: ' . $e->getMessage());
+            session()->flash('error', 'Failed to update logo: ' . $e->getMessage());
+        }
     }
     
     /**
