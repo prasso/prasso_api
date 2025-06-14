@@ -6,9 +6,14 @@
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ isset($site) ? $site->site_name . ' - ' : '' }}Image Library
             </h1>
-            <button onclick="window.history.back()" class="teambutton teambutton-hover rounded px-6 py-3 ml-4">
-                <i class="fas fa-arrow-left"></i> Return to previous page
-            </button>
+            <div class="flex items-center">
+                <button id="generateAiImageBtn" class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-full px-6 py-2.5 mr-4 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 flex items-center">
+                    <i class="fas fa-magic mr-2"></i> Generate Image with AI
+                </button>
+                <button onclick="window.history.back()" class="bg-gradient-to-r from-gray-500 to-gray-700 text-white font-medium rounded-full px-6 py-2.5 transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Return to previous page
+                </button>
+            </div>
         </div>
     </x-slot>
     @include('partials._image-upload-styles')
@@ -79,7 +84,61 @@
         </div>
     </div>
 
+    <!-- AI Image Generation Modal -->
+    <div id="aiImageModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 hidden flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="teambutton text-lg font-medium">Generate Image with AI</h3>
+                <button onclick="closeAiImageModal()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="aiImageForm">
+                @csrf
+                <input type="hidden" id="ai_site_id" name="site_id" value="{{ $site->id }}" />
+                
+                <div class="mb-4">
+                    <label for="imagePrompt" class="block text-sm font-medium text-gray-700 mb-2">
+                        Describe the image you want to generate
+                    </label>
+                    <textarea id="imagePrompt" name="prompt" rows="4" 
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        placeholder="Example: A professional logo with blue and green colors featuring a mountain and sun"></textarea>
+                </div>
+                
+                <div class="flex justify-end">
+                    <button type="button" onclick="closeAiImageModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 mr-3">
+                        Cancel
+                    </button>
+                    <button type="submit" id="generateImageBtn" class="teambutton text-white px-4 py-2 rounded hover:bg-indigo-700">
+                        Generate Image
+                    </button>
+                </div>
+            </form>
+            
+            <div id="aiGenerationStatus" class="mt-4 hidden">
+                <div class="flex items-center justify-center">
+                    <div class="spinner mr-3"></div>
+                    <p>Generating your image... This may take a moment.</p>
+                </div>
+            </div>
+            
+            <div id="aiGenerationResult" class="mt-4 hidden">
+                <div id="aiGenerationSuccess" class="hidden">
+                    <div class="text-green-600 mb-2">Image successfully generated!</div>
+                    <div class="flex justify-center">
+                        <img id="generatedImage" src="" alt="Generated image" class="max-h-64 max-w-full">
+                    </div>
+                </div>
+                <div id="aiGenerationError" class="hidden text-red-600">
+                </div>
+            </div>
+        </div>
+    </div>
+
     @push('scripts')
         <script src="{{ asset('js/image-upload.js') }}"></script>
+        <script src="{{ asset('js/ai-image-generation.js') }}"></script>
     @endpush
 </x-app-layout>
