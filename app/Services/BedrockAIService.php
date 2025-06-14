@@ -292,7 +292,102 @@ class BedrockAIService
      * @param string $prompt
      * @return string Base64 encoded image
      */
-    protected function invokeModelWithImageGeneration($prompt)
+    /**
+     * Modify an existing image with new colors using AI
+     *
+     * @param string $imagePath Path to the existing image
+     * @param string $colorPrompt Description of colors to apply
+     * @return string URL of the modified image
+     */
+    /**
+     * Modify an existing image with new colors using AI
+     *
+     * @param string $imageSource Path to local image or URL of remote image
+     * @param string|null $colorPrompt Color prompt to use for modification
+     * @param bool $isLocalFile Whether the imageSource is a local file path (true) or URL (false)
+     * @return string URL of the modified image
+     * @throws \Exception If image processing fails
+     */
+    public function modifyImageWithColors($imageSource, $colorPrompt = null, $isLocalFile = true)
+    {
+        try {
+            // Log the input parameters for debugging
+            Log::info('Starting image modification', [
+                'image_source' => $imageSource,
+                'color_prompt' => $colorPrompt,
+                'is_local_file' => $isLocalFile ? 'yes' : 'no'
+            ]);
+            
+            // Get image data either from local file or URL
+            if ($isLocalFile) {
+                Log::info('Reading image from local file');
+                if (!file_exists($imageSource)) {
+                    throw new \Exception("Image file does not exist: {$imageSource}");
+                }
+                $imageData = file_get_contents($imageSource);
+                if ($imageData === false) {
+                    throw new \Exception("Could not read local image file: {$imageSource}");
+                }
+            } else {
+                Log::info('Fetching image from URL');
+                $imageData = @file_get_contents($imageSource);
+                if ($imageData === false) {
+                    throw new \Exception("Could not fetch image from URL: {$imageSource}");
+                }
+            }
+            
+            // Encode the image as base64
+            $base64Image = base64_encode($imageData);
+            Log::info('Image encoded as base64', ['image_size' => strlen($base64Image)]);
+            
+            // Create a prompt for the AI to modify the image with the specified colors
+            $prompt = "Modify the provided logo";
+            if ($colorPrompt) {
+                $prompt .= " by updating its colors to: {$colorPrompt}";
+            }
+            $prompt .= ". Keep the same style and composition but update the color scheme as described. "
+                   . "The result should be a professional logo with the new colors applied.";
+            
+            Log::info('Image modification prompt: ' . $prompt);
+            
+            // Call the image generation model with the existing image and prompt
+            $response = $this->invokeModelWithImageGeneration($prompt, $base64Image);
+            
+            // Ensure the logos directory exists
+            $directory = 'logos';
+            if (!Storage::disk('public')->exists($directory)) {
+                Storage::disk('public')->makeDirectory($directory);
+            }
+            
+            // Generate a unique filename
+            $filename = $directory . '/updated_' . uniqid() . '.png';
+            
+            // Decode and save the image
+            $decodedImage = base64_decode($response, true);
+            if ($decodedImage === false) {
+                throw new \Exception('Failed to decode the AI-generated image');
+            }
+            
+            $saved = Storage::disk('public')->put($filename, $decodedImage);
+            if ($saved === false) {
+                throw new \Exception('Failed to save the modified image to storage');
+            }
+            
+            $url = Storage::disk('public')->url($filename);
+            Log::info('Successfully modified and saved image', ['url' => $url]);
+            
+            return $url;
+            
+        } catch (\Exception $e) {
+            Log::error('Error modifying image with new colors: ' . $e->getMessage(), [
+                'exception' => get_class($e),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
+    }
+
+    protected function invokeModelWithImageGeneration($prompt, $base64Image = null)
     {
         try {
             // For development/testing without actual AWS credentials
