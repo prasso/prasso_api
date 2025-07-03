@@ -49,21 +49,21 @@ jobs:
         fi
         
         echo "Pulling latest changes..."
-        git fetch --all
-        git reset --hard origin/develop
+        sudo -u prassoapp git fetch --all
+        sudo -u prassoapp git reset --hard origin/develop
         
         echo "Installing dependencies..."
-        composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+        sudo -u prassoapp composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
         
         echo "Running migrations..."
-        php artisan migrate --force
+        sudo -u prassoapp php artisan migrate --force
         
         echo "Optimizing..."
-        php artisan optimize:clear
-        php artisan optimize
-        php artisan view:cache
-        php artisan route:cache
-        php artisan config:cache
+        sudo -u prassoapp php artisan optimize:clear
+        sudo -u prassoapp php artisan optimize
+        sudo -u prassoapp php artisan view:cache
+        sudo -u prassoapp php artisan route:cache
+        sudo -u prassoapp php artisan config:cache
         
         echo "Deployment completed successfully!"
         EOL
