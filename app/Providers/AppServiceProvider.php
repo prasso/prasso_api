@@ -13,6 +13,9 @@ use App\Models\SitePages;
 use App\Models\MasterPage;
 use Faxt\Invenbin\Support\Facades\InvenbinPanel;
 use Prasso\Messaging\Support\Facades\MessagingPanel;
+use Illuminate\Support\Facades\URL;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+    
 
 
 class AppServiceProvider extends ServiceProvider
@@ -40,6 +43,23 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(Request $request, Site $site)
     {
+      
+        // Trust all proxies or specify your proxy IPs
+        Request::setTrustedProxies(
+          [request()->getClientIp()],
+          SymfonyRequest::HEADER_X_FORWARDED_FOR |
+          SymfonyRequest::HEADER_X_FORWARDED_HOST |
+          SymfonyRequest::HEADER_X_FORWARDED_PORT |
+          SymfonyRequest::HEADER_X_FORWARDED_PROTO |
+          SymfonyRequest::HEADER_X_FORWARDED_AWS_ELB
+      );
+
+      // Force HTTPS if your app should always use HTTPS
+      if ($this->app->environment('production') || $this->app->environment('staging')) {
+          URL::forceScheme('https');
+          $this->app['request']->server->set('HTTPS', 'on');
+      }
+
       Schema::defaultStringLength(191);
 
       // Get the current request's URI
