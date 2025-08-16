@@ -26,8 +26,8 @@ class BedrockAIService
         // Initialize text model (Claude Sonnet 3.7 for text generation)
         $this->textModelId = config('services.aws.bedrock.text_model_id', 'anthropic.claude-3-sonnet-20240229-v1:0');
         
-        // Initialize image model (Stability AI for image generation)
-        $this->imageModelId = config('services.aws.bedrock.image_model_id', 'stability.stable-diffusion-xl-v1');
+        // Initialize image model (Amazon Titan Image Generator G1 for image generation and recoloring)
+        $this->imageModelId = 'amazon.titan-image-generator-v1';//config('services.aws.bedrock.image_model_id', 'amazon.titan-image-generator-v1');
         
         $this->region = config('services.aws.region', 'us-east-1');
         $this->accessKey = config('services.aws.key');
@@ -341,12 +341,12 @@ class BedrockAIService
             Log::info('Image encoded as base64', ['image_size' => strlen($base64Image)]);
             
             // Create a prompt for the AI to modify the image with the specified colors
-            $prompt = "Modify the provided logo";
+            $prompt = "Modify the provided image";
             if ($colorPrompt) {
                 $prompt .= " by updating its colors to: {$colorPrompt}";
             }
             $prompt .= ". Keep the same style and composition but update the color scheme as described. "
-                   . "The result should be a professional logo with the new colors applied.";
+                   . "The result should be a professional image with the new colors applied.";
             
             Log::info('Image modification prompt: ' . $prompt);
             
@@ -444,7 +444,7 @@ class BedrockAIService
             
             try {
                 // Log the full request details before making the call
-                Log::info('Making Stability AI API call with the following parameters:');
+                Log::info('Making AI API call with the following parameters:');
                 Log::info('Model ID: ' . $this->imageModelId);
                 Log::info('Region: ' . $this->region);
                 Log::info('Endpoint: ' . 'https://bedrock-runtime.' . $this->region . '.amazonaws.com/model/' . $this->imageModelId . '/invoke');

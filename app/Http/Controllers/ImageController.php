@@ -274,11 +274,7 @@ class ImageController extends Controller
             \Log::error('S3 bucket check error: ' . $e->getMessage());
             return response()->json(['error' => 'Unable to verify S3 bucket. Please try again later.'], 500);
         }
-                    \Log::info('S3 Bucket check', [
-                        'bucket' => config('filesystems.disks.s3.bucket'),
-                        'exists' => $bucketExists,
-                        'region' => config('filesystems.disks.s3.region')
-                    ]);
+                    
 
                     if (!$bucketExists) {
                         throw new \Exception('S3 bucket does not exist or is not accessible');
@@ -568,5 +564,138 @@ class ImageController extends Controller
         $request->session()->forget('original_image');
 
         return $this->processImageUpload($resizedFile, $request->session()->get('team'));
+    }
+    
+    /**
+     * Recolor an image using Amazon Bedrock Titan G1 model
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function recolorImageWithAI(Request $request)
+    {
+        try {
+            // Validate the request
+            $validator = \Validator::make($request->all(), [
+                'image_id' => 'required|integer|exists:team_images,id',
+                'old_color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
+                'new_color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
+                'site_id' => 'required|integer|exists:sites,id'
+            ]);
+            
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Invalid request: ' . implode(', ', $validator->errors()->all())
+                ], 422);
+            }
+            
+            // Get the site
+            $site = \App\Models\Site::findOrFail($request->site_id);
+            
+            // Verify user has access to this site
+            $hasAccess = false;
+            foreach ($site->teams as $team) {
+                if (\Auth::user()->isTeamMemberOrOwner($team->id)) {
+                    $hasAccess = true;
+                    $teamId = $team->id; // Save the team ID for later use
+                    break;
+                }
+            }
+            
+            if (!$hasAccess) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Unauthorized access to this site.'
+                ], 403);
+            }
+            
+            // Get the image to recolor
+            $image = TeamImage::findOrFail($request->image_id);
+            
+            // Verify the image belongs to one of the user's teams
+            if ($image->team_id != $teamId) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Unauthorized access to this image.'
+                ], 403);
+            }
+            
+            // Get the colors
+            $oldColor = $request->old_color;
+            $newColor = $request->new_color;
+            
+            // Build the prompt for recoloring
+            $prompt = "Change all {$oldColor} colored areas to {$newColor} in this image. Keep all other colors and details exactly the same.";
+            
+            // Log the request
+            \Log::info('AI Image Recoloring Request', [
+                'site_id' => $site->id,
+                'team_id' => $teamId,
+                'user_id' => \Auth::id(),
+                'image_id' => $image->id,
+                'old_color' => $oldColor,
+                'new_color' => $newColor,
+                'prompt' => $prompt
+            ]);
+            
+            // Get the image URL
+            $imageUrl = config('constants.CLOUDFRONT_ASSET_URL').$image->path;
+            
+            // Create an instance of BedrockAIService
+            $bedrockAIService = app(\App\Services\BedrockAIService::class);
+            
+            // Modify the image using BedrockAIService
+            // The modifyImageWithColors method already handles fetching the image, sending to Bedrock, and returning base64
+            $modifiedImageUrl = $bedrockAIService->modifyImageWithColors($imageUrl, $prompt, false);
+            
+            if (empty($modifiedImageUrl)) {
+                throw new \Exception('Failed to recolor image. The AI service returned an empty response.');
+            }
+            
+            // Generate a unique filename for the recolored image
+            $originalFilename = basename($image->path);
+            $extension = pathinfo($originalFilename, PATHINFO_EXTENSION);
+            $filename = 'recolored_' . time() . '_' . \Illuminate\Support\Str::random(8) . '.' . ($extension ?: 'png');
+            
+            // Determine the storage path
+            if (!empty($site->image_folder)) {
+                $filePath = $site->image_folder . $filename;
+            } else {
+                $filePath = config('constants.USER_IMAGE_FOLDER') . $teamId . '/' . $filename;
+            }
+            
+            // The modifyImageWithColors method already saves the image to storage and returns the URL
+            // We just need to save the reference to the database
+            
+            // Extract the path from the URL
+            $storagePath = str_replace(Storage::disk('public')->url(''), '', $modifiedImageUrl);
+            
+            // Save the image path to the database
+            $newImage = new TeamImage;
+            $newImage->team_id = $teamId;
+            $newImage->path = $filePath;
+            $newImage->save();
+            
+            \Log::info('Successfully saved recolored image', [
+                'image_id' => $newImage->id,
+                'team_id' => $teamId,
+                'path' => $filePath,
+                'url' => $modifiedImageUrl
+            ]);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Image recolored and saved successfully.',
+                'imageUrl' => $modifiedImageUrl
+            ], 200);
+            
+        } catch (\Exception $e) {
+            \Log::error('AI image recoloring error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'error' => 'Error recoloring image: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }
