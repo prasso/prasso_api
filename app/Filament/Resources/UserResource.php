@@ -6,6 +6,8 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use App\Models\Team;
+use App\Models\TeamUser;
+use App\Models\Site;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -18,6 +20,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Facades\Filament;
 
 class UserResource extends Resource
 {
@@ -47,7 +50,12 @@ class UserResource extends Resource
                     ->required()
                     ->placeholder('Select a team')
                     ->options(function () {
-                        return Team::pluck('name', 'id');
+                        $user = auth()->user();
+                        $siteId = $user?->getUserOwnerSiteId();
+                        if (!$siteId) return [];
+                        $site = Site::find($siteId);
+                        $team = $site?->teams()->first();
+                        return $team ? Team::where('id', $team->id)->pluck('name', 'id') : [];
                     }),
 
                 Components\TextInput::make('profile_photo_path')
@@ -110,5 +118,45 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             //'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = auth()->user();
+        if (!$user) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        try {
+            $panel = Filament::getCurrentPanel();
+            if ($panel && $panel->getId() === 'admin' && method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
+                return $query; // full access in admin panel
+            }
+        } catch (\Throwable $e) {}
+
+        try {
+            $siteId = $user->getUserOwnerSiteId();
+            if ($siteId) {
+                $site = Site::find($siteId);
+                $team = $site?->teams()->first();
+                if ($team) {
+                    $userIds = TeamUser::where('team_id', $team->id)->pluck('user_id');
+                    return $query->whereIn('id', $userIds);
+                }
+            }
+        } catch (\Throwable $e) {}
+
+        return $query->whereRaw('1 = 0');
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        $panel = Filament::getCurrentPanel();
+        $user = auth()->user();
+        if (!$panel || !$user) return false;
+        if ($panel->getId() === 'site-admin') return true;
+        if ($panel->getId() === 'admin') return method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin();
+        return false;
     }
 }

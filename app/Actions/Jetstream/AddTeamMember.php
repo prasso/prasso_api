@@ -43,10 +43,19 @@ class AddTeamMember implements AddsTeamMembers
                 $newTeamMember = Jetstream::findUserByEmailOrFail($email),
                 ['role' => $role]
             );
-            UserRole::create([
-                'user_id' => $newTeamMember->id,
-                'role_id' => $role === 'user' ? 1 : 2,
-            ]);
+            // Only assign role if they don't already have it
+            $roleId = $role === 'user' ? 
+                config('constants.USER_ROLE', 1) : 
+                config('constants.INSTRUCTOR', 2);
+                
+            if (!UserRole::where('user_id', $newTeamMember->id)
+                        ->where('role_id', $roleId)
+                        ->exists()) {
+                UserRole::create([
+                    'user_id' => $newTeamMember->id,
+                    'role_id' => $roleId,
+                ]);
+            }
             
        
             $newTeamMember->current_team_id = $team->id;

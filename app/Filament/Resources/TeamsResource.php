@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TeamsResource\Pages;
 use App\Filament\Resources\TeamsResource\RelationManagers;
 use App\Models\Team;
+use App\Models\Site;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Components\Toggle;
@@ -18,6 +19,7 @@ use App\Models\TeamSite;
 use App\Models\TeamUser;
 use App\Models\User;
 use Filament\Forms\Components;
+use Filament\Facades\Filament;
 
 class TeamsResource extends Resource
 {
@@ -69,5 +71,44 @@ public static function table(Table $table): Table
             'create' => Pages\CreateTeams::route('/create'),
             'edit' => Pages\EditTeams::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = auth()->user();
+        if (!$user) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        try {
+            $panel = Filament::getCurrentPanel();
+            if ($panel && $panel->getId() === 'admin' && method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
+                return $query; // full access in admin panel
+            }
+        } catch (\Throwable $e) {}
+
+        try {
+            $siteId = $user->getUserOwnerSiteId();
+            if ($siteId) {
+                $site = Site::find($siteId);
+                $team = $site?->teams()->first();
+                if ($team) {
+                    return $query->where('id', $team->id);
+                }
+            }
+        } catch (\Throwable $e) {}
+
+        return $query->whereRaw('1 = 0');
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        $panel = Filament::getCurrentPanel();
+        $user = auth()->user();
+        if (!$panel || !$user) return false;
+        if ($panel->getId() === 'site-admin') return true;
+        if ($panel->getId() === 'admin') return method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin();
+        return false;
     }
 }

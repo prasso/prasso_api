@@ -306,7 +306,20 @@ class User extends Authenticatable implements FilamentUser {
     /**filament interface, can the user access filament admin */
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->isSuperAdmin();
+        $panelId = method_exists($panel, 'getId') ? $panel->getId() : null;
+
+        // Super Admin panel (global controls)
+        if ($panelId === 'admin') {
+            return $this->isSuperAdmin();
+        }
+
+        // Site Admin panel (site owners / instructors scoped to own site)
+        if ($panelId === 'site-admin') {
+            return $this->isInstructor() || $this->isSuperAdmin();
+        }
+
+        // Default deny for unknown panels
+        return false;
     }
 
     public function getUserAppInfo()

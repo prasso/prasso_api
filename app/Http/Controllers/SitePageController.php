@@ -88,11 +88,15 @@ class SitePageController extends BaseController
      * loads up the dashboard if the user is logged in and belongs to this site's team
      */
     private function getDashboardForCurrentSite($user){
-
-        $user_content = $this->getPage('Dashboard',$user);
+        // Redirect site-admin users to the Filament admin panel
+        if ($user->hasRole(config('constants.INSTRUCTOR'))) {
+            return redirect()->route('filament.site-admin.pages.dashboard');
+        }
+        
+        $user_content = $this->getPage('Dashboard', $user);
         // Render the dashboard view with either custom content or default content
         return view('dashboard')->with('user_content', $user_content)           
-        ->with('site',$this->site);
+            ->with('site', $this->site);
     }
     
     private function getPage($page, $user){
