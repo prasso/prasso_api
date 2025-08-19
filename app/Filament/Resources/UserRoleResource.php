@@ -7,6 +7,8 @@ use App\Filament\Resources\UserRoleResource\RelationManagers;
 use App\Models\UserRole;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Team;
+use App\Models\TeamSite;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Components;
@@ -33,8 +35,25 @@ class UserRoleResource extends Resource
                     ->required()
                     ->placeholder('Select a user')
                     ->options(function () {
-                        return User::pluck('name', 'id');
-                    }),
+                        // For superadmins, show all users with roles
+                        if (auth()->user()->isSuperAdmin()) {
+                            return User::whereHas('roles')
+                                ->pluck('name', 'id');
+                        }
+                        
+                        // For sub-admins, only show users from their site
+                        $siteId = auth()->user()->current_team_id;
+                        $teamIds = TeamSite::where('site_id', $siteId)
+                            ->pluck('team_id')
+                            ->toArray();
+                            
+                        return User::whereHas('teams', function($query) use ($teamIds) {
+                                $query->whereIn('teams.id', $teamIds);
+                            })
+                            ->whereHas('roles')
+                            ->pluck('name', 'id');
+                    })
+                    ->searchable(),
                 Components\Select::make('role_id')->label('Team')
                     ->required()
                     ->placeholder('Select a Role')
@@ -48,6 +67,22 @@ class UserRoleResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                // Skip filtering for superadmins
+                if (auth()->user()->isSuperAdmin()) {
+                    return;
+                }
+                
+                // For sub-admins, filter users by their current site
+                $siteId = auth()->user()->current_team_id;
+                $teamIds = TeamSite::where('site_id', $siteId)
+                    ->pluck('team_id')
+                    ->toArray();
+                
+                $query->whereHas('user.teams', function($q) use ($teamIds) {
+                    $q->whereIn('teams.id', $teamIds);
+                });
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('user.name'),
                 Tables\Columns\TextColumn::make('team_role.role_name')
