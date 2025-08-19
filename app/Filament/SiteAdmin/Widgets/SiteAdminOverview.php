@@ -163,9 +163,10 @@ class SiteAdminOverview extends BaseWidget
 
                             // Message Stats
                             Card::make('Messages (24h)', $deliveries24h)
-                                ->description("$deliverySuccessRate% success rate")
+                                ->description("$deliverySuccessRate% success rate • Compose")
                                 ->descriptionIcon('heroicon-o-chat-bubble-left-right')
-                                ->color('info'),
+                                ->color('info')
+                                ->url(route('filament.site-admin.pages.compose-and-send-message')),
 
                             // Site Health
                             Card::make('Site Health', $this->getSiteHealthStatus($site))
