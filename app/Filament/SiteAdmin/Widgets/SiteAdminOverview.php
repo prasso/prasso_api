@@ -152,7 +152,8 @@ class SiteAdminOverview extends BaseWidget
                             Card::make('Team Members', $teamMembers)
                                 ->description("$activeUsers active in last 30d")
                                 ->descriptionIcon('heroicon-o-users')
-                                ->color('success'),
+                                ->color('success')
+                                ->url(route('filament.site-admin.resources.team-users.index')),
 
                             // Package Status
                             Card::make('Active Packages', $activePackages)
