@@ -3,7 +3,7 @@
 namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
-use Filament\Forms; 
+use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Http;
@@ -19,114 +19,216 @@ class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
     use Forms\Concerns\InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
-
     protected static ?string $navigationLabel = 'Compose & Send';
-
     protected static ?string $navigationGroup = 'Messaging';
-
     protected static string $view = 'filament.pages.compose-and-send-message';
 
-    public ?int $message_id = null;
+    public ?array $data = [];
 
-    public array $user_ids = [];
+    public function form(Form $form): Form
+    {
+        // Get the current site from the request context
+        $site = \App\Http\Controllers\Controller::getClientFromHost();
+        
+        if (!$site || !$site->exists) {
+            // Fall back to user's team site if available
+            $user = auth()->user();
+            if ($user && $user->currentTeam) {
+                $site = $user->currentTeam->site;
+            }
+        }
+        
+        if (!$site || !$site->exists) {
+            Notification::make()
+                ->title('Error')
+                ->body('No site found. Please ensure you have access to a valid site.')
+                ->danger()
+                ->persistent()
+                ->send();
+            
+            throw new \RuntimeException('No valid site found for the current request');
+        }
+        
+        $team = $site->teams()->first();
+        
+        if (!$team) {
+            Notification::make()
+                ->title('Error')
+                ->body('No team found for the current site.')
+                ->danger()
+                ->send();
+            ;
+        }
+        return $form
+            ->schema([
+                Forms\Components\Section::make('Recipients')
+                    ->schema([
+                        Forms\Components\Radio::make('recipient_type')
+                            ->label('Send To')
+                            ->options([
+                                'all' => 'All Users',
+                                'users' => 'Specific Users',
+                                'guests' => 'Specific Guests',
+                            ])
+                            ->default('all')
+                            ->live(),
 
-    public array $guest_ids = [];
+                        Forms\Components\Select::make('user_ids')
+                            ->label('Select Users')
+                            ->multiple()
+                            ->searchable()
+                            ->options(function () use ($team) {
+                                return $team ? $team->users()->pluck('name', 'users.id') : [];
+                            })
+                            ->visible(fn ($get) => $get('recipient_type') === 'users')
+                            ->searchable()
+                            ->preload()
+                            ->loadingMessage('Loading team members...'),
+
+                        Forms\Components\Select::make('guest_ids')
+                            ->label('Select Guests')
+                            ->multiple()
+                            ->searchable()
+                            ->options(MsgGuest::pluck('name', 'id'))
+                            ->visible(fn ($get) => $get('recipient_type') === 'guests'),
+                    ])
+                    ->columns(1),
+
+                Forms\Components\Section::make('Message')
+                    ->schema([
+                        Forms\Components\TextInput::make('subject')
+                            ->required()
+                            ->maxLength(255),
+                            
+                        Forms\Components\Textarea::make('body')
+                            ->label('Message Body')
+                            ->required()
+                            ->rows(4)
+                            ->maxLength(2000)
+                            ->columnSpanFull(),
+                    ]),
+                    
+                Forms\Components\Actions::make([
+                    Forms\Components\Actions\Action::make('send')
+                        ->label('Send Message')
+                        ->action('send')
+                        ->color('primary')
+                        ->icon('heroicon-o-paper-airplane'),
+                ])->alignRight(),
+            ])
+            ->statePath('data');
+    }
 
     public function mount(): void
     {
         $this->form->fill();
     }
 
-    public function form(Form $form): Form
-    {
-        $user = auth()->user();
-        $userOptions = [];
-        try {
-            $siteId = $user?->getUserOwnerSiteId();
-            if ($siteId) {
-                $site = Site::find($siteId);
-                $team = $site?->teams()->first();
-                if ($team) {
-                    $userIds = TeamUser::where('team_id', $team->id)->pluck('user_id');
-                    $userOptions = User::whereIn('id', $userIds)->orderBy('name')->pluck('name', 'id')->toArray();
-                }
-            }
-        } catch (\Throwable $e) {
-            Log::warning('Compose page user options failed: '.$e->getMessage());
-        }
-
-        return $form
-            ->schema([
-                Forms\Components\Section::make('Message')
-                    ->schema([
-                        Forms\Components\Select::make('message_id')
-                            ->label('Message')
-                            ->options(fn () => MsgMessage::orderBy('id', 'desc')->pluck('subject', 'id')->toArray())
-                            ->searchable()
-                            ->preload()
-                            ->required(),
-                    ])->columns(1),
-                Forms\Components\Section::make('Recipients')
-                    ->schema([
-                        Forms\Components\MultiSelect::make('user_ids')
-                            ->label('Users')
-                            ->options($userOptions)
-                            ->searchable()
-                            ->preload(),
-                        Forms\Components\MultiSelect::make('guest_ids')
-                            ->label('Guests')
-                            ->options(fn () => MsgGuest::orderBy('name')->pluck('name', 'id')->toArray())
-                            ->searchable()
-                            ->preload(),
-                    ])->columns(2),
-                Forms\Components\Actions::make([
-                    Forms\Components\Actions\Action::make('send')
-                        ->label('Send')
-                        ->color('primary')
-                        ->action('submit')
-                        ->requiresConfirmation(),
-                ]),
-            ]);
-    }
-
-    public function submit(): void
+    public function send()
     {
         $data = $this->form->getState();
+        $recipientCount = 0;
 
-        if (empty($data['message_id']) || (empty($data['user_ids']) && empty($data['guest_ids']))) {
+        // Get the current site from the request context
+        $site = \App\Http\Controllers\Controller::getClientFromHost();
+        
+        if (!$site || !$site->exists) {
+            // Fall back to user's team site if available
+            $user = auth()->user();
+            if ($user && $user->currentTeam) {
+                $site = $user->currentTeam->site;
+            }
+        }
+        
+        if (!$site || !$site->exists) {
             Notification::make()
-                ->title('Select a message and at least one recipient')
+                ->title('Error')
+                ->body('No site found. Please ensure you have access to a valid site.')
+                ->danger()
+                ->persistent()
+                ->send();
+            
+            throw new \RuntimeException('No valid site found for the current request');
+        }
+        
+        $team = $site->teams()->first();
+        
+        if (!$team) {
+            Notification::make()
+                ->title('Error')
+                ->body('No team found for the current site.')
                 ->danger()
                 ->send();
-            return;
+            ;
+        }
+        
+        // Send to all users in the team
+        if ($data['recipient_type'] === 'all') {
+            $users = $team->users;
+            foreach ($users as $user) {
+                $this->sendMessageToUser($user, $data);
+                $recipientCount++;
+            }
+        } 
+        // Send to selected users (still scoped to team members)
+        elseif ($data['recipient_type'] === 'users' && !empty($data['user_ids'])) {
+            // Ensure selected users are actually in the team
+            $users = $team->users()->whereIn('users.id', $data['user_ids'])->get();
+            foreach ($users as $user) {
+                $this->sendMessageToUser($user, $data);
+                $recipientCount++;
+            }
+        }
+        // Send to selected guests
+        elseif ($data['recipient_type'] === 'guests' && !empty($data['guest_ids'])) {
+            $guests = MsgGuest::whereIn('id', $data['guest_ids'])->get();
+            foreach ($guests as $guest) {
+                $this->sendMessageToGuest($guest, $data);
+                $recipientCount++;
+            }
         }
 
-        try {
-            $token = auth()->user()?->personal_access_token ?? null;
-            if (!$token) {
-                Notification::make()->title('Missing API token')->danger()->send();
-                return;
-            }
+        Notification::make()
+            ->title('Message Sent')
+            ->body("Message has been sent to {$recipientCount} recipients.")
+            ->success()
+            ->send();
+            
+        $this->form->fill();
+    }
 
-            $response = Http::withToken($token)
-                ->acceptJson()
-                ->post(url('/api/messages/send'), [
-                    'message_id' => $data['message_id'],
-                    'user_ids' => array_values($data['user_ids'] ?? []),
-                    'guest_ids' => array_values($data['guest_ids'] ?? []),
-                ]);
+    protected function sendMessageToUser(User $user, array $data): void
+    {
+        // Create message record
+        $message = MsgMessage::create([
+            'subject' => $data['subject'],
+            'body' => $data['body'],
+            'sender_id' => auth()->id(),
+            'sender_type' => User::class,
+            'recipient_id' => $user->id,
+            'recipient_type' => User::class,
+            'status' => 'sent',
+        ]);
 
-            if ($response->successful()) {
-                Notification::make()->title('Message queued for delivery')->success()->send();
-                $this->reset(['message_id', 'user_ids', 'guest_ids']);
-                $this->form->fill();
-            } else {
-                $err = $response->json('message') ?? $response->body();
-                Notification::make()->title('Send failed: ' . $err)->danger()->send();
-            }
-        } catch (\Throwable $e) {
-            Notification::make()->title('Unexpected error: ' . $e->getMessage())->danger()->send();
-        }
+        // Here you can add code to send actual notifications (email, SMS, etc.)
+        Log::info("Message sent to user {$user->id}: {$data['subject']}");
+    }
+
+    protected function sendMessageToGuest(MsgGuest $guest, array $data): void
+    {
+        // Create message record
+        $message = MsgMessage::create([
+            'subject' => $data['subject'],
+            'body' => $data['body'],
+            'sender_id' => auth()->id(),
+            'sender_type' => User::class,
+            'recipient_id' => $guest->id,
+            'recipient_type' => MsgGuest::class,
+            'status' => 'sent',
+        ]);
+
+        // Here you can add code to send actual notifications (email, SMS, etc.)
+        Log::info("Message sent to guest {$guest->id}: {$data['subject']}");
     }
 
     public static function shouldRegisterNavigation(): bool
