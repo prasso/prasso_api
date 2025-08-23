@@ -25,7 +25,7 @@ Effortless Coding: Experience the ease of Prasso's Low-Code functionality, trans
 
 Rapid Validation: Validate your app concept swiftly through rapid deployment, visually edit site pages with GrapesJs, and showcase business information while effortlessly serving Prasso apps through the API.
 
-User-Friendly Experience: Enjoy easy setup and integration with Firebase, access extensive documentation, and receive friendly support every step of the way. Prasso.io is open-source and licensed under MIT for seamless customization and collaboration.
+User-Friendly Experience: Enjoy easy setup and integration with Firebase, access extensive documentation, and receive friendly support every step of the way. Faxt.com is open-source and licensed under MIT for seamless customization and collaboration.
 
 For more details, check out the other docs:
 

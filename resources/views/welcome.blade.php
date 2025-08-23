@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head> <meta charset="utf-8"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta name="description" content=""> <meta name="author" content="Prasso"> <meta name="csrf" content="4TlNT:16b01222ba14eac4550da35a7d7f5ce8" id="csrf"> <link rel="shortcut icon" href="https://prasso.io/favicon.ico">
+  <head> <meta charset="utf-8"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta name="description" content=""> <meta name="author" content="Prasso"> <meta name="csrf" content="4TlNT:16b01222ba14eac4550da35a7d7f5ce8" id="csrf"> <link rel="shortcut icon" href="https://faxt.com/favicon.ico">
  <title>Prasso Welcome</title>
  <link href="/css/tilda.cc.css.tilda-grid-3.0.min.css" rel="stylesheet" media="screen">
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -171,7 +171,7 @@ construction
   <li class="text-left mt-3 border-b">
   <div class="grid grid-cols-2 gap-8 ">
   <div class="m-auto"><span class="material-icons prasso-orange-accent" style="font-size: 100px;">favorite</span></div>
-<div> <b>User-Friendly Experience:</b> Enjoy easy setup and integration with Firebase, access extensive documentation, and receive friendly support every step of the way. Prasso.io is open-source and licensed under MIT for seamless customization and collaboration.</div>
+<div> <b>User-Friendly Experience:</b> Enjoy easy setup and integration with Firebase, access extensive documentation, and receive friendly support every step of the way. Faxt.com is open-source and licensed under MIT for seamless customization and collaboration.</div>
 </li>
 </ul>
     </div>	          <a href="https://github.com/prasso" target="_blank" class="t-btn prasso-orange-accent"  style="background:#ffffff; border-radius:50px; -moz-border-radius:50px; -webkit-border-radius:50px;"><table style="width:100%; height:100%;"><tr><td>View the Source</td></tr></table></a>
@@ -234,7 +234,7 @@ construction
 			  <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
 				<div class="bg-white rounded-lg shadow-md overflow-hidden text-center">
 				  <div class="px-6 py-4">
-          <img class="m-auto" src="https://images.prasso.io/faith/FaithLakeCityLogo-250.png" style="min-height:150px;" /> 
+          <img class="m-auto" src="https://images.faxt.com/faith/FaithLakeCityLogo-250.png" style="min-height:150px;" /> 
            
 					<h3 class="text-lg font-semibold text-gray-800 mb-2">Faith Lake City
 					</h3>
@@ -259,14 +259,14 @@ construction
 				</div>
 				<div class="bg-white rounded-lg shadow-md overflow-hidden text-center">
 				  <div class="px-6 py-4">
-            <img class="m-auto" src="	https://images.prasso.io/prasso/user-files/109/colorpluslogo.jpg" style="max-height:150px; min-height:150px;" />
+            <img class="m-auto" src="	https://images.faxt.com/prasso/user-files/109/colorpluslogo.jpg" style="max-height:150px; min-height:150px;" />
 					<h3 class="text-lg font-semibold text-gray-800 mb-2">Printshop ERP
 					</h3>
 					<p class="text-gray-600 leading-6">Manage manufacturing and sales for a packaging print shop.
 					</p>
 				  </div>
 				  <div class="px-6 py-4">
-					<a href="https://printshoperp.prasso.io/" class="inline-block prasso-green text-white rounded-full px-3 py-1 text-sm font-semibold">#Web</a>
+					<a href="https://printshoperp.faxt.com/" class="inline-block prasso-green text-white rounded-full px-3 py-1 text-sm font-semibold">#Web</a>
 				  </div>
 				</div>
 			  </div>

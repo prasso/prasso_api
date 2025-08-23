@@ -86,7 +86,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'info@prasso.io'),
+        'address' => env('MAIL_FROM_ADDRESS', 'info@faxt.com'),
         'name' => env('MAIL_FROM_NAME', 'Prasso Support'),
     ],
 

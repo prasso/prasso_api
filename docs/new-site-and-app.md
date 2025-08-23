@@ -17,7 +17,7 @@ The Site Creation Wizard is a step-by-step process that helps you:
 In the first step, you'll need to provide:
 - Site Name: Enter a name for your site
 - Description: Provide a brief description of your site
-- Host: This will be automatically generated based on your site name (yoursite.prasso.io)
+- Host: This will be automatically generated based on your site name (yoursite.faxt.com)
 
 ### Step 2: Feature Configuration
 
@@ -66,7 +66,7 @@ Once your site is created:
 - Your logo will be uploaded and processed
 - If livestreaming was enabled, the necessary settings will be configured
 - You'll be set as the site administrator
-- Your site will be immediately accessible at your chosen domain (yoursite.prasso.io)
+- Your site will be immediately accessible at your chosen domain (yoursite.faxt.com)
 
 ### GitHub Repository Integration
 
@@ -81,7 +81,7 @@ If you specified a GitHub repository:
 ## Important Notes
 
 - All site names will automatically be converted to lowercase and spaces will be removed for the host name
-- The host name will automatically append '.prasso.io' if not included
+- The host name will automatically append '.faxt.com' if not included
 - Logo images should be in a web-compatible format (PNG, JPG, etc.)
 - The system automatically creates necessary team and user permissions
 
