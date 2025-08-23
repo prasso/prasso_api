@@ -7,7 +7,7 @@ export const handler = async(event) => {
 
   // An object of options to indicate where to post to
   var post_options = {
-      host: 'prasso.io',
+      host: 'faxt.com',
       port: '443',
       path: '/api/livestream_activity',
       method: 'POST',

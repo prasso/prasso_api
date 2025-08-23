@@ -17,7 +17,7 @@ Thanks,<br>
 {{config('constants.ADMIN_EMAIL_SIGNATURE')}}
 <br><br>
 <div style="font-size:.9em;color:#999999;float:right;margin-right:10px;">
-<a href="https://prasso.io/unsubscribe?email={{$user_email}}">Unsubscribe from our emails</a>
+<a href="https://faxt.com/unsubscribe?email={{$user_email}}">Unsubscribe from our emails</a>
 </div>
 </div>
 

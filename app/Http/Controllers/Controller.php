@@ -81,7 +81,7 @@ class Controller extends FrameworkController
     public function adminNotifyOnError($message){
         //notify me admin error
         try{
-            Mail::to('info@prasso.io', 'Prasso Admin')->send(new admin_error_notification($message));
+            Mail::to('info@faxt.com', 'Prasso Admin')->send(new admin_error_notification($message));
         }catch(\Throwable $e){
             Log::info("Error sending email: {$message}");
             Log::info($e);

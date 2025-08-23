@@ -319,7 +319,7 @@ class GithubRepositoryCreationService
         
         if (empty($output) || $returnCode !== 0) {
             exec('git config user.name "Prasso System" 2>&1');
-            exec('git config user.email "system@prasso.io" 2>&1');
+            exec('git config user.email "system@faxt.com" 2>&1');
         }
     }
     

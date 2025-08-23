@@ -6,7 +6,7 @@ We noticed you haven't added your team or setup your info page on Prasso since y
 No worries, starting a new platform can be overwhelming - we get it 😊. 
 
 Today, let's focus on setting up your info page. Here are the first steps to get you going without any hassle:
-Navigate to the info page in the app or on our web site: https://api.prasso.io/user/profile
+Navigate to the info page in the app or on our web site: https://api.faxt.com/user/profile
 Customize your personal profile info - don't miss adding your blog / twitter / instagram / facebook. 
 Add some before and after pics if you want, to enhance your story.
 

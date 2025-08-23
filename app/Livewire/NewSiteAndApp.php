@@ -148,8 +148,8 @@ class NewSiteAndApp extends Component
     }
     private function checkhost(){
         $this->host = str_replace(' ', '', $this->host);
-        if ( !str_ends_with($this->host,  'prasso.io')){
-             $this->host =  $this->host.'.prasso.io';
+        if ( !str_ends_with($this->host,  'faxt.com')){
+             $this->host =  $this->host.'.faxt.com';
         }
     }
 
@@ -214,7 +214,7 @@ class NewSiteAndApp extends Component
         ]);
         //notify me new site and app
         try{
-            Mail::to('info@prasso.io', 'Prasso Admin')->send(new new_site_notification($this));
+            Mail::to('info@faxt.com', 'Prasso Admin')->send(new new_site_notification($this));
         }catch(\Throwable $e){
             Log::info("Error sending email: {$site->host}");
             Log::info($e);
