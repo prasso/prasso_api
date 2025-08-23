@@ -32,7 +32,7 @@ class LivestreamSettings extends Model
     }
     
     public static function addOrUpdate($site){
-        $host = str_replace('.prasso.io','',$site->host).'/';
+        $host = str_replace('.faxt.com','',$site->host).'/';
         $queue_folder = 'faith-baptist-livestream/ivs/v1/629811581977/CG4sjCYs40kT/';//this is from the livestream dashboard at AWS
         $presentation_folder = $host.'/hls/';
         

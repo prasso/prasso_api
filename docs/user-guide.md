@@ -25,7 +25,7 @@ With Prasso, you can create both your app API backend and your website with one 
 - A site is determined by its URL and has assigned attributes that determine the appearance of the site.
 - A Prasso site is both a business information site and a Prasso API site. The API serves the Prasso apps.
 - Sites have site pages. These can be created and maintained using a built-in visual editor based on the GrapesJS opensource project.
-- Sites are the landing page of the App home website. Example Prasso sites: https://prasso.io, https://barimorphosis.com, https://lileyscapes.prasso.io, https://mercyfullfarms.com
+- Sites are the landing page of the App home website. Example Prasso sites: https://faxt.com, https://barimorphosis.com, https://lileyscapes.faxt.com, https://mercyfullfarms.com
 ![sites diagram](images/DiagramUserTeam.png)
 ![site pages diagram](images/DiagramSitePages.png)
 
@@ -55,7 +55,7 @@ With Prasso, you can create both your app API backend and your website with one 
 ![main concepts diagram](images/DiagramMainInteractions.png)
 
 ### 3.1 Site and Page Loading
-- At least one site must be configured in the site table (example: prasso.io).
+- At least one site must be configured in the site table (example: faxt.com).
 - When the site loads, the host is checked to see if its URL/domain is recorded in the site table.
 - If the site is recorded, the site object from the table is kept available in the app session for use.
 - Site pages reference the site table, so if a site has pages, they can be used in the display as links.

@@ -57,8 +57,8 @@ class MediaService
         
         $newid = SiteMedia::create([
             'fk_site_id' => $site->id,
-            's3media_url' => $new_filepath = str_replace('media.prasso.io/hls/','media.prasso.io/',config('constants.CLOUDFRONT_MEDIA_URL') . $index_and_thumb_array['index']),
-            'thumb_url' => $new_filepath = str_replace('media.prasso.io/hls/','media.prasso.io/',config('constants.CLOUDFRONT_MEDIA_URL') .$index_and_thumb_array['thumb']),
+            's3media_url' => $new_filepath = str_replace('media.faxt.com/hls/','media.faxt.com/',config('constants.CLOUDFRONT_MEDIA_URL') . $index_and_thumb_array['index']),
+            'thumb_url' => $new_filepath = str_replace('media.faxt.com/hls/','media.faxt.com/',config('constants.CLOUDFRONT_MEDIA_URL') .$index_and_thumb_array['thumb']),
             'media_title' => 'Livestream on '.$edit_date,
             'media_description' => $site->site_name.' Livestream on '.$edit_date,
             'media_date' => $edit_date,

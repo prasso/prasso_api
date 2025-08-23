@@ -73,8 +73,8 @@ class UserService
     }
 
     /**
-     *       special rules for site access if it's the base, prasso.io site
-     *       1. users that are registered through prasso.io can log in there, 
+     *       special rules for site access if it's the base, faxt.com site
+     *       1. users that are registered through faxt.com can log in there, 
      *          even if they have created another site
      */
     public function isUserOnTeam($user)
@@ -183,7 +183,7 @@ class UserService
         $usr->save();
 
       try{
-        $emailbcc = 'info@prasso.io'; //because .env setting is not being read on prod server!
+        $emailbcc = 'info@faxt.com'; //because .env setting is not being read on prod server!
        
         Mail::to($emailbcc,'Newsletter Subscriber')->send(new newsletter_signup($usr));
         }
