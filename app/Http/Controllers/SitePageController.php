@@ -88,8 +88,11 @@ class SitePageController extends BaseController
      * loads up the dashboard if the user is logged in and belongs to this site's team
      */
     private function getDashboardForCurrentSite($user){
-        // Redirect site-admin users to the Filament admin panel
-        if ($user->hasRole(config('constants.INSTRUCTOR'))) {
+        // Check if user is a super admin on site ID 1 (Prasso main site)
+        $isPrassoSuperAdmin = $user->isSuperAdmin() && $this->site->id == 1;
+        
+        // Only redirect non-super admins to the Filament admin panel
+        if ($user->hasRole(config('constants.INSTRUCTOR')) && !$isPrassoSuperAdmin) {
             return redirect()->route('filament.site-admin.pages.dashboard');
         }
         
