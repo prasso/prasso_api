@@ -51,6 +51,7 @@ class SitePageResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('description')
+                    ->rows(12)
                     ->maxLength(65535)
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('url')

@@ -25,7 +25,6 @@ class SitePageEditor extends Component
     public $https_host;
 
     public $isOpen = 0;
-    public $isVisualEditorOpen = 0;
     public $siteid;
 
     public $site;
@@ -113,17 +112,6 @@ class SitePageEditor extends Component
      *
      * @var array
      */
-    public function openVisualModal()
-    {
-        $this->isVisualEditorOpen = true;
-        
-    }
-  
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     public function openModal()
     {
         $this->isOpen = true;
@@ -137,7 +125,6 @@ class SitePageEditor extends Component
     public function closeModal()
     {
         $this->isOpen = false;
-        $this->isVisualEditorOpen = false;
     }
   
     /**
@@ -424,31 +411,6 @@ class SitePageEditor extends Component
         }
         $this->resetErrorBag($propertyName);
      
-    }
-
-       /**
-     * can we make this work with GrapesJs? (it works when loaded from a new page, not from the livewire component)
-     *
-     * @var array
-     */
-    public function visualEditor($id)
-    {
-        $sitePage = SitePages::findOrFail($id);
-        $this->sitePage_id = $id;
-        $this->fk_site_id = $sitePage->fk_site_id;
-        $this->section = $sitePage->section;
-        $this->title = $sitePage->title;
-        $this->description = $sitePage->description;
-        $this->url = $sitePage->url;
-        $this->masterpage = $sitePage->masterpage;
-        $this->login_required = $sitePage->login_required;
-        $this->user_level = $sitePage->user_level;
-        $this->template = $sitePage->template;
-        $this->style = $sitePage->style;
-        $this->where_value = $sitePage->where_value;
-        $this->page_notifications_on = $sitePage->page_notifications_on;
-
-        $this->openVisualModal();
     }
 
     /**

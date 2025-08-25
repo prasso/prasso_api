@@ -24,7 +24,7 @@ With Prasso, you can create both your app API backend and your website with one 
 - Teams own sites. Everything is based on a site.
 - A site is determined by its URL and has assigned attributes that determine the appearance of the site.
 - A Prasso site is both a business information site and a Prasso API site. The API serves the Prasso apps.
-- Sites have site pages. These can be created and maintained using a built-in visual editor based on the GrapesJS opensource project.
+- Sites have site pages. These can be created and maintained.
 - Sites are the landing page of the App home website. Example Prasso sites: https://faxt.com, https://barimorphosis.com, https://lileyscapes.faxt.com, https://mercyfullfarms.com
 ![sites diagram](images/DiagramUserTeam.png)
 ![site pages diagram](images/DiagramSitePages.png)
@@ -75,10 +75,6 @@ With Prasso, you can create both your app API backend and your website with one 
 1. Create an HTML form with a placeholder that will be replaced by the template.
 2. Create a template and add its name as a record to the site_templates table.
 3. Edit the site page record and specify the newly created data template as the template.
-
-### 3.5 Visual Editing (CMS)
-- Prasso integrates the GrapesJS editor (https://grapesjs.com).
-- When you edit your site, you can use the included components to assemble your pages.
 
 ## 4. Technical Details
 

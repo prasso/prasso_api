@@ -23,7 +23,7 @@ Verified Stability: Benefit from a stable Laravel framework-based API backend, s
 
 Effortless Coding: Experience the ease of Prasso's Low-Code functionality, transforming your ideas into fully functional apps. Our template seamlessly combines a robust backend API with a mobile app interface, ready to manage every aspect of your business operations with simplicity and efficiency.
 
-Rapid Validation: Validate your app concept swiftly through rapid deployment, visually edit site pages with GrapesJs, and showcase business information while effortlessly serving Prasso apps through the API.
+Rapid Validation: Validate your app concept swiftly through rapid deployment, and showcase business information while effortlessly serving Prasso apps through the API.
 
 User-Friendly Experience: Enjoy easy setup and integration with Firebase, access extensive documentation, and receive friendly support every step of the way. Faxt.com is open-source and licensed under MIT for seamless customization and collaboration.
 

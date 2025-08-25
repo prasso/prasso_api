@@ -310,11 +310,6 @@ a {
   cursor: default;
 }
 
-.top-logo-grapesjs {
-  height: 55px;
-  vertical-align: bottom;
-}
-
 .top-nav {
   padding-top: 22px;
 }
@@ -744,12 +739,7 @@ a {
 .gifffer-play-button > div {
   border-left-color: #eee !important;
 }
-.grapesjs-logo {
-  display: block;
-  height: 90px;
-  margin: 0 auto;
-  width: 90px;
-}
+
 .info-card canvas, .info-card #img-c > div{
   width: 100% !important;
 }

@@ -165,7 +165,7 @@ construction
   <div class="m-auto">
   <span class="material-icons prasso-orange-accent" style="font-size: 100px;">trending_up</span> </div>
 <div>
-<b>Rapid Validation:</b> Validate your app concept swiftly through rapid deployment, visually edit site pages with GrapesJs, and showcase business information while effortlessly serving Prasso apps through the API.
+<b>Rapid Validation:</b> Validate your app concept swiftly through rapid deployment and showcase business information while effortlessly serving Prasso apps through the API.
 </div>
 </li>
   <li class="text-left mt-3 border-b">
