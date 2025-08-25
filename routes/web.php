@@ -110,8 +110,6 @@ Route::middleware([
     Route::get('/site/{siteid}/livestream-mtce/{sitemediaid}', 'SiteMediaController@siteMediaEdit')->name('site.mtce.media.edit');
     Route::post('/site/{siteid}/livestream-mtce/move-to-permanent-storage', 'SiteMediaController@siteMediaCreate')->name('site.mtce.media.create');
 
-    Route::get('/visual-editor/{pageid}', 'SitePageController@visualEditor');
-    Route::get('/visual-editor/getCombinedHtml/{pageid}', 'SitePageController@getCombinedHtml');
     Route::post('/site/{siteid}/{pageid}/sitePageDataPost', 'SitePageController@sitePageDataPost');
     Route::post('/images/upload', 'ImageController@upload')->name('images.upload');
     Route::post('/images/confirm-resize', 'ImageController@confirmResize')->name('images.confirm-resize');

@@ -14,9 +14,6 @@
             @if($isOpen)
                 @include('sitepage.create-or-edit', ['team_selection' => $team_selection])
             @endif          
-            @if($isVisualEditorOpen)
-                @include('sitepage.visual-editor')
-            @endif
             <table class="table-fixed w-full">
                 <thead>
                     <tr class="bg-gray-100">
@@ -34,7 +31,6 @@
                         <td class="border px-4 py-2">{{ $sitePage->title }}</td>
                         <td class="border px-4 py-2">
                         <button wire:click="edit({{ $sitePage->id }})" class="py-2  px-2" title="Edit Site Page"><i class="material-icons md-36">mode_edit</i></button>
-                        <a href="/visual-editor/{{ $sitePage->id }}" class="py-2  " title="Open Visual Editor"><i class="material-icons md-36">format_color_fill</i></a>
                         <a href="/sitepages/{{ $siteid }}/{{ $sitePage->id }}/edit-site-page-json-data" class="py-2  px-2" title="Edit Site Page Json Data"><i class="material-icons md-36">edit_note</i></a>
                         <a href="/sitepages/{{ $siteid }}/{{ $sitePage->id }}/read-tsv-into-site-page-data" title="Import Data"  class="py-2  px-2"><i class="material-icons md-36">file_upload</i></a>
 
