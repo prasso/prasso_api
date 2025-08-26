@@ -1,8 +1,8 @@
-# Make Site Page Editor Description a Multiline Textarea in Filament
 
 ## Summary
 - Converted the `description` field to a taller multiline textarea on the Site Admin edit page at `/site-admin/site-pages/{id}/edit`.
 - Improves usability when editing longer page content.
+# Make Site Page Editor Description a Multiline Textarea in Filament
 
 ## Changes
 - Updated Filament form schema to explicitly render a larger textarea for `description`.
