@@ -1,8 +1,8 @@
 <?php
 
 return [
-        'CLOUDFRONT_ASSET_URL' => 'https://images.faxt.com/',
-        'CLOUDFRONT_MEDIA_URL' => 'https://media.faxt.com/',
+        'CLOUDFRONT_ASSET_URL' => 'https://images.prasso.io/',
+        'CLOUDFRONT_MEDIA_URL' => 'https://media.prasso.io/',
         'CLOUDFRONT_MEDIA_BASE_PATH' => 'hls/',
         'PROFILE_PHOTO_PATH' => 'prasso/-user-photos/',
         'APP_LOGO_PATH' => 'prasso/-app-photos/',
@@ -12,7 +12,7 @@ return [
         'TAB_DEFAULT_PARENT' => 0,
         'TAB_DEFAULT_APP_ID' => 0,
         'TAB_DEFAULT_ICON' => 'beach_access',
-        'TAB_DEFAULT_URL' => 'https://faxt.com',
+        'TAB_DEFAULT_URL' => 'https://prasso.faxt.com',
         'TAB_DEFAULT_HEADER' => 'Origin:Prasso',
         'MORE_TAB' => 'More()',
         'ADMIN_EMAIL_SIGNATURE' => 'Prasso Support',
