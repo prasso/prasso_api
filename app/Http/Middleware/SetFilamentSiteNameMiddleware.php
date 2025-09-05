@@ -19,6 +19,7 @@ class SetFilamentSiteNameMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        return $next($request);
         // Get the host from the request
         $host = $request->getHost();
         $hostWithPort = $request->getHttpHost(); // Includes port if present
