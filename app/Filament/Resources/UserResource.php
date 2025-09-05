@@ -33,7 +33,9 @@ class UserResource extends Resource
         return $form
             ->schema([
                 Components\Hidden::make('id'),
-                Components\Hidden::make('version')->default('v1'),
+                Components\Hidden::make('version')
+                    ->default('v1')
+                    ->dehydrateStateUsing(fn ($state) => $state ?? 'v1'),
                 Components\TextInput::make('name')
                     ->autofocus()
                     ->required(),

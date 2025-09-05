@@ -13,6 +13,8 @@ use App\Models\Site;
 use App\Models\TeamUser;
 use Prasso\Messaging\Models\MsgMessage;
 use Prasso\Messaging\Models\MsgGuest;
+use Prasso\Messaging\Models\MsgDelivery;
+use Prasso\Messaging\Jobs\ProcessMsgDelivery;
 
 class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
 {
@@ -96,10 +98,21 @@ class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
 
                 Forms\Components\Section::make('Message')
                     ->schema([
+                        Forms\Components\Select::make('type')
+                            ->label('Message Type')
+                            ->options([
+                                'email' => 'Email',
+                                'sms' => 'SMS',
+                                'push' => 'Push Notification',
+                                'inapp' => 'In-App',
+                            ])
+                            ->default('email')
+                            ->required(),
+
                         Forms\Components\TextInput::make('subject')
                             ->required()
                             ->maxLength(255),
-                            
+
                         Forms\Components\Textarea::make('body')
                             ->label('Message Body')
                             ->required()
@@ -131,7 +144,7 @@ class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
 
         // Get the current site from the request context
         $site = \App\Http\Controllers\Controller::getClientFromHost();
-        
+
         if (!$site || !$site->exists) {
             // Fall back to user's team site if available
             $user = auth()->user();
@@ -139,7 +152,7 @@ class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
                 $site = $user->currentTeam->site;
             }
         }
-        
+
         if (!$site || !$site->exists) {
             Notification::make()
                 ->title('Error')
@@ -147,35 +160,43 @@ class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
                 ->danger()
                 ->persistent()
                 ->send();
-            
+
             throw new \RuntimeException('No valid site found for the current request');
         }
-        
+
         $team = $site->teams()->first();
-        
+
         if (!$team) {
             Notification::make()
                 ->title('Error')
                 ->body('No team found for the current site.')
                 ->danger()
                 ->send();
-            ;
+            return;
         }
-        
+
+        // Create the message record first (only content fields)
+        $message = MsgMessage::create([
+            'team_id' => $team->id,
+            'type' => $data['type'],
+            'subject' => $data['subject'],
+            'body' => $data['body'],
+        ]);
+
         // Send to all users in the team
         if ($data['recipient_type'] === 'all') {
             $users = $team->users;
             foreach ($users as $user) {
-                $this->sendMessageToUser($user, $data);
+                $this->createMessageDelivery($message, $user, 'user');
                 $recipientCount++;
             }
-        } 
+        }
         // Send to selected users (still scoped to team members)
         elseif ($data['recipient_type'] === 'users' && !empty($data['user_ids'])) {
             // Ensure selected users are actually in the team
             $users = $team->users()->whereIn('users.id', $data['user_ids'])->get();
             foreach ($users as $user) {
-                $this->sendMessageToUser($user, $data);
+                $this->createMessageDelivery($message, $user, 'user');
                 $recipientCount++;
             }
         }
@@ -183,7 +204,7 @@ class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
         elseif ($data['recipient_type'] === 'guests' && !empty($data['guest_ids'])) {
             $guests = MsgGuest::whereIn('id', $data['guest_ids'])->get();
             foreach ($guests as $guest) {
-                $this->sendMessageToGuest($guest, $data);
+                $this->createMessageDelivery($message, $guest, 'guest');
                 $recipientCount++;
             }
         }
@@ -193,42 +214,30 @@ class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
             ->body("Message has been sent to {$recipientCount} recipients.")
             ->success()
             ->send();
-            
+
         $this->form->fill();
     }
 
-    protected function sendMessageToUser(User $user, array $data): void
+    protected function createMessageDelivery(MsgMessage $message, $recipient, string $recipientType): void
     {
-        // Create message record
-        $message = MsgMessage::create([
-            'subject' => $data['subject'],
-            'body' => $data['body'],
-            'sender_id' => auth()->id(),
-            'sender_type' => User::class,
-            'recipient_id' => $user->id,
-            'recipient_type' => User::class,
-            'status' => 'sent',
+        // Create delivery record for recipient
+        $delivery = MsgDelivery::create([
+            'team_id' => $message->team_id,
+            'msg_message_id' => $message->id,
+            'recipient_type' => $recipientType,
+            'recipient_id' => $recipient->id,
+            'channel' => $message->type,
+            'status' => 'queued',
+            'metadata' => [
+                'subject' => $message->subject,
+                'preview' => mb_substr($message->body, 0, 120),
+            ],
         ]);
 
-        // Here you can add code to send actual notifications (email, SMS, etc.)
-        Log::info("Message sent to user {$user->id}: {$data['subject']}");
-    }
+        // Dispatch the job to process the delivery
+        ProcessMsgDelivery::dispatch($delivery->id);
 
-    protected function sendMessageToGuest(MsgGuest $guest, array $data): void
-    {
-        // Create message record
-        $message = MsgMessage::create([
-            'subject' => $data['subject'],
-            'body' => $data['body'],
-            'sender_id' => auth()->id(),
-            'sender_type' => User::class,
-            'recipient_id' => $guest->id,
-            'recipient_type' => MsgGuest::class,
-            'status' => 'sent',
-        ]);
-
-        // Here you can add code to send actual notifications (email, SMS, etc.)
-        Log::info("Message sent to guest {$guest->id}: {$data['subject']}");
+        Log::info("Message delivery created for {$recipientType} {$recipient->id}: {$message->subject}");
     }
 
     public static function shouldRegisterNavigation(): bool
