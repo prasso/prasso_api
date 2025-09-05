@@ -165,10 +165,13 @@ class Site extends Model
                 }
             }
         }
-        
-        // If no site found, return null instead of trying to access index 0
-        Log::info('Site get client failed for host: ' . $host);
-        return null;
+        if ($currentsite == null)
+        {
+            Log::info('Site get client failed for host: ');
+            return null;
+        }
+
+        return $currentsite[0];
     }
     catch(\Exception $e){
         Log::info('Site get client failed for host: ' . $host . ' with error: ' . $e->getMessage());
