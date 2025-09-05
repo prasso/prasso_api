@@ -96,4 +96,12 @@ class Team extends JetstreamTeam
 
         return $this->belongsTo(Team::class, 'parent_id');
     }
+    
+    /**
+     * Get the customers for the team.
+     */
+    public function customers()
+    {
+        return $this->hasMany(\Prasso\AutoProHub\Models\Customer::class);
+    }
 }
