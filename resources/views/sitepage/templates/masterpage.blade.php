@@ -37,8 +37,8 @@
          <link href="/js/google-fonts-Roboto.css" rel="stylesheet"> 
          <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
          <!-- Scripts -->
-         <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.2.1/dist/alpine.js" defer></script>
-        @endif
+         @include('components.alpine-loader')
+      @endif
 
         @if (isset($site->app_specific_js) && str_starts_with($site->app_specific_js, 'http') )
             <script src="{!! $site->app_specific_js !!}"></script>

@@ -1,4 +1,4 @@
-           <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
+           @include('components.alpine-loader')
 
             <script src="https://player.live-video.net/1.8.0/amazon-ivs-player.min.js"></script>
             <script src="/js/ivs-script.js" defer></script>

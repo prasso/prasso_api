@@ -45,6 +45,10 @@ class MySiteController extends BaseController
             return redirect('/login');
         }
         $mysite = Controller::getClientFromHost();
+        
+        // Ensure site data is fully loaded with relationships
+        $mysite = Site::with(['teams', 'livestream_settings', 'stripe'])->find($mysite->id);
+        
         $user = Auth::user();
         if (!$user->isInstructor() && !$user->isTeamOwnerForSite($mysite))
         {

@@ -118,6 +118,7 @@ class Site extends Model
 
     public static function isPrasso($host) 
     {
+        $host = request()->getHttpHost();     
         $site = Site::getClient($host);
         if ($site == null)
         {

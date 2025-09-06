@@ -26,6 +26,7 @@ class CreateOrEdit extends Component
     public $subteams_enabled; //
     public $does_livestreaming; //
     public $invitation_only; //
+    public $github_repository; //
     
     public $database;
     public $favicon;
@@ -65,6 +66,7 @@ class CreateOrEdit extends Component
         $this->subteams_enabled = $site->subteams_enabled;
         $this->does_livestreaming = $site->livestream_settings()->exists();
         $this->invitation_only = $site->invitation_only;
+        $this->github_repository = $site->github_repository;
         
         $this->database = $site->database;
         $this->favicon = $site->favicon;
@@ -101,9 +103,14 @@ class CreateOrEdit extends Component
     public function store()
     {
         $siteRequest = new SiteRequest($this->site_id);
-        $this->validate($siteRequest->rules());
-        if (empty($this->id)) {
-            $this->id = 0;
+        try {
+            $this->validate($siteRequest->rules());
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->dispatch('errorOccurred');
+            throw $e;
+        }
+        if (empty($this->site_id)) {
+            $this->site_id = 0;
         }
 
         $site = $this->save();
@@ -125,7 +132,7 @@ class CreateOrEdit extends Component
             $this->save();
         }
 
-        $this->current_user = \Auth::user();
+        $this->current_user = \Illuminate\Support\Facades\Auth::user();
         
         $site->updateTeam($this->team_id);
 
@@ -145,10 +152,21 @@ class CreateOrEdit extends Component
             'favicon' => $this->favicon,
             'supports_registration' => $this->supports_registration,
             'subteams_enabled' => $this->subteams_enabled,
+            'invitation_only' => $this->invitation_only,
             'app_specific_js' => $this->app_specific_js,
             'app_specific_css' => $this->app_specific_css,
             'image_folder' => $this->image_folder,
+            'github_repository' => $this->github_repository,
         ]);
+        
+        // Handle livestream settings based on does_livestreaming checkbox
+        if ($this->does_livestreaming) {
+            // Create or update livestream settings
+            \App\Models\LivestreamSettings::addOrUpdate($site);
+        } else {
+            // Remove livestream settings if they exist
+            \App\Models\LivestreamSettings::remove($site->id);
+        }
         return $site;
     }
 
