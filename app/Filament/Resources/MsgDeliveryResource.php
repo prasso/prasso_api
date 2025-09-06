@@ -46,6 +46,18 @@ class MsgDeliveryResource extends Resource
                         default => 'gray',
                     }),
                 Tables\Columns\TextColumn::make('provider_message_id')->label('Provider ID')->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('error')
+                    ->label('Error Message')
+                    ->formatStateUsing(fn ($state, $record) => $record && $record->status === 'failed' ? $state : '')
+                    ->wrap()
+                    ->limit(100)
+                    ->tooltip(function (Tables\Columns\TextColumn $column): ?string {
+                        $state = $column->getState();
+                        if (!$state || strlen($state) <= 100) {
+                            return null;
+                        }
+                        return $state;
+                    }),
                 Tables\Columns\TextColumn::make('sent_at')->dateTime()->since()->sortable(),
                 Tables\Columns\TextColumn::make('delivered_at')->dateTime()->since()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('failed_at')->dateTime()->since()->sortable()->toggleable(isToggledHiddenByDefault: true),
