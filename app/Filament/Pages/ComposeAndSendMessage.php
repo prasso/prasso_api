@@ -89,6 +89,7 @@ class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
                             ->label('I agree to the terms and conditions for messaging services')
                             ->helperText('By checking this box, you agree to comply with all applicable laws and regulations regarding messaging.')
                             ->required(),
+                            
                     ])
                     ->columns(1),
                     
