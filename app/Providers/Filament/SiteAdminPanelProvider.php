@@ -17,6 +17,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Http\Middleware\SetFilamentSiteNameMiddleware;
+use Filament\Navigation\MenuItem;
 
 class SiteAdminPanelProvider extends PanelProvider
 {
@@ -59,6 +60,13 @@ class SiteAdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->userMenuItems([
+                \Filament\Navigation\MenuItem::make('Edit Profile')
+                    ->url(fn () => auth()->check() ? '/site-admin/users/' . auth()->id() . '/edit' : '#')
+                    ->icon('heroicon-o-user')
+                    ->label("Edit Profile"),
+                
             ]);
     }
 }

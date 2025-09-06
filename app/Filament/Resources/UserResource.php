@@ -60,8 +60,27 @@ class UserResource extends Resource
                         return $team ? Team::where('id', $team->id)->pluck('name', 'id') : [];
                     }),
 
-                Components\TextInput::make('profile_photo_path')
-                    ->nullable(),
+                Components\FileUpload::make('profile_photo_path')
+                    ->label('Profile Photo')
+                    ->image()
+                    ->imageEditor()
+                    ->imageEditorAspectRatios([
+                        '16:9',
+                        '4:3',
+                        '1:1',
+                    ])
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/svg+xml'])
+                    ->maxSize(5120) // 5MB
+                    ->directory(fn () => 'photos-' . auth()->id())
+                    ->disk('s3')
+                    ->visibility('public')
+                    ->imagePreviewHeight('250')
+                    ->loadingIndicatorPosition('left')
+                    ->panelAspectRatio('2:1')
+                    ->panelLayout('integrated')
+                    ->removeUploadedFileButtonPosition('right')
+                    ->uploadButtonPosition('left')
+                    ->uploadProgressIndicatorPosition('left'),
                 Components\TextInput::make('phone')     
                     ->required(),
 
@@ -118,7 +137,7 @@ class UserResource extends Resource
         return [
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
-            //'edit' => Pages\EditUser::route('/{record}/edit'),
+            'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
 

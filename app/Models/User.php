@@ -127,6 +127,10 @@ class User extends Authenticatable implements FilamentUser {
     {
        return $this->getProfilePhotoUrlAttribute();
     }
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return  $this->getProfilePhoto();
+    }
 
 
     public function team_owner() {
@@ -187,7 +191,7 @@ class User extends Authenticatable implements FilamentUser {
     }
 
     public function getRouteKeyName() {
-        return 'firebase_uid';
+        return 'id';
     }
 
     public function assignRole($roleName)
