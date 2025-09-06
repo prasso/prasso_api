@@ -1,4 +1,4 @@
-<div x-data="{ isOpen: false }" class="mb-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+<div x-data="{ isOpen: {{ isset($show_modal) && $show_modal ? 'true' : 'false' }} }" class="mb-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
     <button @click="isOpen = !isOpen" type="button" class="flex justify-between items-center w-full px-4 py-3 bg-gradient-to-r from-green-50 to-gray-50 hover:from-green-100 hover:to-gray-100 rounded-t-lg transition-all duration-200 border-b border-gray-200">
         <div class="flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -22,11 +22,54 @@
             <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
         @endif
                     <div class="">
-                    @if($errors->any())
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                        {!! implode('', $errors->all('<div>:message</div>')) !!}
+                    <div id="validation-errors" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative {{ $errors->any() ? '' : 'hidden' }}" role="alert">
+                        @if($errors->any())
+                            {!! implode('', $errors->all('<div>:message</div>')) !!}
+                        @endif
                     </div>
-                    @endif
+                    
+                    <script>
+                        // Force scroll to errors on page load
+                        if (document.getElementById('validation-errors') && !document.getElementById('validation-errors').classList.contains('hidden')) {
+                            document.getElementById('validation-errors').scrollIntoView({ behavior: 'auto', block: 'start' });
+                        }
+                        
+                        // Wire up Livewire events
+                        document.addEventListener('livewire:init', function() {
+                            // Listen for the errorOccurred event
+                            Livewire.on('errorOccurred', () => {
+                                forceScrollToErrors();
+                            });
+                            
+                            // Also check after any Livewire update
+                            Livewire.hook('morph.updated', (el) => {
+                                if (document.getElementById('validation-errors') && 
+                                    !document.getElementById('validation-errors').classList.contains('hidden')) {
+                                    forceScrollToErrors();
+                                }
+                            });
+                        });
+                        
+                        function forceScrollToErrors() {
+                            // Use a short delay to ensure DOM is updated
+                            setTimeout(() => {
+                                const errorElement = document.getElementById('validation-errors');
+                                if (errorElement && !errorElement.classList.contains('hidden')) {
+                                    // First try with scrollIntoView
+                                    errorElement.scrollIntoView({ behavior: 'auto', block: 'start' });
+                                    
+                                    // Also use window.scrollTo as a backup
+                                    window.scrollTo(0, errorElement.offsetTop - 50);
+                                    
+                                    // Add a highlight effect
+                                    errorElement.classList.add('animate-pulse');
+                                    setTimeout(() => {
+                                        errorElement.classList.remove('animate-pulse');
+                                    }, 1000);
+                                }
+                            }, 100);
+                        }
+                    </script>
                     <div class="mb-4">
                             <label for="site_nameInput" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
                             <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="site_nameInput" placeholder="Enter Name" wire:model="site_name">

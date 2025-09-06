@@ -103,9 +103,14 @@ class CreateOrEdit extends Component
     public function store()
     {
         $siteRequest = new SiteRequest($this->site_id);
-        $this->validate($siteRequest->rules());
-        if (empty($this->id)) {
-            $this->id = 0;
+        try {
+            $this->validate($siteRequest->rules());
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->dispatch('errorOccurred');
+            throw $e;
+        }
+        if (empty($this->site_id)) {
+            $this->site_id = 0;
         }
 
         $site = $this->save();
@@ -127,7 +132,7 @@ class CreateOrEdit extends Component
             $this->save();
         }
 
-        $this->current_user = \Auth::user();
+        $this->current_user = \Illuminate\Support\Facades\Auth::user();
         
         $site->updateTeam($this->team_id);
 

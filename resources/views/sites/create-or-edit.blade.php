@@ -94,7 +94,7 @@
 
                 <form>
                     <input type="hidden" wire:model="site_id" />
-                    @include('sites.site-inputs', ['team_selection' => $team_selection])
+                    @include('sites.site-inputs', ['team_selection' => $team_selection, 'show_modal' => true])
                 </form>
             </div>
         </div>
