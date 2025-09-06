@@ -1,10 +1,16 @@
-<div x-data="{ isOpen: true }">
-    <button @click="isOpen = !isOpen" type="button" class="flex justify-between items-center w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md mb-2 transition-all duration-200">
-        <span class="font-medium text-gray-700">Site Configuration</span>
-        <svg x-show="!isOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+<div x-data="{ isOpen: false }" class="mb-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+    <button @click="isOpen = !isOpen" type="button" class="flex justify-between items-center w-full px-4 py-3 bg-gradient-to-r from-green-50 to-gray-50 hover:from-green-100 hover:to-gray-100 rounded-t-lg transition-all duration-200 border-b border-gray-200">
+        <div class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span class="font-semibold text-gray-800 ml-2 text-lg">Site Properties</span>
+        </div>
+        <svg x-show="!isOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
         </svg>
-        <svg x-show="isOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+        <svg x-show="isOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
         </svg>
     </button>
@@ -22,24 +28,24 @@
                     </div>
                     @endif
                     <div class="mb-4">
-                            <label for="nameInput" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
-                            <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nameInput" placeholder="Enter Name" wire:model="site_name">
+                            <label for="site_nameInput" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
+                            <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="site_nameInput" placeholder="Enter Name" wire:model="site_name">
                             @error('site_name') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
-                            <label for="descriptionInput" class="block text-gray-700 text-sm font-bold mb-2">Description: </label>
-                            <textarea rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="descriptionInput" wire:model.defer="description" placeholder="Enter Description"></textarea>
+                            <label for="site_descriptionInput" class="block text-gray-700 text-sm font-bold mb-2">Description: </label>
+                            <textarea rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="site_descriptionInput" wire:model="description" placeholder="Enter Description"></textarea>
                             @error('description') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         @if(isset($site_id) && $site_id)
                         <div class="mb-4">
-                            <label for="hostInput" class="block text-gray-700 text-sm font-bold mb-2">Host:</label>
-                            <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="hostInput" placeholder="Enter Host" wire:model="host">
+                            <label for="site_hostInput" class="block text-gray-700 text-sm font-bold mb-2">Host:</label>
+                            <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="site_hostInput" placeholder="Enter Host" wire:model="host">
                             @error('host') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
-                            <label for="image_folderInput" class="block text-gray-700 text-sm font-bold mb-2">Image Foldername:</label>
-                            <input type="text" id="image_folderInput" placeholder="Enter Image Folder Name"  wire:model="image_folder" >
+                            <label for="site_image_folderInput" class="block text-gray-700 text-sm font-bold mb-2">Image Foldername:</label>
+                            <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="site_image_folderInput" placeholder="Enter Image Folder Name" wire:model="image_folder">
                             @error('image_folder') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         @endif
@@ -55,8 +61,8 @@
                             </div>
                         </div>
                         <div class="mb-4">
-                            <label for="main_colorInput" class="block text-gray-700 text-sm font-bold mb-2">Main Color:</label>
-                            <input type="color"  id="main_colorInput" placeholder="Enter Main Color"  wire:model="main_color" >
+                            <label for="site_main_colorInput" class="block text-gray-700 text-sm font-bold mb-2">Main Color:</label>
+                            <input type="color" class="h-10 w-full" id="site_main_colorInput" placeholder="Enter Main Color" wire:model="main_color">
                             @error('main_color') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         
@@ -170,32 +176,64 @@
                             @error('github_repository') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
-                            <label for="supports_registrationInput" class="block text-gray-700 text-sm font-bold mb-2">New users can register: </label>
-                            <input type="radio" name="supports_registrationInput" id="supports_registrationInput" wire:model.defer="supports_registration" value="1"  />Yes
-                            <input type="radio" name="supports_registrationInput" id="supports_registrationInput" wire:model.defer="supports_registration" value="0" />No
+                            <label class="block text-gray-700 text-sm font-bold mb-2">New users can register: </label>
+                            <div class="flex items-center space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="supports_registration" id="supports_registration_yes" wire:model="supports_registration" value="1" class="form-radio h-4 w-4 text-blue-600" />
+                                    <span class="ml-2">Yes</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="supports_registration" id="supports_registration_no" wire:model="supports_registration" value="0" class="form-radio h-4 w-4 text-blue-600" />
+                                    <span class="ml-2">No</span>
+                                </label>
+                            </div>
                 
                             @error('supports_registration') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
-                            <label for="subteams_enabledInput" class="block text-gray-700 text-sm font-bold mb-2">Subteams Enabled: </label>
-                            <input type="radio" name="subteams_enabledInput" id="subteams_enabledInput" wire:model.defer="subteams_enabled" value="1"  />Yes
-                            <input type="radio" name="subteams_enabledInput" id="subteams_enabledInput" wire:model.defer="subteams_enabled" value="0" />No
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Subteams Enabled: </label>
+                            <div class="flex items-center space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="subteams_enabled" id="subteams_enabled_yes" wire:model="subteams_enabled" value="1" class="form-radio h-4 w-4 text-blue-600" />
+                                    <span class="ml-2">Yes</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="subteams_enabled" id="subteams_enabled_no" wire:model="subteams_enabled" value="0" class="form-radio h-4 w-4 text-blue-600" />
+                                    <span class="ml-2">No</span>
+                                </label>
+                            </div>
                 
                             @error('subteams_enabled') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
                         <div class="mb-4">
-                            <label for="does_livestreamingInput" class="block text-gray-700 text-sm font-bold mb-2">Site hosts a live stream: </label>
-                            <input type="radio" name="does_livestreamingInput" id="does_livestreamingInput" wire:model.defer="does_livestreaming" value="1"  />Yes
-                            <input type="radio" name="does_livestreamingInput" id="does_livestreamingInput" wire:model.defer="does_livestreaming" value="0" />No
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Site hosts a live stream: </label>
+                            <div class="flex items-center space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="does_livestreaming" id="does_livestreaming_yes" wire:model="does_livestreaming" value="1" class="form-radio h-4 w-4 text-blue-600" />
+                                    <span class="ml-2">Yes</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="does_livestreaming" id="does_livestreaming_no" wire:model="does_livestreaming" value="0" class="form-radio h-4 w-4 text-blue-600" />
+                                    <span class="ml-2">No</span>
+                                </label>
+                            </div>
                 
                             @error('does_livestreaming') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
 
 
                         <div class="mb-4">
-                            <label for="invitation_onlyInput" class="block text-gray-700 text-sm font-bold mb-2">Site registration is invitation only: </label>
-                            <input type="radio" name="invitation_onlyInput" id="invitation_onlyInput" wire:model.defer="invitation_only" value="1"  />Yes
-                            <input type="radio" name="invitation_onlyInput" id="invitation_onlyInput" wire:model.defer="invitation_only" value="0" />No
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Site registration is invitation only: </label>
+                            <div class="flex items-center space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="invitation_only" id="invitation_only_yes" wire:model="invitation_only" value="1" class="form-radio h-4 w-4 text-blue-600" />
+                                    <span class="ml-2">Yes</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="invitation_only" id="invitation_only_no" wire:model="invitation_only" value="0" class="form-radio h-4 w-4 text-blue-600" />
+                                    <span class="ml-2">No</span>
+                                </label>
+                            </div>
                 
                             @error('invitation_only') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
@@ -210,6 +248,22 @@
                         <label for="stripe_secret" class="block mt-4 text-sm font-medium text-gray-700">Stripe Secret</label>
                         <input type="password" id="stripe_secret" wire:model="stripe_secret" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="Enter Stripe Secret">
                     </div>
+                    
+                    <!-- Save/Cancel Buttons -->
+                    @if(!isset($show_buttons) || $show_buttons)
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse mt-4">
+                        <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+                            <button wire:click.prevent="store()" type="button" class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+                                Save
+                            </button>
+                        </span>
+                        <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+                            <button wire:click="closeModal()" type="button" class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+                                Cancel
+                            </button>
+                        </span>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

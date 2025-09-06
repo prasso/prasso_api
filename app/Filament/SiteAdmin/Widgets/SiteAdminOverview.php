@@ -141,9 +141,9 @@ class SiteAdminOverview extends BaseWidget
                                 ->description($contentStats ? "{$contentStats->published} published • {$contentStats->drafts} drafts" : 'No content')
                                 ->descriptionIcon('heroicon-o-document-text')
                                 ->color('primary')
-                                ->url(route('filament.site-admin.resources.site-pages.index')),
+                                ->url(route('site.edit.mysite')),
 
-                            Card::make('Last Updated', $lastPageUpdate)
+                            Card::make('Last Page Updated', $lastPageUpdate)
                                 ->description('Content last updated')
                                 ->descriptionIcon('heroicon-o-clock')
                                 ->color('gray'),
@@ -156,11 +156,11 @@ class SiteAdminOverview extends BaseWidget
                                 ->url(route('filament.site-admin.resources.team-users.index')),
 
                             // Package Status
-                            Card::make('Active Packages', $activePackages)
+                           /* Card::make('Active Packages', $activePackages)
                                 ->description($expiringSoon ? "$expiringSoon expiring soon" : 'All active')
                                 ->descriptionIcon('heroicon-o-cube')
                                 ->color($expiringSoon ? 'warning' : 'success'),
-
+*/
                             // Message Stats
                             Card::make('Messages (24h)', $deliveries24h)
                                 ->description("$deliverySuccessRate% success rate • Compose")

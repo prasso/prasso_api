@@ -36,7 +36,7 @@
          <link href="/js/google-fonts-Roboto.css" rel="stylesheet"> 
          <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
          <!-- Scripts -->
-         <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.2.1/dist/alpine.js" defer></script>
+         @include('components.alpine-loader')
          <link rel="icon" type="image/png" href="{{$site->favicon??''}}" />
         @endif
 
@@ -58,6 +58,7 @@
         @endif
         @include('components.livewire-component-load')
     
+        @include('components.livewire-config')
         @livewireStyles
     </head>
     <body>
@@ -73,7 +74,6 @@
         </div>
         <x-footer></x-footer>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
         @livewireScripts
     </body>
 </html>

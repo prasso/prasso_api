@@ -21,13 +21,18 @@
             <div class="block px-4 py-2 text-lg font-semibold text-gray-600">
                 @if(isset($site_id) && $site_id)
                 <!-- Collapsible section for image library and site actions -->
-                <div x-data="{ isToolsOpen: false }">
-                    <button @click="isToolsOpen = !isToolsOpen" type="button" class="flex justify-between items-center w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md mb-2 transition-all duration-200">
-                        <span class="font-medium text-gray-700">Site Tools & Resources</span>
-                        <svg x-show="!isToolsOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                <div x-data="{ isToolsOpen: false }" class="mb-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                    <button @click="isToolsOpen = !isToolsOpen" type="button" class="flex justify-between items-center w-full px-4 py-3 bg-gradient-to-r from-purple-50 to-gray-50 hover:from-purple-100 hover:to-gray-100 rounded-t-lg transition-all duration-200 border-b border-gray-200">
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                            </svg>
+                            <span class="font-semibold text-gray-800 ml-2 text-lg">Site Tools & Resources</span>
+                        </div>
+                        <svg x-show="!isToolsOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                         </svg>
-                        <svg x-show="isToolsOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                        <svg x-show="isToolsOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
                         </svg>
                     </button>
@@ -90,19 +95,6 @@
                 <form>
                     <input type="hidden" wire:model="site_id" />
                     @include('sites.site-inputs', ['team_selection' => $team_selection])
-                    
-                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                        <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-                            <button wire:click.prevent="store()" type="button" class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                Save
-                            </button>
-                        </span>
-                        <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-                            <button wire:click="closeModal()" type="button" class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                Cancel
-                            </button>
-                        </span>
-                    </div>
                 </form>
             </div>
         </div>
