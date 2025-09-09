@@ -1,4 +1,8 @@
-<div x-data="{ isOpen: {{ isset($show_modal) && $show_modal ? 'true' : 'false' }} }" class="mb-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+<div 
+    x-data="{ isOpen: {{ json_encode(isset($show_modal) && $show_modal === true && request()->path() !== 'site/edit') }} }"
+    class="mb-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+>
+
     <button @click="isOpen = !isOpen" type="button" class="flex justify-between items-center w-full px-4 py-3 bg-gradient-to-r from-green-50 to-gray-50 hover:from-green-100 hover:to-gray-100 rounded-t-lg transition-all duration-200 border-b border-gray-200">
         <div class="flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -16,11 +20,8 @@
     </button>
     
     <div x-show="isOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95">
-        @if( !isset($show_modal) || $show_modal)
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-        @else
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-        @endif
+        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+
                     <div class="">
                     <div id="validation-errors" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative {{ $errors->any() ? '' : 'hidden' }}" role="alert">
                         @if($errors->any())
