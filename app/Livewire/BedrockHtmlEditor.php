@@ -20,7 +20,12 @@ class BedrockHtmlEditor extends Component
     public $isProcessing = false;
     public $modificationHistory = [];
     public $selectedModification = null;
-    public $viewMode = 'edit'; // 'edit', 'preview', 'history'
+    public $viewMode = 'edit'; // 'edit', 'preview', 'history', 'confirm'
+    
+    // Properties for the preview-and-confirm workflow
+    public $originalHtml = null;
+    public $modifiedHtml = null;
+    public $showConfirmation = false;
     
     protected $htmlProcessingService;
     
@@ -77,15 +82,18 @@ class BedrockHtmlEditor extends Component
             $result = $this->htmlProcessingService->modifyHtml(
                 $this->htmlContent,
                 $this->prompt
-                // Removed the extra parameters that don't match the method signature
             );
             
             if ($result['success']) {
-                $this->htmlContent = $result['modified_html'];
-                $this->savePageHtmlContent($this->htmlContent);
-                $this->prompt = '';
-                $this->loadModificationHistory();
-                $this->dispatch('notify', message: 'HTML modified successfully!');
+                // Store the original and modified HTML for confirmation
+                $this->originalHtml = $this->htmlContent;
+                $this->modifiedHtml = $result['modified_html'];
+                
+                // Switch to confirmation view
+                $this->showConfirmation = true;
+                $this->viewMode = 'confirm';
+                
+                $this->dispatch('notify', message: 'HTML modification generated. Please review and confirm the changes.');
             } else {
                 $this->dispatch('notify', message: 'Error: ' . ($result['error'] ?? 'Unknown error'), type: 'error');
             }
@@ -129,25 +137,144 @@ class BedrockHtmlEditor extends Component
     
     public function loadModificationHistory()
     {
-        // Initialize with an empty array since getModifications method doesn't exist yet
-        $this->modificationHistory = [];
-        
-        // Log that this feature is not implemented yet
-        Log::info('Modification history feature is not implemented yet');
+        try {
+            $result = $this->htmlProcessingService->getModificationHistory(
+                $this->siteId,
+                $this->pageId,
+                10, // Limit to 10 records
+                0   // Start from the first record
+            );
+            
+            if ($result['success']) {
+                $this->modificationHistory = $result['modifications'];
+            } else {
+                Log::warning('Failed to load modification history', [
+                    'error' => $result['error'] ?? 'Unknown error'
+                ]);
+                $this->modificationHistory = [];
+            }
+        } catch (\Exception $e) {
+            Log::error('Error loading modification history', [
+                'error' => $e->getMessage()
+            ]);
+            $this->modificationHistory = [];
+        }
     }
     
     public function applyModification($modificationId)
     {
-        // This method is not implemented yet since the HtmlProcessingService doesn't have applyModification
-        $this->dispatch('notify', message: 'Modification history feature is not implemented yet', type: 'info');
-        
-        // Log that this feature is not implemented yet
-        Log::info('Apply modification feature is not implemented yet');
+        try {
+            // Find the modification in the history
+            $modification = \Prasso\BedrockHtmlEditor\Models\HtmlModification::find($modificationId);
+            
+            if (!$modification) {
+                $this->dispatch('notify', message: 'Modification not found', type: 'error');
+                return;
+            }
+            
+            // Check if the modification belongs to this site and page
+            if ($modification->site_id != $this->siteId || $modification->page_id != $this->pageId) {
+                $this->dispatch('notify', message: 'Invalid modification for this page', type: 'error');
+                return;
+            }
+            
+            // Apply the modification by restoring the HTML content
+            $this->htmlContent = $modification->modified_html;
+            $this->savePageHtmlContent($this->htmlContent);
+            
+            // Save a new modification history entry for this restore action
+            $this->htmlProcessingService->saveModificationHistory(
+                $this->siteId,
+                $this->pageId,
+                'Restored from history: ' . $modification->title,
+                'Restored from previous version created at ' . $modification->created_at,
+                $this->getPageHtmlContent(), // Current content before restore
+                $modification->modified_html, // Content being restored
+                null,
+                ['restored_from_id' => $modification->id]
+            );
+            
+            // Reload the modification history
+            $this->loadModificationHistory();
+            
+            $this->dispatch('notify', message: 'Successfully restored from history', type: 'success');
+        } catch (\Exception $e) {
+            Log::error('Error applying modification', [
+                'error' => $e->getMessage(),
+                'modification_id' => $modificationId
+            ]);
+            $this->dispatch('notify', message: 'Error: ' . $e->getMessage(), type: 'error');
+        }
     }
     
     public function setViewMode($mode)
     {
         $this->viewMode = $mode;
+        
+        // Reset confirmation state when switching away from confirm mode
+        if ($mode !== 'confirm') {
+            $this->showConfirmation = false;
+        }
+    }
+    
+    /**
+     * Confirm and apply the AI-generated changes
+     */
+    public function confirmChanges()
+    {
+        try {
+            // Apply the modified HTML
+            $this->htmlContent = $this->modifiedHtml;
+            
+            // Save the changes
+            $this->savePageHtmlContent($this->htmlContent);
+            
+            // Save to modification history
+            $metadata = [
+                'site_id' => $this->siteId,
+                'page_id' => $this->pageId,
+            ];
+            
+            $this->htmlProcessingService->saveModificationHistory(
+                $this->siteId,
+                $this->pageId,
+                'HTML Modification: ' . substr($this->prompt, 0, 50) . '...',
+                $this->prompt,
+                $this->originalHtml,
+                $this->modifiedHtml,
+                null,
+                $metadata
+            );
+            
+            // Reset state
+            $this->prompt = '';
+            $this->originalHtml = null;
+            $this->modifiedHtml = null;
+            $this->showConfirmation = false;
+            $this->viewMode = 'edit';
+            
+            // Reload modification history
+            $this->loadModificationHistory();
+            
+            $this->dispatch('notify', message: 'Changes applied successfully!');
+        } catch (\Exception $e) {
+            Log::error('Error confirming changes: ' . $e->getMessage());
+            $this->dispatch('notify', message: 'Error: ' . $e->getMessage(), type: 'error');
+        }
+    }
+    
+    /**
+     * Reject the AI-generated changes
+     */
+    public function rejectChanges()
+    {
+        // Reset state without saving
+        $this->originalHtml = null;
+        $this->modifiedHtml = null;
+        $this->showConfirmation = false;
+        $this->viewMode = 'edit';
+        
+        $this->dispatch('notify', message: 'Changes rejected.');
     }
     
     protected function getPageHtmlContent()

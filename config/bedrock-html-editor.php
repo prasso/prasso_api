@@ -67,6 +67,7 @@ return [
         ],
         'sanitize_output' => env('HTML_EDITOR_SANITIZE', true),
         'minify_output' => env('HTML_EDITOR_MINIFY', false),
+        'preserve_scripts' => env('HTML_EDITOR_PRESERVE_SCRIPTS', true),
     ],
 
     /*

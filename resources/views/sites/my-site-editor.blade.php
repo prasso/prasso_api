@@ -1,7 +1,7 @@
 <x-app-layout :site="$site ?? null">
     <div id='mysiteeditor'>
         <div style="margin-bottom: -90px">
-            @livewire('site.create-or-edit',['show_modal' => 0, 'site' => $site,'user'=>$user,'team'=>$team, 'team_selection'=>$team_selection ])
+            @livewire('site.create-or-edit',['show_modal' => false, 'site' => $site,'user'=>$user,'team'=>$team, 'team_selection'=>$team_selection ])
         </div>
         <div class="max-w-7xl ml-10 mx-auto sm:px-6 lg:px-8">
             <div x-data="{ isOpen: true }" class="mb-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
