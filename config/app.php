@@ -58,6 +58,7 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         Prasso\BedrockHtmlEditor\BedrockHtmlEditorServiceProvider::class,
         Prasso\ProjectManagement\ProjectManagementServiceProvider::class,
+        Prasso\Messaging\MessagingServiceProvider::class,
 
         /*
          * Application Service Providers...
