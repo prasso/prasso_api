@@ -1,7 +1,7 @@
 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">AI HTML Editor - {{ $sitePage->title }}</h1>
-        <a href="/sitepages/{{ $siteId }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+        <a href="{{ route('site.edit.mysite') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
             Back to Site Pages
         </a>
     </div>
