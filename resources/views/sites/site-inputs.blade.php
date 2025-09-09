@@ -1,5 +1,5 @@
 <div 
-    x-data="{ isOpen: {{ json_encode(isset($show_modal) && $show_modal === true) }} }"
+    x-data="{ isOpen: {{ json_encode(isset($show_modal) && $show_modal === true && request()->path() !== 'site/edit') }} }"
     class="mb-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
 >
 
