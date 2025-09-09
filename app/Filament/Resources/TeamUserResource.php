@@ -24,7 +24,13 @@ class TeamUserResource extends Resource
 {
     protected static ?string $model = TeamUser::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+
+    protected static ?string $navigationGroup = 'My Site';
+    
+    protected static ?string $navigationLabel = 'Team Users';
+    
+    protected static ?int $navigationSort = 30;
 
     public static function form(Form $form): Form
     {

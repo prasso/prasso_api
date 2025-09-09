@@ -26,6 +26,10 @@ class UserRoleResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'My Site';
+    
+    protected static ?int $navigationSort = 28;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -35,14 +39,17 @@ class UserRoleResource extends Resource
                     ->required()
                     ->placeholder('Select a user')
                     ->options(function () {
+                        $user = auth()->user();
                         // For superadmins, show all users with roles
-                        if (auth()->user()->isSuperAdmin()) {
+                        if ($user && method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
                             return User::whereHas('roles')
                                 ->pluck('name', 'id');
                         }
                         
                         // For sub-admins, only show users from their site
-                        $siteId = auth()->user()->current_team_id;
+                        if (!$user) return [];
+                        $siteId = $user->current_team_id;
+                        if (!$siteId) return [];
                         $teamIds = TeamSite::where('site_id', $siteId)
                             ->pluck('team_id')
                             ->toArray();
@@ -68,13 +75,16 @@ class UserRoleResource extends Resource
     {
         return $table
             ->modifyQueryUsing(function (Builder $query) {
+                $user = auth()->user();
                 // Skip filtering for superadmins
-                if (auth()->user()->isSuperAdmin()) {
+                if ($user && method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
                     return;
                 }
                 
                 // For sub-admins, filter users by their current site
-                $siteId = auth()->user()->current_team_id;
+                if (!$user) return;
+                $siteId = $user->current_team_id;
+                if (!$siteId) return;
                 $teamIds = TeamSite::where('site_id', $siteId)
                     ->pluck('team_id')
                     ->toArray();

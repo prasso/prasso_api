@@ -27,6 +27,10 @@ class TeamsResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'My Site';
+    
+    protected static ?int $navigationSort = 20;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -83,7 +87,7 @@ public static function table(Table $table): Table
 
         try {
             $panel = Filament::getCurrentPanel();
-            if ($panel && $panel->getId() === 'admin' && method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
+            if ($panel && $panel->getId() === 'admin' && $user && method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
                 return $query; // full access in admin panel
             }
         } catch (\Throwable $e) {}
@@ -108,7 +112,7 @@ public static function table(Table $table): Table
         $user = auth()->user();
         if (!$panel || !$user) return false;
         if ($panel->getId() === 'site-admin') return true;
-        if ($panel->getId() === 'admin') return method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin();
+        if ($panel->getId() === 'admin' && method_exists($user, 'isSuperAdmin')) return $user->isSuperAdmin();
         return false;
     }
 }
