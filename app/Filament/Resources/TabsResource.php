@@ -20,9 +20,11 @@ class TabsResource extends Resource
 {
     protected static ?string $model = Tabs::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-table-cells';
+    protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
 
     protected static ?string $navigationGroup = 'My Site';
+    
+    protected static ?string $navigationColor = 'primary';
     
     protected static ?string $navigationLabel = 'Tabs';
     

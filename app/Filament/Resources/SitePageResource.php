@@ -214,6 +214,12 @@ class SitePageResource extends Resource
             'edit' => Pages\EditSitePage::route('/{record}/edit'),
         ];
     }
+    
+    public static function getNavigationUrl(): string
+    {
+        // Redirect to the mysite editor instead of the Filament editor
+        return route('site.edit.mysite');
+    }
 
     public static function shouldRegisterNavigation(): bool
     {

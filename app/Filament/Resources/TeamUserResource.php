@@ -24,9 +24,11 @@ class TeamUserResource extends Resource
 {
     protected static ?string $model = TeamUser::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     protected static ?string $navigationGroup = 'My Site';
+    
+    protected static ?string $navigationColor = 'warning';
     
     protected static ?string $navigationLabel = 'Team Users';
     

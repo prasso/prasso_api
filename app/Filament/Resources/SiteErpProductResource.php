@@ -19,9 +19,11 @@ class SiteErpProductResource extends Resource
 {
     protected static ?string $model = SiteErpProduct::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
 
     protected static ?string $navigationGroup = 'My Site';
+    
+    protected static ?string $navigationColor = 'success';
     
     protected static ?string $navigationLabel = 'My Products';
     
