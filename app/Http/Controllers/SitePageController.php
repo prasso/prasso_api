@@ -91,9 +91,22 @@ class SitePageController extends BaseController
         // Check if user is a super admin on site ID 1 (Prasso main site)
         $isPrassoSuperAdmin = $user->isSuperAdmin() && $this->site->id == 1;
         
-        // Only redirect non-super admins to the Filament admin panel
-        if ($user->hasRole(config('constants.INSTRUCTOR')) && !$isPrassoSuperAdmin) {
-            return redirect()->route('filament.site-admin.pages.dashboard');
+        // Only redirect instructors to the Filament admin panel if they are team owners for this specific site
+        // or if they are super admins on any site
+        if ($user->hasRole(config('constants.INSTRUCTOR'))) {
+            // If this is the Prasso site (ID 1), only super admins should be redirected to admin
+            if ($this->site->id == 1) {
+                if ($isPrassoSuperAdmin) {
+                    return redirect()->route('filament.site-admin.pages.dashboard');
+                }
+            } else {
+                // For other sites, check if the user is a team owner for this specific site
+                $isTeamOwnerForThisSite = $user->isTeamOwnerForSite($this->site);
+                
+                if ($isTeamOwnerForThisSite || $user->isSuperAdmin()) {
+                    return redirect()->route('filament.site-admin.pages.dashboard');
+                }
+            }
         }
         
         $user_content = $this->getPage('Dashboard', $user);

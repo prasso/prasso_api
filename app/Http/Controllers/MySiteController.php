@@ -8,7 +8,8 @@ use App\Http\Controllers\Controller as BaseController;
 use Illuminate\Support\Facades\Log;
 use App\Services\UserService;
 use App\Models\Instructor;
-use Auth;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class MySiteController extends BaseController
 {
@@ -50,11 +51,49 @@ class MySiteController extends BaseController
         $mysite = Site::with(['teams', 'livestream_settings', 'stripe'])->find($mysite->id);
         
         $user = Auth::user();
-        if (!$user->isInstructor() && !$user->isTeamOwnerForSite($mysite))
-        {
+        
+        // If this is the Prasso site (ID 1), only super admins should be able to edit it
+        if ($mysite->id == 1) {
+            // Get user roles directly from the database
+            $userRoles = \App\Models\UserRole::where('user_id', $user->id)->get();
             
-            abort(403, 'Unauthorized action.');
+            // Check if user is a super admin
+            $isSuperAdmin = false;
+            foreach ($userRoles as $userRole) {
+                if ($userRole->role_id == config('constants.SUPER_ADMIN')) {
+                    $isSuperAdmin = true;
+                    break;
+                }
+            }
             
+            if (!$isSuperAdmin) {
+                abort(403, 'Only super admins can edit the Prasso site.');
+            }
+        } else {
+            // For other sites, check if the user is a team owner for this specific site
+            $teamFromSite = $mysite->teams()->first();
+            if (!$teamFromSite) {
+                abort(404, 'No team found for this site.');
+            }
+            
+            // Get user roles directly from the database
+            $userRoles = \App\Models\UserRole::where('user_id', $user->id)->get();
+            
+            // Check if user is a super admin
+            $isSuperAdmin = false;
+            foreach ($userRoles as $userRole) {
+                if ($userRole->role_id == config('constants.SUPER_ADMIN')) {
+                    $isSuperAdmin = true;
+                    break;
+                }
+            }
+            
+            // Check if user is the team owner
+            $isTeamOwner = $user->id == $teamFromSite->user_id;
+            
+            if (!$isSuperAdmin && !$isTeamOwner) {
+                abort(403, 'Unauthorized action. You must be a site admin for this specific site.');
+            }
         }
         
         $team = $mysite->teams()->first();
@@ -74,13 +113,50 @@ class MySiteController extends BaseController
         $user = Auth::user();
         $site = Site::where('id',$siteid)->with('teams')->first();
         
-        $team = $site->teams()->first();
-        if (!$user->canManageTeamForSite($team->id))
-        {
-            abort(403, 'Unauthorized action.');
+        // If this is the Prasso site (ID 1), only super admins should be able to edit it
+        if ($site->id == 1) {
+            // Get user roles directly from the database
+            $userRoles = \App\Models\UserRole::where('user_id', $user->id)->get();
+            
+            // Check if user is a super admin
+            $isSuperAdmin = false;
+            foreach ($userRoles as $userRole) {
+                if ($userRole->role_id == config('constants.SUPER_ADMIN')) {
+                    $isSuperAdmin = true;
+                    break;
+                }
+            }
+            
+            if (!$isSuperAdmin) {
+                abort(403, 'Only super admins can edit the Prasso site.');
+            }
+        } else {
+            $team = $site->teams()->first();
+            if (!$team) {
+                abort(404, 'No team found for this site.');
+            }
+            
+            // Get user roles directly from the database
+            $userRoles = \App\Models\UserRole::where('user_id', $user->id)->get();
+            
+            // Check if user is a super admin
+            $isSuperAdmin = false;
+            foreach ($userRoles as $userRole) {
+                if ($userRole->role_id == config('constants.SUPER_ADMIN')) {
+                    $isSuperAdmin = true;
+                    break;
+                }
+            }
+            
+            // Check if user is the team owner
+            $isTeamOwner = $user->id == $team->user_id;
+            
+            if (!$isSuperAdmin && !$isTeamOwner) {
+                abort(403, 'Unauthorized action. You must be a site admin for this specific site.');
+            }
         }
         
-
+        $team = $site->teams()->first();
         $team_selection = $team->pluck('name','id');
         return  view('sites.my-site-editor')    
             ->with('site', $site)

@@ -15,7 +15,8 @@ class TeamUser extends Model
     public $timestamps = true;
     protected $fillable = [
         'user_id',
-        'team_id'
+        'team_id',
+        'role'
     ];
     
 
