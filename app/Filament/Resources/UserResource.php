@@ -116,9 +116,25 @@ class UserResource extends Resource
                     ->label('Email')
                     ->sortable()
                     ->searchable(),
-                    TextColumn::make('created_at')->label('Created At'),
-                    TextColumn::make('updated_at')->label('Updated At')
+                TextColumn::make('created_at')->label('Created At'),
+                TextColumn::make('updated_at')->label('Updated At')
                 // Add more columns as needed
+            ])
+            ->filters([
+                Tables\Filters\SelectFilter::make('team')
+                    ->label('Filter by Team')
+                    ->multiple()
+                    ->options(Team::pluck('name', 'id'))
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['values'],
+                            fn (Builder $query, $values): Builder => $query->whereHas(
+                                'team_member',
+                                fn (Builder $query) => $query->whereIn('team_id', $values)
+                            )
+                        );
+                    })
+                    ->preload()
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -159,8 +175,8 @@ class UserResource extends Resource
 
         try {
             $panel = Filament::getCurrentPanel();
-            if ($panel && $panel->getId() === 'admin' && $user && method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
-                return $query; // full access in admin panel
+            if ($panel && ($panel->getId() === 'admin' || $panel->getId() === 'site-admin') && $user && method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
+                return $query; // full access in admin and site-admin panels for super-admins
             }
         } catch (\Throwable $e) {}
 
