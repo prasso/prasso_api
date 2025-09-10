@@ -17,6 +17,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Http\Middleware\SetFilamentSiteNameMiddleware;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -33,6 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverResources(in: base_path('packages/prasso/project_management/src/Filament/Resources'), for: 'Prasso\\ProjectManagement\\Filament\\Resources')
             ->discoverResources(in: base_path('packages/prasso/messaging/src/Filament/Resources'), for: 'Prasso\\Messaging\\Filament\\Resources')
+            ->discoverResources(in: base_path('packages/prasso/autoprohub/src/Filament/Resources'), for: 'Prasso\\AutoProHub\\Filament\\Resources')
             ->discoverResources(in: base_path('packages/faxt/invenbin/src/Filament/Resources'), for: 'Faxt\\Invenbin\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -53,6 +55,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                SetFilamentSiteNameMiddleware::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

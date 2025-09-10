@@ -24,7 +24,15 @@ class TeamUserResource extends Resource
 {
     protected static ?string $model = TeamUser::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
+    protected static ?string $navigationGroup = 'My Site';
+    
+    protected static ?string $navigationColor = 'warning';
+    
+    protected static ?string $navigationLabel = 'Team Users';
+    
+    protected static ?int $navigationSort = 30;
 
     public static function form(Form $form): Form
     {
@@ -119,8 +127,8 @@ class TeamUserResource extends Resource
 
         try {
             $panel = Filament::getCurrentPanel();
-            if ($panel && $panel->getId() === 'admin' && method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
-                return $query; // full access in admin panel
+            if ($panel && ($panel->getId() === 'admin' || $panel->getId() === 'site-admin') && method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
+                return $query; // full access in admin and site-admin panels for super-admins
             }
         } catch (\Throwable $e) {}
 
@@ -140,11 +148,7 @@ class TeamUserResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        $panel = Filament::getCurrentPanel();
-        $user = auth()->user();
-        if (!$panel || !$user) return false;
-        if ($panel->getId() === 'site-admin') return true;
-        if ($panel->getId() === 'admin') return method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin();
+        // Hide from navigation as we're moving this to the Teams edit page
         return false;
     }
 }

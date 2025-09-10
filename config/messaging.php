@@ -2,6 +2,9 @@
 
 
 return [
+    'help'=>[
+        'disclaimer'=>'Reply HELP for help. STOP to cancel',
+    ],
     'providers' => [
       
     ],

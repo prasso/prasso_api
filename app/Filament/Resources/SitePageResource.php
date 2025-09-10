@@ -29,11 +29,20 @@ class SitePageResource extends Resource
                 Forms\Components\Select::make('fk_site_id')
                     ->label('Site')
                     ->options(function () {
-                        $user = auth()->user();
-                        $siteId = $user?->getUserOwnerSiteId();
+                        // Prefer the site resolved from the current host
+                        $currentSite = \App\Http\Controllers\Controller::getClientFromHost();
+                        $siteId = $currentSite?->id;
+                        // Fallback to user's owner site id if host-based resolution fails
+                        if (!$siteId) {
+                            $user = auth()->user();
+                            $siteId = $user?->getUserOwnerSiteId();
+                        }
                         return $siteId ? Site::where('id', $siteId)->pluck('site_name', 'id')->toArray() : [];
                     })
-                    ->default(fn () => auth()->user()?->getUserOwnerSiteId())
+                    ->default(function () {
+                        $currentSite = \App\Http\Controllers\Controller::getClientFromHost();
+                        return $currentSite?->id ?? auth()->user()?->getUserOwnerSiteId();
+                    })
                     ->required(),
                 Forms\Components\TextInput::make('section')
                     ->required()
@@ -42,6 +51,7 @@ class SitePageResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('description')
+                    ->rows(12)
                     ->maxLength(65535)
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('url')
@@ -66,7 +76,13 @@ class SitePageResource extends Resource
                 Forms\Components\Select::make('menu_id')
                     ->label('Parent Menu')
                     ->options(function () {
-                        return [0 => 'Top Level'] + \App\Models\SitePages::pluck('title', 'id')->toArray();
+                        $currentSite = \App\Http\Controllers\Controller::getClientFromHost();
+                        $siteId = $currentSite?->id ?? auth()->user()?->getUserOwnerSiteId();
+                        $options = [];
+                        if ($siteId) {
+                            $options = \App\Models\SitePages::where('fk_site_id', $siteId)->pluck('title', 'id')->toArray();
+                        }
+                        return [0 => 'Top Level'] + $options;
                     })
                     ->searchable()
                     ->default(0),
@@ -160,10 +176,21 @@ class SitePageResource extends Resource
             // ignore
         }
 
+        // For the Site Admin panel, scope strictly to the site derived from the current host
         try {
-            $siteId = $user->getUserOwnerSiteId();
-            if ($siteId) {
-                return $query->where('fk_site_id', $siteId);
+            $currentSite = \App\Http\Controllers\Controller::getClientFromHost();
+            if ($currentSite?->id) {
+                return $query->where('fk_site_id', $currentSite->id);
+            }
+        } catch (\Throwable $e) {
+            // ignore and fallback below
+        }
+
+        // Fallback: use user's owner site id
+        try {
+            $fallbackSiteId = $user->getUserOwnerSiteId();
+            if ($fallbackSiteId) {
+                return $query->where('fk_site_id', $fallbackSiteId);
             }
         } catch (\Throwable $e) {
             // ignore
@@ -186,6 +213,12 @@ class SitePageResource extends Resource
             'create' => Pages\CreateSitePage::route('/create'),
             'edit' => Pages\EditSitePage::route('/{record}/edit'),
         ];
+    }
+    
+    public static function getNavigationUrl(): string
+    {
+        // Redirect to the mysite editor instead of the Filament editor
+        return route('site.edit.mysite');
     }
 
     public static function shouldRegisterNavigation(): bool

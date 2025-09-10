@@ -118,6 +118,7 @@ class Site extends Model
 
     public static function isPrasso($host) 
     {
+        $host = request()->getHttpHost();     
         $site = Site::getClient($host);
         if ($site == null)
         {
@@ -137,27 +138,40 @@ class Site extends Model
             return null;
         }
     try{
+        // Use exact matching for better performance
         $currentsite = null;
+        
+        // Build query to find sites containing this exact host
         if (Schema::hasTable('livestream_settings')) {
-           
-            $currentsite = Site::where('host' ,  $host )
-                ->orWhere('host', 'like', '%' . $host . '%')
+            $currentsite = Site::where('host', 'like', '%,' . $host . ',%')
+                ->orWhere('host', 'like', $host . ',%')
+                ->orWhere('host', 'like', '%,' . $host)
+                ->orWhere('host', $host)
                 ->with('livestream_settings')
                 ->get();
-        }
-        else
-        {
-            $currentsite = Site::where('host' ,  $host )
-                ->orWhere('host', 'like', '%' . $host . '%')
+        } else {
+            $currentsite = Site::where('host', 'like', '%,' . $host . ',%')
+                ->orWhere('host', 'like', $host . ',%')
+                ->orWhere('host', 'like', '%,' . $host)
+                ->orWhere('host', $host)
                 ->get();
-
+        }
+        
+        // Verify exact match in comma-separated list
+        if ($currentsite && count($currentsite) > 0) {
+            foreach ($currentsite as $site) {
+                $hosts = array_map('trim', explode(',', $site->host));
+                if (in_array($host, $hosts)) {
+                    return $site;
+                }
+            }
         }
         if ($currentsite == null)
         {
             Log::info('Site get client failed for host: ');
             return null;
         }
-        
+
         return $currentsite[0];
     }
     catch(\Exception $e){

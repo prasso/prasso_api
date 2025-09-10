@@ -28,12 +28,18 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'My Site';
+    
+    protected static ?int $navigationSort = 25;
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Components\Hidden::make('id'),
-                Components\Hidden::make('version')->default('v1'),
+                Components\Hidden::make('version')
+                    ->default('v1')
+                    ->dehydrateStateUsing(fn ($state) => $state ?? 'v1'),
                 Components\TextInput::make('name')
                     ->autofocus()
                     ->required(),
@@ -51,15 +57,38 @@ class UserResource extends Resource
                     ->placeholder('Select a team')
                     ->options(function () {
                         $user = auth()->user();
-                        $siteId = $user?->getUserOwnerSiteId();
+                        if (!$user) return [];
+                        $siteId = $user->getUserOwnerSiteId();
                         if (!$siteId) return [];
                         $site = Site::find($siteId);
                         $team = $site?->teams()->first();
                         return $team ? Team::where('id', $team->id)->pluck('name', 'id') : [];
                     }),
 
-                Components\TextInput::make('profile_photo_path')
-                    ->nullable(),
+                Components\FileUpload::make('profile_photo_path')
+                    ->label('Profile Photo')
+                    ->image()
+                    ->imageEditor()
+                    ->imageEditorAspectRatios([
+                        '16:9',
+                        '4:3',
+                        '1:1',
+                    ])
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/svg+xml'])
+                    ->maxSize(5120) // 5MB
+                    ->directory(function () {
+                        $user = auth()->user();
+                        return 'photos-' . ($user ? $user->id : 'default');
+                    })
+                    ->disk('s3')
+                    ->visibility('public')
+                    ->imagePreviewHeight('250')
+                    ->loadingIndicatorPosition('left')
+                    ->panelAspectRatio('2:1')
+                    ->panelLayout('integrated')
+                    ->removeUploadedFileButtonPosition('right')
+                    ->uploadButtonPosition('left')
+                    ->uploadProgressIndicatorPosition('left'),
                 Components\TextInput::make('phone')     
                     ->required(),
 
@@ -87,9 +116,25 @@ class UserResource extends Resource
                     ->label('Email')
                     ->sortable()
                     ->searchable(),
-                    TextColumn::make('created_at')->label('Created At'),
-                    TextColumn::make('updated_at')->label('Updated At')
+                TextColumn::make('created_at')->label('Created At'),
+                TextColumn::make('updated_at')->label('Updated At')
                 // Add more columns as needed
+            ])
+            ->filters([
+                Tables\Filters\SelectFilter::make('team')
+                    ->label('Filter by Team')
+                    ->multiple()
+                    ->options(Team::pluck('name', 'id'))
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['values'],
+                            fn (Builder $query, $values): Builder => $query->whereHas(
+                                'team_member',
+                                fn (Builder $query) => $query->whereIn('team_id', $values)
+                            )
+                        );
+                    })
+                    ->preload()
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -116,7 +161,7 @@ class UserResource extends Resource
         return [
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
-            //'edit' => Pages\EditUser::route('/{record}/edit'),
+            'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
 
@@ -130,8 +175,8 @@ class UserResource extends Resource
 
         try {
             $panel = Filament::getCurrentPanel();
-            if ($panel && $panel->getId() === 'admin' && method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
-                return $query; // full access in admin panel
+            if ($panel && ($panel->getId() === 'admin' || $panel->getId() === 'site-admin') && $user && method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
+                return $query; // full access in admin and site-admin panels for super-admins
             }
         } catch (\Throwable $e) {}
 
@@ -156,7 +201,7 @@ class UserResource extends Resource
         $user = auth()->user();
         if (!$panel || !$user) return false;
         if ($panel->getId() === 'site-admin') return true;
-        if ($panel->getId() === 'admin') return method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin();
+        if ($panel->getId() === 'admin' && method_exists($user, 'isSuperAdmin')) return $user->isSuperAdmin();
         return false;
     }
 }

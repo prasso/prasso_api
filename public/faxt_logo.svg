@@ -1,0 +1,60 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#ffffff"/>
+  
+  <!-- Main Logo Text -->
+  <text x="200" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="#626241">
+    FAXT
+  </text>
+  
+  <!-- Tagline -->
+  <text x="200" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="normal" fill="#1f2937">
+    Multi-Tenant SaaS Platform
+  </text>
+  
+  <!-- Icon - Modern geometric design representing connectivity and modularity -->
+  <g transform="translate(200, 180)">
+    <!-- Central hub -->
+    <circle cx="0" cy="0" r="12" fill="#626241"/>
+    
+    <!-- Connected nodes representing tenants -->
+    <g>
+      <!-- Top node -->
+      <circle cx="0" cy="-35" r="8" fill="#7a7c56"/>
+      <line x1="0" y1="-12" x2="0" y2="-27" stroke="#626241" stroke-width="3"/>
+      
+      <!-- Top right node -->
+      <circle cx="25" cy="-25" r="8" fill="#8e9168"/>
+      <line x1="8" y1="-8" x2="17" y2="-17" stroke="#626241" stroke-width="3"/>
+      
+      <!-- Right node -->
+      <circle cx="35" cy="0" r="8" fill="#7a7c56"/>
+      <line x1="12" y1="0" x2="27" y2="0" stroke="#626241" stroke-width="3"/>
+      
+      <!-- Bottom right node -->
+      <circle cx="25" cy="25" r="8" fill="#8e9168"/>
+      <line x1="8" y1="8" x2="17" y2="17" stroke="#626241" stroke-width="3"/>
+      
+      <!-- Bottom node -->
+      <circle cx="0" cy="35" r="8" fill="#7a7c56"/>
+      <line x1="0" y1="12" x2="0" y2="27" stroke="#626241" stroke-width="3"/>
+      
+      <!-- Bottom left node -->
+      <circle cx="-25" cy="25" r="8" fill="#8e9168"/>
+      <line x1="-8" y1="8" x2="-17" y2="17" stroke="#626241" stroke-width="3"/>
+      
+      <!-- Left node -->
+      <circle cx="-35" cy="0" r="8" fill="#7a7c56"/>
+      <line x1="-12" y1="0" x2="-27" y2="0" stroke="#626241" stroke-width="3"/>
+      
+      <!-- Top left node -->
+      <circle cx="-25" cy="-25" r="8" fill="#8e9168"/>
+      <line x1="-8" y1="-8" x2="-17" y2="-17" stroke="#626241" stroke-width="3"/>
+    </g>
+  </g>
+  
+  <!-- Subtitle -->
+  <text x="200" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="normal" fill="#6b7280">
+    Laravel • Multi-Tenant • Plugin Architecture
+  </text>
+</svg>

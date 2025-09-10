@@ -23,7 +23,7 @@
         <!-- Scripts -->
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> 
         <script src="{{ asset('/js/app.js') }}" defer></script>
-        <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
+        @include('components.alpine-loader')
     
          @if (isset($site))
          <link rel="icon" type="image/png" href="{{$site->favicon??''}}" />

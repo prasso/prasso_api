@@ -24,6 +24,8 @@
         "laravel/tinker": "^2.8",
         "league/flysystem-aws-s3-v3": "^3.19",
         "livewire/livewire": "^3.0",
+        "prasso/autoprohub": "dev-main",
+        "prasso/bedrock-html-editor": "dev-main",
         "prasso/messaging": "dev-main",
         "prasso/project_management": "dev-main",
         "spatie/laravel-google-calendar": "^3.8",
@@ -41,6 +43,14 @@
         {
             "type": "path",
             "url": "packages/prasso/project_management"
+        },
+        {
+            "type": "path",
+            "url": "packages/prasso/autoprohub"
+        },
+        {
+            "type": "path",
+            "url": "packages/prasso/bedrock-html-editor"
         }
     ],
     "require-dev": {

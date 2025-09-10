@@ -37,7 +37,7 @@
          <link href="/js/google-fonts-Roboto.css" rel="stylesheet"> 
          <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
          <!-- Scripts -->
-         <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.2.1/dist/alpine.js" defer></script>
+         @include('components.alpine-loader')
          <link rel="icon" type="image/png" href="{{$site->favicon??''}}" />
         @endif
 

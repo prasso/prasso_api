@@ -19,7 +19,15 @@ class SiteErpProductResource extends Resource
 {
     protected static ?string $model = SiteErpProduct::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+
+    protected static ?string $navigationGroup = 'My Site';
+    
+    protected static ?string $navigationColor = 'success';
+    
+    protected static ?string $navigationLabel = 'My Products';
+    
+    protected static ?int $navigationSort = 10;
 
     public static function form(Form $form): Form
     {
@@ -77,19 +85,30 @@ class SiteErpProductResource extends Resource
         ]);
     
     }
-    public static function tableQuery(): \Illuminate\Database\Eloquent\Builder
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
+        $query = parent::getEloquentQuery();
+        $user = auth()->user();
         
-        return Site::query()
-            ->whereHas('erpProducts', function ($subQuery) {
-                // Get the team IDs that the user belongs to
-                $userTeamIds = auth()->user()->teams->pluck('id');
-    
-                // Ensure the products are only from sites associated with the user's teams
-                $subQuery->whereHas('teams', function ($siteQuery) use ($userTeamIds) {
-                    $siteQuery->whereIn('team_id', $userTeamIds);
-                });
-            });
+        if (!$user) {
+            return $query->whereRaw('1 = 0');
+        }
+        
+        // If user is super admin, show all products
+        if (method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
+            return $query;
+        }
+        
+        // For site admins (instructors), only show products for their site
+        try {
+            $siteId = $user->getUserOwnerSiteId();
+            if ($siteId) {
+                return $query->where('site_id', $siteId);
+            }
+        } catch (\Throwable $e) {}
+        
+        // If we can't determine the site, don't show any products
+        return $query->whereRaw('1 = 0');
     }
     
     public static function getRelations(): array

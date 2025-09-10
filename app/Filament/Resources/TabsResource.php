@@ -20,7 +20,15 @@ class TabsResource extends Resource
 {
     protected static ?string $model = Tabs::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
+
+    protected static ?string $navigationGroup = 'My Site';
+    
+    protected static ?string $navigationColor = 'primary';
+    
+    protected static ?string $navigationLabel = 'Tabs';
+    
+    protected static ?int $navigationSort = 20;
 
     public static function form(Form $form): Form
     {

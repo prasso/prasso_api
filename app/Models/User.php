@@ -127,6 +127,10 @@ class User extends Authenticatable implements FilamentUser {
     {
        return $this->getProfilePhotoUrlAttribute();
     }
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return  $this->getProfilePhoto();
+    }
 
 
     public function team_owner() {
@@ -187,7 +191,7 @@ class User extends Authenticatable implements FilamentUser {
     }
 
     public function getRouteKeyName() {
-        return 'firebase_uid';
+        return 'id';
     }
 
     public function assignRole($roleName)
@@ -294,13 +298,25 @@ class User extends Authenticatable implements FilamentUser {
         if (is_null($team)) {
             return false;
         }
+        
+        // Super admins can access any team
         if ($this->isSuperAdmin()){
             return true;
         }
-
-        return $this->ownsTeam($team) || $this->teams->contains(function ($t) use ($team) {
+        
+        // Check if the user owns or is a member of this specific team
+        $isTeamMember = $this->ownsTeam($team) || $this->teams->contains(function ($t) use ($team) {
             return $t->id === $team->id;
         });
+        
+        // If not a direct team member, check if they're trying to access Prasso team data
+        if (!$isTeamMember && $team->id == 1) {
+            // Prevent site admins from accessing Prasso team data unless they're specifically
+            // members of the Prasso team
+            return false;
+        }
+        
+        return $isTeamMember;
     }
 
     /**filament interface, can the user access filament admin */
@@ -315,7 +331,27 @@ class User extends Authenticatable implements FilamentUser {
 
         // Site Admin panel (site owners / instructors scoped to own site)
         if ($panelId === 'site-admin') {
-            return $this->isInstructor() || $this->isSuperAdmin();
+            // Super admins can access any site admin panel
+            if ($this->isSuperAdmin()) {
+                return true;
+            }
+            
+            // Get the current site based on the host
+            $host = request()->getHttpHost();
+            $currentSite = \App\Models\Site::getClient($host);
+            
+            if (!$currentSite) {
+                return false;
+            }
+            
+            // If this is the Prasso site (ID 1), only super admins should access it
+            // (super admins are already handled above)
+            if ($currentSite->id == 1) {
+                return false;
+            }
+            
+            // For other sites, check if the user is a team owner for this specific site
+            return $this->isInstructor() && $this->isTeamOwnerForSite($currentSite);
         }
 
         // Default deny for unknown panels

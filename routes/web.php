@@ -21,6 +21,7 @@ use App\Http\Controllers\SiteMapController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\TeamInvitationController;
+use App\Http\Controllers\BedrockHtmlEditorController;
 
 Route::get('logout', function () {
     return redirect('/login');
@@ -110,8 +111,6 @@ Route::middleware([
     Route::get('/site/{siteid}/livestream-mtce/{sitemediaid}', 'SiteMediaController@siteMediaEdit')->name('site.mtce.media.edit');
     Route::post('/site/{siteid}/livestream-mtce/move-to-permanent-storage', 'SiteMediaController@siteMediaCreate')->name('site.mtce.media.create');
 
-    Route::get('/visual-editor/{pageid}', 'SitePageController@visualEditor');
-    Route::get('/visual-editor/getCombinedHtml/{pageid}', 'SitePageController@getCombinedHtml');
     Route::post('/site/{siteid}/{pageid}/sitePageDataPost', 'SitePageController@sitePageDataPost');
     Route::post('/images/upload', 'ImageController@upload')->name('images.upload');
     Route::post('/images/confirm-resize', 'ImageController@confirmResize')->name('images.confirm-resize');
@@ -120,6 +119,10 @@ Route::middleware([
     Route::delete('/site-page-data/{pageid}/{id}', [SitePageDataController::class, 'destroy']);
 
     Route::get('/getLatLonFromAddress', 'ProxyController@getLatLonFromAddress');
+    
+    Route::get('/sitepages/{siteid}/{pageid}/bedrock-html-editor', 'App\Http\Controllers\BedrockHtmlEditorController@edit')->name('sitepages.bedrock-html-editor');
+    Route::post('/sitepages/{siteid}/{pageid}/bedrock-html-editor/modify', [BedrockHtmlEditorController::class, 'update'])->name('sitepages.bedrock-html-editor.modify');
+    Route::post('/sitepages/{siteid}/{pageid}/bedrock-html-editor/create', [BedrockHtmlEditorController::class, 'create'])->name('sitepages.bedrock-html-editor.create');
 
     Route::get('/team-invitations/{invitation}', [TeamInvitationController::class, 'accept'])
         ->middleware(['signed'])

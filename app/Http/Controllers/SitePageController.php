@@ -91,9 +91,22 @@ class SitePageController extends BaseController
         // Check if user is a super admin on site ID 1 (Prasso main site)
         $isPrassoSuperAdmin = $user->isSuperAdmin() && $this->site->id == 1;
         
-        // Only redirect non-super admins to the Filament admin panel
-        if ($user->hasRole(config('constants.INSTRUCTOR')) && !$isPrassoSuperAdmin) {
-            return redirect()->route('filament.site-admin.pages.dashboard');
+        // Only redirect instructors to the Filament admin panel if they are team owners for this specific site
+        // or if they are super admins on any site
+        if ($user->hasRole(config('constants.INSTRUCTOR'))) {
+            // If this is the Prasso site (ID 1), only super admins should be redirected to admin
+            if ($this->site->id == 1) {
+                if ($isPrassoSuperAdmin) {
+                    return redirect()->route('filament.site-admin.pages.dashboard');
+                }
+            } else {
+                // For other sites, check if the user is a team owner for this specific site
+                $isTeamOwnerForThisSite = $user->isTeamOwnerForSite($this->site);
+                
+                if ($isTeamOwnerForThisSite || $user->isSuperAdmin()) {
+                    return redirect()->route('filament.site-admin.pages.dashboard');
+                }
+            }
         }
         
         $user_content = $this->getPage('Dashboard', $user);
@@ -529,66 +542,6 @@ class SitePageController extends BaseController
             ->with('siteid', $siteid)
             ->with('site',$this->site)
             ->with('masterPage',$masterpage);
-    }
-
-    public function visualEditor($pageid)
-    {
-        if (!Controller::userOkToViewPageByHost($this->userService))
-        {
-            info('user not ok to view page in visualEditor: ' . $pageid);
-            return redirect('/login');
-        }
-        $pageToEdit = SitePages::where('id',$pageid)->first();
-        $master_page = $this->getMaster($pageToEdit);
-        $page_site = Site::where('id',$pageToEdit->fk_site_id)->with('teams')->first();
-        $team_images = \App\Models\TeamImage::where('team_id', $page_site->teams[0]->id)->pluck('path')
-                        ->map(function ($path) {
-                            return config('constants.CLOUDFRONT_ASSET_URL') . $path;
-                        });
-         
-        if ($pageToEdit == null)
-        {
-            session()->flash('status','Page not found.');
-            return redirect()->back();
-        }
-
-        return view('sitepage.grapes-updated')
-            ->with('sitePage', $pageToEdit) 
-            ->with('site',$this->site)
-            ->with('team_images', $team_images)
-            ->with('page_short_url','/page/'.$pageToEdit->section)
-            ->with('masterPage',$master_page);
-    }
-
-    /**this can be called from grapesjs editor. but the functionality is also
-     * done in the visualeditor function above
-     */
-    public function getCombinedHtml($pageid)
-    {
-        if (!Controller::userOkToViewPageByHost($this->userService))
-            {
-                info('user not ok to view page in getcombinedhtml: ' . $pageid);
-                return redirect('/login');
-            }
-            $pageToEdit = SitePages::where('id',$pageid)->first();
-            $pageToEdit->description = $this->prepareTemplate($pageToEdit);
-        
-            $master_page = $this->getMaster($pageToEdit);
-
-            $pageToEdit->description = '<div id="core">'.$pageToEdit->description.'</div>'; // was $coreBlock
-            if ($pageToEdit->style != null && strlen($pageToEdit->style) > 0)
-            {
-                $pageToEdit->description = $pageToEdit->description.'<style>'.$pageToEdit->style.'</style>'; // was $coreBlock
-            
-            }
-            $masterPage = view($master_page->pagename)->with('sitePage',$pageToEdit)
-            ->with('site',$this->site)
-            ->with('page_short_url','/page/'.$pageToEdit->section)
-            ->with('masterPage',$master_page)->render();
-
-            return response()->json(['html' => $masterPage]);
-            //return response()->json(['html' => $pageToEdit->description]);
-
     }
 
     public function saveSitePage(Request $request)

@@ -95,8 +95,7 @@ class Controller extends FrameworkController
      */
     public static function getClientFromHost()
     {
-        $host = request()->getHttpHost();
-            
+        $host = request()->getHttpHost();     
         $site = Site::getClient($host);
         if ($site == null || !isset($site) )
         {
