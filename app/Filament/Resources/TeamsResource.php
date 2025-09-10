@@ -65,7 +65,9 @@ public static function table(Table $table): Table
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            RelationManagers\TeamUsersRelationManager::class,
+        ];
     }
 
     public static function getPages(): array
@@ -87,8 +89,8 @@ public static function table(Table $table): Table
 
         try {
             $panel = Filament::getCurrentPanel();
-            if ($panel && $panel->getId() === 'admin' && $user && method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
-                return $query; // full access in admin panel
+            if ($panel && ($panel->getId() === 'admin' || $panel->getId() === 'site-admin') && $user && method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
+                return $query; // full access in admin and site-admin panels for super-admins
             }
         } catch (\Throwable $e) {}
 
