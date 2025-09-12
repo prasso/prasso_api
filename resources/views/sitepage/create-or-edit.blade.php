@@ -5,8 +5,8 @@
         </div>
         <!-- This element is to trick the browser into centering the modal contents. -->
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
-        <div x-data="{ template_selection_made: {{ $masterpage ? 'true' : 'false' }}, dataTemplateSelectionMade: {{ $template ? 'true' : 'false' }}" 
-             x-init="template_selection_made = {{ ($masterpage || $template) ? 'true' : 'false' }};" 
+        <div x-data="{ template_selection_made: {{ $masterpage ? 'true' : 'false' }}, dataTemplateSelectionMade: {{ $template ? 'true' : 'false' }} }" 
+             x-init="template_selection_made = {{ ($masterpage || $template || $type == 1) ? 'true' : 'false' }};" 
              @click.away="$wire.closeModal()" 
              class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle" 
              role="dialog" aria-modal="true" aria-labelledby="modal-headline">
@@ -19,7 +19,7 @@
             <input type="hidden" wire:model="sitePage_id" />                
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="">
-                        <div x-data x-init="$refs.sectionInput.focus()" class="mb-4">
+                        <div x-data="{}" x-init="$refs.sectionInput.focus()" class="mb-4">
                             <label for="sectionInput" class="block text-gray-700 text-sm font-bold mb-2">Unique Name:</label>
                             <input type="text"  x-ref="sectionInput" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="sectionInput" placeholder="Enter Unique Name" wire:model="section">
                             @error('section') <span class="text-red-500">{{ $message }}</span>@enderror
@@ -88,22 +88,22 @@
                             </select>
                             @error('template') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
-                        <div x-show="template_selection_made || dataTemplateSelectionMade" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
+                        <div x-show="(template_selection_made || dataTemplateSelectionMade || $wire.type == 1) && $wire.type != 3" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
                             <label for="descriptionInput" class="min-h-[10%] block text-gray-700 text-sm font-bold mb-2">Description: (enter html if no template is selected)</label>
                             <textarea rows="35" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="descriptionInput" wire:model.defer="description" placeholder="Enter Description"></textarea>
                             @error('description') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
-                        <div x-show="template_selection_made || dataTemplateSelectionMade" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
+                        <div x-show="(template_selection_made || dataTemplateSelectionMade) && $wire.type != 3" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
                             <label for="styleInput" class="min-h-[10%] block text-gray-700 text-sm font-bold mb-2">Style: (css shown between &lt;style&gt; tags)</label>
                             <textarea rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="styleInput" wire:model.defer="style" placeholder="Enter style"></textarea>
                             @error('style') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
-                        <div x-show="template_selection_made || dataTemplateSelectionMade" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
+                        <div x-show="(template_selection_made || dataTemplateSelectionMade) && $wire.type != 3" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
                             <label for="whereValue" class="block text-gray-700 text-sm font-bold mb-2">Where Value (if needed for where clause will replace ??? example: a site page id)</label>
                             <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="whereValue" placeholder="Enter Where Value if used" wire:model="where_value">
                             @error('where_value') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
-                        <div x-show="!template_selection_made" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
+                        <div x-show="$wire.type == 3" class="mb-4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" >
                             <label for="urlInput" class="block text-gray-700 text-sm font-bold mb-2">Url: (if this is an outside page )</label>
                             <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="urlInput" placeholder="Enter Url" wire:model="url">
                             @error('url') <span class="text-red-500">{{ $message }}</span>@enderror

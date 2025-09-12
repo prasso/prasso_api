@@ -1,9 +1,38 @@
 <div>
     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg px-4 py-4">
-
-        <button wire:click="create()" class="teambutton text-white  font-bold py-2 px-4 rounded my-3" title="Create New Site Page">Create New Site Page</button>
+        <div class="mb-4">
+            <button wire:click="create()" class="teambutton text-white font-bold py-2 px-4 rounded my-3" title="Create New Site Page">Create New Site Page</button>
+        </div>
+        
         @if($isOpen)
-        @include('sitepage.create-or-edit', ['team_selection' => $team_selection])
+            <div x-data="{ activeTab: 'ai' }">
+                <!-- Tab Navigation -->
+                <div class="border-b border-gray-200 mb-4">
+                    <ul class="flex flex-wrap -mb-px">
+                        <li class="mr-2">
+                            <button @click="activeTab = 'regular'" :class="{'border-b-2 border-blue-500 text-blue-600': activeTab === 'regular', 'text-gray-500 hover:text-gray-700': activeTab !== 'regular'}" class="inline-block py-2 px-4 font-medium">
+                                Regular Editor
+                            </button>
+                        </li>
+                        <li class="mr-2">
+                            <button @click="activeTab = 'ai'" :class="{'border-b-2 border-blue-500 text-blue-600': activeTab === 'ai', 'text-gray-500 hover:text-gray-700': activeTab !== 'ai'}" class="inline-block py-2 px-4 font-medium">
+                                AI Editor
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Tab Content -->
+                <!-- Regular Editor Tab -->
+                <div x-show="activeTab === 'regular'">
+                    @include('sitepage.create-or-edit', ['team_selection' => $team_selection])
+                </div>
+                
+                <!-- AI Editor Tab -->
+                <div x-show="activeTab === 'ai'">
+                    @livewire('ai-site-page-creator', ['siteId' => $siteid])
+                </div>
+            </div>
         @endif
         <table class="table-fixed w-full">
             <thead>
