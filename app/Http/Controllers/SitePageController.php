@@ -97,7 +97,7 @@ class SitePageController extends BaseController
             // If this is the Prasso site (ID 1), only super admins should be redirected to admin
             if ($this->site->id == 1) {
                 if ($isPrassoSuperAdmin) {
-                    return redirect()->route('filament.site-admin.pages.dashboard');
+                    //do nothing code below will execute
                 }
             } else {
                 // For other sites, check if the user is a team owner for this specific site
