@@ -90,8 +90,14 @@ class MySiteController extends BaseController
             
             // Check if user is the team owner
             $isTeamOwner = $user->id == $teamFromSite->user_id;
+
+            // Check if the user has the instructor role for this site's team
+            $isSiteInstructor = \App\Models\TeamUser::where('team_id', $teamFromSite->id)
+                ->where('user_id', $user->id)
+                ->where('role', 'instructor')
+                ->exists();
             
-            if (!$isSuperAdmin && !$isTeamOwner) {
+            if (!$isSuperAdmin && !$isTeamOwner && !$isSiteInstructor) {
                 abort(403, 'Unauthorized action. You must be a site admin for this specific site.');
             }
         }
