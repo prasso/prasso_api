@@ -5,7 +5,7 @@
         </div>
         <!-- This element is to trick the browser into centering the modal contents. -->
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
-        <div x-data="{ template_selection_made: {{ $masterpage ? 'true' : 'false' }}, dataTemplateSelectionMade: {{ $template ? 'true' : 'false' }}" 
+        <div x-data="{ template_selection_made: {{ $masterpage ? 'true' : 'false' }}, dataTemplateSelectionMade: {{ $template ? 'true' : 'false' }} }" 
              x-init="template_selection_made = {{ ($masterpage || $template || $type == 1) ? 'true' : 'false' }};" 
              @click.away="$wire.closeModal()" 
              class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle" 
@@ -19,7 +19,7 @@
             <input type="hidden" wire:model="sitePage_id" />                
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="">
-                        <div x-data x-init="$refs.sectionInput.focus()" class="mb-4">
+                        <div x-data="{}" x-init="$refs.sectionInput.focus()" class="mb-4">
                             <label for="sectionInput" class="block text-gray-700 text-sm font-bold mb-2">Unique Name:</label>
                             <input type="text"  x-ref="sectionInput" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="sectionInput" placeholder="Enter Unique Name" wire:model="section">
                             @error('section') <span class="text-red-500">{{ $message }}</span>@enderror
