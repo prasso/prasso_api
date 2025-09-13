@@ -173,7 +173,7 @@ class UserImportService
                     // Update existing user
                     $existingUser->name = $userData['name'];
                     if (!empty($userData['phone'])) {
-                        $existingUser->phone = $userData['phone'];
+                        $existingUser->phone = $this->formatPhoneNumber($userData['phone']);
                     }
                     $existingUser->save();
                     
@@ -193,7 +193,7 @@ class UserImportService
                     $newUser->name = $userData['name'];
                     $newUser->email = $userData['email'];
                     $newUser->password = Hash::make($userData['password'] ?? Str::random(10));
-                    $newUser->phone = $userData['phone'] ?? '';
+                    $newUser->phone = !empty($userData['phone']) ? $this->formatPhoneNumber($userData['phone']) : '';
                     $newUser->version = 'v1';
                     $newUser->save();
                     
@@ -214,5 +214,24 @@ class UserImportService
         }
 
         return $results;
+    }
+    
+    /**
+     * Format phone number to ensure it has country code '1' if missing
+     *
+     * @param string $phoneNumber
+     * @return string
+     */
+    private function formatPhoneNumber(string $phoneNumber): string
+    {
+        // Remove any non-numeric characters
+        $phoneNumber = preg_replace('/[^0-9]/', '', $phoneNumber);
+        
+        // If the phone number doesn't start with '1', add it
+        if (!empty($phoneNumber) && strlen($phoneNumber) > 0 && $phoneNumber[0] !== '1') {
+            $phoneNumber = '1' . $phoneNumber;
+        }
+        
+        return $phoneNumber;
     }
 }
