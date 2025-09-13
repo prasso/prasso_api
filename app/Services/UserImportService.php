@@ -144,14 +144,7 @@ class UserImportService
      */
     public function importUsers(array $data, array $mappings, int $teamId): array
     {
-        // Log the input parameters for debugging
-        Log::info('Starting user import with:', [
-            'data_count' => count($data),
-            'mappings' => $mappings,
-            'team_id' => $teamId,
-            'first_row' => !empty($data) ? array_keys($data[0]) : 'No data'
-        ]);
-        
+
         // If mappings are empty but we have data, try to auto-map based on column names
         if (empty($mappings) && !empty($data)) {
             $headers = array_keys($data[0]);

@@ -58,12 +58,6 @@ return [
         ],
     ],
     
-    'ai' => [
-        'api_key' => env('AI_API_KEY'),
-        'endpoint' => env('AI_ENDPOINT', 'https://api.openai.com/v1/chat/completions'),
-        'model' => env('AI_MODEL', 'gpt-4'),
-        'temperature' => env('AI_TEMPERATURE', 0.2),
-        'max_tokens' => env('AI_MAX_TOKENS', 1000),
-    ],
+    // AI functionality is provided by AWS Bedrock - see 'aws.bedrock' configuration above
 
 ];

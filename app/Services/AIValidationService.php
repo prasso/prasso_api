@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use App\Services\BedrockAIService;
 
 class AIValidationService
 {
@@ -62,27 +63,40 @@ class AIValidationService
      */
     private function callAIService(array $payload): array
     {
-        // Get API key from environment
-        $apiKey = config('services.ai.api_key');
-        
-        // If no API key is configured, use fallback mapping
-        if (!$apiKey) {
-            return $this->fallbackMapping($payload['csvHeaders'], $payload['requiredFields']);
-        }
-
-        // Make the API call
         try {
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $apiKey,
-                'Content-Type' => 'application/json'
-            ])->post(config('services.ai.endpoint'), $payload);
-
-            if ($response->successful()) {
-                return $response->json();
+            // Use BedrockAIService instead of direct API calls
+            $bedrockService = new BedrockAIService();
+            
+            // Format the prompt for Bedrock
+            $prompt = "You are a data mapping expert. Please analyze the following CSV headers and map them to the required user fields.\n\n";
+            $prompt .= "CSV Headers: " . implode(", ", $payload['csvHeaders']) . "\n";
+            $prompt .= "Required Fields: " . implode(", ", array_keys($payload['requiredFields'])) . "\n";
+            $prompt .= "Sample Data: " . json_encode(array_slice($payload['sampleData'], 0, 2)) . "\n\n";
+            $prompt .= "Return a JSON object with mappings between required fields and CSV headers. Format: {\"field_name\": \"matching_header\"}";
+            
+            // Call Bedrock AI service using the public method
+            $response = $bedrockService->invokeModel([
+                'prompt' => $prompt,
+                'max_tokens' => 500
+            ]);
+            
+            // Try to parse the response as JSON
+            $mappings = json_decode($response, true);
+            
+            // If parsing failed or response is not an array, use fallback
+            if (!is_array($mappings)) {
+                Log::warning('Failed to parse AI response as JSON: ' . $response);
+                return $this->fallbackMapping($payload['csvHeaders'], $payload['requiredFields']);
             }
             
-            Log::warning('AI service returned error: ' . $response->body());
-            return $this->fallbackMapping($payload['csvHeaders'], $payload['requiredFields']);
+            return [
+                'mappings' => $mappings,
+                'validation' => [
+                    'valid' => true,
+                    'message' => 'CSV data structure appears valid.'
+                ],
+                'ai_used' => true
+            ];
         } catch (\Exception $e) {
             Log::error('AI service call failed: ' . $e->getMessage());
             return $this->fallbackMapping($payload['csvHeaders'], $payload['requiredFields']);

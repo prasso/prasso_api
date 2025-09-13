@@ -33,12 +33,6 @@ class BedrockAIService
         $this->accessKey = config('services.aws.key');
         $this->secretKey = config('services.aws.secret');
         
-        // Log the configuration details for debugging
-        Log::info('BedrockAIService initialized with the following configuration:');
-        Log::info('Text Model ID: ' . $this->textModelId);
-        Log::info('Image Model ID: ' . $this->imageModelId);
-        Log::info('Region: ' . $this->region);
-        
         // For development/testing without actual AWS credentials
         if (empty($this->accessKey) || empty($this->secretKey)) {
             // Use regular HTTP client for mock responses
@@ -234,7 +228,7 @@ class BedrockAIService
      * @param string|null $modelIdToUse The specific model ID to use, defaults to text model
      * @return string
      */
-    protected function invokeModel($params, $modelIdToUse = null)
+    public function invokeModel($params, $modelIdToUse = null)
     {
         try {
             // For development/testing without actual AWS credentials
