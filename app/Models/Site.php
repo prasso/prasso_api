@@ -244,7 +244,7 @@ class Site extends Model
     }
 
     private function user_is_admin(){
-        $is_admin_for_site =  Auth::user() !=null && ( Auth::user()->isInstructor() || Auth::user()->isThisSiteTeamOwner($this->id) );
+        $is_admin_for_site =  Auth::user() !=null && ( Auth::user()->isInstructor($this)  );
         return $is_admin_for_site;
     }
     

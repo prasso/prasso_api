@@ -12,7 +12,7 @@
                     <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
                 </div>
             </div>
-            @if (!Auth::user()->isSuperAdmin() && !Auth::user()->isInstructor())
+            @if ( !Auth::user()->isInstructor($site))
             <div class="max-w-md m-auto">
                 <div class="font-sans px-4 py-2">
                 <h2 class="text-lg font-semibold text-gray-600 mb-4">Welcome to Prasso!</h2>
@@ -61,7 +61,7 @@
                     @endif
                 </div>
                 @else
-                @if (Auth::user()->isInstructor() && Auth::user()->getSiteCount() > 0)
+                @if (Auth::user()->isInstructor($site) && Auth::user()->getSiteCount() > 0)
                 <div class="max-w-xs m-auto">
                 <div class="block py-2 text-lg font-semibold text-gray-600">
                                 {{ __('Admin') }}
@@ -112,7 +112,7 @@
                         </x-responsive-nav-link>
 
                         @endif
-                        @if (Auth::user()->isInstructor() )
+                        @if (Auth::user()->isInstructor($site) )
                         <!-- Team Management -->
                         @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
                         <div class="border-t border-gray-200 mt-2"></div>
@@ -164,7 +164,7 @@
                             @endif
                         @endif
 
-                        @if ((\App\Models\Site::isPrasso(parse_url(url()->current(), PHP_URL_HOST)) && Auth::user()->isSuperAdmin()) || (Auth::user()->isInstructor() && Auth::user()->isThisSiteTeamOwner($site->id)))
+                        @if ((\App\Models\Site::isPrasso(parse_url(url()->current(), PHP_URL_HOST)) && Auth::user()->isSuperAdmin()) || (Auth::user()->isInstructor($site) && Auth::user()->isThisSiteTeamOwner($site->id)))
                
                         <x-responsive-nav-link href="{{ route('teams.create') }}" :active="request()->routeIs('teams.create')">
                             {{ __('Create New Team') }}

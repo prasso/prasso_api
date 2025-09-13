@@ -56,9 +56,9 @@ class UserResource extends Resource
                     ->required()
                     ->placeholder('Select a team')
                     ->options(function () {
-                        $user = auth()->user();
+                        $user = \Illuminate\Support\Facades\Auth::user();
                         if (!$user) return [];
-                        $siteId = $user->getUserOwnerSiteId();
+                        $siteId = method_exists($user, 'getUserOwnerSiteId') ? $user->getUserOwnerSiteId() : null;
                         if (!$siteId) return [];
                         $site = Site::find($siteId);
                         $team = $site?->teams()->first();
@@ -124,7 +124,31 @@ class UserResource extends Resource
                 Tables\Filters\SelectFilter::make('team')
                     ->label('Filter by Team')
                     ->multiple()
-                    ->options(Team::pluck('name', 'id'))
+                    ->options(function () {
+                        $user = \Illuminate\Support\Facades\Auth::user();
+                        
+                        // If user is super admin, show all teams
+                        if ($user && method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
+                            return Team::pluck('name', 'id');
+                        }
+                        
+                        // Otherwise, show only teams associated with the current user
+                        if ($user) {
+                            $siteId = method_exists($user, 'getUserOwnerSiteId') ? $user->getUserOwnerSiteId() : null;
+                            if ($siteId) {
+                                $site = Site::find($siteId);
+                                // Get team IDs through the pivot table to avoid ambiguous column references
+                                $teamIds = [];
+                                if ($site) {
+                                    // Use the relationship but select specific columns to avoid ambiguity
+                                    $teamIds = $site->teams()->select('teams.id')->pluck('teams.id')->toArray();
+                                }
+                                return Team::whereIn('id', $teamIds)->pluck('name', 'id');
+                            }
+                        }
+                        
+                        return [];
+                    })
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(
                             $data['values'],
@@ -162,13 +186,14 @@ class UserResource extends Resource
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
+            'import-preview' => Pages\ImportPreview::route('/import-preview'),
         ];
     }
 
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
-        $user = auth()->user();
+        $user = \Illuminate\Support\Facades\Auth::user();
         if (!$user) {
             return $query->whereRaw('1 = 0');
         }
@@ -181,7 +206,7 @@ class UserResource extends Resource
         } catch (\Throwable $e) {}
 
         try {
-            $siteId = $user->getUserOwnerSiteId();
+            $siteId = method_exists($user, 'getUserOwnerSiteId') ? $user->getUserOwnerSiteId() : null;
             if ($siteId) {
                 $site = Site::find($siteId);
                 $team = $site?->teams()->first();
@@ -198,7 +223,7 @@ class UserResource extends Resource
     public static function shouldRegisterNavigation(): bool
     {
         $panel = Filament::getCurrentPanel();
-        $user = auth()->user();
+        $user = \Illuminate\Support\Facades\Auth::user();
         if (!$panel || !$user) return false;
         if ($panel->getId() === 'site-admin') return true;
         if ($panel->getId() === 'admin' && method_exists($user, 'isSuperAdmin')) return $user->isSuperAdmin();
