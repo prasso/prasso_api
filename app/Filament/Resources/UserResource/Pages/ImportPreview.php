@@ -19,6 +19,7 @@ use Filament\Support\Exceptions\Halt;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Computed;
 use Livewire\WithFileUploads;
+use App\Models\User;
 
 class ImportPreview extends Page
 {
@@ -36,6 +37,12 @@ class ImportPreview extends Page
     public $mappings = [];
     public $requiredFields = [];
     public $team_id; // Using snake_case to match form field name
+    
+    // Track when team_id is updated
+    public function updatedTeamId($value)
+    {
+        info('Team ID updated:', ['new_value' => $value]);
+    }
     public $field_mappings = []; // Added for form validation
     public $data_quality_issues = []; // Added for form validation
     public $data_preview = []; // Added for form validation
@@ -46,9 +53,104 @@ class ImportPreview extends Page
 
     public function mount(): void
     {
+        // Check if team_id is in session and set it
+        if (session()->has('import_team_id')) {
+            $this->team_id = session('import_team_id');
+        }
+        
+        // Check if CSV data is in session and restore it
+        if (session()->has('import_csv_data')) {
+            $this->csvData = session('import_csv_data');
+            $this->headers = session('import_headers');
+            $this->mappings = session('import_mappings');
+            $this->total_rows = count($this->csvData);
+            $this->hasUploadedFile = !empty($this->csvData);
+        } else {
+            // Reset the component state if no CSV data in session
+            $this->csvData = [];
+            $this->headers = [];
+            $this->mappings = [];
+            $this->total_rows = 0;
+            $this->hasUploadedFile = false;
+            
+            // Clear any previous session data
+            session()->forget(['import_csv_data', 'import_headers', 'import_mappings']);
+        }
+        
         // Initialize the form
         $this->form->fill();
-    }    
+        
+        // Log the component state for debugging
+        \Illuminate\Support\Facades\Log::info('ImportPreview mounted:', [
+            'has_csv_data' => !empty($this->csvData),
+            'row_count' => count($this->csvData),
+            'has_team_id' => !empty($this->team_id),
+            'has_upload_file' => $this->hasUploadedFile
+        ]);
+    }
+    
+    /**
+     * Get the selected team information
+     * 
+     * @return array
+     */
+    public function getSelectedTeam(): array
+    {
+        // Try to get team_id from multiple sources
+        $teamId = null;
+        
+        // First try the class property
+        if ($this->team_id) {
+            $teamId = (int) $this->team_id;
+         }
+        
+        // If not found, try to get from session
+        if (!$teamId && session()->has('import_team_id')) {
+            $teamId = (int) session('import_team_id');
+            
+            // Update the class property for consistency
+            $this->team_id = $teamId;
+        }
+        
+        // If not found, try to get from form state
+        if (!$teamId) {
+            $formData = $this->form->getRawState();
+            if (isset($formData['team_id'])) {
+                $teamId = (int) $formData['team_id'];
+                info('getSelectedTeam from form data:', ['team_id' => $teamId]);
+            }
+        }
+        
+        // If still not found, try to get from request
+        if (!$teamId) {
+            $request = request();
+            if ($request->has('team_id')) {
+                $teamId = (int) $request->input('team_id');
+                info('getSelectedTeam from request:', ['team_id' => $teamId]);
+            }
+        }
+        
+        if (!$teamId) {
+            return [
+                'name' => 'No team selected',
+                'id' => null
+            ];
+        }
+
+        $team = \App\Models\Team::find($teamId);
+        
+        if (!$team) {
+            return [
+                'name' => 'Unknown team',
+                'id' => $teamId
+            ];
+        }
+        
+        return [
+            'name' => $team->name,
+            'id' => $team->id
+        ];
+    }
     
     public function create(): void
     {
@@ -64,6 +166,9 @@ class ImportPreview extends Page
         }
         
         $this->team_id = $data['team_id']; // Using single variable
+        
+        // Store team_id in session for persistence
+        session(['import_team_id' => $this->team_id]);
         
         // Check if file exists and is valid
         if (empty($data['file'])) {
@@ -98,6 +203,13 @@ class ImportPreview extends Page
             
             $this->loadCsvData($tempFile);
             $this->hasUploadedFile = true;
+            
+            // Store CSV data in session for persistence
+            session([
+                'import_csv_data' => $this->csvData,
+                'import_headers' => $this->headers,
+                'import_mappings' => $this->mappings
+            ]);
             
             // Force a refresh of the form to show the preview sections
             $this->form->fill();
@@ -180,7 +292,27 @@ class ImportPreview extends Page
     {
         $schema = [];
         
-        if (!$this->hasUploadedFile) {
+        // Check if we actually have CSV data, not just the flag
+        $hasCsvData = !empty($this->csvData) && count($this->csvData) > 0;
+        $this->hasUploadedFile = $hasCsvData; // Update the flag based on actual data
+        
+        // Always show file upload if no CSV data is available
+        if (!$hasCsvData) {
+            // Add a reset button at the top if there's session data
+            if (session()->has('import_csv_data') || session()->has('import_team_id')) {
+                $schema[] = Forms\Components\Section::make('Previous Import Data Detected')
+                    ->description('A previous import session was detected. You can continue with this data or reset to start fresh.')
+                    ->schema([
+                        Forms\Components\Actions::make([
+                            Forms\Components\Actions\Action::make('reset_import')
+                                ->label('Reset Import Data')
+                                ->action('resetImport')
+                                ->color('danger')
+                                ->icon('heroicon-o-trash')
+                        ])
+                    ]);
+            }
+            
             $schema[] = Forms\Components\Section::make('Upload CSV File')
                 ->schema([
                     Forms\Components\FileUpload::make('file')
@@ -201,60 +333,32 @@ class ImportPreview extends Page
                             if (!$user) return [];
                             
                             // Check if user is admin based on property
-                            if (property_exists($user, 'is_admin') && $user->is_admin) {
+                            if ($user->isSuperAdmin()) {
                                 // Get all teams with ID and name for debugging
                                 $teams = \App\Models\Team::all();
                                 $options = [];
                                 foreach ($teams as $team) {
-                                    $options[$team->id] = "ID: {$team->id} - {$team->name}";
+                                    $options[$team->id] = "{$team->name}";
                                 }
                                 return $options;
                             }
                             
-                            // Check if user has admin role based on property
-                            if (property_exists($user, 'role') && $user->role === 'admin') {
-                                // Get all teams with ID and name for debugging
-                                $teams = \App\Models\Team::all();
-                                $options = [];
-                                foreach ($teams as $team) {
-                                    $options[$team->id] = "ID: {$team->id} - {$team->name}";
-                                }
-                                return $options;
-                            }
-                            
-                            // Get teams the user owns
-                            $ownedTeams = [];
-                            try {
-                                if (method_exists($user, 'team_owner') && $user->team_owner) {
-                                    foreach ($user->team_owner as $team) {
-                                        $ownedTeams[$team->id] = "ID: {$team->id} - {$team->name}";
-                                    }
-                                }
-                            } catch (\Exception $e) {
-                                // Fallback if method doesn't exist
-                            }
-                            
-                            // Get teams the user is a member of
+                            // Get teams the user is Instructor of
                             $memberTeams = [];
                             try {
                                 if (method_exists($user, 'team_member') && $user->team_member) {
                                     foreach ($user->team_member as $membership) {
                                         if ($membership->team) {
-                                            $memberTeams[$membership->team->id] = "ID: {$membership->team->id} - {$membership->team->name}";
+                                            $memberTeams[$membership->team->id] = "{$membership->team->name}";
                                         }
                                     }
                                 }
                             } catch (\Exception $e) {
                                 // Fallback if method doesn't exist
                             }
-                            
-                            // Debug output to log
-                            \Illuminate\Support\Facades\Log::info('Team options for import:', [
-                                'owned_teams' => $ownedTeams,
-                                'member_teams' => $memberTeams
-                            ]);
+
                             // Merge owned and member teams
-                            return array_merge($ownedTeams, $memberTeams);
+                            return $memberTeams;
                         })
                         ->searchable()
                         ->required(),
@@ -357,10 +461,38 @@ class ImportPreview extends Page
         $mappings = [];
         $formData = $this->form->getRawState();
         
+        // Try to get mappings from form data first
         if (isset($formData['field_mappings'])) {
             foreach ($formData['field_mappings'] as $mapping) {
                 $mappings[$mapping['user_field']] = $mapping['csv_header'];
             }
+        }
+        
+        // If no mappings found in form data, use the stored mappings
+        if (empty($mappings) && !empty($this->mappings)) {
+            $mappings = $this->mappings;
+            \Illuminate\Support\Facades\Log::info('Using stored mappings:', $mappings);
+        }
+        
+        // If still no mappings, try to get from session
+        if (empty($mappings) && session()->has('import_mappings')) {
+            $mappings = session('import_mappings');
+            \Illuminate\Support\Facades\Log::info('Using session mappings:', $mappings);
+        }
+        
+        // If still no mappings but we have headers, create default mappings
+        if (empty($mappings) && !empty($this->headers)) {
+            // Try to create mappings based on header names
+            $requiredFields = app(\App\Services\UserImportService::class)->getRequiredUserFields();
+            foreach ($requiredFields as $fieldKey => $fieldName) {
+                foreach ($this->headers as $header) {
+                    if (stripos($header, $fieldKey) !== false || stripos($header, $fieldName) !== false) {
+                        $mappings[$fieldKey] = $header;
+                        break;
+                    }
+                }
+            }
+            \Illuminate\Support\Facades\Log::info('Created default mappings:', $mappings);
         }
         
         return $mappings;
@@ -374,11 +506,22 @@ class ImportPreview extends Page
      */
     public function import(?int $teamId = null): void
     {
+        info('importing');
+        
+        // Debug CSV data to verify it's available
+        \Illuminate\Support\Facades\Log::info('CSV data for import:', [
+            'row_count' => count($this->csvData),
+            'has_headers' => !empty($this->headers),
+            'has_mappings' => !empty($this->mappings)
+        ]);
         try {
             $userImportService = app(UserImportService::class);
             
             // Get updated mappings from form
             $mappings = $this->getUpdatedMappings();
+            
+            // Debug the mappings
+            \Illuminate\Support\Facades\Log::info('Mappings for import:', $mappings);
             
             // Get the form data to retrieve team_id
             $formData = $this->form->getRawState();
@@ -441,6 +584,16 @@ class ImportPreview extends Page
                 ->success()
                 ->send();
                 
+            // Clear the session data
+            session()->forget(['import_csv_data', 'import_headers', 'import_mappings']);
+            
+            // Reset the component state
+            $this->csvData = [];
+            $this->headers = [];
+            $this->mappings = [];
+            $this->total_rows = 0;
+            $this->hasUploadedFile = false;
+            
             // Redirect back to the users list
             $this->redirect(static::getResource()::getUrl('index'));
         } catch (\Exception $e) {
@@ -455,6 +608,41 @@ class ImportPreview extends Page
     public function cancel(): void
     {
         $this->redirect(static::getResource()::getUrl('index'));
+    }
+    
+    /**
+     * Clear all import session data and reset the component
+     */
+    public function resetImport(): void
+    {
+        // Clear session data
+        session()->forget([
+            'import_csv_data',
+            'import_headers',
+            'import_mappings',
+            'import_team_id'
+        ]);
+        
+        // Reset component state
+        $this->csvData = [];
+        $this->headers = [];
+        $this->mappings = [];
+        $this->total_rows = 0;
+        $this->hasUploadedFile = false;
+        $this->team_id = null;
+        
+        // Log the reset
+        \Illuminate\Support\Facades\Log::info('Import session data cleared');
+        
+        // Show notification
+        Notification::make()
+            ->title('Import Reset')
+            ->body('All import data has been cleared. You can start a new import.')
+            ->success()
+            ->send();
+            
+        // Refresh the form
+        $this->form->fill();
     }
     
     /**

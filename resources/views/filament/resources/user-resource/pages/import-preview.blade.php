@@ -1,4 +1,14 @@
 <x-filament-panels::page>
+    <div class="flex justify-end mb-4">
+        <x-filament::button
+            wire:click="resetImport"
+            color="danger"
+            icon="heroicon-o-trash"
+        >
+            Reset Import Data
+        </x-filament::button>
+    </div>
+    
     {{ $this->form }}
 
     @if($hasUploadedFile)
@@ -42,11 +52,14 @@
     <div class="p-4 my-4 bg-blue-50 border border-blue-200 rounded-lg">
         <h3 class="text-lg font-medium text-blue-800">Selected Team</h3>
         <div class="mt-2">
+            @php
+                $selectedTeam = $this->getSelectedTeam();
+            @endphp
             <p class="text-blue-700">
-                <span class="font-semibold">Team:</span> {{ \App\Models\Team::find($team_id)?->name ?? 'Unknown' }}
+                <span class="font-semibold">Team:</span> {{ $selectedTeam['name'] }}
             </p>
             <p class="text-blue-700">
-                <span class="font-semibold">Team ID:</span> {{ $team_id }}
+                <span class="font-semibold">Team ID:</span> {{ $selectedTeam['id'] ?? 'Not set' }}
             </p>
             <p class="text-sm text-blue-600 mt-2">
                 Users will be imported to this team. If a user already exists, they will be updated and added to this team if not already a member.
@@ -106,11 +119,12 @@
         </div>
     </div>
     
-    <form wire:submit.prevent="import({{ $team_id }})" class="mt-6">
+    <form wire:submit.prevent="import({{ $selectedTeam['id'] ?? 0 }})" class="mt-6">
+        <input type="hidden" wire:model="team_id" value="{{ $team_id }}" />
         
         <div class="p-4 my-4 bg-gray-100 rounded-lg">
             <h3 class="text-lg font-medium">Import Information</h3>
-            <p class="mt-2">You are about to import {{ $total_rows }} users to team: <strong>{{ \App\Models\Team::find($team_id)?->name ?? 'Unknown' }} (ID: {{ $team_id }})</strong></p>
+            <p class="mt-2">You are about to import {{ $total_rows }} users to team: <strong>{{ $selectedTeam['name'] }} (ID: {{ $selectedTeam['id'] ?? 'Not set' }})</strong></p>
         </div>
         
         <div class="flex items-center justify-end gap-x-3 mt-6">
