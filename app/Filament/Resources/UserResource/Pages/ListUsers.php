@@ -14,6 +14,10 @@ class ListUsers extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+            Actions\Action::make('import')
+                ->label('Import Users')
+                ->icon('heroicon-o-arrow-up-tray')
+                ->url(route('filament.site-admin.resources.users.import-preview')),
         ];
     }
 }

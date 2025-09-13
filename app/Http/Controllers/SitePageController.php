@@ -27,10 +27,12 @@ class SitePageController extends BaseController
     protected $sitePageService;
     protected $userService;
 
-    public function __construct(Request $request, SitePageService $sitePageService,
-                                UserService $userServ)
-    {
-        parent::__construct( $request);
+    public function __construct(
+        Request $request,
+        SitePageService $sitePageService,
+        UserService $userServ
+    ) {
+        parent::__construct($request);
         $this->sitePageService = $sitePageService;
         $this->userService = $userServ;
     }
@@ -44,53 +46,51 @@ class SitePageController extends BaseController
     {
         $welcomepage = null;
         $request = Request::capture();
-        
+
         $user = Auth::user() ?? null;
-        if ($user != null)
-        {
+        if ($user != null) {
             return $this->getDashboardForCurrentSite($user);
         }
-        
+
         // Check if this site has a GitHub repository deployment path
         if ($this->site != null && !empty($this->site->deployment_path) && !empty($this->site->github_repository)) {
             $repoName = explode('/', $this->site->github_repository)[1] ?? $this->site->github_repository;
             $indexPath = public_path('hosted_sites/' . $repoName . '/index.html');
-            
+
             if (file_exists($indexPath)) {
                 Log::info("Serving GitHub repository index page for site {$this->site->id}");
                 return response()->file($indexPath);
             }
         }
-        
-        if ($this->site != null && strcmp($this->site->site_name, config('app.name')) != 0)
-        {
-            $welcomepage = SitePages::where('fk_site_id',$this->site->id)->where('section','Welcome')->first();
+
+        if ($this->site != null && strcmp($this->site->site_name, config('app.name')) != 0) {
+            $welcomepage = SitePages::where('fk_site_id', $this->site->id)->where('section', 'Welcome')->first();
         }
-        if ($welcomepage == null)
-        {
+        if ($welcomepage == null) {
             return view('welcome');
         }
         $welcomepage->description = $this->prepareTemplate($welcomepage, $request->path());
         $masterpage = $this->getMaster($welcomepage);
-      
-        return view($welcomepage->masterpage) 
-            ->with('sitePage',$welcomepage)            
-            ->with('site',$this->site)
-            ->with('page_short_url','/')
-            ->with('masterPage',$masterpage);
+
+        return view($welcomepage->masterpage)
+            ->with('sitePage', $welcomepage)
+            ->with('site', $this->site)
+            ->with('page_short_url', '/')
+            ->with('masterPage', $masterpage);
     }
-    public function loadLiveWireComponent($component,$pageid)
+    public function loadLiveWireComponent($component, $pageid)
     {
-        return view('sitepage.site-page-component')->with('component',$component)->with('pageid',$pageid); 
+        return view('sitepage.site-page-component')->with('component', $component)->with('pageid', $pageid);
     }
-     /**
+    /**
      * this code verifies that the user is a member of the current site's team
      * loads up the dashboard if the user is logged in and belongs to this site's team
      */
-    private function getDashboardForCurrentSite($user){
+    private function getDashboardForCurrentSite($user)
+    {
         // Check if user is a super admin on site ID 1 (Prasso main site)
         $isPrassoSuperAdmin = $user->isSuperAdmin() && $this->site->id == 1;
-        
+
         // Only redirect instructors to the Filament admin panel if they are team owners for this specific site
         // or if they are super admins on any site
         if ($user->hasRole(config('constants.INSTRUCTOR'))) {
@@ -100,34 +100,36 @@ class SitePageController extends BaseController
                     //do nothing code below will execute
                 }
             } else {
-                // For other sites, check if the user is a team owner for this specific site
-                $isTeamOwnerForThisSite = $user->isTeamOwnerForSite($this->site);
-                
-                if ($isTeamOwnerForThisSite || $user->isSuperAdmin()) {
-                    return redirect()->route('filament.site-admin.pages.dashboard');
+                // For other sites, check if the user is a site admin for this specific site
+               if ($user->isSuperAdmin()) {
+                    // do nothing code below will execute
+                } else {
+                    if ( $user->isInstructor($this->site)) {
+                        return redirect()->route('filament.site-admin.pages.dashboard');
+                    }
                 }
             }
         }
-        
+
         $user_content = $this->getPage('Dashboard', $user);
         // Render the dashboard view with either custom content or default content
-        return view('dashboard')->with('user_content', $user_content)           
+        return view('dashboard')->with('user_content', $user_content)
             ->with('site', $this->site);
     }
-    
-    private function getPage($page, $user){
+
+    private function getPage($page, $user)
+    {
 
         $user->setCurrentToOwnedTeam();
         $request = Request::capture();
-    
-        if ( !$this->userService->isUserOnTeam($user) )
-        {
+
+        if (!$this->userService->isUserOnTeam($user)) {
             Auth::logout();
-            session()->flash('status',config('constants.LOGIN_AGAIN'));
+            session()->flash('status', config('constants.LOGIN_AGAIN'));
             return redirect('/login');
         }
-        $user_content='';
-    
+        $user_content = '';
+
         // if the site supports registration, check to see if the site has a $page site_page
         // Check if the current site exists and is not the main application site
         if ($this->site !== null && strcmp($this->site->site_name, config('app.name')) !== 0) {
@@ -141,7 +143,7 @@ class SitePageController extends BaseController
                 switch ($pageFound->type) {
                     case 2: // S3 File
                         $s3Content = $this->getS3PageContent($this->site->id, $page);
-                      //log the s3 content
+                        //log the s3 content
                         \Illuminate\Support\Facades\Log::info("S3 content: " . $s3Content);
                         if (!empty($s3Content)) {
                             $pageFound->description = $s3Content;
@@ -151,7 +153,7 @@ class SitePageController extends BaseController
                             \Illuminate\Support\Facades\Log::warning("S3 content not found, falling back to HTML for page: " . $page);
                         }
                         break;
-                        
+
                     case 3: // External URL
                         if (!empty($pageFound->external_url)) {
                             // Redirect to the external URL
@@ -161,15 +163,15 @@ class SitePageController extends BaseController
                         $pageFound->type = 1;
                         \Illuminate\Support\Facades\Log::warning("External URL not provided for page: " . $page);
                         break;
-                        
-                    // Default case (type 1: HTML) falls through
+
+                        // Default case (type 1: HTML) falls through
                 }
-                
+
                 $user_content = $this->prepareTemplate($pageFound, $request->path());
             } else {
                 // For backward compatibility, check S3 for content
                 $s3Content = $this->getS3PageContent($this->site->id, $page);
-                
+
                 if (!empty($s3Content)) {
                     // Create a temporary SitePages object to use with prepareTemplate
                     $tempPage = new SitePages();
@@ -178,7 +180,7 @@ class SitePageController extends BaseController
                     $tempPage->title = $page;
                     $tempPage->description = $s3Content;
                     $tempPage->type = 2; // Mark as S3 type
-                    
+
                     $user_content = $this->prepareTemplate($tempPage, $request->path());
                 }
             }
@@ -186,7 +188,7 @@ class SitePageController extends BaseController
         // return the prepared content
         return $user_content;
     }
-    
+
     /**
      * Get page content from S3 bucket
      * 
@@ -208,40 +210,41 @@ class SitePageController extends BaseController
             \Log::error('Site not found for ID: ' . $site_id);
             return null;
         }
-        
+
         // Get the page record to get its ID
         $sitePage = SitePages::where('fk_site_id', $site_id)
             ->where('section', $page)
             ->first();
-            
+
         if (!$sitePage) {
             \Log::error('Page not found: ' . $page);
             return null;
         }
-        
+
         $s3Path = $site->site_name . '/pages/' . $page . '_' . $sitePage->id . '.html';
-            
+
         try {
             // Check if the file exists in S3
             if (!\Illuminate\Support\Facades\Storage::disk('s3')->exists($s3Path)) {
                 \Illuminate\Support\Facades\Log::warning("S3 content not found: " . $s3Path);
                 return '';
             }
-            
+
             // Get the file content from S3
             return \Illuminate\Support\Facades\Storage::disk('s3')->get($s3Path);
         } catch (\Exception $e) {
             // Log the error but don't crash the application
-            \Illuminate\Support\Facades\Log::error('Error fetching S3 page content: ' . $e->getMessage() . 
+            \Illuminate\Support\Facades\Log::error('Error fetching S3 page content: ' . $e->getMessage() .
                 ' [Site: ' . $siteId . ', Page: ' . $pageName . ']');
             return '';
         }
     }
 
 
-    private function getMaster($sitepage) {
+    private function getMaster($sitepage)
+    {
         $masterPage = null;
-        
+
         if (isset($sitepage->masterpage)) {
             // If the sitepage has a masterpage specified, use it
             $masterPage = MasterPage::where('pagename', $sitepage->masterpage)->first();
@@ -249,12 +252,13 @@ class SitePageController extends BaseController
             // If the sitepage doesn't have a masterpage, use controller's masterpage if available
             $masterPage = MasterPage::where('pagename', $this->masterpage)->first();
         }
-        
+
         return $masterPage;
     }
 
-    private function prepareTemplate($pageToProcess, $path=null){
-        
+    private function prepareTemplate($pageToProcess, $path = null)
+    {
+
         $page_content = $pageToProcess->description;
         $user = Auth::user() ?? null;
         $team = $this->site->teamFromSite();
@@ -266,14 +270,14 @@ class SitePageController extends BaseController
             $headerPage = SitePages::where('fk_site_id', $this->site->id)
                 ->where('title', '[HEADER]')->first();
             if ($headerPage !== null) {
-            $page_content = str_replace('[HEADER]', $headerPage->description, $page_content);
+                $page_content = str_replace('[HEADER]', $headerPage->description, $page_content);
             }
         }
         //replace the tokens in the dashboard page with the user's name, email, and profile photo
-        $page_content = str_replace('@csrf', '<input type="hidden" name="_token" value="'.csrf_token().'">', $page_content);
+        $page_content = str_replace('@csrf', '<input type="hidden" name="_token" value="' . csrf_token() . '">', $page_content);
         $page_content = str_replace('CSRF_TOKEN', csrf_token(), $page_content);
         $page_content = str_replace('@csrf_token()', csrf_token(), $page_content);
-        $page_content = str_replace('@csrf', '<input type="hidden" value="'.csrf_token().'" />', $page_content);
+        $page_content = str_replace('@csrf', '<input type="hidden" value="' . csrf_token() . '" />', $page_content);
         $page_content = str_replace('[TEAM_ID]', $team->id, $page_content);
         $page_content = str_replace('{{ $team_id }}', $team->id, $page_content);
         $page_content = str_replace('MAIN_SITE_COLOR', $this->site->main_color, $page_content);
@@ -285,10 +289,10 @@ class SitePageController extends BaseController
         $page_content = str_replace('SITE_DESCRIPTION', $this->site->description, $page_content);
         $page_content = str_replace('PAGE_NAME', $pageToProcess->title, $page_content);
         $page_content = str_replace('PAGE_SLUG', $pageToProcess->section, $page_content);
-        $page_content = str_replace('[SITE_ID]',$this->site->id, $page_content);
-        $page_content = str_replace('[DATA_PAGE_ID]',$pageToProcess->id, $page_content);
-        
-        
+        $page_content = str_replace('[SITE_ID]', $this->site->id, $page_content);
+        $page_content = str_replace('[DATA_PAGE_ID]', $pageToProcess->id, $page_content);
+
+
         //Check if the carousel placeholder exists, then replace it with the Livewire component
         if (strpos($page_content, '[CAROUSEL_COMPONENT]') !== false) {
 
@@ -297,19 +301,19 @@ class SitePageController extends BaseController
                 '<div id="carouseldiv"></div>
                 <script>
                 document.addEventListener("DOMContentLoaded", function() {
-                    loadLivewireComponent("prasso-flipper", "carouseldiv", '.$pageToProcess->id.');
-                });</script>', 
+                    loadLivewireComponent("prasso-flipper", "carouseldiv", ' . $pageToProcess->id . ');
+                });</script>',
                 $page_content
             );
         }
 
-        if ($user != null){
+        if ($user != null) {
             $page_content = str_replace('USER_NAME', $user->name, $page_content);
             $page_content = str_replace('USER_EMAIL', $user->email, $page_content);
             $page_content = str_replace('USER_PROFILE_PHOTO', $user->getProfilePhoto(), $page_content);
         }
-  
-        return $page_content;      
+
+        return $page_content;
     }
 
     /**
@@ -317,18 +321,17 @@ class SitePageController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function viewSitePage(Request $request,$section)
+    public function viewSitePage(Request $request, $section)
     {
-        if ($section == 'favicon.ico')
-        {
+        if ($section == 'favicon.ico') {
             return null;
         }
-        
+
         // Check if this site has a GitHub repository deployment path
         if ($this->site != null && !empty($this->site->deployment_path) && !empty($this->site->github_repository)) {
             $repoName = explode('/', $this->site->github_repository)[1] ?? $this->site->github_repository;
             $pagePath = public_path('hosted_sites/' . $repoName . '/' . $section);
-            
+
             // Check if the requested page exists in the repository
             if (file_exists($pagePath)) {
                 Log::info("Serving GitHub repository page {$section} for site {$this->site->id}");
@@ -341,16 +344,14 @@ class SitePageController extends BaseController
                 return response()->file($pagePath . '/index.html');
             }
         }
-        
+
         $user = Auth::user() ?? null;
-        if ($user == null)
-        {
+        if ($user == null) {
             $user = $this->setUpUser($request, $user);
         }
-        $sitepage = SitePages::where('fk_site_id',$this->site->id)->where('section',$section)->first();
+        $sitepage = SitePages::where('fk_site_id', $this->site->id)->where('section', $section)->first();
 
-        if ($sitepage == null)
-        {
+        if ($sitepage == null) {
             //check for privacy and for terms of service, if shown then provide the Prasso version
             $matches = array_filter(AppServiceProvider::$allowedUris, function ($allowedUri) use ($section) {
                 return strpos($section, $allowedUri) !== false;
@@ -359,101 +360,95 @@ class SitePageController extends BaseController
                 AppServiceProvider::loadDefaultsForPagesNotUsingControllerClass($this->site);
                 return view($section);
             }
-            
+
             // If we have a GitHub repository but the specific page wasn't found,
             // try to serve the repository's index page as a fallback
             if ($this->site != null && !empty($this->site->deployment_path) && !empty($this->site->github_repository)) {
                 $repoName = explode('/', $this->site->github_repository)[1] ?? $this->site->github_repository;
                 $indexPath = public_path('hosted_sites/' . $repoName . '/index.html');
-                
+
                 if (file_exists($indexPath)) {
                     Log::info("Page {$section} not found, serving GitHub repository index page as fallback for site {$this->site->id}");
                     return response()->file($indexPath);
                 }
             }
-            
-            info('viewSitePage page not found, using system welcome: '.$section.' site:'.$this->site->id); 
+
+            info('viewSitePage page not found, using system welcome: ' . $section . ' site:' . $this->site->id);
             return view('welcome');
         }
 
-        if ( ($sitepage->requiresAuthentication() && $user == null ) ||
-                ($user != null && !$this->userService->isUserOnTeam($user)))
-        {
-            if ( $user == null ){
+        if (($sitepage->requiresAuthentication() && $user == null) ||
+            ($user != null && !$this->userService->isUserOnTeam($user))
+        ) {
+            if ($user == null) {
                 \App\Http\Middleware\UserPageAccess::authorizeUser($request);
-                $user = Auth::user() ?? null;   
-                if ($user == null){
+                $user = Auth::user() ?? null;
+                if ($user == null) {
                     Auth::logout();
-                    session()->flash('status',config('constants.LOGIN_AGAIN'));
+                    session()->flash('status', config('constants.LOGIN_AGAIN'));
                     return redirect('/login');
                 }
             }
-            if (($user != null && !$this->userService->isUserOnTeam($user))){
+            if (($user != null && !$this->userService->isUserOnTeam($user))) {
                 Auth::logout();
-                session()->flash('status',config('constants.LOGIN_AGAIN'));
+                session()->flash('status', config('constants.LOGIN_AGAIN'));
                 return redirect('/login');
             }
         }
         //if the page requires admin, and the user isn't an admin, inform them no access to this page
-        if ( $sitepage->pageRequiresAdmin() && $user != null && !$user->isInstructor())
-        {
+        if ($sitepage->pageRequiresAdmin() && $user != null && !$user->isInstructor($this->site)) {
             return view('noaccess');
         }
-        if ($sitepage->url != null && strlen($sitepage->url) > 5 && strcmp($sitepage->url,'http') != 0)
-        {
+        if ($sitepage->url != null && strlen($sitepage->url) > 5 && strcmp($sitepage->url, 'http') != 0) {
             return redirect($sitepage->url);
         }
         $nodata = null;
-       return $this->prepareAndReturnView($sitepage, $nodata, $user, $request);
-        
+        return $this->prepareAndReturnView($sitepage, $nodata, $user, $request);
     }
 
     /**
      * This is the method that is called when a user clicks on a link to edit a site page's data 
      * using that pages' form
      */
-    public function editSitePageData(Request $request,$section, $dataid)
+    public function editSitePageData(Request $request, $section, $dataid)
     {
-        if ($section == 'favicon.ico')
-        {
+        if ($section == 'favicon.ico') {
             abort(404);
             return null;
         }
-        $user = Auth::user() ?? null;   
-        if ($user == null){
+        $user = Auth::user() ?? null;
+        if ($user == null) {
             \App\Http\Middleware\UserPageAccess::authorizeUser($request);
-            if ($user == null){
+            if ($user == null) {
                 Auth::logout();
-                session()->flash('status',config('constants.LOGIN_AGAIN'));
+                session()->flash('status', config('constants.LOGIN_AGAIN'));
                 return redirect('/login');
             }
         }
         //make sure user has access to edit
-        if (!$this->userService->isUserOnTeam($user))
-        {
-            info('user is not on team to edit site page data '.$user->id);
+        if (!$this->userService->isUserOnTeam($user)) {
+            info('user is not on team to edit site page data ' . $user->id);
             abort(404);
         }
         //get record id'd by dataid
-        $data = SitePageData::where('id',$dataid)
-                ->firstOr(function () {
-                    return null;
-                });
-        if ($data == null){
-            info('data id not found in site page data table. '.$dataid);
+        $data = SitePageData::where('id', $dataid)
+            ->firstOr(function () {
+                return null;
+            });
+        if ($data == null) {
+            info('data id not found in site page data table. ' . $dataid);
             abort(404);
         }
 
         //get view id'd in data record
-        $sitepage = SitePages::where('id',$data->fk_site_page_id)
-                        ->where('section',$section)
-                        ->firstOr(function () {
-                            return null;
-                        });
+        $sitepage = SitePages::where('id', $data->fk_site_page_id)
+            ->where('section', $section)
+            ->firstOr(function () {
+                return null;
+            });
 
-        if ($sitepage == null)
-        {
-            info('page id not found from data '.$data->fk_site_page_id);
+        if ($sitepage == null) {
+            info('page id not found from data ' . $data->fk_site_page_id);
             abort(404);
         }
 
@@ -461,7 +456,8 @@ class SitePageController extends BaseController
         return $this->prepareAndReturnView($sitepage, $data, $user, $request);
     }
 
-    private function prepareAndReturnView($sitepage, $site_page_data, $user, $request){
+    private function prepareAndReturnView($sitepage, $site_page_data, $user, $request)
+    {
         // Handle different page types
         switch ($sitepage->type) {
             case 2: // S3 File
@@ -473,7 +469,7 @@ class SitePageController extends BaseController
                     $sitepage->description = $this->prepareTemplate($sitepage, $request->path());
                 }
                 break;
-                
+
             case 3: // External URL
                 if (!empty($sitepage->external_url)) {
                     return redirect()->away($sitepage->external_url);
@@ -481,21 +477,23 @@ class SitePageController extends BaseController
                 // Fall through to HTML if no URL is provided
                 $sitepage->description = $this->prepareTemplate($sitepage, $request->path());
                 break;
-                
+
             case 1: // HTML (default)
             default:
                 $sitepage->description = $this->prepareTemplate($sitepage, $request->path());
                 break;
         }
-        
+
         $masterpage = $this->getMaster($sitepage);
 
         // Process template data if template is defined and contains [DATA] placeholder
         $placeholder = '[DATA]';
-        if ($sitepage->template != null && 
-            strlen($sitepage->template) > 0 && 
-            strpos($sitepage->description ?? '', $placeholder) !== false) {
-                
+        if (
+            $sitepage->template != null &&
+            strlen($sitepage->template) > 0 &&
+            strpos($sitepage->description ?? '', $placeholder) !== false
+        ) {
+
             $page_content = '';
             if ($site_page_data == null) {
                 // Multi-record result sets will be returned within the x-data attribute of the template
@@ -507,41 +505,39 @@ class SitePageController extends BaseController
                     $page_content = str_replace($placeholder, $jsonData, $sitepage->description);
                 }
             }
-            
+
             if (!empty($page_content)) {
                 $sitepage->description = $page_content;
             }
         }
-        
+
         return view($sitepage->masterpage)
             ->with('sitePage', $sitepage)
             ->with('site', $this->site)
-            ->with('page_short_url', '/page/'.$sitepage->section)
+            ->with('page_short_url', '/page/' . $sitepage->section)
             ->with('masterPage', $masterpage);
     }
-     /**
+    /**
      * Show the app edit form 
      *
      * @return \Illuminate\Http\Response
      */
     public function editSitePages($siteid)
     {
-        if ($siteid == 'favicon.ico')
-        {
+        if ($siteid == 'favicon.ico') {
             abort(404);
             return null;
         }
-        if (!Controller::userOkToViewPageByHost($this->userService))
-        {
+        if (!Controller::userOkToViewPageByHost($this->userService)) {
             info('user not ok to view page. editSitePages ' . $siteid);
             return redirect('/login');
         }
         $masterpage = Controller::getMasterForSite($this->site);
-        
+
         return view('sitepage.view-site-pages')
             ->with('siteid', $siteid)
-            ->with('site',$this->site)
-            ->with('masterPage',$masterpage);
+            ->with('site', $this->site)
+            ->with('masterPage', $masterpage);
     }
 
     public function saveSitePage(Request $request)
@@ -557,16 +553,17 @@ class SitePageController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function livestream_activity(Request $request){
+    public function livestream_activity(Request $request)
+    {
         //ship this off to the logic that processes emails
         info('Livestream Activity: ' . $request->body);
-        $receipient_user = \App\Models\User::where('id',1)->first();
+        $receipient_user = \App\Models\User::where('id', 1)->first();
         $receipient_user->sendLivestreamNotification('Livestream Notification', $request->body, $receipient_user->email, $receipient_user->name);
-        
     }
 
-    public function giveToDonate(){
-        
+    public function giveToDonate()
+    {
+
         return redirect()->to('/page/donate');
     }
 
@@ -576,10 +573,10 @@ class SitePageController extends BaseController
      * will not depend on fixed form item names
      * the data will be stored in site_page_data table with siteid, data's key, json_data, and date created/updated
      */
-    public function sitePageDataPost(Request $request,$siteid,$pageid){
+    public function sitePageDataPost(Request $request, $siteid, $pageid)
+    {
         // make sure the user has access to this site and page
-        if (!Controller::userOkToViewPageByHost($this->userService))
-        {
+        if (!Controller::userOkToViewPageByHost($this->userService)) {
             abort(403, 'Unauthorized action.');
         }
         $id = $request->input('id');
@@ -587,7 +584,7 @@ class SitePageController extends BaseController
         $data_key = $request->input('data_key');
 
         $newOne = false;
-        
+
         //if id is in the data, use it to find this record.
         $data = null;
         if ($id) {
@@ -595,20 +592,19 @@ class SitePageController extends BaseController
         } elseif ($data_key) {
             $data = SitePageData::where('fk_site_page_id', $pageid)->where('data_key', $data_key)->first();
         }
-        
-        if ($data_key == NULL){
+
+        if ($data_key == NULL) {
             $data_key = Str::uuid();
             $newOne = true;
         }
-        if ($data == null){
-            
-            $data = SitePageData::create(['fk_site_page_id'=>$pageid,'data_key'=>$data_key, 'fk_team_id'=>$this->site->teams[0]->id]);
-        }
-        else{
+        if ($data == null) {
+
+            $data = SitePageData::create(['fk_site_page_id' => $pageid, 'data_key' => $data_key, 'fk_team_id' => $this->site->teams[0]->id]);
+        } else {
             // make sure this page belongs to this site
-            if ($data->fk_team_id != $team_id){
+            if ($data->fk_team_id != $team_id) {
                 $message = 'No changes due to mismatch in team: ' . $team_id . ' ' . $data->fk_team_id;
-                session()->flash('message',$message );
+                session()->flash('message', $message);
                 //save nothing
                 redirect()->back();
             }
@@ -616,7 +612,7 @@ class SitePageController extends BaseController
         //loop through the request and gather form input values to build json object
         $json = array();
         foreach ($request->all() as $key => $value) {
-            if ($key != '_token' && $key != 'template' && $key != 'siteid' && $key != 'pageid'){
+            if ($key != '_token' && $key != 'template' && $key != 'siteid' && $key != 'pageid') {
                 $json[$key] = $value;
             }
         }
@@ -625,82 +621,78 @@ class SitePageController extends BaseController
         $data->fk_team_id = $team_id;
         $data->save();
 
-        if ($request['return_json']=='true'){
-           
+        if ($request['return_json'] == 'true') {
+
             //return all json with this pageid from site page data if that value is true
             $site_page = SitePages::find($pageid);
             $site = Site::find($siteid);
             $jsonData = $this->sitePageService->getTemplateDataJSON($site_page,  Auth::user() ?? null, $site);
 
             $message = 'success';
-            return $this->sendResponse($jsonData, $message) ;
-        
+            return $this->sendResponse($jsonData, $message);
         }
 
         //page didn't request json return, redirect back with a message.
         $page = SitePages::find($pageid);
-        if ($newOne)
-        {$message = 'A new '.$page->section.' record has been added';}
-        else
-        {$message = 'A '.$page->section.' record has been updated';}
-        if (SitePages::pageNotificationsRequested($pageid)){
+        if ($newOne) {
+            $message = 'A new ' . $page->section . ' record has been added';
+        } else {
+            $message = 'A ' . $page->section . ' record has been updated';
+        }
+        if (SitePages::pageNotificationsRequested($pageid)) {
             //user wants notifications when this data changes
             $user = \Auth::user();
             $user->sendDataUpdated($user, $this->site);
         }
-        session()->flash('message',$message );
+        session()->flash('message', $message);
         return redirect()->back();
-
     }
 
-    public function lateTemplateData(Request $request){
+    public function lateTemplateData(Request $request)
+    {
         $pageid = $request['pageid'];
         // make sure the user has access to this site and page
-        if (!Controller::userOkToViewPageByHost($this->userService))
-        {
+        if (!Controller::userOkToViewPageByHost($this->userService)) {
             info('no access for this user. late template data: ' . $pageid);
             abort(403, 'Unauthorized action.');
         }
 
         $user = Auth::user() ?? null;
-        $sitepage = SitePages::where('fk_site_id',$this->site->id)->where('id',$pageid)->first();
+        $sitepage = SitePages::where('fk_site_id', $this->site->id)->where('id', $pageid)->first();
 
-        if ($sitepage == null)
-        {
-            Log::info('lateTemplateData, page not found. using system welcome: ');   
+        if ($sitepage == null) {
+            Log::info('lateTemplateData, page not found. using system welcome: ');
             return json_encode(['data' => '']);
         }
 
-        if ( ($sitepage->requiresAuthentication() && $user == null ) ||
-                ($user != null && !$this->userService->isUserOnTeam($user)))
-        {
-            if ( $user == null ){
+        if (($sitepage->requiresAuthentication() && $user == null) ||
+            ($user != null && !$this->userService->isUserOnTeam($user))
+        ) {
+            if ($user == null) {
                 \App\Http\Middleware\UserPageAccess::authorizeUser($request);
-                $user = Auth::user() ?? null;   
+                $user = Auth::user() ?? null;
                 json_encode(['data' => '']);
             }
-            if (($user != null && !$this->userService->isUserOnTeam($user))){
+            if (($user != null && !$this->userService->isUserOnTeam($user))) {
                 json_encode(['data' => '']);
             }
         }
         //if the page requires admin, and the user isn't an admin, inform them no access to this page
-        if ( $sitepage->pageRequiresAdmin() && $user != null && !$user->isInstructor())
-        {
+        if ($sitepage->pageRequiresAdmin() && $user != null && !$user->isInstructor($this->site)) {
             return json_encode(['data' => '']);
         }
 
-        if ($sitepage->template != null && strlen($sitepage->template) > 0) 
-        {
-            $json_data= $this->sitePageService->getTemplateDataJSON($sitepage, $user, $this->site);
+        if ($sitepage->template != null && strlen($sitepage->template) > 0) {
+            $json_data = $this->sitePageService->getTemplateDataJSON($sitepage, $user, $this->site);
             return  $json_data;
         }
-        
+
         return json_encode(['data' => '']);
-        
     }
 
-    public function readTsvIntoSitePageData(Request $request){
-        
+    public function readTsvIntoSitePageData(Request $request)
+    {
+
         $pageid = $request['pageid'];
         // todo update this code to take a passed in file. for now, just use data.tsv
         $file = fopen('data.tsv', 'r');
@@ -712,7 +704,7 @@ class SitePageController extends BaseController
         // Loop through each line of the file
         while (($line = fgets($file)) !== false) {
             $data_key = Str::uuid();
-            $page = SitePageData::create(['fk_site_page_id'=>$pageid,'data_key'=>$data_key]);
+            $page = SitePageData::create(['fk_site_page_id' => $pageid, 'data_key' => $data_key]);
             // Split the line into an array of values
             $values = explode("\t", $line);
 
@@ -720,9 +712,9 @@ class SitePageController extends BaseController
             foreach ($values as $key => $value) {
                 $json["column$key"] = $value;
             }
-            
+
             $json = json_encode($json);
-           // info($json);
+            // info($json);
             $page->json_data = $json;
             $page->save();
         }
@@ -730,24 +722,24 @@ class SitePageController extends BaseController
         // Close the file
         fclose($file);
     }
-    
+
     /*/v1/sites/" + n.site_name + "/page_views*/
     public function pageView(Request $request, $site_name)
     {
         // Get the page ID from the request
         $page_name = json_encode($request->input('page_view_attributes'));
-       // info('request vars: '. json_encode($request->all()));
+        // info('request vars: '. json_encode($request->all()));
 
         // Create a new PageView instance
         $pageView = new PageView();
-    
+
         // Set the page ID and site ID for the page view
         $pageView->page_name = $page_name;
         $pageView->site_name = $site_name;
-    
+
         // Save the page view to the database
         $pageView->save();
-    
+
         // Return a response indicating success
         return response()->json(['message' => 'OK'], 200);
     }
@@ -755,21 +747,20 @@ class SitePageController extends BaseController
     public function editSitePageJsonData($siteId, $sitePageId)
     {
         // make sure the user has access to this site and page
-        if (!Controller::userOkToViewPageByHost($this->userService))
-        {
+        if (!Controller::userOkToViewPageByHost($this->userService)) {
             info('no access for this user. editSitePageJsonData: ' .  $sitePageId);
             abort(403, 'Unauthorized action.');
         }
 
         $sitePage = SitePages::findOrFail($sitePageId);
-        $sitePageData = SitePageData::where('fk_site_page_id',$sitePageId)->first();
-// Check if the site page data is null
-if (is_null($sitePageData)) {
-    // Set a session flash message
-    session()->flash('message', 'The page has no data defined for it.');
-    
-        // Redirect back to the previous page with the flash message
-        return redirect()->back();
+        $sitePageData = SitePageData::where('fk_site_page_id', $sitePageId)->first();
+        // Check if the site page data is null
+        if (is_null($sitePageData)) {
+            // Set a session flash message
+            session()->flash('message', 'The page has no data defined for it.');
+
+            // Redirect back to the previous page with the flash message
+            return redirect()->back();
         }
         $jsonData = json_decode($sitePageData->json_data, true);
 
@@ -783,12 +774,11 @@ if (is_null($sitePageData)) {
 
     public function updateSitePageJsonData(Request $request, $siteId, $sitePageDataId)
     {
-         // make sure the user has access to this site and page
-         if (!Controller::userOkToViewPageByHost($this->userService))
-         {
-             info('no access for this user. updateSitePageJsonData: $sitePageDataId ' .  $sitePageDataId);
-             abort(403, 'Unauthorized action.');
-         }
+        // make sure the user has access to this site and page
+        if (!Controller::userOkToViewPageByHost($this->userService)) {
+            info('no access for this user. updateSitePageJsonData: $sitePageDataId ' .  $sitePageDataId);
+            abort(403, 'Unauthorized action.');
+        }
 
         $sitePageData = SitePageData::findOrFail($sitePageDataId);
         $updatedJsonData = $request->input('json_data');
@@ -798,7 +788,7 @@ if (is_null($sitePageData)) {
         $sitePageData->save();
 
         return redirect()->route('sitepages.editSitePageJsonData', [$siteId, $sitePageData->fk_site_page_id])
-                         ->with('success', 'Site page json data updated successfully!');
+            ->with('success', 'Site page json data updated successfully!');
     }
 
     // Add a new method to handle the deletion of a site page data item
@@ -812,6 +802,6 @@ if (is_null($sitePageData)) {
 
         // Redirect back to the edit page with a success message
         return redirect()->route('sitepages.edit-site-page-json-data', ['siteId' => $siteId, 'sitePageId' => $sitePageId])
-                         ->with('success', 'Item deleted successfully.');
+            ->with('success', 'Item deleted successfully.');
     }
 }

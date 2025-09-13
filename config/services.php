@@ -57,5 +57,7 @@ return [
             'image_model_id' => env('AWS_BEDROCK_IMAGE_MODEL_ID', 'stability.stable-diffusion-xl-v1'),
         ],
     ],
+    
+    // AI functionality is provided by AWS Bedrock - see 'aws.bedrock' configuration above
 
 ];
