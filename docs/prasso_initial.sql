@@ -36,7 +36,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `sites` WRITE;
 /*!40000 ALTER TABLE `sites` DISABLE KEYS */;
-INSERT INTO `sites` (`id`, `site_name`, `host`, `main_color`, `logo_image`, `database`, `app_specific_css`, `image_folder`, `favicon`, `created_at`, `updated_at`, `description`, `supports_registration`, `subteams_enabled`) VALUES ('1', 'Prasso Local', 'printshop.faxt.com, localhost:8000', '#0553ed', 'https://images.prasso.io/prasso/prasso_logo.png', 'database', '.teambutton{color:#f1f1f1;background-color:#0553ed !important;}', 'prasso/', 'https://d2bj0u1jhmvqgo.cloudfront.net/default/prasso/favicon.ico', '2023-05-20 19:16:12', '2023-05-20 19:16:12', 'Rapidly prototype your mobile app then publish it for your company to use.', '1', '0');
+INSERT INTO `sites` (`id`, `site_name`, `host`, `main_color`, `logo_image`, `database`, `app_specific_css`, `image_folder`, `favicon`, `created_at`, `updated_at`, `description`, `supports_registration`, `subteams_enabled`) VALUES ('1', 'Prasso Local', 'printshop.faxt.com, localhost:8000', '#0553ed', 'https://images.faxt.com/prasso/prasso_logo.png', 'database', '.teambutton{color:#f1f1f1;background-color:#0553ed !important;}', 'prasso/', 'https://d2bj0u1jhmvqgo.cloudfront.net/default/prasso/favicon.ico', '2023-05-20 19:16:12', '2023-05-20 19:16:12', 'Rapidly prototype your mobile app then publish it for your company to use.', '1', '0');
 
 UNLOCK TABLES;
 
@@ -92,7 +92,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `current_team_id`, `profile_photo_path`, `created_at`, `updated_at`, `stripe_id`, `pm_type`, `enableMealReminders`, `timeZone`, `version`, `phone`) VALUES (1,'admin','info@faxt.com','aaaaaa',1,'https://images.prasso.io/profile-photos/RXZrfkxdmbGLPoBRsEJvSGdhTN7uNTzmihAAnp3D.png','2020-10-03 17:14:59', '2024-03-05 18:03:27', 'iTbAavWCUvTLxnrBv1uFATk6d503', 'fbJk2lyprkXJiJZiBLxuH6:APA91bGPwX33vExEA9lSy9GSentyWl2TJtdA6eQ3mzwwSKcgq8sjjjdJajkAwmXsElNvLllwNYoYeemo-67m8dlNp7I5HRWPz4o7HQ8Bb_FaQvuiyIxGw_Tx7BfaIU_SjIu6F8ozRUpl', '0', 'EST', 'v1', '13862005141');
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `current_team_id`, `profile_photo_path`, `created_at`, `updated_at`, `stripe_id`, `pm_type`, `enableMealReminders`, `timeZone`, `version`, `phone`) VALUES (1,'admin','info@faxt.com','aaaaaa',1,'https://images.faxt.com/profile-photos/RXZrfkxdmbGLPoBRsEJvSGdhTN7uNTzmihAAnp3D.png','2020-10-03 17:14:59', '2024-03-05 18:03:27', 'iTbAavWCUvTLxnrBv1uFATk6d503', 'fbJk2lyprkXJiJZiBLxuH6:APA91bGPwX33vExEA9lSy9GSentyWl2TJtdA6eQ3mzwwSKcgq8sjjjdJajkAwmXsElNvLllwNYoYeemo-67m8dlNp7I5HRWPz4o7HQ8Bb_FaQvuiyIxGw_Tx7BfaIU_SjIu6F8ozRUpl', '0', 'EST', 'v1', '13862005141');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 

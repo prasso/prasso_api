@@ -263,7 +263,7 @@ class UserService
         }
 
         $success['team_members'] = [];
-        if ($user->isInstructor())
+        if ($user->isInstructor($site))
         { 
           if (count($user->teams) > 0 && isset($user->teams[0]))
           {

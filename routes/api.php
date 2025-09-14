@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CommandController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\UserImportController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -29,6 +30,12 @@ Route::middleware(['siteusergroup'])
 
 // Calendar routes
 Route::get('/calendar/events', [CalendarController::class, 'index'])->name('calendar.events');
+
+// User Import routes
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/user-import/process', [UserImportController::class, 'processUpload']);
+    Route::post('/user-import/import', [UserImportController::class, 'importUsers']);
+});
 
 // Admin routes
 Route::group(['middleware' => ['auth:sanctum', 'superadmin'], 'prefix' => 'admin'], function () {

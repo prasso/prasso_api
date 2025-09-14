@@ -21,13 +21,13 @@ class SiteErpProductResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
 
-    protected static ?string $navigationGroup = 'My Site';
+    protected static ?string $navigationGroup = 'Site Management';
     
     protected static ?string $navigationColor = 'success';
     
-    protected static ?string $navigationLabel = 'My Products';
+    protected static ?string $pluralModelLabel = 'My Products';
     
-    protected static ?int $navigationSort = 10;
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Form $form): Form
     {
