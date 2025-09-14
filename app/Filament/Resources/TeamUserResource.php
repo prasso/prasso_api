@@ -26,8 +26,8 @@ class TeamUserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
-    protected static ?string $navigationGroup = 'My Site';
-    
+    protected static ?string $navigationGroup = 'Site Management';
+
     protected static ?string $navigationColor = 'warning';
     
     protected static ?string $navigationLabel = 'Team Users';

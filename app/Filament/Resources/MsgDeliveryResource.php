@@ -10,6 +10,7 @@ use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\TernaryFilter;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Prasso\Messaging\Models\MsgDelivery;
@@ -22,7 +23,7 @@ class MsgDeliveryResource extends Resource
 
     protected static ?string $navigationGroup = 'Messaging';
 
-    protected static ?string $navigationLabel = 'Deliveries';
+    protected static ?string $navigationLabel = 'Messages Sent';
 
     protected static ?int $navigationSort = 22;
 
@@ -89,6 +90,15 @@ class MsgDeliveryResource extends Resource
                     }),
             ])
             ->defaultSort('sent_at', 'desc')
+            ->actions([
+                Action::make('replies')
+                    ->label('Replies')
+                    ->icon('heroicon-o-chat-bubble-left-right')
+                    ->color('gray')
+                    ->modalContent(fn ($record) => view('filament.tables.row-details.replies', ['record' => $record]))
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(false),
+            ])
             ->paginationPageOptions([25, 50, 100]);
     }
 
