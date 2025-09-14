@@ -18,16 +18,18 @@ use Illuminate\Database\Eloquent\Builder;
 
 class TabsResource extends Resource
 {
+   
+  
+    protected static ?string $navigationGroup = 'Mobile App Configuration';
+    
     protected static ?string $model = Tabs::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
+    
+    protected static ?string $pluralModelLabel = 'Tabs';
+    
+    protected static bool $shouldRegisterNavigation = false;
 
-    protected static ?string $navigationGroup = 'My Site';
-    
-    protected static ?string $navigationColor = 'primary';
-    
-    protected static ?string $navigationLabel = 'Tabs';
-    
     protected static ?int $navigationSort = 20;
 
     public static function form(Form $form): Form

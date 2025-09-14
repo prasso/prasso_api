@@ -28,7 +28,8 @@ class UserRoleResource extends Resource
 
     protected static ?string $navigationGroup = 'My Site';
     
-    protected static ?int $navigationSort = 28;
+    protected static bool $shouldRegisterNavigation = false;
+
 
     public static function form(Form $form): Form
     {
