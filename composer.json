@@ -26,8 +26,10 @@
         "livewire/livewire": "^3.0",
         "prasso/autoprohub": "dev-main",
         "prasso/bedrock-html-editor": "dev-main",
+        "prasso/church": "dev-main",
         "prasso/messaging": "dev-main",
         "prasso/project_management": "dev-main",
+        "rlanvin/php-rrule": "^2.6",
         "spatie/laravel-google-calendar": "^3.8",
         "twilio/sdk": "^6.27"
     },
@@ -51,6 +53,10 @@
         {
             "type": "path",
             "url": "packages/prasso/bedrock-html-editor"
+        },
+        {
+            "type": "path",
+            "url": "packages/prasso/church"
         }
     ],
     "require-dev": {

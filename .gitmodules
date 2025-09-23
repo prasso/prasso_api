@@ -1,0 +1,18 @@
+[submodule "packages/prasso/church"]
+	path = packages/prasso/church
+	url = https://github.com/prasso/church.git
+[submodule "packages/prasso/messaging"]
+	path = packages/prasso/messaging
+	url = https://github.com/prasso/Prasso_messaging.git
+[submodule "packages/prasso/bedrock-html-editor"]
+	path = packages/prasso/bedrock-html-editor
+	url = https://github.com/prasso/bedrock-html-editor.git
+[submodule "packages/prasso/project_management"]
+	path = packages/prasso/project_management
+	url = https://github.com/prasso/project_management.git
+[submodule "packages/prasso/autoprohub"]
+	path = packages/prasso/autoprohub
+	url = https://github.com/prasso/autoprohub.git	
+[submodule "packages/faxt/invenbin"]
+	path = packages/faxt/invenbin
+	url = https://github.com/prasso/Prasso_Invenbin.git	
