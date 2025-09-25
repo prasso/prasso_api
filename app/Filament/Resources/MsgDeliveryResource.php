@@ -121,7 +121,7 @@ class MsgDeliveryResource extends Resource
             // ignore and continue with scoping
         }
 
-        // Scope to site-owned team users if possible
+        // Scope to the current site team's deliveries by team_id so all recipient types (user|guest|member) are included
         try {
             $siteId = $user->getUserOwnerSiteId();
             if ($siteId) {
@@ -129,18 +129,17 @@ class MsgDeliveryResource extends Resource
                 if ($site) {
                     $team = $site->teams()->first();
                     if ($team) {
-                        $userIds = TeamUser::where('team_id', $team->id)->pluck('user_id');
-                        if ($userIds->count() > 0) {
-                            $query = $query->where(function (Builder $q) use ($userIds) {
-                                $q->where(function (Builder $qq) use ($userIds) {
-                                    $qq->where('recipient_type', 'user')
-                                       ->whereIn('recipient_id', $userIds);
-                                });
-                                // Guests scoping TBD
-                            });
-                        }
+                        $query = $query->where('team_id', $team->id);
+                    } else {
+                        // No team for site; hide results to avoid cross-tenant leakage
+                        return $query->whereRaw('1 = 0');
                     }
+                } else {
+                    return $query->whereRaw('1 = 0');
                 }
+            } else {
+                // If no owning site context, restrict to nothing in site-admin panel
+                return $query->whereRaw('1 = 0');
             }
         } catch (\Throwable $e) {
             // If scoping fails, fall back to empty to avoid cross-tenant leakage
