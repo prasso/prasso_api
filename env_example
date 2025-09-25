@@ -80,6 +80,10 @@ TWILIO_ACCOUNT_SID=your_twilio_sid
 TWILIO_AUTH_TOKEN=your_twilio_auth_token
 TWILIO_NUMBER=+15555550123
 
+# Messaging configuration
+# Fully qualified class name of your domain Member model used by the Messaging package
+MESSAGING_MEMBER_MODEL="Prasso\\Church\\Models\\Member"
+
 FIREBASE_SERVER_KEY="firebaseserverkey"
 CONTACT_DEVICE_TOKEN="contactdevicetoken"
 # GitHub API Credentials
