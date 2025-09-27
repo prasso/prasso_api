@@ -3,6 +3,10 @@
 namespace App\Filament\Pages;
 
 use Filament\Pages\Dashboard as BaseDashboard;
+use Prasso\Church\Filament\Widgets\ChurchOverview;
+use Prasso\Church\Filament\Widgets\ChurchMembershipGrowth;
+use Prasso\Church\Filament\Widgets\ChurchQuickActions;
+use Prasso\Church\Filament\Widgets\ChurchRecentActivity;
 
 class Dashboard extends BaseDashboard
 {
@@ -14,6 +18,10 @@ class Dashboard extends BaseDashboard
     {
         return [
             \App\Filament\SiteAdmin\Widgets\SiteAdminOverview::class,
+            ChurchOverview::class,
+            ChurchMembershipGrowth::class,
+            ChurchQuickActions::class,
+            ChurchRecentActivity::class,
         ];
     }
 }
