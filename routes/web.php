@@ -116,6 +116,7 @@ Route::middleware([
     Route::post('/images/upload', 'ImageController@upload')->name('images.upload');
     Route::post('/images/confirm-resize', 'ImageController@confirmResize')->name('images.confirm-resize');
     Route::post('/images/generate-ai', 'ImageController@generateImageWithAI')->name('images.generate-ai');
+    Route::post('/images/recolor-ai', 'ImageController@recolorImageWithAI')->name('images.recolor-ai');
     Route::get('/image-library', 'ImageController@index')->name('image.library');
     Route::delete('/site-page-data/{pageid}/{id}', [SitePageDataController::class, 'destroy']);
 

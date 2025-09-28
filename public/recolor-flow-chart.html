@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Recoloring Flow Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            margin: 20px auto;
+        }
+        .legend {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .legend h3 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Recoloring Workflow with Amazon Bedrock Titan G1</h1>
+        
+        <div class="mermaid">
+flowchart TD
+    %% Client-side actions
+    A[User selects image from dropdown] --> B[User selects old color using eyedropper]
+    B --> C[User selects new color using color picker]
+    C --> D[User clicks 'Recolor with AI' button]
+    D --> E[JavaScript validates form inputs]
+    E --> F[AJAX POST request to /images/recolor-ai endpoint]
+    
+    %% Server-side controller actions
+    F --> G[ImageController at recolorImageWithAI]
+    G --> H{Validate request inputs}
+    H -- Invalid --> I[Return validation error response]
+    H -- Valid --> J[Retrieve image details from database]
+    J --> K{Check user access to site}
+    K -- Unauthorized --> L[Return unauthorized response]
+    K -- Authorized --> M{Check user access to image}
+    M -- Unauthorized --> N[Return unauthorized response]
+    M -- Authorized --> O[Construct recoloring prompt]
+    O --> P[Get image URL from S3]
+    
+    %% BedrockAIService actions
+    P --> Q[Call BedrockAIService@modifyImageWithColors]
+    Q --> R[Fetch image data from URL]
+    R --> S[Encode image as base64]
+    S --> T[Create prompt for AI recoloring]
+    T --> U[Call invokeModelWithImageGeneration]
+    
+    %% AWS Bedrock API call
+    U --> V[Prepare request payload for Titan G1]
+    V --> W[Make API call to Amazon Bedrock]
+    W --> X[Process API response]
+    X --> Y[Decode base64 image from response]
+    
+    %% Save and return results
+    Y --> Z[Generate unique filename]
+    Z --> AA[Save recolored image to S3]
+    AA --> AB[Create database record for new image]
+    AB --> AC[Return success response with image URL]
+    
+    %% Client-side response handling
+    AC --> AD[JavaScript receives response]
+    AD --> AE[Display recolored image in UI]
+    AE --> AF[Show success message]
+    AF --> AG[Reload page after delay]
+    
+    %% Error handling paths
+    Q -- Error --> BA[Log error details]
+    BA --> BB[Return error response]
+    BB --> BC[JavaScript shows error message]
+    
+    W -- API Error --> CA[Log AWS API error]
+    CA --> CB[Return error response]
+    CB --> CC[JavaScript shows error message]
+    
+    AA -- Storage Error --> DA[Log S3 storage error]
+    DA --> DB[Return error response]
+    DB --> DC[JavaScript shows error message]
+    
+    classDef clientSide fill:#d4f1f9,stroke:#05a,stroke-width:1px;
+    classDef serverSide fill:#e1f7d5,stroke:#092,stroke-width:1px;
+    classDef awsService fill:#fff2cc,stroke:#ff9900,stroke-width:1px;
+    classDef database fill:#f2e6ff,stroke:#6600cc,stroke-width:1px;
+    classDef error fill:#ffcccc,stroke:#cc0000,stroke-width:1px;
+    
+    class A,B,C,D,E,F,AD,AE,AF,AG,BC,CC,DC clientSide;
+    class G,H,I,J,K,L,M,N,O,P,BA,BB,CA,CB,DA,DB serverSide;
+    class Q,R,S,T,U,V,W,X,Y awsService;
+    class Z,AA,AB database;
+    class I,L,N,BA,BB,BC,CA,CB,CC,DA,DB,DC error;
+        </div>
+        
+        <div class="legend">
+            <h3>Legend</h3>
+            <ul>
+                <li><span style="color:#05a; font-weight:bold;">Blue</span>: Client-side actions (JavaScript, UI)</li>
+                <li><span style="color:#092; font-weight:bold;">Green</span>: Server-side controller actions (Laravel)</li>
+                <li><span style="color:#ff9900; font-weight:bold;">Orange</span>: AWS Bedrock AI Service actions</li>
+                <li><span style="color:#6600cc; font-weight:bold;">Purple</span>: Database and storage operations</li>
+                <li><span style="color:#cc0000; font-weight:bold;">Red</span>: Error handling paths</li>
+            </ul>
+        </div>
+        
+        <div class="process-details">
+            <h3>Process Details</h3>
+            <ol>
+                <li><strong>Client-side Preparation:</strong>
+                    <ul>
+                        <li>User selects an image from their library</li>
+                        <li>User uses eyedropper tool to select the color to replace</li>
+                        <li>User selects a new color using the color picker</li>
+                        <li>Form validation ensures all inputs are valid</li>
+                    </ul>
+                </li>
+                <li><strong>Server-side Validation:</strong>
+                    <ul>
+                        <li>Validate request parameters (image_id, old_color, new_color, site_id)</li>
+                        <li>Verify user has access to the site</li>
+                        <li>Verify user has access to the image</li>
+                    </ul>
+                </li>
+                <li><strong>AI Processing:</strong>
+                    <ul>
+                        <li>Construct a prompt for the AI: "change all [old_color] areas to [new_color]"</li>
+                        <li>Get the original image from S3</li>
+                        <li>Call BedrockAIService to modify the image using Amazon Titan G1</li>
+                        <li>The service encodes the image as base64 and sends it with the prompt to AWS Bedrock</li>
+                    </ul>
+                </li>
+                <li><strong>Storage and Database:</strong>
+                    <ul>
+                        <li>Generate a unique filename for the recolored image</li>
+                        <li>Save the recolored image to S3 storage</li>
+                        <li>Create a new record in the team_images table</li>
+                    </ul>
+                </li>
+                <li><strong>Response Handling:</strong>
+                    <ul>
+                        <li>Return the URL of the recolored image to the client</li>
+                        <li>JavaScript displays the recolored image and success message</li>
+                        <li>Page reloads after a delay to show updated image library</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
+</html>
