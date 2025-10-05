@@ -216,7 +216,7 @@ class UserService
      */
     public function buildConfigReturn($user, $appsService, $site) 
     {
-        $user_access_token = isset($user->personalAccessToken)? $user->personalAccessToken->token : null;
+        $user_access_token = isset($user->personalAccessToken) ? $user->personalAccessToken : null;
 
         $success = [];
         if (!isset($user_access_token))
@@ -226,7 +226,7 @@ class UserService
             {
                 $user->tokens()->delete();
             }
-            $user_access_token = $user->createToken(config('app.name'))->accessToken->token;
+            $user_access_token = $user->createToken(config('app.name'))->plainTextToken;
             $success['token'] = $user_access_token; 
         }
         else

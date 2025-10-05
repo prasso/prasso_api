@@ -188,7 +188,7 @@ class Controller extends FrameworkController
             if ((!isset($accessToken) || $accessToken == 'Bearer') && $user != null) 
             {
 
-                $accessToken = $request->user()->createToken(config('app.name'))->accessToken->token;
+                $accessToken = $request->user()->createToken(config('app.name'))->plainTextToken;
 
             }
         }

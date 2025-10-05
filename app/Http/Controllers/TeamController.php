@@ -101,7 +101,7 @@ class TeamController extends Controller
 
         $user = Auth::user();
        // Log::info('In setupForTeamMessages');
-        $user_access_token = isset($user->personalAccessToken) ? $user->personalAccessToken->token : null;
+        $user_access_token = isset($user->personalAccessToken) ? $user->personalAccessToken : null;
 
         $team = $user->team_owner->where('id', $teamid)->first();
 
@@ -240,22 +240,26 @@ class TeamController extends Controller
     public function editApp(AppsService $appsService,$teamid, $appid)
     {
         $user = Auth::user(); 
-        if ($user->current_team_id != $teamid)
-        {
-            $response['message'] = trans('messages.invalid_token');
-            $response['success'] = false;
-            $response['status_code'] = \Symfony\Component\HttpFoundation\Response::HTTP_UNAUTHORIZED;
-            return $this->sendError('Unauthorized.', ['error' => 'Please login again.'], 400);
+        // Authorize by membership/ownership instead of requiring current_team_id match
+        if (!$user || !$user->isTeamMemberOrOwner((int) $teamid)) {
+            return $this->sendError('Unauthorized.', ['error' => 'You do not have access to this team.'], 403);
         }
         $team = Team::where('id',$teamid)->first();
         $teamapps = $team->apps;     
         $teamapp = $teamapps->where('id',$appid)->first();
-        $team_selection = $team->pluck('name','id');
+        // Build a selection list from teams the user owns
+        $team_selection = $user->team_owner ? $user->team_owner->pluck('name','id') : collect([$team->id => $team->name]);
         if ($appid == 0 || $teamapp ==  null)
         {
             $teamapp = $appsService->getBlankApp($user);
+            // Pre-fill the team for the new app so the form has context
+            $teamapp->team_id = (int) $teamid;
+            // No tabs yet for a new/blank app
+            $apptabs = collect();
         }
-        $apptabs = $teamapp->tabs()->orderBy('sort_order')->Get();
+        else {
+            $apptabs = $teamapp->tabs()->orderBy('sort_order')->Get();
+        }
         $sites = Site::pluck('site_name', 'id');
         
         return view('apps.edit-app')
