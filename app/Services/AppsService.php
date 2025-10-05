@@ -49,10 +49,10 @@ class AppsService
             $returnval = str_replace(config('constants.THIRD_PARTY_TOKEN'), $user->thirdPartyToken->THIRD_PARTY_TOKEN, $returnval);
            
         }
-        if (isset($user->current_team_id ))
-        {
-            $returnval = str_replace(config('constants.TEAM_ID'), $user->current_team_id, $returnval);
-           
+        // Use the Site's team id for TEAM_ID placeholder to ensure site-scoped app config
+        $siteTeamId = optional($site->teams()->first())->id;
+        if ($siteTeamId) {
+            $returnval = str_replace(config('constants.TEAM_ID'), $siteTeamId, $returnval);
         }
         $returnval = str_replace(config('constants.CSRF_HEADER'), csrf_token(), $returnval);
  
