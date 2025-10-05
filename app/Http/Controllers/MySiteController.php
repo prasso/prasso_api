@@ -103,11 +103,13 @@ class MySiteController extends BaseController
         }
         
         $team = $mysite->teams()->first();
-        $team_selection = $team->pluck('name','id');
+        // Build team selection from the site's teams (not the user's teams)
+        $team_selection = $mysite->teams->pluck('name','id');
         return view('sites.my-site-editor')
             ->with('site', $mysite)
             ->with('user', $user)
-            ->with('team', $user->currentTeam)
+            // Use the site's team so downstream links (e.g., Edit Mobile App) target this Site's apps
+            ->with('team', $team)
             ->with('team_selection', $team_selection);
 
     }   
@@ -163,7 +165,8 @@ class MySiteController extends BaseController
         }
         
         $team = $site->teams()->first();
-        $team_selection = $team->pluck('name','id');
+        // Build team selection from the site's teams
+        $team_selection = $site->teams->pluck('name','id');
         return  view('sites.my-site-editor')    
             ->with('site', $site)
             ->with('user', $user)
