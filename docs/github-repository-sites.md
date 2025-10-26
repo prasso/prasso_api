@@ -8,10 +8,21 @@ The GitHub Repository integration allows site administrators to connect a site d
 
 When a GitHub repository is specified for a site:
 
-1. Site pages are sourced directly from the repository content
-2. The manual site pages editor is automatically disabled
-3. Content updates are managed through GitHub's version control system
-4. Changes to the repository are automatically reflected on the site
+1. The repository is cloned/deployed to `public/hosted_sites/{repository_name}/`
+2. Site pages are sourced directly from the deployed repository content
+3. The manual site pages editor is automatically disabled
+4. Content updates are managed through GitHub's version control system
+5. Changes to the repository are automatically reflected on the site
+
+### Page Resolution Order
+
+When a user requests a page, the system follows this resolution order:
+
+1. **Direct file match**: Serve the exact file path (e.g., `/about` → `hosted_sites/repo/about`)
+2. **HTML extension**: Try with `.html` extension (e.g., `/about` → `hosted_sites/repo/about.html`)
+3. **Directory index**: Check for `index.html` in a directory (e.g., `/about` → `hosted_sites/repo/about/index.html`)
+4. **Prasso pages**: Fall back to Prasso's page system if the file doesn't exist in the repository
+5. **Repository index fallback**: If no Prasso page is found, serve the repository's `index.html` (useful for single-page applications)
 
 ## Configuration
 
@@ -21,7 +32,17 @@ When a GitHub repository is specified for a site:
 2. Create a new site or edit an existing one
 3. In the GitHub Repository field, enter the repository in the format `username/repository`
    - Example: `prasso/website-template`
-4. Save the site configuration
+4. The system will automatically set the `deployment_path` when the repository is deployed
+5. Save the site configuration
+
+### Required Site Properties
+
+For a site to serve GitHub repository content, both of these properties must be set:
+
+- **`github_repository`**: The repository path in format `username/repository` or `organization/repository`
+- **`deployment_path`**: Set automatically when the repository is deployed; indicates the site is configured for GitHub hosting
+
+Both properties are stored in the `sites` table and can be viewed/managed through the Site Editor.
 
 ### Repository Structure Requirements
 
@@ -72,11 +93,19 @@ When using a GitHub repository for site content:
 
 The system handles GitHub repository sites by:
 
-1. Cloning the repository to a local cache
-2. Periodically pulling updates from the repository
-3. Serving files directly from the cached repository
-4. Processing HTML files to replace site tags and variables
-5. Mapping repository paths to site URLs
+1. **Repository Deployment**: Cloning or pulling the repository to `public/hosted_sites/{repository_name}/`
+2. **Page Serving**: When a request comes in, the `SitePageController` checks for files in the deployed repository
+3. **File Resolution**: Following the page resolution order (direct file → .html extension → directory index → Prasso pages → repository index)
+4. **Fallback Handling**: If a page isn't found in Prasso's system, the repository's `index.html` is served as a fallback (useful for SPAs)
+5. **Conditional Masterpage**: The masterpage is skipped for hosted sites (when both `deployment_path` and `github_repository` are set)
+
+### Key Controllers and Services
+
+- **`SiteController::deployGithubRepository()`**: Handles repository deployment and updates
+- **`SitePageController::index()`**: Serves the repository's `index.html` for the homepage
+- **`SitePageController::viewSitePage()`**: Serves specific pages from the repository with multi-level resolution
+- **`GithubRepositoryService`**: Manages git operations (clone, pull) for repository deployment
+- **`GithubRepositoryCreationService`**: Handles creation of new repositories from local folders
 
 ## Troubleshooting
 

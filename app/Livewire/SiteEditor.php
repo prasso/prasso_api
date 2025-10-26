@@ -27,7 +27,7 @@ class SiteEditor extends Component
 
     public $sites, $site_id, $site_name, $description, $host, $main_color, $logo_image, 
             $database, $favicon, $supports_registration, $subteams_enabled, $app_specific_js, $app_specific_css,
-            $does_livestreaming, $https_host, $image_folder, $invitation_only, $github_repository;
+            $does_livestreaming, $https_host, $image_folder, $invitation_only, $github_repository, $app_id;
             
     // Logo update properties
     public $showLogoUpdateModal = false;
@@ -59,7 +59,9 @@ class SiteEditor extends Component
     {
         $this->sites = Site::all();
         return view('livewire.site-editor')
-            ->with('team_selection', $this->team_selection);
+            ->with('team_selection', $this->team_selection)
+            ->with('app_id', $this->app_id)
+            ->with('team_id', $this->team_id);
     }
     
     /**
@@ -199,6 +201,7 @@ class SiteEditor extends Component
         $this->site_name = $site->site_name;
         if ($site->teams->count() > 0)
         {$this->team_id = $site->teams[0]->id;}
+        $this->app_id = $site->getApp();
 
         $this->description = $site->description;
         $this->host = $site->host;
@@ -378,6 +381,7 @@ class SiteEditor extends Component
         $this->site_name = $site->site_name;
         if ($site->teams->count() > 0)
         {$this->team_id = $site->teams[0]->id;}
+        $this->app_id = $site->getApp();
 
         $this->description = $site->description;
         $this->host = $site->host;

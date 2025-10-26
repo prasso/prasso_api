@@ -83,7 +83,8 @@ Routes are under the instructor middleware group (`routes/web.php`):
 ## Models and Persistence
 
 - **Apps model** (`app/Models/Apps.php`)
-  - Fillable: `team_id, site_id, appicon, app_name, page_title, page_url, sort_order, user_role`
+  - Fillable: `team_id, site_id, appicon, app_name, page_title, page_url, pwa_app_url, sort_order, user_role`
+  - `pwa_app_url`: Optional URL to a Progressive Web App (PWA) for mobile access. If set, clients should prefer this over `page_url` for mobile experiences.
   - Relations:
     - `tabs()` → hasMany `Tabs` ordered by `sort_order`
     - `instructorroletabs()` → Tabs with `team_role = INSTRUCTOR` OR `team_role = null AND restrict_role=false` UNION `nullroletabs()`
@@ -104,6 +105,8 @@ Routes are under the instructor middleware group (`routes/web.php`):
 
 - **App edit form** (`app/Livewire/Apps/AppInfoForm.php`)
   - Validates and updates app (including S3 icon upload if provided).
+  - Includes PWA App URL field for configuring mobile PWA access.
+  - Validation: `pwa_app_url` is `nullable|url|max:2048`.
   - Uses `Apps::processUpdates($this->teamapp->toArray())`.
 
 - **Tab edit form** (`app/Livewire/Apps/TabInfoForm.php`)
@@ -125,10 +128,20 @@ Routes are under the instructor middleware group (`routes/web.php`):
 
 ## Notable Business Rules
 
-- **Active App**: `TeamController@activateApp()` sets which app a user’s mobile session uses via `UserActiveApp::processUpdates($user->id, $appid)`.
+- **Active App**: `TeamController@activateApp()` sets which app a user's mobile session uses via `UserActiveApp::processUpdates($user->id, $appid)`.
 - **Tabs visibility**: Driven by role-aware relations in `Apps` and resolved by `AppsService::getAppSettingsBySite()`.
 - **Placeholders in app JSON**: Token, team, and CSRF placeholders are replaced before returning to clients.
+- **PWA App URL**: Optional field that allows teams to configure a separate Progressive Web App URL for mobile access. If set, mobile clients should prefer `pwa_app_url` over `page_url`. Replaces the legacy `prasso_app` mobile client with a web-based alternative.
+
+## Migration from prasso_app to PWA
+
+The `pwa_app_url` field enables migration from the legacy Flutter-based `prasso_app` mobile client to a modern Progressive Web App (PWA) built with React (`prasso_web`). 
+
+- **For existing apps**: Leave `pwa_app_url` empty to continue using `page_url` as before.
+- **For new PWA deployments**: Set `pwa_app_url` to the URL of the React-based PWA (e.g., `https://prasso-web.example.com`).
+- **Backward compatibility**: The field is optional and does not affect existing functionality.
 
 ## Summary
 
 - Documented all supported actions for apps and tabs, the API endpoint to save apps, and how the client configuration is assembled and filtered by roles.
+- Added PWA App URL support for configuring mobile web app access as an alternative to the legacy mobile client.
