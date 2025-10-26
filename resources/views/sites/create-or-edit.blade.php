@@ -55,7 +55,7 @@
                             <div class="grid grid-cols-3 gap-4">
                         <!-- Site Map -->
                         <div class="text-center">
-                            <a href="{{ route('sites.site-map.edit', ['site' => $site]) }}" 
+                            <a href="{{ route('sites.site-map.edit', ['site' => $site_id]) }}" 
                                class="flex flex-col items-center text-gray-600 hover:text-gray-900 p-4 rounded-lg hover:bg-gray-50"
                                title="Edit Site Map">
                                 <svg class="w-8 h-8 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -67,7 +67,7 @@
 
                         <!-- Mobile App -->
                         <div class="text-center">
-                            <x-responsive-nav-link href="{{ route('apps.show', ['teamid' => $team->id]) }}" 
+                            <x-responsive-nav-link href="{{ route('apps.show', ['teamid' => $team_id]) }}" 
                                                  class="flex flex-col items-center text-gray-600 hover:text-gray-900 p-4 rounded-lg hover:bg-gray-50">
                                 <svg class="w-8 h-8 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M7 2.75a2 2 0 00-2 2v14.5a2 2 0 002 2h10a2 2 0 002-2V4.75a2 2 0 00-2-2H7zM7 2.75h10M11 18h2M12 10.25h.01" />
