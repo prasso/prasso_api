@@ -15,6 +15,7 @@ use App\Models\Site;
 use App\Models\UserActiveApp;
 use App\Models\FlutterIcons;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 
 class TeamController extends Controller
 {
@@ -25,44 +26,54 @@ class TeamController extends Controller
         $this->middleware('instructorusergroup');
 
     }
-
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($teamid)
     {
-        $user = Auth::user(); 
+        $user = Auth::user();
 
-        $activeApp = UserActiveApp::where('user_id',$user['id'])->first();
-  
-        $team = Team::where('id',$user->current_team_id)->with('apps')->first();
-     
-        $teams_owned = $user->team_owner;
-        // Validate that $teams_owned is not null or empty
-        if (empty($teams_owned)) {
-            return redirect()->back()->withErrors(['error' => 'Team owner information is missing.']);
+        // Load team from URL, including apps
+        $team = Team::where('id', (int) $teamid)->with('apps')->firstOrFail();
+
+        // Authorization: super admins can access any team; others must be owners or members
+        $isSuperAdmin = $user->isSuperAdmin();
+        $isOwner = ($team->user_id === $user->id);
+        $isMember = \App\Models\TeamUser::where('team_id', $team->id)
+            ->where('user_id', $user->id)
+            ->where('role', 'instructor')
+            ->exists();
+
+        if (!$isSuperAdmin && !$isOwner && !$isMember) {
+            abort(403, 'Unauthorized.');
         }
+
+        // Apps for the requested team
         $teamapps = $team->apps;
-        
-        $activeAppId = '0';
-        if (isset($activeApp->app_id))
-        {
-            $activeAppId = $activeApp->app_id;
-        }
+
+        // Active app for the current user (used for mobile activation UX)
+        $activeApp = UserActiveApp::where('user_id', $user->id)->first();
+        $activeAppId = isset($activeApp->app_id) ? $activeApp->app_id : '0';
+
+        // Teams list for the page's selector:
+        // - Super admin: show just the requested team to keep context clear
+        // - Others: show their owned teams (existing behavior)
+        $teams_owned = $isSuperAdmin ? collect([$team]) : $user->team_owner;
 
         return view('apps.show')
             ->with('user', $user)
-            ->with('teams',$teams_owned)
+            ->with('teams', $teams_owned)
             ->with('teamapps', $teamapps)
             ->with('team', $team)
-            ->with('activeappid',$activeAppId);
+            ->with('activeappid', $activeAppId);
     }
     
     /**
      * create new site and app with a wizard
      *
+{{ ... }}
      * @return \Illuminate\Http\Response
      */
     public function newSiteAndApp()
@@ -101,7 +112,7 @@ class TeamController extends Controller
 
         $user = Auth::user();
        // Log::info('In setupForTeamMessages');
-        $user_access_token = isset($user->personalAccessToken) ? $user->personalAccessToken->token : null;
+        $user_access_token = isset($user->personalAccessToken) ? $user->personalAccessToken : null;
 
         $team = $user->team_owner->where('id', $teamid)->first();
 
@@ -240,22 +251,26 @@ class TeamController extends Controller
     public function editApp(AppsService $appsService,$teamid, $appid)
     {
         $user = Auth::user(); 
-        if ($user->current_team_id != $teamid)
-        {
-            $response['message'] = trans('messages.invalid_token');
-            $response['success'] = false;
-            $response['status_code'] = \Symfony\Component\HttpFoundation\Response::HTTP_UNAUTHORIZED;
-            return $this->sendError('Unauthorized.', ['error' => 'Please login again.'], 400);
+        // Authorize by membership/ownership instead of requiring current_team_id match
+        if (!$user || !$user->isTeamMemberOrOwner((int) $teamid)) {
+            return $this->sendError('Unauthorized.', ['error' => 'You do not have access to this team.'], 403);
         }
         $team = Team::where('id',$teamid)->first();
         $teamapps = $team->apps;     
         $teamapp = $teamapps->where('id',$appid)->first();
-        $team_selection = $team->pluck('name','id');
+        // Build a selection list from teams the user owns
+        $team_selection = $user->team_owner ? $user->team_owner->pluck('name','id') : collect([$team->id => $team->name]);
         if ($appid == 0 || $teamapp ==  null)
         {
             $teamapp = $appsService->getBlankApp($user);
+            // Pre-fill the team for the new app so the form has context
+            $teamapp->team_id = (int) $teamid;
+            // No tabs yet for a new/blank app
+            $apptabs = collect();
         }
-        $apptabs = $teamapp->tabs()->orderBy('sort_order')->Get();
+        else {
+            $apptabs = $teamapp->tabs()->orderBy('sort_order')->Get();
+        }
         $sites = Site::pluck('site_name', 'id');
         
         return view('apps.edit-app')
@@ -356,6 +371,16 @@ class TeamController extends Controller
         $teamapps = $team->apps;     
         $teamapp = $teamapps->where('id',$appid)->first();
 
+        // Handle blank/new app context (appid = 0 or missing)
+        if ($appid == 0 || $teamapp === null) {
+            $teamapp = Apps::getBlankApp($user);
+            $teamapp->id = 0;
+            $teamapp->team_id = (int) $teamid;
+            $team_tabs = collect();
+        } else {
+            $team_tabs = $teamapp->tabs;
+        }
+
         $index=1;
         $sort_orders = [$index];
         
@@ -370,12 +395,12 @@ class TeamController extends Controller
         }
         else
         {
-            $tab_data = $teamapp->tabs->where('id',$tabid)->first();
+            $tab_data = $team_tabs->where('id',$tabid)->first();
         }
         
         $hasMore = false;
         $moreindex = 0;
-        foreach($teamapp->tabs as $tab)
+        foreach($team_tabs as $tab)
         {
             $sort_orders[] = $index;
             if ($tab->page_url == config('constants.MORE_TAB'))
@@ -390,8 +415,10 @@ class TeamController extends Controller
         //for the last overflow tab, called More
         if ( $hasMore )
         {
+            $tabsIndexed = $team_tabs->values();
+            $moreTab = $tabsIndexed->get($moreindex);
             $more = [[0,'Not on More'],
-                [$teamapp->tabs[$moreindex]->id,$teamapp->tabs[$moreindex]->label]];
+                [$moreTab->id,$moreTab->label]];
         }
         else
         {

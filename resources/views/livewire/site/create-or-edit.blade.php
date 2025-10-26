@@ -12,7 +12,9 @@
         @include('sites.create-or-edit', [
             'team_selection' => $team_selection,
             'site_id' => $site_id,
-            'show_modal' => $show_modal
+            'show_modal' => $show_modal,
+            'team_id' => $team_id,
+            'app_id' => $app_id
         ])
         </div>
     </div>

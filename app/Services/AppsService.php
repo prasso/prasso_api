@@ -43,16 +43,55 @@ class AppsService
             $returnval = str_replace('instructorroletabs','tabs',json_encode($app_data));
           
         }
+
+        // Fallback: if no app found directly by site_id, try any app attached to the site's teams
+        if (!$app_data && $site) {
+            try {
+                $siteTeamIds = optional($site->teams)->pluck('id');
+                if ($siteTeamIds && $siteTeamIds->count() > 0) {
+                    if (!isset($user->roles) || (isset($user->roles) && count($user->roles) == 0)) {
+                        $app_data = Apps::with('nullroletabs')->with('team')
+                            ->whereIn('team_id', $siteTeamIds)
+                            ->first();
+                        $returnval = str_replace('nullroletabs','tabs',json_encode($app_data));
+                    } else {
+                        $app_data = Apps::with('instructorroletabs')->with('team')
+                            ->whereIn('team_id', $siteTeamIds)
+                            ->first();
+                        $returnval = str_replace('instructorroletabs','tabs',json_encode($app_data));
+                    }
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Fallback app lookup by team_id failed', ['error' => $e->getMessage()]);
+            }
+        }
+        
+        // Log which app is being assigned for this request URL and site
+        try {
+            $host = request()->getHttpHost();
+            Log::info('PWA login app assignment', [
+                'host' => $host,
+                'site_id' => optional($site)->id,
+                'site_name' => optional($site)->site_name,
+                'user_id' => optional($user)->id,
+                'user_email' => optional($user)->email,
+                'app_id' => optional($app_data)->id,
+                'app_name' => optional($app_data)->app_name,
+                'team_id' => optional($app_data)->team_id,
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Failed logging PWA app assignment', ['error' => $e->getMessage()]);
+        }
       
         if (isset($user->thirdPartyToken))
         {
             $returnval = str_replace(config('constants.THIRD_PARTY_TOKEN'), $user->thirdPartyToken->THIRD_PARTY_TOKEN, $returnval);
            
         }
-        if (isset($user->current_team_id ))
-        {
-            $returnval = str_replace(config('constants.TEAM_ID'), $user->current_team_id, $returnval);
-           
+        // Use the Site's team id for TEAM_ID placeholder to ensure site-scoped app config
+        $siteTeamId = optional($site->teams()->first())->id;
+        if ($siteTeamId) {
+            $returnval = str_replace(config('constants.TEAM_ID'), $siteTeamId, $returnval);
         }
         $returnval = str_replace(config('constants.CSRF_HEADER'), csrf_token(), $returnval);
  
