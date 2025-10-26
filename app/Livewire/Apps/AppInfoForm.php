@@ -49,7 +49,14 @@ class AppInfoForm extends Component
         'teamapp.appicon' => 'required_without:photo',
         'teamapp.site_id' => 'required|min:1',
         'teamapp.sort_order' => 'required',
-        'photo' => 'required_without:teamapp.appicon|max:1024'
+        'photo' => 'required_without:teamapp.appicon|image|mimes:jpeg,png,jpg,gif,svg|max:5120'
+    ];
+
+    protected $messages = [
+        'photo.required_without' => 'Please upload an app icon or select an existing one.',
+        'photo.image' => 'The file must be a valid image.',
+        'photo.mimes' => 'The image must be a JPEG, PNG, JPG, GIF, or SVG file.',
+        'photo.max' => 'The image size must not exceed 5MB.',
     ];
 
     public function updateApp()
@@ -63,8 +70,8 @@ class AppInfoForm extends Component
         {
             // Store in the "photos" directory in a configured "s3" bucket.
             //prassouploads/prasso/-app-photos/logos-1/
-            $this->photo->store(config('constants.APP_LOGO_PATH') .'logos-'.$this->teamapp->team_id, 's3');
-            $this->teamapp->appicon = config('constants.CLOUDFRONT_ASSET_URL') . config('constants.APP_LOGO_PATH') .'logos-'.$this->teamapp->team_id.'/'. $this->photo->hashName();
+            $storedPath = $this->photo->store(config('constants.APP_LOGO_PATH') .'logos-'.$this->teamapp->team_id, 's3');
+            $this->teamapp->appicon = config('constants.CLOUDFRONT_ASSET_URL') . $storedPath;
         }
         
         // Check if PWA URL is being set and is a faxt.com domain
