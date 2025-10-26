@@ -107,7 +107,7 @@ class Controller extends FrameworkController
         // Step 1: Check if the URL matches a defined site
         $site = Site::getClient($host);
         if ($site != null && isset($site)) {
-            Log::info("Site found for host: {$host}");
+           // Log::info("Site found for host: {$host}");
             return $site;
         }
         
