@@ -56,7 +56,7 @@ class NewSiteAndApp extends Component
     public $currentStep = 1;
     public $step1, $step2, $step3, $step4 = false;
     public $team_selection;
-
+    public $pwa_app_url; // Optional PWA URL for mobile access
 
     public $photo;
         
@@ -204,6 +204,7 @@ class NewSiteAndApp extends Component
         $this->newApp->app_name = $this->site_name;
         $this->newApp->page_title = $this->site_name;
         $this->newApp->page_url = $this->site_name;
+        $this->newApp->pwa_app_url = $this->pwa_app_url;
         $this->newApp->sort_order = '1';
 
         $newApp = $this->newApp->toArray();
@@ -212,6 +213,23 @@ class NewSiteAndApp extends Component
         Artisan::call("dns:setup", [
             'site' => $this->host
         ]);
+
+        // If PWA URL is provided and is a faxt.com domain, set up DNS for it as well
+        if ($this->pwa_app_url && $this->isFaxtDomain($this->pwa_app_url)) {
+            $pwaDomain = $this->extractDomain($this->pwa_app_url);
+            try {
+                $exitCode = Artisan::call("dns:setup", [
+                    'site' => $pwaDomain
+                ]);
+                if ($exitCode === 0) {
+                    Log::info("DNS setup completed for PWA domain: {$pwaDomain}");
+                } else {
+                    Log::warning("DNS setup returned exit code {$exitCode} for PWA domain: {$pwaDomain}");
+                }
+            } catch (\Throwable $e) {
+                Log::error("DNS setup exception for PWA domain {$pwaDomain}: " . $e->getMessage());
+            }
+        }
         //notify me new site and app
         try{
             Mail::to('info@faxt.com', 'Prasso Admin')->send(new new_site_notification($this));
@@ -227,5 +245,22 @@ class NewSiteAndApp extends Component
         session()->flash('message', 'Site created successfully. Please wait for DNS setup to complete.');
         redirect()->route('dashboard')
             ->with('success', 'Site created successfully. Please wait for DNS setup to complete.');
+    }
+
+    /**
+     * Check if a URL is based on the faxt.com domain
+     */
+    private function isFaxtDomain($url)
+    {
+        return strpos($url, 'faxt.com') !== false;
+    }
+
+    /**
+     * Extract domain from a URL (e.g., https://app.faxt.com -> app.faxt.com)
+     */
+    private function extractDomain($url)
+    {
+        $parsed = parse_url($url);
+        return $parsed['host'] ?? $url;
     }
 }

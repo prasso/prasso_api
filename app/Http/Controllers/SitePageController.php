@@ -52,7 +52,51 @@ class SitePageController extends BaseController
             return $this->getDashboardForCurrentSite($user);
         }
 
-        // Check if this site has a GitHub repository deployment path
+        /**
+         * PWA App Serving Feature
+         * 
+         * For sites with a PWA app configured, serve the PWA app's index.html
+         * instead of the traditional Prasso welcome page. This allows sites to host
+         * Progressive Web Apps directly.
+         * 
+         * Prerequisites:
+         * - Site must have an associated app with pwa_app_url set
+         * - The PWA must be deployed to public/hosted_pwa/{app_id}/
+         * 
+         * Flow:
+         * 1. Get the app associated with this site
+         * 2. Check if the app has a pwa_app_url configured
+         * 3. If yes, construct path to index.html in the PWA directory
+         * 4. If index.html exists, serve it directly; otherwise, continue to traditional page handling
+         */
+        if ($this->site != null) {
+            $app = $this->site->app;
+            if ($app && !empty($app->pwa_app_url)) {
+                $pwaPath = public_path('hosted_pwa/' . $app->id . '/index.html');
+                if (file_exists($pwaPath)) {
+                    Log::info("Serving PWA index page for app {$app->id} on site {$this->site->id}");
+                    return response()->file($pwaPath);
+                }
+            }
+        }
+
+        /**
+         * GitHub Repository Deployment Feature
+         * 
+         * For sites with a GitHub repository configured, serve the deployed repository's index.html
+         * instead of the traditional Prasso welcome page. This allows sites to host static content
+         * (e.g., single-page applications, documentation) directly from a GitHub repository.
+         * 
+         * Prerequisites:
+         * - $site->github_repository must be set (format: "username/repository" or "org/repository")
+         * - $site->deployment_path must be set (indicates the site is configured for GitHub hosting)
+         * - The repository must be cloned/deployed to public/hosted_sites/{repository_name}/
+         * 
+         * Flow:
+         * 1. Extract repository name from the github_repository path (e.g., "myrepo" from "user/myrepo")
+         * 2. Construct path to index.html in the deployed repository directory
+         * 3. If index.html exists, serve it directly; otherwise, continue to traditional page handling
+         */
         if ($this->site != null && !empty($this->site->deployment_path) && !empty($this->site->github_repository)) {
             $repoName = explode('/', $this->site->github_repository)[1] ?? $this->site->github_repository;
             $indexPath = public_path('hosted_sites/' . $repoName . '/index.html');
@@ -327,7 +371,60 @@ class SitePageController extends BaseController
             return null;
         }
 
-        // Check if this site has a GitHub repository deployment path
+        /**
+         * PWA App Page Serving
+         * 
+         * For sites with a PWA app configured, attempt to serve requested pages
+         * directly from the deployed PWA before falling back to Prasso's page system.
+         * This enables hosting of Progressive Web Apps with client-side routing.
+         * 
+         * Prerequisites:
+         * - Site must have an associated app with pwa_app_url set
+         * - The PWA must be deployed to public/hosted_pwa/{app_id}/
+         * 
+         * Resolution order:
+         * 1. Try to serve the exact file path (e.g., /page/about -> hosted_pwa/app_id/page/about)
+         * 2. Try to serve with .html extension (e.g., /page/about -> hosted_pwa/app_id/page/about.html)
+         * 3. Try to serve index.html from a directory (e.g., /page/about -> hosted_pwa/app_id/page/about/index.html)
+         * 4. If none exist, fall through to Prasso's page system
+         */
+        if ($this->site != null) {
+            $app = $this->site->app;
+            if ($app && !empty($app->pwa_app_url)) {
+                $pagePath = public_path('hosted_pwa/' . $app->id . '/' . $section);
+
+                // Check if the requested page exists in the PWA
+                if (file_exists($pagePath)) {
+                    Log::info("Serving PWA page {$section} for app {$app->id} on site {$this->site->id}");
+                    return response()->file($pagePath);
+                } else if (file_exists($pagePath . '.html')) {
+                    Log::info("Serving PWA page {$section}.html for app {$app->id} on site {$this->site->id}");
+                    return response()->file($pagePath . '.html');
+                } else if (is_dir($pagePath) && file_exists($pagePath . '/index.html')) {
+                    Log::info("Serving PWA directory index for {$section} for app {$app->id} on site {$this->site->id}");
+                    return response()->file($pagePath . '/index.html');
+                }
+            }
+        }
+
+        /**
+         * GitHub Repository Page Serving
+         * 
+         * For sites with a GitHub repository configured, attempt to serve requested pages
+         * directly from the deployed repository before falling back to Prasso's page system.
+         * This enables hosting of static content and single-page applications.
+         * 
+         * Prerequisites:
+         * - $site->github_repository must be set (format: "username/repository" or "org/repository")
+         * - $site->deployment_path must be set (indicates the site is configured for GitHub hosting)
+         * - The repository must be cloned/deployed to public/hosted_sites/{repository_name}/
+         * 
+         * Resolution order:
+         * 1. Try to serve the exact file path (e.g., /page/about -> hosted_sites/repo/page/about)
+         * 2. Try to serve with .html extension (e.g., /page/about -> hosted_sites/repo/page/about.html)
+         * 3. Try to serve index.html from a directory (e.g., /page/about -> hosted_sites/repo/page/about/index.html)
+         * 4. If none exist, fall through to Prasso's page system
+         */
         if ($this->site != null && !empty($this->site->deployment_path) && !empty($this->site->github_repository)) {
             $repoName = explode('/', $this->site->github_repository)[1] ?? $this->site->github_repository;
             $pagePath = public_path('hosted_sites/' . $repoName . '/' . $section);
@@ -361,8 +458,42 @@ class SitePageController extends BaseController
                 return view($section);
             }
 
-            // If we have a GitHub repository but the specific page wasn't found,
-            // try to serve the repository's index page as a fallback
+            /**
+             * PWA App Fallback
+             * 
+             * If a specific page is not found in Prasso's page system and the site has a PWA app
+             * configured, serve the PWA app's index.html as a fallback. This is useful
+             * for single-page applications (SPAs) that handle routing client-side.
+             * 
+             * This fallback only applies if:
+             * - The page was not found in Prasso's SitePages table
+             * - The site has an associated app with pwa_app_url configured
+             * - The PWA app's index.html exists
+             */
+            if ($this->site != null) {
+                $app = $this->site->app;
+                if ($app && !empty($app->pwa_app_url)) {
+                    $indexPath = public_path('hosted_pwa/' . $app->id . '/index.html');
+
+                    if (file_exists($indexPath)) {
+                        Log::info("Page {$section} not found, serving PWA index page as fallback for app {$app->id} on site {$this->site->id}");
+                        return response()->file($indexPath);
+                    }
+                }
+            }
+
+            /**
+             * GitHub Repository Fallback
+             * 
+             * If a specific page is not found in Prasso's page system and the site has a GitHub
+             * repository configured, serve the repository's index.html as a fallback. This is useful
+             * for single-page applications (SPAs) that handle routing client-side.
+             * 
+             * This fallback only applies if:
+             * - The page was not found in Prasso's SitePages table
+             * - The site has both deployment_path and github_repository configured
+             * - The repository's index.html exists
+             */
             if ($this->site != null && !empty($this->site->deployment_path) && !empty($this->site->github_repository)) {
                 $repoName = explode('/', $this->site->github_repository)[1] ?? $this->site->github_repository;
                 $indexPath = public_path('hosted_sites/' . $repoName . '/index.html');

@@ -5,9 +5,9 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('App: '.$teamapp['app_name']) }}
         </h2>
-        <x-dropdown-link href="{{ route('apps.show', Auth::user()->allTeams()->first()->id)  }}">
-                    {{ __('Return to Apps') }}
-                </x-responsive-nav-link>
+        <button onclick="window.history.back()" class="text-sm text-gray-700 block mt-2">
+            {{ __('Return') }}
+        </button>
     </x-slot>
 
     <div>
