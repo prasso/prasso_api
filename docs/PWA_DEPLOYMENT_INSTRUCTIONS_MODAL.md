@@ -35,20 +35,29 @@ When a user enters or updates the PWA Server URL in the App Editor form, a modal
 
 **Modal Content:**
 
-**Step 1: Start Your Node.js Server**
+**Step 1: Configure Your App to Use the Server URL**
+- Explains that app must listen on the configured server URL
+- Shows how to set PORT environment variable for:
+  - **React (Create React App)**: `PORT={port} npm start`
+  - **Next.js**: Build then `PORT={port} npm start`
+  - **.env.local**: Set `PORT` and `HOST` variables
+- Dynamically extracts port from configured `pwa_server_url`
+- Shows exact commands with the configured port number
+
+**Step 2: Start Your Node.js Server**
 - Instructions to navigate to app directory
 - Command to start the server
 - Shows the configured server URL
 
-**Step 2: Verify Server is Running**
+**Step 3: Verify Server is Running**
 - Instructions to test server connectivity
 - curl command with the configured server URL
 - Helps verify the server is accessible
 
-**Step 3: Access Your App**
+**Step 4: Access Your App**
 - Shows the public-facing PWA App URL
 - Explains that Prasso proxies requests
-- Confirms everything is set up
+- Shows which port the server is running on
 
 **Important Notes:**
 - Keep Node.js server running

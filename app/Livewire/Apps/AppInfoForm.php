@@ -121,7 +121,7 @@ class AppInfoForm extends Component
         'teamapp.appicon' => 'required_without:photo',
         'teamapp.site_id' => 'required|min:1',
         'teamapp.sort_order' => 'required',
-        'photo' => 'required_without:teamapp.appicon|image|mimes:jpeg,png,jpg,gif,svg|max:5120'
+        'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120'
     ];
 
     protected $messages = [
@@ -146,6 +146,12 @@ class AppInfoForm extends Component
             $this->teamapp->appicon = config('constants.CLOUDFRONT_ASSET_URL') . $storedPath;
         }
         
+        // Check if PWA Server URL was auto-populated and is being saved for the first time
+        if ($this->teamapp->pwa_server_url && !$this->previous_pwa_server_url) {
+            // This is a new PWA Server URL (was auto-populated), show instructions after save
+            $this->show_deployment_instructions = true;
+        }
+        
         // Check if PWA URL is being set and is a faxt.com domain
         if ($this->teamapp->pwa_app_url && $this->isFaxtDomain($this->teamapp->pwa_app_url)) {
             $pwaDomain = $this->extractDomain($this->teamapp->pwa_app_url);
@@ -165,6 +171,9 @@ class AppInfoForm extends Component
         
         Apps::processUpdates($this->teamapp->toArray()  );
         $this->show_success = true;
+        
+        // Update previous_pwa_server_url after save so modal doesn't show on next edit
+        $this->previous_pwa_server_url = $this->teamapp->pwa_server_url;
     }
 
     /**
