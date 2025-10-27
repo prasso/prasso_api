@@ -1,12 +1,29 @@
-# PWA Site Serving - Complete Implementation
+# PWA Reverse Proxy Implementation - Complete Guide
 
 ## Summary
 
-The prasso_api now supports serving Progressive Web Apps (PWAs) as sites using the same logic pattern as GitHub repository sites. The implementation includes intelligent URL routing that prioritizes defined site URLs first, then falls back to PWA app URLs.
+The prasso_api now supports hosting Progressive Web Apps (PWAs) by acting as a reverse proxy. Prasso forwards all requests to a Node.js server running at a configured URL, eliminating the need for Apache vhost configuration. Each app runs independently on a different port.
 
 ## Files Modified
 
-### 1. `app/Http/Controllers/Controller.php`
+### 1. `database/migrations/2025_10_27_000001_add_pwa_server_url_to_apps_table.php`
+
+**Purpose**: Add the `pwa_server_url` column to track internal Node.js server URLs
+
+**Changes**:
+- Adds nullable `pwa_server_url` column (VARCHAR 2048)
+- Stores the internal URL where the Node.js server runs (e.g., `http://localhost:3001`)
+- Includes rollback support
+
+### 2. `app/Models/Apps.php`
+
+**Purpose**: Update the Apps model to include the new field
+
+**Changes**:
+- Added `pwa_server_url` to `$fillable` array
+- Field is NOT in `$hidden` array, so it appears in API responses
+
+### 3. `app/Http/Controllers/Controller.php`
 
 #### `getClientFromHost()` Method (Lines 103-136)
 **Purpose**: Determine which site to serve based on the request URL
@@ -17,8 +34,7 @@ The prasso_api now supports serving Progressive Web Apps (PWAs) as sites using t
 3. If neither, abort 404
 
 **Key Changes**:
-- Added PWA app URL lookup in the `apps` table
-- Searches for matching `pwa_app_url` using LIKE queries
+- Searches `apps` table for matching `pwa_app_url` using LIKE queries
 - Returns the associated Site from the app's `site_id`
 - Comprehensive logging for debugging
 
@@ -26,213 +42,148 @@ The prasso_api now supports serving Progressive Web Apps (PWAs) as sites using t
 **Purpose**: Determine whether to apply Prasso's masterpage
 
 **Key Changes**:
-- Added check for PWA-hosted sites
-- Skips masterpage for PWA sites (lines 149-154)
+- Skips masterpage for PWA sites (when `pwa_app_url` and `pwa_server_url` are set)
 - Skips masterpage for GitHub repository sites (existing)
 - Returns null for hosted sites, allowing them to serve their own layouts
 
-### 2. `app/Http/Controllers/SitePageController.php`
+### 4. `app/Http/Controllers/SitePageController.php`
 
 #### `index()` Method (Lines 55-81)
-**Purpose**: Serve the homepage
+**Purpose**: Proxy homepage requests to Node.js server
 
 **PWA Logic**:
-- Checks if site has an associated app with `pwa_app_url`
-- Serves `public/hosted_pwa/{app_id}/index.html` if it exists
+- Checks if site has an associated app with `pwa_app_url` and `pwa_server_url`
+- Proxies request to Node.js server
 - Falls back to GitHub repository logic if PWA not configured
 - Falls back to traditional Prasso welcome page as last resort
 
 #### `viewSitePage()` Method (Lines 374-408)
-**Purpose**: Serve specific pages with multi-level resolution
+**Purpose**: Proxy page requests to Node.js server
 
 **PWA Logic**:
-1. Try exact file path: `/about` → `hosted_pwa/app_id/about`
-2. Try with .html extension: `/about` → `hosted_pwa/app_id/about.html`
-3. Try directory index: `/about` → `hosted_pwa/app_id/about/index.html`
-4. Fall through to Prasso's page system
+- Checks if site has an associated app with `pwa_app_url` and `pwa_server_url`
+- Proxies request to Node.js server with the requested path
+- Falls back to Prasso's page system if proxy fails
 
-#### `viewSitePage()` Fallback (Lines 461-483)
-**Purpose**: Provide SPA support for client-side routing
+#### `proxyRequestToServer()` Method (Lines 913-978)
+**Purpose**: Handle the actual HTTP proxy forwarding
 
-**PWA Logic**:
-- If page not found in Prasso's SitePages table
-- And site has PWA app with `pwa_app_url`
-- Serve PWA's `index.html` as fallback
-- Allows SPAs to handle routing client-side
+**Key Features**:
+- Forwards all HTTP methods (GET, POST, PUT, DELETE, etc.)
+- Preserves request headers (except Host, Connection, Content-Length)
+- Forwards request body for POST/PUT/PATCH requests
+- Preserves query strings
+- Returns response with status code and headers
+- Handles errors gracefully with logging
 
-## Files Created
+### 5. `app/Livewire/Apps/AppInfoForm.php`
 
-### 1. `docs/pwa-app-sites.md`
-User-facing documentation for PWA site integration. Covers:
-- Overview and how PWA sites work
-- Configuration instructions
-- Repository structure requirements
-- Supported file types
-- Best practices
-- Troubleshooting guide
+**Purpose**: Update form validation to include `pwa_server_url`
 
-### 2. `docs/pwa-site-serving-implementation.md`
-Technical implementation details. Covers:
-- Changes made to each file
-- How the system works
-- Priority order for PWA vs GitHub repos
-- Configuration examples
-- Logging details
-- Testing checklist
+**Changes**:
+- Added validation rule: `'teamapp.pwa_server_url' => 'nullable|url|max:2048'`
 
-### 3. `docs/pwa-url-routing-flow.md`
-Complete URL routing flow documentation. Covers:
-- Request flow with examples
-- Step-by-step routing logic
-- Complete request lifecycle examples
-- Masterpage handling
-- Database queries
-- Configuration examples
-- Priority summary
+### 6. `resources/views/livewire/apps/app-info-form.blade.php`
+
+**Purpose**: Add PWA Server URL input field to the form
+
+**Changes**:
+- Added PWA Server URL input field
+- Includes placeholder: `http://localhost:3001`
+- Includes helper text explaining the field
 
 ## How It Works
 
-### URL Routing Priority
+### Request Flow
 
 ```
-Request arrives with URL
+User Request: https://myapp.example.com/about
     ↓
-getClientFromHost() checks:
-    1. Is URL a defined site host? → YES → Serve site
-    2. Is URL a PWA app URL? → YES → Serve PWA
-    3. Neither? → Abort 404
-```
-
-### Page Serving Priority (for PWA Sites)
-
-```
-Request for page /about
+DNS resolves to Prasso server
     ↓
-SitePageController::viewSitePage() checks:
-    1. PWA file exists? → YES → Serve from PWA
-    2. PWA file with .html exists? → YES → Serve from PWA
-    3. PWA directory index exists? → YES → Serve from PWA
-    4. Prasso page exists? → YES → Serve from Prasso
-    5. PWA fallback exists? → YES → Serve PWA index (SPA routing)
-    6. Neither? → Serve welcome page
+Controller::getClientFromHost()
+  - Matches pwa_app_url
+  - Returns associated Site
+    ↓
+SitePageController::viewSitePage()
+  - Checks for pwa_server_url
+  - Calls proxyRequestToServer()
+    ↓
+proxyRequestToServer()
+  - Forwards to http://localhost:3001/about
+  - Preserves method, headers, body, query string
+    ↓
+Node.js server processes request
+    ↓
+Response returned to client
 ```
 
 ## Configuration
 
 ### For Site Administrators
 
-1. Create an app associated with your site
-2. Set the `pwa_app_url` field (e.g., `https://myapp.example.com`)
-3. Deploy your PWA build to `public/hosted_pwa/{app_id}/`
-4. Ensure `index.html` exists at the root
-5. The site will automatically serve from the PWA
+1. Start Node.js server on a local port (e.g., `http://localhost:3001`)
+2. Create or edit an app in the App Editor
+3. Fill in two fields:
+   - **PWA App URL**: `https://myapp.example.com` (public URL)
+   - **PWA Server URL**: `http://localhost:3001` (internal server)
+4. Save the app configuration
+5. DNS setup is automatic for faxt.com domains
 
-### For Developers
-
-1. Build your PWA: `npm run build`
-2. Deploy to: `public/hosted_pwa/{app_id}/`
-3. Ensure all assets are accessible
-4. Test all routes in the PWA
-
-### Deployment Structure
+### Multiple Apps Example
 
 ```
-public/hosted_pwa/{app_id}/
-├── index.html
-├── assets/
-│   ├── js/
-│   ├── css/
-│   └── images/
-└── [other PWA files]
+App 1: https://app1.example.com → http://localhost:3001
+App 2: https://app2.example.com → http://localhost:3002
+App 3: https://app3.example.com → http://localhost:3003
 ```
 
 ## Key Features
 
-✅ **Intelligent URL Routing** - Site URLs take priority, PWA URLs are fallback  
-✅ **Multi-Level File Resolution** - Exact file → .html → directory index  
-✅ **SPA Support** - PWA index.html fallback for client-side routing  
-✅ **No Masterpage Wrapping** - PWA sites served without Prasso masterpage  
-✅ **Comprehensive Logging** - All routing decisions are logged  
-✅ **Backward Compatible** - Existing sites and GitHub repos continue to work  
-✅ **Manual Deployment** - No automated deployment (admin responsibility)  
+✅ **No Apache Configuration** - No vhost setup needed  
+✅ **Single Admin Setup** - Just configure two URLs  
+✅ **Full Server Functionality** - Node.js handles everything  
+✅ **Multiple Apps** - Each on different port  
+✅ **Automatic DNS** - For faxt.com domains  
+✅ **Transparent Proxy** - Clients see public URL  
+✅ **Error Handling** - Falls back to Prasso pages  
+✅ **Comprehensive Logging** - All proxy operations logged  
 
 ## Database Schema
 
-### Apps Table
+### New Column
 ```sql
-ALTER TABLE apps ADD COLUMN pwa_app_url VARCHAR(2048) NULL 
-  COMMENT 'URL to the Progressive Web App (PWA) for mobile access';
-```
-
-### Queries Used
-
-**Site Lookup**:
-```sql
-SELECT * FROM sites 
-WHERE host LIKE '%,myapp.example.com,%' 
-   OR host LIKE 'myapp.example.com,%'
-   OR host LIKE '%,myapp.example.com'
-   OR host = 'myapp.example.com'
-```
-
-**PWA App Lookup**:
-```sql
-SELECT * FROM apps 
-WHERE pwa_app_url LIKE 'https://myapp.example.com%'
-   OR pwa_app_url = 'https://myapp.example.com'
-LIMIT 1
+ALTER TABLE apps ADD COLUMN pwa_server_url VARCHAR(2048) NULL 
+  COMMENT 'Internal URL to the Node.js server for the PWA (e.g., http://localhost:3001)';
 ```
 
 ## Logging Examples
 
 ```
-"Site found for host: mysite.com"
-"PWA app found for host: myapp.example.com, using associated site 5"
-"Serving PWA index page for app 3 on site 5"
-"Serving PWA page about for app 3 on site 5"
-"Serving PWA page about.html for app 3 on site 5"
-"Serving PWA directory index for about for app 3 on site 5"
-"Page about not found, serving PWA index page as fallback for app 3 on site 5"
-"No site or PWA app found for host: unknown.example.com"
+"Proxying PWA request to http://localhost:3001 for app 1 on site 5"
+"Proxying PWA page request for /about to http://localhost:3001 for app 1 on site 5"
+"Failed to proxy PWA request for app 1: Connection refused"
+"Proxy request failed for URL http://localhost:3001/about: ..."
 ```
-
-## Testing Checklist
-
-- [ ] Deploy a PWA to `public/hosted_pwa/{app_id}/`
-- [ ] Create a site with an app that has `pwa_app_url` set
-- [ ] Visit the site homepage and verify PWA index.html is served
-- [ ] Visit a PWA page and verify it's served correctly
-- [ ] Test multi-level resolution (exact file, .html, directory index)
-- [ ] Test PWA fallback for non-existent pages (SPA routing)
-- [ ] Verify GitHub repository sites still work
-- [ ] Verify traditional Prasso sites still work
-- [ ] Check logs for proper routing messages
-- [ ] Verify masterpage is not applied to PWA sites
-- [ ] Test with multiple apps to ensure app_id isolation
-- [ ] Test with PWA URLs that have paths (e.g., `https://example.com/app`)
-- [ ] Verify site URLs take priority over PWA URLs
 
 ## Backward Compatibility
 
 - ✅ Existing GitHub repository sites continue to work unchanged
 - ✅ Existing Prasso sites continue to work unchanged
-- ✅ PWA serving only activates when `pwa_app_url` is set
+- ✅ PWA proxying only activates when both `pwa_app_url` and `pwa_server_url` are set
 - ✅ No breaking changes to existing functionality
 - ✅ No changes to existing database schema (except new column)
 
 ## Next Steps
 
-1. **Deploy Migration**: Run `php artisan migrate` to add `pwa_app_url` column
-2. **Test Routing**: Verify URL routing works as expected
-3. **Deploy PWA**: Deploy a test PWA to `public/hosted_pwa/{app_id}/`
-4. **Verify Serving**: Test that PWA pages are served correctly
-5. **Monitor Logs**: Check logs for routing decisions
-6. **Update Clients**: Update mobile clients to use `pwa_app_url` when available
+1. **Run Migration**: `php artisan migrate`
+2. **Start Node.js Apps**: Start your Node.js servers on configured ports
+3. **Configure Apps**: Fill in PWA App URL and PWA Server URL in admin form
+4. **Test Access**: Access apps through public URLs
+5. **Monitor Logs**: Check logs for proxy operations
 
 ## Related Documentation
 
+- `docs/pwa-reverse-proxy.md` - Comprehensive reverse proxy guide
 - `docs/pwa-app-sites.md` - User guide for PWA site integration
-- `docs/pwa-site-serving-implementation.md` - Technical implementation details
-- `docs/pwa-url-routing-flow.md` - Complete URL routing flow
-- `docs/github-repository-sites.md` - GitHub repository site integration (similar pattern)
-- `docs/pwa-implementation-summary.md` - PWA field implementation summary
+- `docs/PWA_REVERSE_PROXY_SUMMARY.md` - Quick reference summary

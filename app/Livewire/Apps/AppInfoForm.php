@@ -27,6 +27,8 @@ class AppInfoForm extends Component
     public $photo;
 
     public $show_success;
+    public $show_deployment_instructions = false;
+    public $previous_pwa_server_url = null;
 
     public function mount()
     {
@@ -34,6 +36,75 @@ class AppInfoForm extends Component
         if ($this->teamapp && $this->teamapp->site_id) {
             $this->site_id = $this->teamapp->site_id;
         }
+        
+        // Store the initial PWA server URL to detect changes
+        $this->previous_pwa_server_url = $this->teamapp->pwa_server_url ?? null;
+        
+        // Auto-populate PWA Server URL if not already set
+        if (!$this->teamapp->pwa_server_url) {
+            $this->teamapp->pwa_server_url = $this->getNextAvailableServerUrl();
+        }
+    }
+    
+    /**
+     * Get the next available port for PWA servers
+     * Scans existing apps to find used ports and returns the next available one
+     * Default starting port is 3001
+     */
+    private function getNextAvailableServerUrl()
+    {
+        $baseUrl = 'http://localhost:';
+        $startPort = 3001;
+        
+        // Get all apps with pwa_server_url set
+        $apps = Apps::whereNotNull('pwa_server_url')
+            ->pluck('pwa_server_url')
+            ->toArray();
+        
+        // Extract ports from URLs
+        $usedPorts = [];
+        foreach ($apps as $url) {
+            // Parse URL to extract port
+            $parsed = parse_url($url);
+            if (isset($parsed['port'])) {
+                $usedPorts[] = $parsed['port'];
+            } elseif (isset($parsed['host'])) {
+                // If no explicit port, try to extract from host:port format
+                if (strpos($parsed['host'], ':') !== false) {
+                    list($host, $port) = explode(':', $parsed['host']);
+                    $usedPorts[] = (int)$port;
+                }
+            }
+        }
+        
+        // Find next available port
+        $nextPort = $startPort;
+        while (in_array($nextPort, $usedPorts)) {
+            $nextPort++;
+        }
+        
+        return $baseUrl . $nextPort;
+    }
+    
+    /**
+     * Watch for changes to pwa_server_url and show deployment instructions
+     */
+    public function updated($property, $value)
+    {
+        if ($property === 'teamapp.pwa_server_url') {
+            // Show modal if PWA Server URL is being set (not empty and different from before)
+            if (!empty($value) && $value !== $this->previous_pwa_server_url) {
+                $this->show_deployment_instructions = true;
+            }
+        }
+    }
+    
+    /**
+     * Close the deployment instructions modal
+     */
+    public function closeDeploymentInstructions()
+    {
+        $this->show_deployment_instructions = false;
     }
 
     public function render()
@@ -46,10 +117,11 @@ class AppInfoForm extends Component
         'teamapp.page_title' => 'required|min:6',
         'teamapp.page_url' => 'required|min:6',
         'teamapp.pwa_app_url' => 'nullable|url|max:2048',
+        'teamapp.pwa_server_url' => 'nullable|url|max:2048',
         'teamapp.appicon' => 'required_without:photo',
         'teamapp.site_id' => 'required|min:1',
         'teamapp.sort_order' => 'required',
-        'photo' => 'required_without:teamapp.appicon|image|mimes:jpeg,png,jpg,gif,svg|max:5120'
+        'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120'
     ];
 
     protected $messages = [
@@ -74,6 +146,12 @@ class AppInfoForm extends Component
             $this->teamapp->appicon = config('constants.CLOUDFRONT_ASSET_URL') . $storedPath;
         }
         
+        // Check if PWA Server URL was auto-populated and is being saved for the first time
+        if ($this->teamapp->pwa_server_url && !$this->previous_pwa_server_url) {
+            // This is a new PWA Server URL (was auto-populated), show instructions after save
+            $this->show_deployment_instructions = true;
+        }
+        
         // Check if PWA URL is being set and is a faxt.com domain
         if ($this->teamapp->pwa_app_url && $this->isFaxtDomain($this->teamapp->pwa_app_url)) {
             $pwaDomain = $this->extractDomain($this->teamapp->pwa_app_url);
@@ -93,6 +171,9 @@ class AppInfoForm extends Component
         
         Apps::processUpdates($this->teamapp->toArray()  );
         $this->show_success = true;
+        
+        // Update previous_pwa_server_url after save so modal doesn't show on next edit
+        $this->previous_pwa_server_url = $this->teamapp->pwa_server_url;
     }
 
     /**

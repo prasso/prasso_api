@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 use App\Services\SitePageService;
 use App\Services\UserService;
 use App\Models\SitePages;
@@ -53,29 +54,32 @@ class SitePageController extends BaseController
         }
 
         /**
-         * PWA App Serving Feature
+         * PWA App Reverse Proxy Feature
          * 
-         * For sites with a PWA app configured, serve the PWA app's index.html
+         * For sites with a PWA app configured, proxy the request to the Node.js server
          * instead of the traditional Prasso welcome page. This allows sites to host
-         * Progressive Web Apps directly.
+         * Progressive Web Apps without Apache vhost configuration.
          * 
          * Prerequisites:
-         * - Site must have an associated app with pwa_app_url set
-         * - The PWA must be deployed to public/hosted_pwa/{app_id}/
+         * - Site must have an associated app with pwa_app_url and pwa_server_url set
+         * - The Node.js server must be running at the pwa_server_url location
          * 
          * Flow:
          * 1. Get the app associated with this site
-         * 2. Check if the app has a pwa_app_url configured
-         * 3. If yes, construct path to index.html in the PWA directory
-         * 4. If index.html exists, serve it directly; otherwise, continue to traditional page handling
+         * 2. Check if the app has pwa_app_url and pwa_server_url configured
+         * 3. If yes, proxy the request to the Node.js server
+         * 4. Return the proxied response; otherwise, continue to traditional page handling
          */
         if ($this->site != null) {
             $app = $this->site->app;
-            if ($app && !empty($app->pwa_app_url)) {
-                $pwaPath = public_path('hosted_pwa/' . $app->id . '/index.html');
-                if (file_exists($pwaPath)) {
-                    Log::info("Serving PWA index page for app {$app->id} on site {$this->site->id}");
-                    return response()->file($pwaPath);
+            if ($app && !empty($app->pwa_app_url) && !empty($app->pwa_server_url)) {
+                try {
+                    $proxyResponse = $this->proxyRequestToServer($app->pwa_server_url, $request->path(), $request);
+                    Log::info("Proxying PWA request to {$app->pwa_server_url} for app {$app->id} on site {$this->site->id}");
+                    return $proxyResponse;
+                } catch (\Exception $e) {
+                    Log::error("Failed to proxy PWA request for app {$app->id}: {$e->getMessage()}");
+                    // Fall through to traditional handling
                 }
             }
         }
@@ -372,37 +376,31 @@ class SitePageController extends BaseController
         }
 
         /**
-         * PWA App Page Serving
+         * PWA App Reverse Proxy Page Serving
          * 
-         * For sites with a PWA app configured, attempt to serve requested pages
-         * directly from the deployed PWA before falling back to Prasso's page system.
-         * This enables hosting of Progressive Web Apps with client-side routing.
+         * For sites with a PWA app configured, proxy the request to the Node.js server
+         * instead of serving static files. This enables hosting of Progressive Web Apps
+         * with full server-side functionality.
          * 
          * Prerequisites:
-         * - Site must have an associated app with pwa_app_url set
-         * - The PWA must be deployed to public/hosted_pwa/{app_id}/
+         * - Site must have an associated app with pwa_app_url and pwa_server_url set
+         * - The Node.js server must be running at the pwa_server_url location
          * 
-         * Resolution order:
-         * 1. Try to serve the exact file path (e.g., /page/about -> hosted_pwa/app_id/page/about)
-         * 2. Try to serve with .html extension (e.g., /page/about -> hosted_pwa/app_id/page/about.html)
-         * 3. Try to serve index.html from a directory (e.g., /page/about -> hosted_pwa/app_id/page/about/index.html)
-         * 4. If none exist, fall through to Prasso's page system
+         * Flow:
+         * 1. Proxy the request to the Node.js server at pwa_server_url
+         * 2. Return the proxied response
+         * 3. If proxy fails, fall through to Prasso's page system
          */
         if ($this->site != null) {
             $app = $this->site->app;
-            if ($app && !empty($app->pwa_app_url)) {
-                $pagePath = public_path('hosted_pwa/' . $app->id . '/' . $section);
-
-                // Check if the requested page exists in the PWA
-                if (file_exists($pagePath)) {
-                    Log::info("Serving PWA page {$section} for app {$app->id} on site {$this->site->id}");
-                    return response()->file($pagePath);
-                } else if (file_exists($pagePath . '.html')) {
-                    Log::info("Serving PWA page {$section}.html for app {$app->id} on site {$this->site->id}");
-                    return response()->file($pagePath . '.html');
-                } else if (is_dir($pagePath) && file_exists($pagePath . '/index.html')) {
-                    Log::info("Serving PWA directory index for {$section} for app {$app->id} on site {$this->site->id}");
-                    return response()->file($pagePath . '/index.html');
+            if ($app && !empty($app->pwa_app_url) && !empty($app->pwa_server_url)) {
+                try {
+                    $proxyResponse = $this->proxyRequestToServer($app->pwa_server_url, '/' . $section, $request);
+                    Log::info("Proxying PWA page request for {$section} to {$app->pwa_server_url} for app {$app->id} on site {$this->site->id}");
+                    return $proxyResponse;
+                } catch (\Exception $e) {
+                    Log::error("Failed to proxy PWA page request for {$section} on app {$app->id}: {$e->getMessage()}");
+                    // Fall through to Prasso's page system
                 }
             }
         }
@@ -456,30 +454,6 @@ class SitePageController extends BaseController
             if (count($matches) > 0) {
                 AppServiceProvider::loadDefaultsForPagesNotUsingControllerClass($this->site);
                 return view($section);
-            }
-
-            /**
-             * PWA App Fallback
-             * 
-             * If a specific page is not found in Prasso's page system and the site has a PWA app
-             * configured, serve the PWA app's index.html as a fallback. This is useful
-             * for single-page applications (SPAs) that handle routing client-side.
-             * 
-             * This fallback only applies if:
-             * - The page was not found in Prasso's SitePages table
-             * - The site has an associated app with pwa_app_url configured
-             * - The PWA app's index.html exists
-             */
-            if ($this->site != null) {
-                $app = $this->site->app;
-                if ($app && !empty($app->pwa_app_url)) {
-                    $indexPath = public_path('hosted_pwa/' . $app->id . '/index.html');
-
-                    if (file_exists($indexPath)) {
-                        Log::info("Page {$section} not found, serving PWA index page as fallback for app {$app->id} on site {$this->site->id}");
-                        return response()->file($indexPath);
-                    }
-                }
             }
 
             /**
@@ -934,5 +908,72 @@ class SitePageController extends BaseController
         // Redirect back to the edit page with a success message
         return redirect()->route('sitepages.edit-site-page-json-data', ['siteId' => $siteId, 'sitePageId' => $sitePageId])
             ->with('success', 'Item deleted successfully.');
+    }
+
+    /**
+     * Proxy a request to a remote Node.js server
+     * 
+     * This method forwards HTTP requests to a Node.js server running at pwa_server_url
+     * and returns the response to the client. This allows Prasso to act as a reverse proxy
+     * for PWA applications without requiring Apache vhost configuration.
+     * 
+     * @param string $serverUrl The base URL of the Node.js server (e.g., http://localhost:3001)
+     * @param string $path The request path (e.g., /about)
+     * @param Request $request The incoming HTTP request
+     * @return \Illuminate\Http\Response The proxied response
+     * @throws \Exception If the proxy request fails
+     */
+    private function proxyRequestToServer($serverUrl, $path, Request $request)
+    {
+        // Ensure serverUrl doesn't have trailing slash
+        $serverUrl = rtrim($serverUrl, '/');
+        
+        // Build the full URL to proxy to
+        $proxyUrl = $serverUrl . $path;
+        
+        // Add query string if present
+        if ($request->getQueryString()) {
+            $proxyUrl .= '?' . $request->getQueryString();
+        }
+        
+        try {
+            // Determine the HTTP method
+            $method = strtolower($request->getMethod());
+            
+            // Build request headers to forward
+            $headers = [];
+            foreach ($request->headers->all() as $key => $value) {
+                // Skip headers that shouldn't be forwarded
+                if (!in_array(strtolower($key), ['host', 'connection', 'content-length'])) {
+                    $headers[$key] = $value[0] ?? implode(',', $value);
+                }
+            }
+            
+            // Make the proxy request
+            $httpRequest = Http::withHeaders($headers)
+                ->timeout(30)
+                ->withoutRedirecting();
+            
+            // Add body for POST/PUT/PATCH requests
+            if (in_array($method, ['post', 'put', 'patch'])) {
+                $body = $request->getContent();
+                if ($body) {
+                    $httpRequest = $httpRequest->withBody($body, $request->header('Content-Type'));
+                }
+            }
+            
+            // Execute the proxy request
+            $response = $httpRequest->request($method, $proxyUrl);
+            
+            // Build response to return to client
+            return response(
+                $response->body(),
+                $response->status(),
+                $response->headers()
+            );
+        } catch (\Exception $e) {
+            Log::error("Proxy request failed for URL {$proxyUrl}: {$e->getMessage()}");
+            throw $e;
+        }
     }
 }

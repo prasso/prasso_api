@@ -101,9 +101,9 @@ getClientFromHost()
   └─ Return Site object
          ↓
 SitePageController::index()
-  ├─ Check if site has PWA app with pwa_app_url → YES
-  ├─ Check for public/hosted_pwa/{app_id}/index.html → FOUND
-  └─ Serve PWA index.html (no masterpage)
+  ├─ Check if site has PWA app with pwa_app_url AND pwa_server_url → YES
+  ├─ Call proxyRequestToServer() to forward to http://localhost:3001/
+  └─ Return response from Node.js server (no masterpage)
 ```
 
 ### Example 3: Request to PWA App Subpage
@@ -117,13 +117,10 @@ getClientFromHost()
   └─ Return associated Site object
          ↓
 SitePageController::viewSitePage('about')
-  ├─ Check if site has PWA app with pwa_app_url → YES
-  ├─ Check public/hosted_pwa/{app_id}/about → NOT FOUND
-  ├─ Check public/hosted_pwa/{app_id}/about.html → NOT FOUND
-  ├─ Check public/hosted_pwa/{app_id}/about/index.html → NOT FOUND
-  ├─ Check Prasso SitePages table → NOT FOUND
-  ├─ Use PWA fallback: serve public/hosted_pwa/{app_id}/index.html
-  └─ Return PWA index.html (SPA handles client-side routing)
+  ├─ Check if site has PWA app with pwa_app_url AND pwa_server_url → YES
+  ├─ Call proxyRequestToServer() to forward to http://localhost:3001/about
+  ├─ Node.js server processes request
+  └─ Return response from Node.js server
 ```
 
 ## Masterpage Handling
@@ -136,8 +133,8 @@ if ($site != null && !empty($site->deployment_path) && !empty($site->github_repo
     return null;
 }
 
-// Skip masterpage for PWA hosted sites
-if ($site != null && $site->app && !empty($site->app->pwa_app_url)) {
+// Skip masterpage for PWA hosted sites (requires both pwa_app_url and pwa_server_url)
+if ($site != null && $site->app && !empty($site->app->pwa_app_url) && !empty($site->app->pwa_server_url)) {
     return null;
 }
 
@@ -221,9 +218,9 @@ The implementation includes comprehensive logging for debugging:
 "Site found for host: mysite.com"
 "PWA app found for host: myapp.example.com, using associated site 5"
 "No site or PWA app found for host: unknown.example.com"
-"Serving PWA index page for app 3 on site 5"
-"Serving PWA page about for app 3 on site 5"
-"Page about not found, serving PWA index page as fallback for app 3 on site 5"
+"Proxying PWA request to http://localhost:3001 for app 3 on site 5"
+"Proxying PWA page request for about to http://localhost:3001 for app 3 on site 5"
+"Failed to proxy PWA request for app 3: Connection refused"
 ```
 
 ## Priority Summary
