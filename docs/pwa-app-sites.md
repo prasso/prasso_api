@@ -2,39 +2,41 @@
 
 ## Overview
 
-The PWA App integration allows site administrators to connect a site directly to a Progressive Web App (PWA). When enabled, the site's pages will be sourced directly from the deployed PWA rather than being manually configured through the admin interface.
+The PWA App integration allows site administrators to connect a site directly to a Progressive Web App (PWA) running on a Node.js server. Prasso acts as a reverse proxy, forwarding all requests to the Node.js server without requiring Apache vhost configuration.
 
 ## How It Works
 
 When a PWA app is specified for a site:
 
-1. The PWA is deployed to `public/hosted_pwa/{app_id}/`
-2. Site pages are sourced directly from the deployed PWA content
-3. The manual site pages editor is automatically disabled
-4. Content updates are managed through the PWA's deployment process
-5. Changes to the PWA are automatically reflected on the site
+1. The Node.js server runs independently (e.g., on `http://localhost:3001`)
+2. Prasso receives requests to the public PWA URL (e.g., `https://myapp.example.com`)
+3. Prasso proxies all requests to the Node.js server
+4. The Node.js server processes requests and returns responses
+5. Responses are returned to the client through Prasso
 
-### Page Resolution Order
+### Request Flow
 
-When a user requests a page, the system follows this resolution order:
+When a user requests a page:
 
-1. **Direct file match**: Serve the exact file path (e.g., `/about` → `hosted_pwa/app_id/about`)
-2. **HTML extension**: Try with `.html` extension (e.g., `/about` → `hosted_pwa/app_id/about.html`)
-3. **Directory index**: Check for `index.html` in a directory (e.g., `/about` → `hosted_pwa/app_id/about/index.html`)
-4. **Prasso pages**: Fall back to Prasso's page system if the file doesn't exist in the PWA
-5. **PWA index fallback**: If no Prasso page is found, serve the PWA's `index.html` (useful for single-page applications)
+1. **User accesses**: `https://myapp.example.com/about`
+2. **DNS resolves** to Prasso server
+3. **Prasso receives** the request
+4. **Prasso proxies** to `http://localhost:3001/about`
+5. **Node.js server** processes the request
+6. **Response returned** to client through Prasso
 
 ## Configuration
 
 ### Setting Up a PWA App Site
 
-1. Navigate to the Site Editor in the admin dashboard
-2. Create a new site or edit an existing one
-3. Create or edit an app associated with the site
-4. In the PWA App URL field, enter the URL to your PWA
-   - Example: `https://app.example.com`
-5. The system will automatically configure the site to serve from the PWA
-6. Save the site and app configuration
+1. Start your Node.js server on a local port (e.g., `http://localhost:3001`)
+2. Navigate to the App Editor in the admin dashboard
+3. Create or edit an app associated with your site
+4. Fill in two fields:
+   - **PWA App URL**: The public-facing URL (e.g., `https://myapp.example.com`)
+   - **PWA Server URL**: The internal Node.js server URL (e.g., `http://localhost:3001`)
+5. Save the app configuration
+6. DNS setup is automatic for faxt.com domains
 
 ### URL Routing Priority
 
@@ -50,130 +52,111 @@ This means:
 - Requests to `myapp.example.com` will serve the PWA
 - Requests to any other URL will return 404
 
-### Required Site Properties
+### Required App Configuration
 
-For a site to serve PWA content, the following must be set:
+For a site to serve PWA content, the following must be set in the App:
 
-- **`pwa_app_url`** (in the Apps model): The URL to the Progressive Web App
+- **`pwa_app_url`**: The public-facing URL to the Progressive Web App
+  - Example: `https://myapp.example.com`
   - Must be a valid URL
   - Can be any domain (not limited to faxt.com)
-  - Stored in the `apps` table and can be viewed/managed through the App Editor
 
-### PWA Structure Requirements
+- **`pwa_server_url`**: The internal URL where the Node.js server is running
+  - Example: `http://localhost:3001`
+  - Must be accessible from the Prasso server
+  - Can be localhost, private IP, or remote server
 
-Your PWA should follow these conventions:
+### Node.js Server Requirements
 
-- **Build Output**: The PWA's build output should be deployed to `public/hosted_pwa/{app_id}/`
-- **Index Page**: Include an `index.html` file at the root of the deployment directory
-- **Assets**: Store assets in appropriate subdirectories (e.g., `assets/`, `js/`, `css/`)
-- **Routing**: For single-page applications, implement client-side routing to handle all paths
+Your Node.js server should:
 
-### Supported File Types
-
-- HTML files (`.html`, `.htm`)
-- JavaScript files (`.js`)
-- CSS files (`.css`)
-- Image files (`.jpg`, `.jpeg`, `.png`, `.gif`, `.svg`, `.webp`)
-- JSON files (`.json`)
-- Font files (`.woff`, `.woff2`, `.ttf`, `.eot`)
-- Any other static assets
+- Be running and accessible on the configured port
+- Handle all HTTP methods (GET, POST, PUT, DELETE, etc.)
+- Return appropriate status codes
+- Handle routing internally (Prasso just forwards requests)
+- Support the request/response headers being forwarded
 
 ## Benefits
 
-- **Modern Web Stack**: Use modern frameworks like React, Vue, or Angular for your site
-- **Client-Side Routing**: Leverage client-side routing for fast, responsive navigation
-- **Development Workflow**: Develop PWAs independently and deploy them to Prasso
-- **Unified Hosting**: Host both traditional Prasso sites and modern PWAs on the same infrastructure
-- **Automatic Updates**: Deploy new versions of your PWA and see them reflected immediately
-
-## Limitations
-
-When using a PWA for site content:
-
-- The manual site pages editor is disabled
-- Site page data templates cannot be used
-- Custom site page types (S3, URL) are not supported
-- Dynamic content processing is limited to standard site tags
-- The Prasso masterpage is skipped for PWA-hosted sites
+- **No Apache Configuration**: No vhost setup needed for each app
+- **Single Admin Setup**: Just configure two URLs in the app form
+- **Full Server Functionality**: Node.js handles all requests, APIs, SSR, etc.
+- **Multiple Apps**: Each app runs independently on different ports
+- **Automatic DNS**: DNS setup is automatic for faxt.com domains
+- **Easy Scaling**: Add new apps without server configuration
 
 ## Best Practices
 
-1. **Build Process**: Automate your PWA build and deployment process
-2. **Version Management**: Use semantic versioning for your PWA releases
-3. **Testing**: Test all routes and assets before deploying to production
-4. **Error Handling**: Implement proper error handling and 404 pages in your PWA
-5. **Performance**: Optimize your PWA for fast loading and good performance
-6. **Caching**: Implement appropriate caching strategies for static assets
+1. **Port Management**: Use different ports for each app (3001, 3002, 3003, etc.)
+2. **Process Management**: Use PM2 or systemd to manage Node.js processes
+3. **Error Handling**: Implement proper error handling in your Node.js app
+4. **Performance**: Optimize your Node.js app for fast response times
+5. **Logging**: Implement logging in your Node.js app for debugging
+6. **Security**: Keep Node.js server on internal network, only expose through Prasso
 
 ## Technical Implementation
 
 The system handles PWA sites by:
 
-1. **App Association**: Linking the site to an app with a configured `pwa_app_url`
-2. **Page Serving**: When a request comes in, the `SitePageController` checks for files in the deployed PWA
-3. **File Resolution**: Following the page resolution order (direct file → .html extension → directory index → Prasso pages → PWA index)
-4. **Fallback Handling**: If a page isn't found in Prasso's system, the PWA's `index.html` is served as a fallback (useful for SPAs)
-5. **Conditional Masterpage**: The masterpage is skipped for PWA-hosted sites (when the app has `pwa_app_url` set)
+1. **App Association**: Linking the site to an app with `pwa_app_url` and `pwa_server_url`
+2. **Request Routing**: `Controller::getClientFromHost()` identifies PWA requests by matching `pwa_app_url`
+3. **Request Proxying**: `SitePageController` proxies requests to the Node.js server
+4. **Response Forwarding**: Responses are returned to the client with status codes and headers
+5. **Error Handling**: If proxy fails, falls back to Prasso's page system
+6. **Conditional Masterpage**: The masterpage is skipped for PWA-hosted sites
 
-### Key Controllers and Services
+### Key Controllers and Methods
 
-- **`SitePageController::index()`**: Serves the PWA's `index.html` for the homepage
-- **`SitePageController::viewSitePage()`**: Serves specific pages from the PWA with multi-level resolution
-- **`Controller::__construct()`**: Skips masterpage setup for PWA-hosted sites
+- **`Controller::getClientFromHost()`**: Identifies PWA requests by matching `pwa_app_url`
+- **`SitePageController::index()`**: Proxies homepage requests to Node.js server
+- **`SitePageController::viewSitePage()`**: Proxies page requests to Node.js server
+- **`SitePageController::proxyRequestToServer()`**: Handles the actual proxy forwarding
 
 ## Deployment Process
 
-### Deploying a PWA to Prasso
+### Deploying a Node.js App to Prasso
 
-1. Build your PWA (e.g., `npm run build`)
-2. Copy the build output to `public/hosted_pwa/{app_id}/` on the server
-3. Ensure `index.html` exists at the root of the deployment directory
-4. Verify all assets are accessible and properly served
-5. Test the site in a browser to confirm all routes work
+1. Develop your Node.js/React/Next.js app
+2. Start the Node.js server on a local port (e.g., `http://localhost:3001`)
+3. Configure the app in Prasso Admin:
+   - PWA App URL: `https://myapp.example.com`
+   - PWA Server URL: `http://localhost:3001`
+4. DNS setup is automatic for faxt.com domains
+5. Users access `https://myapp.example.com` and Prasso proxies to Node.js
 
-### Automated Deployment
+### Example: Multi-App Setup
 
-For automated deployments, consider:
+```bash
+# Terminal 1: App 1 on port 3001
+cd /path/to/app1
+npm start
 
-- Using CI/CD pipelines (GitHub Actions, GitLab CI, etc.) to build and deploy your PWA
-- Setting up webhooks to trigger deployments on code changes
-- Implementing health checks to verify successful deployments
-- Using version management to track PWA releases
+# Terminal 2: App 2 on port 3002
+cd /path/to/app2
+npm start
+
+# Terminal 3: App 3 on port 3003
+cd /path/to/app3
+npm start
+```
+
+Then configure in Prasso Admin:
+- App 1: `https://app1.example.com` → `http://localhost:3001`
+- App 2: `https://app2.example.com` → `http://localhost:3002`
+- App 3: `https://app3.example.com` → `http://localhost:3003`
 
 ## Troubleshooting
 
-If your PWA site is not displaying correctly:
+If your PWA site is not working:
 
-1. Verify the PWA is deployed to `public/hosted_pwa/{app_id}/`
-2. Check that `index.html` exists in the deployment directory
-3. Ensure all assets are properly deployed and accessible
-4. Verify file permissions are correct (readable by the web server)
-5. Check the system logs for any errors related to file access
-6. Test individual routes in your PWA to confirm they work
-7. Verify the app's `pwa_app_url` is correctly configured
+1. **Verify Node.js server is running** on the configured port
+2. **Check `pwa_server_url`** is correct (e.g., `http://localhost:3001`)
+3. **Verify firewall** allows connection to Node.js port
+4. **Check Node.js server logs** for errors
+5. **Verify `pwa_app_url`** matches the request URL
+6. **Check Prasso logs** for proxy errors
+7. **Test Node.js server directly** (e.g., `curl http://localhost:3001/`)
 
-## Migration from Traditional Sites
+## For More Information
 
-To migrate a traditional Prasso site to a PWA:
-
-1. Develop your PWA using your preferred framework
-2. Build and deploy the PWA to `public/hosted_pwa/{app_id}/`
-3. Create or update an app with the `pwa_app_url` pointing to your PWA
-4. Associate the app with your site
-5. Test the site to confirm all pages and functionality work
-6. Update any external links or references to point to the new PWA site
-
-## Example PWA Deployment
-
-```bash
-# Build your React PWA
-npm run build
-
-# Copy build output to Prasso
-scp -r build/* user@server:/var/www/prasso/public/hosted_pwa/123/
-
-# Verify deployment
-curl https://your-site.com/
-```
-
-For additional support or questions, please contact the system administrator.
+See `docs/pwa-reverse-proxy.md` for comprehensive implementation details.

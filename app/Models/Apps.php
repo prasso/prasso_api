@@ -18,7 +18,7 @@ class Apps extends Model
     use HasTimestamps;
     
     protected $fillable = [
-        'team_id','site_id' ,'appicon', 'app_name', 'page_title', 'page_url', 'pwa_app_url', 'sort_order', 'user_role'
+        'team_id','site_id' ,'appicon', 'app_name', 'page_title', 'page_url', 'pwa_app_url', 'pwa_server_url', 'sort_order', 'user_role'
     ];
 
     protected $hidden = ['created_at','updated_at'];
