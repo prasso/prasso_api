@@ -433,5 +433,104 @@ class TeamController extends Controller
         ->with('icondata', $icon_data)
         ->with('sortorders', $sort_orders);
     }
+
+    /**
+     * Show the sync pages to app form
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function syncPagesToApp($teamid, $appid, $siteid = null)
+    {
+        $user = Auth::user();
+        // Authorize by membership/ownership
+        if (!$user || !$user->isTeamMemberOrOwner((int) $teamid)) {
+            return $this->sendError('Unauthorized.', ['error' => 'You do not have access to this team.'], 403);
+        }
+
+        $team = Team::where('id', $teamid)->first();
+        $teamapps = $team->apps;
+        $teamapp = $teamapps->where('id', $appid)->first();
+
+        if (!$teamapp) {
+            abort(404, 'App not found');
+        }
+
+        // Use provided site_id or fall back to app's associated site
+        $site = null;
+        if ($siteid) {
+            $site = Site::find($siteid);
+        } else {
+            $site = $teamapp->site;
+        }
+
+        if (!$site) {
+            return view('apps.sync-pages-to-app')
+                ->with('team', $team)
+                ->with('teamapp', $teamapp)
+                ->with('sites', collect())
+                ->with('sitePages', collect())
+                ->with('error', 'This app is not associated with a site. Please select a site in the app settings first.');
+        }
+
+        $sites = Site::pluck('site_name', 'id');
+        $sitePages = $site->sitePages;
+
+        return view('apps.sync-pages-to-app')
+            ->with('team', $team)
+            ->with('teamapp', $teamapp)
+            ->with('sites', $sites)
+            ->with('sitePages', $sitePages)
+            ->with('selectedSiteId', $site->id);
+    }
+
+    /**
+     * Handle the sync pages to app submission
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function syncPagesToAppSubmit(Request $request, $teamid, $appid)
+    {
+        $user = Auth::user();
+        // Authorize by membership/ownership
+        if (!$user || !$user->isTeamMemberOrOwner((int) $teamid)) {
+            return $this->sendError('Unauthorized.', ['error' => 'You do not have access to this team.'], 403);
+        }
+
+        $team = Team::where('id', $teamid)->first();
+        $teamapps = $team->apps;
+        $teamapp = $teamapps->where('id', $appid)->first();
+
+        if (!$teamapp) {
+            abort(404, 'App not found');
+        }
+
+        // Get site from request or fall back to app's site
+        $siteId = $request->input('site_id');
+        $site = $siteId ? Site::find($siteId) : $teamapp->site;
+        
+        if (!$site) {
+            return redirect()->route('apps.edit', ['teamid' => $teamid, 'appid' => $appid])
+                ->with('error', 'App is not associated with a site.');
+        }
+
+        $selectedPages = $request->input('selected_pages', []);
+
+        if (empty($selectedPages)) {
+            return redirect()->route('apps.sync-pages', ['teamid' => $teamid, 'appid' => $appid])
+                ->with('error', 'Please select at least one page to sync.');
+        }
+
+        try {
+            $appSyncService = new \App\Services\AppSyncService();
+            $appSyncService->syncSelectedSitePagesToApp($site, $teamapp, $selectedPages);
+
+            return redirect()->route('apps.edit', ['teamid' => $teamid, 'appid' => $appid])
+                ->with('success', 'Pages synced successfully! ' . count($selectedPages) . ' page(s) have been converted to app tabs.');
+        } catch (\Exception $e) {
+            Log::error('Error syncing pages to app: ' . $e->getMessage());
+            return redirect()->route('apps.sync-pages', ['teamid' => $teamid, 'appid' => $appid])
+                ->with('error', 'Error syncing pages: ' . $e->getMessage());
+        }
+    }
   
 }

@@ -110,6 +110,36 @@
         </x-slot>
     </x-form-section>
 
+    <!-- Sync Pages to App Section -->
+    @if ($teamapp->id ?? false && $site_id)
+    <x-section-border />
+    <div class="mt-12">
+        <div class="md:grid md:grid-cols-3 md:gap-6">
+            <x-section-title>
+                <x-slot name="title">{{ __('Sync Site Pages to App Tabs') }}</x-slot>
+                <x-slot name="description">{{ __('Convert your site pages into mobile app navigation tabs.') }}</x-slot>
+            </x-section-title>
+
+            <div class="mt-5 md:mt-0 md:col-span-2">
+                <div class="px-4 py-5 bg-white dark:bg-gray-800 sm:p-6 shadow sm:rounded-md">
+                    <div class="grid grid-cols-6 gap-6">
+                        <div class="col-span-6">
+                            <p class="text-sm text-gray-600 mb-4">
+                                {{ __('Select which pages you want to sync as app tabs from your site.') }}
+                            </p>
+                            <a href="{{ route('apps.sync-pages-with-site', ['teamid' => $team_id, 'appid' => $teamapp->id, 'siteid' => $site_id]) }}" 
+                               class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest transition ease-in-out duration-150"
+                               style="background-color: {{ \App\Models\Site::find($site_id)?->main_color ?? '#3b82f6' }}; hover:opacity-90;">
+                                {{ __('Sync Pages to Tabs') }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <!-- Deployment Instructions Modal -->
     @if ($show_deployment_instructions)
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 p-4">
