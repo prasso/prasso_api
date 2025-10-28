@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 use App\Services\SitePageService;
 use App\Services\UserService;
 use App\Models\SitePages;
@@ -52,7 +53,54 @@ class SitePageController extends BaseController
             return $this->getDashboardForCurrentSite($user);
         }
 
-        // Check if this site has a GitHub repository deployment path
+        /**
+         * PWA App Reverse Proxy Feature
+         * 
+         * For sites with a PWA app configured, proxy the request to the Node.js server
+         * instead of the traditional Prasso welcome page. This allows sites to host
+         * Progressive Web Apps without Apache vhost configuration.
+         * 
+         * Prerequisites:
+         * - Site must have an associated app with pwa_app_url and pwa_server_url set
+         * - The Node.js server must be running at the pwa_server_url location
+         * 
+         * Flow:
+         * 1. Get the app associated with this site
+         * 2. Check if the app has pwa_app_url and pwa_server_url configured
+         * 3. If yes, proxy the request to the Node.js server
+         * 4. Return the proxied response; otherwise, continue to traditional page handling
+         */
+        if ($this->site != null) {
+            $app = $this->site->app;
+            if ($app && !empty($app->pwa_app_url) && !empty($app->pwa_server_url)) {
+                try {
+                    $proxyResponse = $this->proxyRequestToServer($app->pwa_server_url, $request->path(), $request);
+                    Log::info("Proxying PWA request to {$app->pwa_server_url} for app {$app->id} on site {$this->site->id}");
+                    return $proxyResponse;
+                } catch (\Exception $e) {
+                    Log::error("Failed to proxy PWA request for app {$app->id}: {$e->getMessage()}");
+                    // Fall through to traditional handling
+                }
+            }
+        }
+
+        /**
+         * GitHub Repository Deployment Feature
+         * 
+         * For sites with a GitHub repository configured, serve the deployed repository's index.html
+         * instead of the traditional Prasso welcome page. This allows sites to host static content
+         * (e.g., single-page applications, documentation) directly from a GitHub repository.
+         * 
+         * Prerequisites:
+         * - $site->github_repository must be set (format: "username/repository" or "org/repository")
+         * - $site->deployment_path must be set (indicates the site is configured for GitHub hosting)
+         * - The repository must be cloned/deployed to public/hosted_sites/{repository_name}/
+         * 
+         * Flow:
+         * 1. Extract repository name from the github_repository path (e.g., "myrepo" from "user/myrepo")
+         * 2. Construct path to index.html in the deployed repository directory
+         * 3. If index.html exists, serve it directly; otherwise, continue to traditional page handling
+         */
         if ($this->site != null && !empty($this->site->deployment_path) && !empty($this->site->github_repository)) {
             $repoName = explode('/', $this->site->github_repository)[1] ?? $this->site->github_repository;
             $indexPath = public_path('hosted_sites/' . $repoName . '/index.html');
@@ -327,7 +375,54 @@ class SitePageController extends BaseController
             return null;
         }
 
-        // Check if this site has a GitHub repository deployment path
+        /**
+         * PWA App Reverse Proxy Page Serving
+         * 
+         * For sites with a PWA app configured, proxy the request to the Node.js server
+         * instead of serving static files. This enables hosting of Progressive Web Apps
+         * with full server-side functionality.
+         * 
+         * Prerequisites:
+         * - Site must have an associated app with pwa_app_url and pwa_server_url set
+         * - The Node.js server must be running at the pwa_server_url location
+         * 
+         * Flow:
+         * 1. Proxy the request to the Node.js server at pwa_server_url
+         * 2. Return the proxied response
+         * 3. If proxy fails, fall through to Prasso's page system
+         */
+        if ($this->site != null) {
+            $app = $this->site->app;
+            if ($app && !empty($app->pwa_app_url) && !empty($app->pwa_server_url)) {
+                try {
+                    $proxyResponse = $this->proxyRequestToServer($app->pwa_server_url, '/' . $section, $request);
+                    Log::info("Proxying PWA page request for {$section} to {$app->pwa_server_url} for app {$app->id} on site {$this->site->id}");
+                    return $proxyResponse;
+                } catch (\Exception $e) {
+                    Log::error("Failed to proxy PWA page request for {$section} on app {$app->id}: {$e->getMessage()}");
+                    // Fall through to Prasso's page system
+                }
+            }
+        }
+
+        /**
+         * GitHub Repository Page Serving
+         * 
+         * For sites with a GitHub repository configured, attempt to serve requested pages
+         * directly from the deployed repository before falling back to Prasso's page system.
+         * This enables hosting of static content and single-page applications.
+         * 
+         * Prerequisites:
+         * - $site->github_repository must be set (format: "username/repository" or "org/repository")
+         * - $site->deployment_path must be set (indicates the site is configured for GitHub hosting)
+         * - The repository must be cloned/deployed to public/hosted_sites/{repository_name}/
+         * 
+         * Resolution order:
+         * 1. Try to serve the exact file path (e.g., /page/about -> hosted_sites/repo/page/about)
+         * 2. Try to serve with .html extension (e.g., /page/about -> hosted_sites/repo/page/about.html)
+         * 3. Try to serve index.html from a directory (e.g., /page/about -> hosted_sites/repo/page/about/index.html)
+         * 4. If none exist, fall through to Prasso's page system
+         */
         if ($this->site != null && !empty($this->site->deployment_path) && !empty($this->site->github_repository)) {
             $repoName = explode('/', $this->site->github_repository)[1] ?? $this->site->github_repository;
             $pagePath = public_path('hosted_sites/' . $repoName . '/' . $section);
@@ -361,8 +456,18 @@ class SitePageController extends BaseController
                 return view($section);
             }
 
-            // If we have a GitHub repository but the specific page wasn't found,
-            // try to serve the repository's index page as a fallback
+            /**
+             * GitHub Repository Fallback
+             * 
+             * If a specific page is not found in Prasso's page system and the site has a GitHub
+             * repository configured, serve the repository's index.html as a fallback. This is useful
+             * for single-page applications (SPAs) that handle routing client-side.
+             * 
+             * This fallback only applies if:
+             * - The page was not found in Prasso's SitePages table
+             * - The site has both deployment_path and github_repository configured
+             * - The repository's index.html exists
+             */
             if ($this->site != null && !empty($this->site->deployment_path) && !empty($this->site->github_repository)) {
                 $repoName = explode('/', $this->site->github_repository)[1] ?? $this->site->github_repository;
                 $indexPath = public_path('hosted_sites/' . $repoName . '/index.html');
@@ -803,5 +908,72 @@ class SitePageController extends BaseController
         // Redirect back to the edit page with a success message
         return redirect()->route('sitepages.edit-site-page-json-data', ['siteId' => $siteId, 'sitePageId' => $sitePageId])
             ->with('success', 'Item deleted successfully.');
+    }
+
+    /**
+     * Proxy a request to a remote Node.js server
+     * 
+     * This method forwards HTTP requests to a Node.js server running at pwa_server_url
+     * and returns the response to the client. This allows Prasso to act as a reverse proxy
+     * for PWA applications without requiring Apache vhost configuration.
+     * 
+     * @param string $serverUrl The base URL of the Node.js server (e.g., http://localhost:3001)
+     * @param string $path The request path (e.g., /about)
+     * @param Request $request The incoming HTTP request
+     * @return \Illuminate\Http\Response The proxied response
+     * @throws \Exception If the proxy request fails
+     */
+    private function proxyRequestToServer($serverUrl, $path, Request $request)
+    {
+        // Ensure serverUrl doesn't have trailing slash
+        $serverUrl = rtrim($serverUrl, '/');
+        
+        // Build the full URL to proxy to
+        $proxyUrl = $serverUrl . $path;
+        
+        // Add query string if present
+        if ($request->getQueryString()) {
+            $proxyUrl .= '?' . $request->getQueryString();
+        }
+        
+        try {
+            // Determine the HTTP method
+            $method = strtolower($request->getMethod());
+            
+            // Build request headers to forward
+            $headers = [];
+            foreach ($request->headers->all() as $key => $value) {
+                // Skip headers that shouldn't be forwarded
+                if (!in_array(strtolower($key), ['host', 'connection', 'content-length'])) {
+                    $headers[$key] = $value[0] ?? implode(',', $value);
+                }
+            }
+            
+            // Make the proxy request
+            $httpRequest = Http::withHeaders($headers)
+                ->timeout(30)
+                ->withoutRedirecting();
+            
+            // Add body for POST/PUT/PATCH requests
+            if (in_array($method, ['post', 'put', 'patch'])) {
+                $body = $request->getContent();
+                if ($body) {
+                    $httpRequest = $httpRequest->withBody($body, $request->header('Content-Type'));
+                }
+            }
+            
+            // Execute the proxy request
+            $response = $httpRequest->request($method, $proxyUrl);
+            
+            // Build response to return to client
+            return response(
+                $response->body(),
+                $response->status(),
+                $response->headers()
+            );
+        } catch (\Exception $e) {
+            Log::error("Proxy request failed for URL {$proxyUrl}: {$e->getMessage()}");
+            throw $e;
+        }
     }
 }

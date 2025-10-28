@@ -117,7 +117,14 @@ return [
              * @deprecated Please use `scanOptions.exclude`
              * `scanOptions.exclude` overwrites this
             */
-            'excludes' => [],
+            'exclude' => [
+    base_path('vendor'),
+    base_path('node_modules'),
+    base_path('storage'),
+    base_path('packages/**/vendor'),
+    base_path('packages/**/node_modules'),
+    base_path('packages/faxt/invenbin/packages'),
+],
         ],
 
         'scanOptions' => [

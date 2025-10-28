@@ -216,7 +216,7 @@ class UserService
      */
     public function buildConfigReturn($user, $appsService, $site) 
     {
-        $user_access_token = isset($user->personalAccessToken)? $user->personalAccessToken->token : null;
+        $user_access_token = isset($user->personalAccessToken) ? $user->personalAccessToken : null;
 
         $success = [];
         if (!isset($user_access_token))
@@ -226,7 +226,7 @@ class UserService
             {
                 $user->tokens()->delete();
             }
-            $user_access_token = $user->createToken(config('app.name'))->accessToken->token;
+            $user_access_token = $user->createToken(config('app.name'))->plainTextToken;
             $success['token'] = $user_access_token; 
         }
         else
@@ -247,32 +247,37 @@ class UserService
           Log::info($e);
           $success['roles'] = [];
         }
+        // Site-scoped team context
+        $siteTeam = $site && method_exists($site, 'teams') ? $site->teams()->first() : null;
         if ($user->current_team_id == null )
         {
-          //currently is first owned team
+          // set a personal team id for backward compatibility in clients
           $user->current_team_id = $user->team_owner[0]->id;
           $success['personal_team_id'] = $user->team_owner[0]->id;
-          $success['team_coach_id'] = $user->team_owner[0]->user_id;
-          $success['coach_uid'] = $user->getCoachUid();
         }
         else
         {
           $success['personal_team_id'] = $user->current_team_id;
-          $success['team_coach_id'] = Team::where('id',$user->current_team_id)->first()->user_id;
-          $success['coach_uid'] = $user->getCoachUid();
         }
+        // Always derive team_coach_id and coach_uid from the site's team if available
+        if ($siteTeam) {
+          $success['team_coach_id'] = $siteTeam->user_id;
+        } else {
+          $success['team_coach_id'] = Team::where('id', $user->current_team_id)->value('user_id');
+        }
+        $success['coach_uid'] = $user->getCoachUid();
 
         $success['team_members'] = [];
         if ($user->isInstructor($site))
         { 
-          if (count($user->teams) > 0 && isset($user->teams[0]))
-          {
-          try{
-              $success['team_members'] = json_encode(Instructor::getTeamMembersFor($user->current_team_id));
-            } catch (\Throwable $e) {
-              Log::info($e);
-              $success['team_members'] = [];
-            }
+          // Use the site's team membership rather than user's personal team
+          if ($siteTeam) {
+            try{
+                $success['team_members'] = json_encode(Instructor::getTeamMembersFor($siteTeam->id));
+              } catch (\Throwable $e) {
+                Log::info($e);
+                $success['team_members'] = [];
+              }
           }
         }
         

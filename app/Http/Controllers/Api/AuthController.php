@@ -205,7 +205,7 @@ class AuthController extends BaseController
         {
             $user = new User();
         }
-      $token = $user->personalAccessToken? $user->personalAccessToken->token : null;
+      $token = $user->personalAccessToken ? $user->personalAccessToken : null;
       $app_data = $this->appsService->getAppSettingsBySite($this->site, $user,$token);
 
         return $app_data;

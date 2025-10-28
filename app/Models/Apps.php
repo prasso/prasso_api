@@ -18,7 +18,7 @@ class Apps extends Model
     use HasTimestamps;
     
     protected $fillable = [
-        'team_id','site_id' ,'appicon', 'app_name', 'page_title', 'page_url', 'sort_order', 'user_role'
+        'team_id','site_id' ,'appicon', 'app_name', 'page_title', 'page_url', 'pwa_app_url', 'pwa_server_url', 'sort_order', 'user_role'
     ];
 
     protected $hidden = ['created_at','updated_at'];
@@ -85,6 +85,7 @@ class Apps extends Model
             'app_name' => $appModel['app_name'], 
             'page_title' => $appModel['page_title'],
             'page_url' => $appModel['page_url'],
+            'pwa_app_url' => $appModel['pwa_app_url'] ?? null,
             'sort_order' => $appModel['sort_order'] ] );
             info('creating new app');}
             else
@@ -95,6 +96,7 @@ class Apps extends Model
             'app_name' => $appModel['app_name'], 
             'page_title' => $appModel['page_title'],
             'page_url' => $appModel['page_url'],
+            'pwa_app_url' => $appModel['pwa_app_url'] ?? null,
             'sort_order' => $appModel['sort_order'] ] );
         }
         

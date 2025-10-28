@@ -4,6 +4,8 @@ namespace App\Livewire\Apps;
 
 use Livewire\Component;
 use App\Models\Tabs;
+use App\Models\Apps;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
@@ -17,6 +19,7 @@ class TabInfoForm extends Component
     protected $icondata;
 
     protected $showsuccess;
+    protected $newAppId = null;
 
     public function render()
     {
@@ -80,6 +83,35 @@ class TabInfoForm extends Component
       //  $this->validate();
 
         // Execution doesn't reach here if validation fails.
+        // If app_id is 0, create the app first so the tab can attach to it
+        if (!isset($this->tabdata['app_id']) || (int)$this->tabdata['app_id'] === 0) {
+            $url = session()->get('url');
+            $teamId = null;
+            if ($url && preg_match('#/team/(\d+)/apps/(\d+)#', $url, $m)) {
+                $teamId = (int) $m[1];
+            }
+            $user = Auth::user();
+            // Derive a site_id for this user
+            $siteId = method_exists($user, 'getUserOwnerSiteId') ? $user->getUserOwnerSiteId() : null;
+            // Create a minimal App record
+            $app = Apps::create([
+                'team_id' => $teamId,
+                'site_id' => $siteId,
+                'appicon' => null,
+                'app_name' => $this->tabdata['label'] ?? 'New App',
+                'page_title' => $this->tabdata['page_title'] ?? 'Home',
+                'page_url' => $this->tabdata['page_url'] ?? '/',
+                'sort_order' => $this->tabdata['sort_order'] ?? 0,
+                'user_role' => null,
+            ]);
+            $this->newAppId = $app->id;
+            $this->tabdata['app_id'] = $app->id;
+            // Ensure tab sort order starts at 1 if not set
+            if (!isset($this->tabdata['sort_order'])) {
+                $this->tabdata['sort_order'] = 1;
+            }
+        }
+
         $this->tabdata = Tabs::processUpdates($this->tabdata );      
         $this->showsuccess = true;
 
@@ -92,8 +124,11 @@ class TabInfoForm extends Component
         // ./team/1/apps/2
 
         $url = session()->get('url');
-        //$url = str_replace('tabs/new','tabs/'.$this->tabdata['id'],$url);
         $url = str_replace('tabs/new','',$url);
+        // If we created a new app, swap the app id segment in the URL
+        if ($this->newAppId !== null) {
+            $url = preg_replace('#(/team/\d+/apps/)\d+#', '$1'.$this->newAppId, $url);
+        }
         return redirect()->to($url);
     }
 }

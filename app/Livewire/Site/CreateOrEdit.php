@@ -42,6 +42,7 @@ class CreateOrEdit extends Component
     public $team_id;
     public $site;
     public $stripe_key, $stripe_secret;
+    public $app_id;
 
 
     public function mount(Site $site, User $user, Team $team, $show_modal, $team_selection)
@@ -56,6 +57,11 @@ class CreateOrEdit extends Component
         $this->current_user = $user;
         $this->team = $team;
         $this->team_id = $team->id;
+        $site->loadMissing('app');
+        $this->app_id = optional($site->app)->id;
+        if (!$this->team_id && $site->app) {
+            $this->team_id = $site->app->team_id;
+        }
         $this->site_id = $site->id;
         $this->site_name = $site->site_name;
         $this->description = $site->description;
@@ -174,7 +180,9 @@ class CreateOrEdit extends Component
     {
         return view('livewire.site.create-or-edit', [
             'site_id' => $this->site_id,
-            'team_selection' => $this->team_selection
+            'team_selection' => $this->team_selection,
+            'team_id' => $this->team_id,
+            'app_id' => $this->app_id
         ]);
     }
 }

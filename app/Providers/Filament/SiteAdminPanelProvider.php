@@ -9,6 +9,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use App\Models\Site;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -23,17 +24,23 @@ class SiteAdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $host = request()->getHttpHost();
+        $site = Site::getClient($host);
+        $primaryHex = $site?->main_color ?? '#0ea5e9';
+
         return $panel
             ->id('site-admin')
             ->path('site-admin')
             ->login()
             ->colors([
-                'primary' => Color::Blue,
+                'primary' => Color::hex($primaryHex),
             ])
             // Core app resources (Content, Users/Teams, etc.)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             // Messaging package resources
             ->discoverResources(in: base_path('packages/prasso/messaging/src/Filament/Resources'), for: 'Prasso\\Messaging\\Filament\\Resources')
+            // Church package resources
+            ->discoverResources(in: base_path('packages/prasso/church/src/Filament/Resources'), for: 'Prasso\\Church\\Filament\\Resources')
             // Optional: other package resources if needed
             // ->discoverResources(in: base_path('packages/prasso/project_management/src/Filament/Resources'), for: 'Prasso\\ProjectManagement\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -43,8 +50,13 @@ class SiteAdminPanelProvider extends PanelProvider
                 Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/SiteAdmin/Widgets'), for: 'App\\Filament\\SiteAdmin\\Widgets')
+            ->discoverWidgets(in: base_path('packages/prasso/church/src/Filament/Widgets'), for: 'Prasso\\Church\\Filament\\Widgets')
             ->widgets([
                 \App\Filament\SiteAdmin\Widgets\SiteAdminOverview::class,
+                \Prasso\Church\Filament\Widgets\ChurchOverview::class,
+                \Prasso\Church\Filament\Widgets\ChurchMembershipGrowth::class,
+                \Prasso\Church\Filament\Widgets\ChurchQuickActions::class,
+                \Prasso\Church\Filament\Widgets\ChurchRecentActivity::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -63,7 +75,10 @@ class SiteAdminPanelProvider extends PanelProvider
             ])
             ->userMenuItems([
                 \Filament\Navigation\MenuItem::make('Edit Profile')
-                    ->url(fn () => auth()->check() ? '/site-admin/users/' . auth()->id() . '/edit' : '#')
+                    ->url(function () {
+                        $user = auth()->guard('web')->user();
+                        return $user ? '/site-admin/users/' . $user->id : '#';
+                    })
                     ->icon('heroicon-o-user')
                     ->label("Edit Profile"),
                 

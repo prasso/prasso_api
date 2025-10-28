@@ -96,6 +96,9 @@ Route::middleware([
     Route::get('/team/{teamid}/apps/newsiteandapp', 'TeamController@newSiteAndApp')->name('apps.newsiteandapp');
     Route::get('/team/{teamid}/apps/{appid}', 'TeamController@editApp')->name('apps.edit');
     Route::get('/team/{teamid}/apps/{appid}/activate', 'TeamController@activateApp')->name('apps.activate');
+    Route::get('/team/{teamid}/apps/{appid}/sync-pages', 'TeamController@syncPagesToApp')->name('apps.sync-pages');
+    Route::get('/team/{teamid}/apps/{appid}/sync-pages/{siteid}', 'TeamController@syncPagesToApp')->name('apps.sync-pages-with-site');
+    Route::post('/team/{teamid}/apps/{appid}/sync-pages', 'TeamController@syncPagesToAppSubmit')->name('apps.sync-pages-submit');
     Route::get('/team/{teamid}/apps/{appid}/tabs/{tabid}', 'TeamController@editTab')->name('apps.edit-tab');
     Route::get('/team/{teamid}/apps/{appid}/tabs/new', 'TeamController@addTab')->name('apps.add-tab');
     Route::get('/team/{teamid}/apps/{appid}/delete', 'TeamController@deleteApp')->name('apps.delete');

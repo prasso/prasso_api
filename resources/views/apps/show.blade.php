@@ -23,17 +23,16 @@
                 </h2>   
 
                 <h2 class="mb-5 text-xs font-semibold tracking-widest text-blue-600 uppercase title-font">
-                {{ __('My Personal Team(s) and Info') }}
+                {{ __('Team Info') }}
                 </h2> 
                 <div class="flex flex-col w-full p-5 mx-auto m-5 border rounded-lg l md:w-1/2 md:ml-auto md:mt-0">
-            
-                    <x-teams-layout :selectedteam="$user->currentTeam->id" :teams="$teams" />
+                    <x-teams-layout :selectedteam="$team->id" :teams="$teams" />
                 </div>
                 <div class="flex flex-col w-full p-5 mx-auto m-5 border rounded-lg l ">
                 <div class="p-6 bg-white col-span-6">
-                @if (isset($teams) && count($teams) > 0)    
+                @if (isset($team))    
                 <div class="text-sm text-gray-600" >
-                    <span class="mt-5 float-right ">  <a href="{{ route('apps.edit',['teamid' => $teams[0]['id'], 'appid' => 0])   }}">
+                    <span class="mt-5 float-right ">  <a href="{{ route('apps.edit',['teamid' => $team->id, 'appid' => 0])   }}">
                             <i class="material-icons md-36">playlist_add</i>
                         </a>
                     </span>

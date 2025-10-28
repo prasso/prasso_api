@@ -44,7 +44,7 @@ class AwsServiceProvider extends ServiceProvider
                 function (callable $handler) {
                     return function (
                         \Aws\CommandInterface $command,
-                        \Psr\Http\Message\RequestInterface $request = null
+                        ?\Psr\Http\Message\RequestInterface $request = null
                     ) use ($handler) {
                         $start = microtime(true);
                         
