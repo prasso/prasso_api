@@ -218,6 +218,60 @@
                             <p class="text-xs text-gray-500 mt-2">{{ __('Prasso will proxy all requests to your Node.js server running on port ') }}<span class="font-mono">{{ $port }}</span>.</p>
                         </div>
 
+                        <!-- Step 5: Deploy Frontend with deploy.py (Pre-filled) -->
+                        <div class="border-l-4 border-blue-500 pl-4">
+                            <h4 class="font-semibold text-gray-900">{{ __('Step 5: Deploy Frontend to Server (copy & run)') }}</h4>
+                            @php
+                                $siteName = \App\Models\Site::find($site_id)?->name ?? 'site';
+                                $appDir = \Illuminate\Support\Str::of($siteName)->slug('_').'_app';
+                                $sudoUser = env('DEPLOY_SUDO_USER', 'ubuntu');
+                                $appUser = env('DEPLOY_APP_USER', 'appuser');
+                                $webUser = env('DEPLOY_WEB_USER', 'www-data');
+                                $serverHost = env('PRASSO_SERVER_HOST', 'your-ec2-public-ip');
+                                $sshKeyPath = env('DEPLOY_SSH_KEY_PATH', '~/.ssh/prasso-deploy.pem');
+                            @endphp
+                            <p class="text-sm text-gray-600 mt-1">{{ __('Run this from your prasso_web folder on your workstation after building:') }}</p>
+                            <div class="bg-gray-100 p-3 rounded mt-2 font-mono text-sm overflow-x-auto">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs text-gray-600">{{ __('Full deployment command') }}</span>
+                                    <button type="button" class="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
+                                        data-copied="{{ __('Copied') }}" data-copy="{{ __('Copy') }}"
+                                        onclick="copyCmd('fullDeployCmd', this)">{{ __('Copy') }}</button>
+                                </div>
+                                <pre id="fullDeployCmd"><code>npm run build && npm run build:standalone
+./deploy.py \
+  --server {{ $serverHost }} \
+  --sudo-user {{ $sudoUser }} \
+  --app-user {{ $appUser }} \
+  --web-user {{ $webUser }} \
+  --app-dir-name {{ $appDir }} \
+  --port {{ $port }} \
+  --key {{ $sshKeyPath }} \
+  --install-pm2</code></pre>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">{{ __('Subsequent updates (files only):') }}</p>
+                            <div class="bg-gray-50 p-3 rounded mt-1 font-mono text-xs overflow-x-auto">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-[10px] text-gray-600">{{ __('Update-only command') }}</span>
+                                    <button type="button" class="px-2 py-1 text-[10px] bg-blue-600 text-white rounded hover:bg-blue-700"
+                                        data-copied="{{ __('Copied') }}" data-copy="{{ __('Copy') }}"
+                                        onclick="copyCmd('updateDeployCmd', this)">{{ __('Copy') }}</button>
+                                </div>
+                                <pre id="updateDeployCmd"><code>npm run build && npm run build:standalone
+./deploy.py \
+  --update-only \
+  --server {{ $serverHost }} \
+  --sudo-user {{ $sudoUser }} \
+  --app-dir-name {{ $appDir }} \
+  --key {{ $sshKeyPath }}</code></pre>
+                            </div>
+                            <ul class="text-xs text-gray-600 mt-3 space-y-1 list-disc list-inside">
+                                <li>{{ __('Deploy path: /var/www/html/prasso_api/public/hosted_sites/') }}<span class="font-mono">{{ $appDir }}</span></li>
+                                <li>{{ __('PM2 process name:') }} <span class="font-mono">{{ $appDir }}</span></li>
+                                <li>{{ __('Port:') }} <span class="font-mono">{{ $port }}</span></li>
+                            </ul>
+                        </div>
+
                         <!-- Important Notes -->
                         <div class="bg-yellow-50 border border-yellow-200 rounded p-3 mt-4">
                             <p class="text-sm font-semibold text-yellow-800">{{ __('Important Notes:') }}</p>
