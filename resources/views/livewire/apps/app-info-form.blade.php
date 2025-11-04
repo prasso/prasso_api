@@ -58,7 +58,7 @@
             <div class="col-span-6 sm:col-span-4">
                 <div class="flex items-center justify-between">
                     <x-label for="pwa_server_url" value="{{ __('PWA Server URL') }}" />
-                    <button type="button" wire:click="$set('show_deployment_instructions', true)" class="text-xs text-blue-600 hover:text-blue-800 hover:underline">
+                    <button type="button" wire:click="$set('show_deployment_instructions', true)" class="text-xs text-primary-600 hover:text-primary-800 hover:underline">
                         {{ __('View Setup Instructions') }}
                     </button>
                 </div>
@@ -104,8 +104,8 @@
                 {{ __('Saved.') }}
             </x-action-message>
 
-            <x-button>
-                {{ __('Save') }}
+            <x-button class="bg-primary hover:bg-primary-700 text-white focus:ring-2 focus:ring-primary-500">
+            {{ __('Save') }}
             </x-button>
         </x-slot>
     </x-form-section>
@@ -128,8 +128,8 @@
                                 {{ __('Select which pages you want to sync as app tabs from your site.') }}
                             </p>
                             <a href="{{ route('apps.sync-pages-with-site', ['teamid' => $team_id, 'appid' => $teamapp->id, 'siteid' => $site_id]) }}" 
-                               class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest transition ease-in-out duration-150"
-                               style="background-color: {{ \App\Models\Site::find($site_id)?->main_color ?? '#3b82f6' }}; hover:opacity-90;">
+                               class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs bg-primary-600 hover:bg-primary-700 text-primary-foreground focus:ring-2 focus:ring-primary-500 uppercase tracking-widest transition ease-in-out duration-150"
+                               >
                                 {{ __('Sync Pages to Tabs') }}
                             </a>
                         </div>
@@ -145,7 +145,7 @@
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 p-4">
             <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full flex flex-col max-h-screen">
                 <!-- Modal Header (Fixed) -->
-                <div class="bg-blue-600 text-white px-6 py-4 flex justify-between items-center flex-shrink-0">
+                <div class="bg-primary-600 text-white px-6 py-4 flex justify-between items-center flex-shrink-0">
                     <h3 class="text-lg font-semibold">{{ __('PWA Deployment Instructions') }}</h3>
                     <button type="button" wire:click="closeDeploymentInstructions" class="text-white hover:text-gray-200 flex-shrink-0">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -160,7 +160,7 @@
 
                     <div class="space-y-4">
                         <!-- Step 1: Configure Your App -->
-                        <div class="border-l-4 border-blue-500 pl-4">
+                        <div class="border-l-4 border-primary-500 pl-4">
                             <h4 class="font-semibold text-gray-900">{{ __('Step 1: Configure Your App to Use the Server URL') }}</h4>
                             <p class="text-sm text-gray-600 mt-1">{{ __('Your app must listen on the configured server URL. Set the PORT environment variable:') }}</p>
                             
@@ -189,7 +189,7 @@
                         </div>
 
                         <!-- Step 2: Start Your Server -->
-                        <div class="border-l-4 border-blue-500 pl-4">
+                        <div class="border-l-4 border-primary-500 pl-4">
                             <h4 class="font-semibold text-gray-900">{{ __('Step 2: Start Your Node.js Server') }}</h4>
                             <p class="text-sm text-gray-600 mt-1">{{ __('Navigate to your app directory and start the server:') }}</p>
                             <div class="bg-gray-100 p-3 rounded mt-2 font-mono text-sm overflow-x-auto">
@@ -199,7 +199,7 @@
                         </div>
 
                         <!-- Step 3: Verify Server is Running -->
-                        <div class="border-l-4 border-blue-500 pl-4">
+                        <div class="border-l-4 border-primary-500 pl-4">
                             <h4 class="font-semibold text-gray-900">{{ __('Step 3: Verify Server is Running') }}</h4>
                             <p class="text-sm text-gray-600 mt-1">{{ __('Test that your server is accessible:') }}</p>
                             <div class="bg-gray-100 p-3 rounded mt-2 font-mono text-sm overflow-x-auto">
@@ -209,7 +209,7 @@
                         </div>
 
                         <!-- Step 4: Access Your App -->
-                        <div class="border-l-4 border-blue-500 pl-4">
+                        <div class="border-l-4 border-primary-500 pl-4">
                             <h4 class="font-semibold text-gray-900">{{ __('Step 4: Access Your App') }}</h4>
                             <p class="text-sm text-gray-600 mt-1">{{ __('Your app is now accessible at:') }}</p>
                             <div class="bg-gray-100 p-3 rounded mt-2 font-mono text-sm overflow-x-auto">
@@ -219,7 +219,7 @@
                         </div>
 
                         <!-- Step 5: Deploy Frontend with deploy.py (Pre-filled) -->
-                        <div class="border-l-4 border-blue-500 pl-4">
+                        <div class="border-l-4 border-primary-500 pl-4">
                             <h4 class="font-semibold text-gray-900">{{ __('Step 5: Deploy Frontend to Server (copy & run)') }}</h4>
                             @php
                                 $siteName = \App\Models\Site::find($site_id)?->name ?? 'site';
@@ -234,7 +234,7 @@
                             <div class="bg-gray-100 p-3 rounded mt-2 font-mono text-sm overflow-x-auto">
                                 <div class="flex items-center justify-between mb-2">
                                     <span class="text-xs text-gray-600">{{ __('Full deployment command') }}</span>
-                                    <button type="button" class="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
+                                    <button type="button" class="px-2 py-1 text-xs bg-primary-600 text-primary-foreground rounded hover:bg-primary-700"
                                         data-copied="{{ __('Copied') }}" data-copy="{{ __('Copy') }}"
                                         onclick="copyCmd('fullDeployCmd', this)">{{ __('Copy') }}</button>
                                 </div>
@@ -246,14 +246,13 @@
   --web-user {{ $webUser }} \
   --app-dir-name {{ $appDir }} \
   --port {{ $port }} \
-  --key {{ $sshKeyPath }} \
-  --install-pm2</code></pre>
+  --key {{ $sshKeyPath }} </code></pre>
                             </div>
                             <p class="text-xs text-gray-500 mt-2">{{ __('Subsequent updates (files only):') }}</p>
                             <div class="bg-gray-50 p-3 rounded mt-1 font-mono text-xs overflow-x-auto">
                                 <div class="flex items-center justify-between mb-2">
                                     <span class="text-[10px] text-gray-600">{{ __('Update-only command') }}</span>
-                                    <button type="button" class="px-2 py-1 text-[10px] bg-blue-600 text-white rounded hover:bg-blue-700"
+                                    <button type="button" class="px-2 py-1 text-[10px] bg-primary text-primary-foreground rounded hover:bg-primary-700"
                                         data-copied="{{ __('Copied') }}" data-copy="{{ __('Copy') }}"
                                         onclick="copyCmd('updateDeployCmd', this)">{{ __('Copy') }}</button>
                                 </div>
@@ -287,7 +286,7 @@
 
                 <!-- Modal Footer (Fixed) -->
                 <div class="bg-gray-50 px-6 py-4 flex justify-end border-t flex-shrink-0">
-                    <button type="button" wire:click="closeDeploymentInstructions" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                    <button type="button" wire:click="closeDeploymentInstructions" class="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition">
                         {{ __('Got it!') }}
                     </button>
                 </div>
