@@ -222,7 +222,7 @@
                         <div class="border-l-4 border-primary-500 pl-4">
                             <h4 class="font-semibold text-gray-900">{{ __('Step 5: Deploy Frontend to Server (copy & run)') }}</h4>
                             @php
-                                $siteName = \App\Models\Site::find($site_id)?->name ?? 'site';
+                                $siteName = $site_name ?? 'site';
                                 $appDir = \Illuminate\Support\Str::of($siteName)->slug('_').'_app';
                                 $sudoUser = env('DEPLOY_SUDO_USER', 'ubuntu');
                                 $appUser = env('DEPLOY_APP_USER', 'appuser');
@@ -238,7 +238,7 @@
                                         data-copied="{{ __('Copied') }}" data-copy="{{ __('Copy') }}"
                                         onclick="copyCmd('fullDeployCmd', this)">{{ __('Copy') }}</button>
                                 </div>
-                                <pre id="fullDeployCmd"><code>npm run build && npm run build:standalone
+                                <pre id="fullDeployCmd"><code>npm run build 
 ./deploy.py \
   --server {{ $serverHost }} \
   --sudo-user {{ $sudoUser }} \
@@ -256,7 +256,7 @@
                                         data-copied="{{ __('Copied') }}" data-copy="{{ __('Copy') }}"
                                         onclick="copyCmd('updateDeployCmd', this)">{{ __('Copy') }}</button>
                                 </div>
-                                <pre id="updateDeployCmd"><code>npm run build && npm run build:standalone
+                                <pre id="updateDeployCmd"><code>npm run build 
 ./deploy.py \
   --update-only \
   --server {{ $serverHost }} \
