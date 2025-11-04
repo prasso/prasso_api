@@ -130,6 +130,34 @@ Response returned to client
 4. Save the app configuration
 5. DNS setup is automatic for faxt.com domains
 
+6. Deployment command (shown in popup after saving)
+
+   After you save, Prasso will show a popup with a copy-pasteable command to deploy the frontend using `deploy.py`. The command is pre-filled using:
+   - `--sudo-user` from `.env` (e.g., `DEPLOY_SUDO_USER`)
+   - `--app-user` from `.env` (e.g., `DEPLOY_APP_USER`)
+   - `--web-user` from `.env` (e.g., `DEPLOY_WEB_USER`)
+   - `--app-dir-name` = `<site_name>_app` (derived from the Site)
+   - `--port` from the newly saved App (from `pwa_server_url` port)
+
+   Example (values will be filled for the current app):
+   ```bash
+   ./deploy.py \
+     --server <PRASSO_SERVER_IP_OR_HOST> \
+     --sudo-user <VALUE_FROM_ENV> \
+     --app-user <VALUE_FROM_ENV> \
+     --web-user <VALUE_FROM_ENV> \
+     --app-dir-name <site_name>_app \
+     --port <derived_port> \
+     --key /path/to/your-key.pem \
+     --install-pm2
+   ```
+
+   Notes
+   - Deploy path: `/var/www/html/prasso_api/public/hosted_sites/<site_name>_app`
+   - PM2 process name: `<site_name>_app`
+   - Ensure the SSH key path is correct for your workstation
+   - Re-run with `--update-only` for subsequent updates (no PM2/ownership changes)
+
 ### Multiple Apps Example
 
 ```

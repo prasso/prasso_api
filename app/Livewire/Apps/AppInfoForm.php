@@ -7,6 +7,7 @@ use app\Models\Apps;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Artisan;
 use Livewire\WithFileUploads;
+use App\Models\Site;
 
 class AppInfoForm extends Component
 {
@@ -25,6 +26,7 @@ class AppInfoForm extends Component
     public $site_id;
     public $sites;
     public $photo;
+    public $site_name;
 
     public $show_success;
     public $show_deployment_instructions = false;
@@ -36,6 +38,8 @@ class AppInfoForm extends Component
         if ($this->teamapp && $this->teamapp->site_id) {
             $this->site_id = $this->teamapp->site_id;
         }
+        // Initialize site_name from site_id
+        $this->site_name = Site::find($this->site_id)?->name ?? 'site';
         
         // Store the initial PWA server URL to detect changes
         $this->previous_pwa_server_url = $this->teamapp->pwa_server_url ?? null;

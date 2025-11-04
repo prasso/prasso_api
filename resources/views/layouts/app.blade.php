@@ -22,7 +22,9 @@
     <!-- Styles -->   
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"> 
-   
+    @if(isset($site))
+    @include('partials.theme-styles', ['site' => $site])
+    @endif
     @include('components.livewire-config')
     @livewireStyles
     {{ $extracss ?? '' }}
