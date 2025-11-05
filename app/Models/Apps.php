@@ -86,6 +86,7 @@ class Apps extends Model
             'page_title' => $appModel['page_title'],
             'page_url' => $appModel['page_url'],
             'pwa_app_url' => $appModel['pwa_app_url'] ?? null,
+            'pwa_server_url' => $appModel['pwa_server_url'] ?? null,
             'sort_order' => $appModel['sort_order'] ] );
             info('creating new app');}
             else
@@ -97,6 +98,7 @@ class Apps extends Model
             'page_title' => $appModel['page_title'],
             'page_url' => $appModel['page_url'],
             'pwa_app_url' => $appModel['pwa_app_url'] ?? null,
+            'pwa_server_url' => $appModel['pwa_server_url'] ?? null,
             'sort_order' => $appModel['sort_order'] ] );
         }
         
