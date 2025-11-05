@@ -3,7 +3,7 @@
 namespace App\Livewire\Apps;
 
 use Livewire\Component;
-use app\Models\Apps;
+use App\Models\Apps;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Artisan;
 use Livewire\WithFileUploads;
