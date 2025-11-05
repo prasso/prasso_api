@@ -962,8 +962,8 @@ class SitePageController extends BaseController
                 }
             }
             
-            // Execute the proxy request
-            $response = $httpRequest->request($method, $proxyUrl);
+            // Execute the proxy request (use send for broader Laravel version compatibility)
+            $response = $httpRequest->send(strtoupper($method), $proxyUrl);
             
             // Build response to return to client
             return response(
