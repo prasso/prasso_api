@@ -44,3 +44,4 @@ public/css/filament/*
 public/js/filament/*
 public/js/timeTracker.js
 app/google-calendar/*
+.turbo/turbo-serve.log
