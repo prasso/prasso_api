@@ -110,18 +110,7 @@ class ImageController extends Controller
                 abort(403, 'Unauthorized action. No valid team found for this site.');
             }
 
-            // Debug logging
-            \Log::info('Upload request details:', [
-                'files' => $request->file('image'),
-                'all' => $request->all(),
-                'hasFile' => $request->hasFile('image'),
-                'isValid' => $request->file('image') ? $request->file('image')->isValid() : false,
-                'mimeType' => $request->file('image') ? $request->file('image')->getMimeType() : null,
-                'originalName' => $request->file('image') ? $request->file('image')->getClientOriginalName() : null,
-                'site_id' => $site->id,
-                'team_id' => $team->id,
-                'user_id' => \Auth::id()
-            ]);
+           
 
             // Validate the request
             $validator = \Validator::make($request->all(), [
@@ -234,24 +223,12 @@ class ImageController extends Controller
             
             // If site_id was provided in request, use site's image_folder
             if (request()->has('site_id')) {
-                \Log::info('Using site image folder: ' . $site->image_folder);
                 $filePath = $site->image_folder . $filename;
             } else {
                 // Use the default team-based folder structure
                 $filePath = $site->image_folder . config('constants.USER_IMAGE_FOLDER') . $team->id . '/' . $filename;
             }
 
-            \Log::info('Starting file upload', [
-                'file_path' => $filePath,
-                'file_size' => $file->getSize(),
-                'mime_type' => $file->getMimeType(),
-                'original_name' => $file->getClientOriginalName(),
-                'temp_path' => $file->getRealPath(),
-                'bucket' => config('filesystems.disks.s3.bucket'),
-                'region' => config('filesystems.disks.s3.region'),
-                'url' => config('filesystems.disks.s3.url'),
-                'use_path_style' => config('filesystems.disks.s3.use_path_style_endpoint', false)
-            ]);
 
             // Get file contents and verify
             $fileContents = file_get_contents($file->getRealPath());
@@ -259,9 +236,7 @@ class ImageController extends Controller
                 throw new \Exception('Failed to read file contents');
             }
 
-            // Log first 100 bytes for verification
-            \Log::debug('File content sample (first 100 bytes): ' . substr($fileContents, 0, 100));
-
+            
             try {
                 // Get the S3 client instance
                 $s3 = app('aws.s3');
@@ -274,11 +249,7 @@ class ImageController extends Controller
             \Log::error('S3 bucket check error: ' . $e->getMessage());
             return response()->json(['error' => 'Unable to verify S3 bucket. Please try again later.'], 500);
         }
-                    \Log::info('S3 Bucket check', [
-                        'bucket' => config('filesystems.disks.s3.bucket'),
-                        'exists' => $bucketExists,
-                        'region' => config('filesystems.disks.s3.region')
-                    ]);
+                    
 
                     if (!$bucketExists) {
                         throw new \Exception('S3 bucket does not exist or is not accessible');
@@ -301,12 +272,6 @@ class ImageController extends Controller
                     'ACL'    => 'public-read'
                 ]);
 
-                \Log::info('S3 Upload result', [
-                    'result' => $result->toArray(),
-                    'status' => $result['@metadata']['statusCode'] ?? null,
-                    'effective_uri' => $result['@metadata']['effectiveUri'] ?? null,
-                    'object_url' => $result['ObjectURL'] ?? null
-                ]);
 
                 // Verify file exists in S3
                 try {
@@ -315,12 +280,6 @@ class ImageController extends Controller
                         'Key'    => $filePath
                     ]);
 
-                    \Log::info('S3 File verification', [
-                        'exists' => true,
-                        'content_length' => $head['ContentLength'] ?? null,
-                        'content_type' => $head['ContentType'] ?? null,
-                        'last_modified' => $head['LastModified'] ?? null
-                    ]);
 
                     // Save the image path to the database
                     $image = new TeamImage;
@@ -328,11 +287,7 @@ class ImageController extends Controller
                     $image->path = $filePath;
                     $image->save();
 
-                    \Log::info('Successfully saved image to database', [
-                        'image_id' => $image->id,
-                        'team_id' => $team->id,
-                        'path' => $filePath
-                    ]);
+                   
 
                     return response()->json([
                         'success' => true,
@@ -448,13 +403,7 @@ class ImageController extends Controller
             // Get the prompt
             $prompt = $request->prompt;
             
-            // Log the request
-            \Log::info('AI Image Generation Request', [
-                'site_id' => $site->id,
-                'team_id' => $teamId,
-                'user_id' => \Auth::id(),
-                'prompt' => $prompt
-            ]);
+          
             
             // Create an instance of BedrockAIService
             $bedrockAIService = app(\App\Services\BedrockAIService::class);
@@ -482,13 +431,7 @@ class ImageController extends Controller
                 $filePath = config('constants.USER_IMAGE_FOLDER') . $teamId . '/' . $filename;
             }
             
-            // Log the file path
-            \Log::info('Saving AI-generated image', [
-                'file_path' => $filePath,
-                'image_size' => strlen($imageData),
-                'bucket' => config('filesystems.disks.s3.bucket'),
-                'region' => config('filesystems.disks.s3.region')
-            ]);
+       
             
             try {
                 // Get the S3 client instance
@@ -509,12 +452,7 @@ class ImageController extends Controller
                 $image->path = $filePath;
                 $image->save();
                 
-                \Log::info('Successfully saved AI-generated image', [
-                    'image_id' => $image->id,
-                    'team_id' => $teamId,
-                    'path' => $filePath,
-                    'object_url' => $result['ObjectURL'] ?? null
-                ]);
+               
                 
                 return response()->json([
                     'success' => true,

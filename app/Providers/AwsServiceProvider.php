@@ -48,24 +48,10 @@ class AwsServiceProvider extends ServiceProvider
                     ) use ($handler) {
                         $start = microtime(true);
                         
-                        Log::info('AWS Request', [
-                            'command' => $command->getName(),
-                            'params' => $command->toArray(),
-                            'uri' => (string) $request->getUri(),
-                            'headers' => $request->getHeaders(),
-                        ]);
-
                         return $handler($command, $request)->then(
                             function ($response) use ($start, $command) {
                                 $time = round((microtime(true) - $start) * 1000, 2);
-                                
-                                Log::info('AWS Response', [
-                                    'command' => $command->getName(),
-                                    'status' => $response['@metadata']['statusCode'] ?? null,
-                                    'time_ms' => $time,
-                                    'headers' => $response['@metadata']['headers'] ?? [],
-                                    'effective_uri' => $response['@metadata']['effectiveUri'] ?? null,
-                                ]);
+                        
                                 
                                 return $response;
                             },
