@@ -103,7 +103,7 @@ class SitePageController extends BaseController
          */
         if ($this->site != null && !empty($this->site->deployment_path) && !empty($this->site->github_repository)) {
             $repoName = explode('/', $this->site->github_repository)[1] ?? $this->site->github_repository;
-            $indexPath = public_path('hosted_sites/' . $repoName . '/index.html');
+            $indexPath = public_path($this->site->deployment_path . '/index.html');
 
             if (file_exists($indexPath)) {
                 Log::info("Serving GitHub repository index page for site {$this->site->id}");
