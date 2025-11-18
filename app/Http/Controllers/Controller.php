@@ -130,9 +130,12 @@ class Controller extends FrameworkController
                     }
                 }
             }
+            // If this is a PWA app host but app not found, don't fall back to Site::getClient
+            Log::info("PWA app host detected but no app found for host: {$host}");
+            return null;
         }
         
-        // Step 2: If no PWA app found, check if the URL matches a defined site
+        // Step 2: If not a PWA app host, check if the URL matches a defined site
         $site = Site::getClient($host);
         if ($site != null && isset($site)) {
            // Log::info("Site found for host: {$host}");
