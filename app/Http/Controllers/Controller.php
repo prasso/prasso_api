@@ -105,18 +105,30 @@ class Controller extends FrameworkController
         $host = request()->getHttpHost();
         
         // Step 1: Check if the URL matches any PWA app URL (takes precedence)
+        // Only check for PWA apps if the host contains '_app' subdomain or is localhost:3000
         $scheme = request()->getScheme();
         $fullUrl = $scheme . '://' . $host;
+        $requestHost = request()->getHost();
         
-        $app = \App\Models\Apps::where('pwa_app_url', 'like', $fullUrl . '%')
-            ->orWhere('pwa_app_url', $fullUrl)
-            ->first();
+        // Check if this is a PWA app host (contains '_app' subdomain or is localhost:3000)
+        $isPwaAppHost = strpos($requestHost, '_app') !== false || $requestHost === 'localhost:3000';
         
-        if ($app != null && $app->site_id != null) {
-            $site = Site::find($app->site_id);
-            if ($site != null) {
-                Log::info("PWA app found for host: {$host}, using associated site {$site->id}");
-                return $site;
+        if ($isPwaAppHost) {
+            info('looking up app for host: ' . $host);
+            $app = \App\Models\Apps::where('pwa_app_url', 'like', $fullUrl . '%')
+                ->orWhere('pwa_app_url', $fullUrl)
+                ->first();
+            
+            if ($app != null && $app->site_id != null) {
+                // Extract the host from the pwa_app_url to verify it matches the current request host
+                $appUrlHost = parse_url($app->pwa_app_url, PHP_URL_HOST);
+                if ($appUrlHost === $requestHost) {
+                    $site = Site::find($app->site_id);
+                    if ($site != null) {
+                        Log::info("PWA app found for host: {$host}, using associated site {$site->id}");
+                        return $site;
+                    }
+                }
             }
         }
         

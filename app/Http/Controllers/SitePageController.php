@@ -62,24 +62,35 @@ class SitePageController extends BaseController
          * 
          * Prerequisites:
          * - Site must have an associated app with pwa_app_url and pwa_server_url set
+         * - The current request host must match the PWA app URL host
          * - The Node.js server must be running at the pwa_server_url location
          * 
          * Flow:
          * 1. Get the app associated with this site
          * 2. Check if the app has pwa_app_url and pwa_server_url configured
-         * 3. If yes, proxy the request to the Node.js server
-         * 4. Return the proxied response; otherwise, continue to traditional page handling
+         * 3. Verify the current request host matches the PWA app URL host
+         * 4. If yes, proxy the request to the Node.js server
+         * 5. Return the proxied response; otherwise, continue to traditional page handling
          */
         if ($this->site != null) {
             $app = $this->site->app;
             if ($app && !empty($app->pwa_app_url) && !empty($app->pwa_server_url)) {
-                try {
-                    $proxyResponse = $this->proxyRequestToServer($app->pwa_server_url, $request->path(), $request);
-                    Log::info("Proxying PWA request to {$app->pwa_server_url} for app {$app->id} on site {$this->site->id}");
-                    return $proxyResponse;
-                } catch (\Exception $e) {
-                    Log::error("Failed to proxy PWA request for app {$app->id}: {$e->getMessage()}");
-                    // Fall through to traditional handling
+                // Only proxy if the current request host matches the PWA app URL host
+                $appUrlHost = parse_url($app->pwa_app_url, PHP_URL_HOST);
+                $currentHost = $request->getHost();
+                
+                // Only check for PWA proxy if host contains '_app' subdomain or is localhost:3000
+                $isPwaAppHost = strpos($currentHost, '_app') !== false || $currentHost === 'localhost:3000';
+                
+                if ($isPwaAppHost && $appUrlHost === $currentHost) {
+                    try {
+                        $proxyResponse = $this->proxyRequestToServer($app->pwa_server_url, $request->path(), $request);
+                        Log::info("Proxying PWA request to {$app->pwa_server_url} for app {$app->id} on site {$this->site->id}");
+                        return $proxyResponse;
+                    } catch (\Exception $e) {
+                        Log::error("Failed to proxy PWA request for app {$app->id}: {$e->getMessage()}");
+                        // Fall through to traditional handling
+                    }
                 }
             }
         }
@@ -384,23 +395,34 @@ class SitePageController extends BaseController
          * 
          * Prerequisites:
          * - Site must have an associated app with pwa_app_url and pwa_server_url set
+         * - The current request host must match the PWA app URL host
          * - The Node.js server must be running at the pwa_server_url location
          * 
          * Flow:
-         * 1. Proxy the request to the Node.js server at pwa_server_url
-         * 2. Return the proxied response
-         * 3. If proxy fails, fall through to Prasso's page system
+         * 1. Verify the current request host matches the PWA app URL host
+         * 2. Proxy the request to the Node.js server at pwa_server_url
+         * 3. Return the proxied response
+         * 4. If proxy fails, fall through to Prasso's page system
          */
         if ($this->site != null) {
             $app = $this->site->app;
             if ($app && !empty($app->pwa_app_url) && !empty($app->pwa_server_url)) {
-                try {
-                    $proxyResponse = $this->proxyRequestToServer($app->pwa_server_url, '/' . $section, $request);
-                    Log::info("Proxying PWA page request for {$section} to {$app->pwa_server_url} for app {$app->id} on site {$this->site->id}");
-                    return $proxyResponse;
-                } catch (\Exception $e) {
-                    Log::error("Failed to proxy PWA page request for {$section} on app {$app->id}: {$e->getMessage()}");
-                    // Fall through to Prasso's page system
+                // Only proxy if the current request host matches the PWA app URL host
+                $appUrlHost = parse_url($app->pwa_app_url, PHP_URL_HOST);
+                $currentHost = $request->getHost();
+                
+                // Only check for PWA proxy if host contains '_app' subdomain or is localhost:3000
+                $isPwaAppHost = strpos($currentHost, '_app') !== false || $currentHost === 'localhost:3000';
+                
+                if ($isPwaAppHost && $appUrlHost === $currentHost) {
+                    try {
+                        $proxyResponse = $this->proxyRequestToServer($app->pwa_server_url, '/' . $section, $request);
+                        Log::info("Proxying PWA page request for {$section} to {$app->pwa_server_url} for app {$app->id} on site {$this->site->id}");
+                        return $proxyResponse;
+                    } catch (\Exception $e) {
+                        Log::error("Failed to proxy PWA page request for {$section} on app {$app->id}: {$e->getMessage()}");
+                        // Fall through to Prasso's page system
+                    }
                 }
             }
         }
