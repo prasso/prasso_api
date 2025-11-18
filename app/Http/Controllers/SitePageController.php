@@ -48,8 +48,12 @@ class SitePageController extends BaseController
         $welcomepage = null;
         $request = Request::capture();
 
+        // Only check for PWA proxy if host contains '_app' subdomain or is localhost:3000
+        $currentHost = $request->getHost();
+        $isPwaAppHost = strpos($currentHost, '_app') !== false || $currentHost === 'localhost:3000';
+                
         $user = Auth::user() ?? null;
-        if ($user != null) {
+        if (!$isPwaAppHost && !$user == null) {
             return $this->getDashboardForCurrentSite($user);
         }
 
@@ -77,11 +81,7 @@ class SitePageController extends BaseController
             if ($app && !empty($app->pwa_app_url) && !empty($app->pwa_server_url)) {
                 // Only proxy if the current request host matches the PWA app URL host
                 $appUrlHost = parse_url($app->pwa_app_url, PHP_URL_HOST);
-                $currentHost = $request->getHost();
-                
-                // Only check for PWA proxy if host contains '_app' subdomain or is localhost:3000
-                $isPwaAppHost = strpos($currentHost, '_app') !== false || $currentHost === 'localhost:3000';
-                
+
                 if ($isPwaAppHost && $appUrlHost === $currentHost) {
                     try {
                         $proxyResponse = $this->proxyRequestToServer($app->pwa_server_url, $request->path(), $request);
@@ -179,7 +179,14 @@ class SitePageController extends BaseController
     private function getPage($page, $user)
     {
 
-        $user->setCurrentToOwnedTeam();
+        // Set the user's current team to the team that owns this site
+        if ($this->site !== null) {
+            $siteTeam = $this->site->teamFromSite();
+            if ($siteTeam !== null) {
+                $user->current_team_id = $siteTeam->id;
+                $user->save();
+            }
+        }
         $request = Request::capture();
 
         if (!$this->userService->isUserOnTeam($user)) {
