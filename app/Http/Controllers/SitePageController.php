@@ -47,52 +47,10 @@ class SitePageController extends BaseController
     {
         $welcomepage = null;
         $request = Request::capture();
-
-        // Only check for PWA proxy if host contains '_app' subdomain or is localhost:3000
-        $currentHost = $request->getHost();
-        $isPwaAppHost = strpos($currentHost, '_app') !== false || $currentHost === 'localhost:3000';
                 
         $user = Auth::user() ?? null;
-        if (!$isPwaAppHost && !$user == null) {
+        if (!$user == null) {
             return $this->getDashboardForCurrentSite($user);
-        }
-
-        /**
-         * PWA App Reverse Proxy Feature
-         * 
-         * For sites with a PWA app configured, proxy the request to the Node.js server
-         * instead of the traditional Prasso welcome page. This allows sites to host
-         * Progressive Web Apps without Apache vhost configuration.
-         * 
-         * Prerequisites:
-         * - Site must have an associated app with pwa_app_url and pwa_server_url set
-         * - The current request host must match the PWA app URL host
-         * - The Node.js server must be running at the pwa_server_url location
-         * 
-         * Flow:
-         * 1. Get the app associated with this site
-         * 2. Check if the app has pwa_app_url and pwa_server_url configured
-         * 3. Verify the current request host matches the PWA app URL host
-         * 4. If yes, proxy the request to the Node.js server
-         * 5. Return the proxied response; otherwise, continue to traditional page handling
-         */
-        if ($this->site != null) {
-            $app = $this->site->app;
-            if ($app && !empty($app->pwa_app_url) && !empty($app->pwa_server_url)) {
-                // Only proxy if the current request host matches the PWA app URL host
-                $appUrlHost = parse_url($app->pwa_app_url, PHP_URL_HOST);
-
-                if ($isPwaAppHost && $appUrlHost === $currentHost) {
-                    try {
-                        $proxyResponse = $this->proxyRequestToServer($app->pwa_server_url, $request->path(), $request);
-                        Log::info("Proxying PWA request to {$app->pwa_server_url} for app {$app->id} on site {$this->site->id}");
-                        return $proxyResponse;
-                    } catch (\Exception $e) {
-                        Log::error("Failed to proxy PWA request for app {$app->id}: {$e->getMessage()}");
-                        // Fall through to traditional handling
-                    }
-                }
-            }
         }
 
         /**
@@ -393,46 +351,6 @@ class SitePageController extends BaseController
             return null;
         }
 
-        /**
-         * PWA App Reverse Proxy Page Serving
-         * 
-         * For sites with a PWA app configured, proxy the request to the Node.js server
-         * instead of serving static files. This enables hosting of Progressive Web Apps
-         * with full server-side functionality.
-         * 
-         * Prerequisites:
-         * - Site must have an associated app with pwa_app_url and pwa_server_url set
-         * - The current request host must match the PWA app URL host
-         * - The Node.js server must be running at the pwa_server_url location
-         * 
-         * Flow:
-         * 1. Verify the current request host matches the PWA app URL host
-         * 2. Proxy the request to the Node.js server at pwa_server_url
-         * 3. Return the proxied response
-         * 4. If proxy fails, fall through to Prasso's page system
-         */
-        if ($this->site != null) {
-            $app = $this->site->app;
-            if ($app && !empty($app->pwa_app_url) && !empty($app->pwa_server_url)) {
-                // Only proxy if the current request host matches the PWA app URL host
-                $appUrlHost = parse_url($app->pwa_app_url, PHP_URL_HOST);
-                $currentHost = $request->getHost();
-                
-                // Only check for PWA proxy if host contains '_app' subdomain or is localhost:3000
-                $isPwaAppHost = strpos($currentHost, '_app') !== false || $currentHost === 'localhost:3000';
-                
-                if ($isPwaAppHost && $appUrlHost === $currentHost) {
-                    try {
-                        $proxyResponse = $this->proxyRequestToServer($app->pwa_server_url, '/' . $section, $request);
-                        Log::info("Proxying PWA page request for {$section} to {$app->pwa_server_url} for app {$app->id} on site {$this->site->id}");
-                        return $proxyResponse;
-                    } catch (\Exception $e) {
-                        Log::error("Failed to proxy PWA page request for {$section} on app {$app->id}: {$e->getMessage()}");
-                        // Fall through to Prasso's page system
-                    }
-                }
-            }
-        }
 
         /**
          * GitHub Repository Page Serving
@@ -939,70 +857,4 @@ class SitePageController extends BaseController
             ->with('success', 'Item deleted successfully.');
     }
 
-    /**
-     * Proxy a request to a remote Node.js server
-     * 
-     * This method forwards HTTP requests to a Node.js server running at pwa_server_url
-     * and returns the response to the client. This allows Prasso to act as a reverse proxy
-     * for PWA applications without requiring Apache vhost configuration.
-     * 
-     * @param string $serverUrl The base URL of the Node.js server (e.g., http://localhost:3001)
-     * @param string $path The request path (e.g., /about)
-     * @param Request $request The incoming HTTP request
-     * @return \Illuminate\Http\Response The proxied response
-     * @throws \Exception If the proxy request fails
-     */
-    private function proxyRequestToServer($serverUrl, $path, Request $request)
-    {
-        // Ensure serverUrl doesn't have trailing slash
-        $serverUrl = rtrim($serverUrl, '/');
-        
-        // Build the full URL to proxy to
-        $proxyUrl = $serverUrl . $path;
-        
-        // Add query string if present
-        if ($request->getQueryString()) {
-            $proxyUrl .= '?' . $request->getQueryString();
-        }
-        
-        try {
-            // Determine the HTTP method
-            $method = strtolower($request->getMethod());
-            
-            // Build request headers to forward
-            $headers = [];
-            foreach ($request->headers->all() as $key => $value) {
-                // Skip headers that shouldn't be forwarded
-                if (!in_array(strtolower($key), ['host', 'connection', 'content-length'])) {
-                    $headers[$key] = $value[0] ?? implode(',', $value);
-                }
-            }
-            
-            // Make the proxy request
-            $httpRequest = Http::withHeaders($headers)
-                ->timeout(30)
-                ->withoutRedirecting();
-            
-            // Add body for POST/PUT/PATCH requests
-            if (in_array($method, ['post', 'put', 'patch'])) {
-                $body = $request->getContent();
-                if ($body) {
-                    $httpRequest = $httpRequest->withBody($body, $request->header('Content-Type'));
-                }
-            }
-            
-            // Execute the proxy request (use send for broader Laravel version compatibility)
-            $response = $httpRequest->send(strtoupper($method), $proxyUrl);
-            
-            // Build response to return to client
-            return response(
-                $response->body(),
-                $response->status(),
-                $response->headers()
-            );
-        } catch (\Exception $e) {
-            Log::error("Proxy request failed for URL {$proxyUrl}: {$e->getMessage()}");
-            throw $e;
-        }
-    }
 }
