@@ -76,9 +76,28 @@ With Prasso, you can create both your app API backend and your website with one 
 2. Create a template and add its name as a record to the site_templates table.
 3. Edit the site page record and specify the newly created data template as the template.
 
-## 4. Technical Details
+## 4. Messaging System
 
-### 4.1 Database Structure
+### 4.1 Sending Messages
+The Prasso messaging system allows you to send emails and SMS to users and guests. Messages can be sent immediately or scheduled for a future time.
+
+**Important:** For messages to be delivered, the queue worker must be running:
+```bash
+php artisan queue:work
+```
+
+### 4.2 Scheduled Messages
+When you schedule a message to be sent at a future time:
+1. The message is created and stored in the database
+2. A delivery job is queued
+3. The queue worker picks up the job at the scheduled time
+4. The message is delivered through the configured channel (email or SMS)
+
+**Note:** Without a running queue worker, scheduled messages will remain in "queued" status indefinitely.
+
+## 5. Technical Details
+
+### 5.1 Database Structure
 Prasso uses several database tables to manage its structure. Key tables include:
 - prasso.users
 - prasso.teams
@@ -88,7 +107,7 @@ Prasso uses several database tables to manage its structure. Key tables include:
 - prasso.apps
 - prasso.tabs
 
-### 4.2 API Backend
+### 5.2 API Backend
 The API backend is based on the Laravel framework. It is used to feed application structure information to a Prasso app and site.
 
 ## 5. License
