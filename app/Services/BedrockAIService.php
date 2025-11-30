@@ -418,19 +418,38 @@ class BedrockAIService
                 ]);
             }
             
-            // Use AWS SDK for real requests with Stability AI SDXL model
-            // Format according to Stability AI SDXL documentation
-            // https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-stability-diffusion.html
-            $requestBody = [
-                'text_prompts' => [
-                    [
-                        'text' => $prompt
+            // Determine which model format to use
+            $isNovaCanvas = strpos($this->imageModelId, 'amazon.nova-canvas') !== false;
+            
+            if ($isNovaCanvas) {
+                // Amazon Nova Canvas format
+                // https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-nova-canvas.html
+                $requestBody = [
+                    'messages' => [
+                        [
+                            'role' => 'user',
+                            'content' => [
+                                [
+                                    'text' => $prompt
+                                ]
+                            ]
+                        ]
                     ]
-                ],
-                'cfg_scale' => 7.0,
-                'width' => 512,
-                'height' => 512
-            ];
+                ];
+            } else {
+                // Stability AI SDXL format (default)
+                // https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-stability-diffusion.html
+                $requestBody = [
+                    'text_prompts' => [
+                        [
+                            'text' => $prompt
+                        ]
+                    ],
+                    'cfg_scale' => 7.0,
+                    'width' => 512,
+                    'height' => 512
+                ];
+            }
             
             // Convert to JSON
             $payload = json_encode($requestBody);
@@ -438,7 +457,8 @@ class BedrockAIService
             
             try {
                 // Log the full request details before making the call
-                Log::info('Making Stability AI API call with the following parameters:');
+                $modelType = $isNovaCanvas ? 'Amazon Nova Canvas' : 'Stability AI';
+                Log::info('Making ' . $modelType . ' API call with the following parameters:');
                 Log::info('Model ID: ' . $this->imageModelId);
                 Log::info('Region: ' . $this->region);
                 Log::info('Endpoint: ' . 'https://bedrock-runtime.' . $this->region . '.amazonaws.com/model/' . $this->imageModelId . '/invoke');
@@ -460,13 +480,23 @@ class BedrockAIService
                 
                 // Log the structure of the response
                 Log::info('Response structure: ' . json_encode(array_keys($result)));
+                Log::info('Full response: ' . json_encode($result));
                 
-                // Extract base64 image from response - structure is different for Stability AI
-                if (isset($result['artifacts']) && is_array($result['artifacts']) && !empty($result['artifacts'])) {
-                    return $result['artifacts'][0]['base64'];
+                // Extract base64 image from response - structure differs by model
+                if ($isNovaCanvas) {
+                    // Amazon Nova Canvas response format
+                    // The image is in result['output']['message']['content'][0]['image']['source']['bytes']
+                    if (isset($result['output']['message']['content'][0]['image']['source']['bytes'])) {
+                        return $result['output']['message']['content'][0]['image']['source']['bytes'];
+                    }
+                    throw new \Exception('No image was found in the Amazon Nova Canvas response');
+                } else {
+                    // Stability AI response format
+                    if (isset($result['artifacts']) && is_array($result['artifacts']) && !empty($result['artifacts'])) {
+                        return $result['artifacts'][0]['base64'];
+                    }
+                    throw new \Exception('No image was found in the Stability AI response');
                 }
-                
-                throw new \Exception('No image was found in the Stability AI response');
             } catch (\Aws\Exception\AwsException $e) {
                 // Get the full error details from AWS
                 Log::error('AWS Error Details: ' . $e->getMessage());

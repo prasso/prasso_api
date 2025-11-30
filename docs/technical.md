@@ -92,6 +92,21 @@
      php artisan serve --host=0.0.0.0 --port=8000 
      ```
   - open your browser and navigate to localhost:8000
+
+9. **Configure Queue Processing (for messaging features)**
+  - Set queue connection in `.env`:
+    ```env
+    QUEUE_CONNECTION=database
+    ```
+  - Run migrations to create the jobs table:
+    ```bash
+    php artisan migrate
+    ```
+  - Start the queue worker in a separate terminal:
+    ```bash
+    php artisan queue:work
+    ```
+  - **Important:** The queue worker must be running for scheduled messages to be sent. See [Messaging System Architecture](./messaging-system-architecture.md) for details.
   
 - ## Deployment
   - Hosting options - Current use is from AWS and a hosted EC2 instance. 

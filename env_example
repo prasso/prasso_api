@@ -90,3 +90,15 @@ CONTACT_DEVICE_TOKEN="contactdevicetoken"
 GITHUB_TOKEN=your_personal_access_token
 GITHUB_USERNAME=your_github_username
 
+# Prasso API example environment variables
+
+# Deployment users for prasso_web deployments
+DEPLOY_SUDO_USER=ubuntu
+DEPLOY_APP_USER=appuser
+DEPLOY_WEB_USER=www-data
+
+# SSH key used from your workstation when running deploy.py
+DEPLOY_SSH_KEY_PATH=~/.ssh/prasso-deploy.pem
+
+# Optional: Public hostname or IP of the Prasso server shown in deploy hints
+PRASSO_SERVER_HOST=your-ec2-public-ip

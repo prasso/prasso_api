@@ -138,6 +138,14 @@ class Site extends Model
             return null;
         }
     try{
+        // Check if this is a load balancer health check request
+        // AWS ELB health checks typically use the ELB DNS name or IP address
+        if (static::isLoadBalancerHealthCheck($host)) {
+            // Silently return null for load balancer health checks
+            // This prevents unnecessary log entries from AWS health checks
+            return null;
+        }
+        
         // Use exact matching for better performance
         $currentsite = null;
         
@@ -179,6 +187,30 @@ class Site extends Model
         return null;
     }
     return null;
+    }
+
+    /**
+     * Detect if the request is from an AWS load balancer health check.
+     * AWS ELB health checks use the ELB DNS name or IP address, which won't match
+     * any configured site hosts. This method identifies such requests to prevent
+     * unnecessary error logging.
+     *
+     * @param string $host The host header from the request
+     * @return bool True if this appears to be a load balancer health check
+     */
+    private static function isLoadBalancerHealthCheck($host)
+    {
+        // Check if host matches AWS ELB DNS pattern (e.g., faxt-prod-lb-1670714123.us-east-1.elb.amazonaws.com)
+        if (preg_match('/\.elb\.amazonaws\.com$/', $host)) {
+            return true;
+        }
+        
+        // Check if host is an IP address (load balancers often use IP addresses for health checks)
+        if (filter_var($host, FILTER_VALIDATE_IP)) {
+            return true;
+        }
+        
+        return false;
     }
 
     public function assignToUserTeam($current_user_id){

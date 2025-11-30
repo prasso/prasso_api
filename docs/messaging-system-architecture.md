@@ -95,15 +95,44 @@ foreach ($recipients as $recipient) {
 
 ### Job Processing Architecture
 
-The system uses Laravel's queue system to process message deliveries asynchronously:
+The system uses Laravel's queue system to process message deliveries asynchronously. **Messages will not be sent until a queue worker is running.**
+
+#### Running the Queue Worker
+
+To process scheduled and queued messages, you must run the queue worker:
 
 ```bash
-# Start queue workers
+# Start queue worker (runs continuously)
 php artisan queue:work
 
-# Or for specific queue
-php artisan queue:work --queue=default
+# Or for specific queue with custom settings
+php artisan queue:work --queue=default --tries=3 --timeout=90
+
+# Process jobs once and exit
+php artisan queue:work --stop-when-empty
 ```
+
+**Important:** The queue worker must be running continuously in production for messages to be delivered. It will:
+- Pick up jobs from the queue
+- Respect scheduled `send_at` times (releasing jobs back to queue if not yet due)
+- Retry failed deliveries with exponential backoff
+- Handle channel-specific delivery logic
+
+#### Queue Connection Configuration
+
+The queue connection is configured in `config/queue.php` and controlled by the `QUEUE_CONNECTION` environment variable:
+
+```env
+# For development (processes jobs immediately)
+QUEUE_CONNECTION=sync
+
+# For production (requires running queue:work)
+QUEUE_CONNECTION=database
+```
+
+**Recommended Setup:**
+- **Development**: Use `sync` for immediate testing
+- **Production**: Use `database` and run `php artisan queue:work` as a background service
 
 ### ProcessMsgDelivery Job
 
@@ -215,17 +244,46 @@ TWILIO_PHONE_NUMBER=your_number
 ### Common Issues & Solutions
 
 #### Issue: Messages stuck in "queued" status
-**Root Cause:** Job dispatch missing or incorrect queue configuration
+**Root Cause:** Queue worker not running or incorrect queue configuration
 **Solutions:**
-- Ensure `ProcessMsgDelivery::dispatch($delivery->id)` is called after creating delivery records (fixed in app/Filament/Pages/ComposeAndSendMessage.php)
-- Set `QUEUE_CONNECTION=database` in `.env` file instead of `sync` for asynchronous processing
-- Run queue worker: `php artisan queue:work --tries=3 --timeout=90`
-- Check jobs table exists and migrations are run
+1. **Start the queue worker** (most common issue):
+   ```bash
+   php artisan queue:work
+   ```
+   The queue worker must be running continuously to process messages. Without it, messages remain queued indefinitely.
+
+2. Ensure `ProcessMsgDelivery::dispatch($delivery->id)` is called after creating delivery records (fixed in app/Filament/Pages/ComposeAndSendMessage.php)
+
+3. Set `QUEUE_CONNECTION=database` in `.env` file for asynchronous processing:
+   ```env
+   QUEUE_CONNECTION=database
+   ```
+
+4. Verify jobs table exists and migrations are run:
+   ```bash
+   php artisan migrate
+   ```
 
 #### Issue: Messages not sending
-**Solution:** Ensure queue workers are running
+**Root Cause:** Queue worker is not running
+**Solution:** Start and keep the queue worker running:
 ```bash
+# Start queue worker
+php artisan queue:work
+
+# Or with custom settings
 php artisan queue:work --tries=3 --timeout=90
+
+# For production, use a process manager like Supervisor to keep it running
+```
+
+**Verification:** Check if queue worker is running:
+```bash
+# View queued jobs
+php artisan queue:status
+
+# Or query the database
+SELECT COUNT(*) FROM jobs WHERE queue = 'default';
 ```
 
 #### Issue: SMS failures

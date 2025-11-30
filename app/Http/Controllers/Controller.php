@@ -34,11 +34,10 @@ class Controller extends FrameworkController
             return;
         }
 
-        // Skip setting masterpage for hosted sites (GitHub repository or PWA apps)
+        // Skip setting masterpage for hosted sites (GitHub repository)
         $isGitHubHosted = $site != null && !empty($site->deployment_path) && !empty($site->github_repository);
-        $isPwaHosted = $site != null && $site->app && !empty($site->app->pwa_app_url);
         
-        if (!($isGitHubHosted || $isPwaHosted)) {
+        if (!$isGitHubHosted) {
             $this->masterpage = $this->getMasterForSite($site);
             View::share('masterPage', $this->masterpage);
         }
@@ -95,42 +94,29 @@ class Controller extends FrameworkController
      * find the client from the host.
      * 
      * Flow:
-     * 1. First check if the URL matches a defined site host
-     * 2. If not, check if the URL matches any PWA app URL
-     * 3. If neither, abort 404
+     * 1. Check if the URL matches a defined site host
+     * 2. If not, return the main hosting site (faxt.com) as fallback
      *
      */
     public static function getClientFromHost()
     {
         $host = request()->getHttpHost();
         
-        // Step 1: Check if the URL matches a defined site
+        // Check if the URL matches a defined site
         $site = Site::getClient($host);
         if ($site != null && isset($site)) {
            // Log::info("Site found for host: {$host}");
             return $site;
         }
         
-        // Step 2: If no site found, check if the URL matches any PWA app URL
-        // Extract the full URL from the request
-        $scheme = request()->getScheme();
-        $fullUrl = $scheme . '://' . $host;
-        
-        // Search for an app with a matching pwa_app_url
-        $app = \App\Models\Apps::where('pwa_app_url', 'like', $fullUrl . '%')
-            ->orWhere('pwa_app_url', $fullUrl)
-            ->first();
-        
-        if ($app != null && $app->site_id != null) {
-            $site = Site::find($app->site_id);
-            if ($site != null) {
-                Log::info("PWA app found for host: {$host}, using associated site {$site->id}");
-                return $site;
-            }
+        // Fallback to the main hosting site (faxt.com home page)
+        $fallback = Site::hostingSite();
+        if ($fallback) {
+            Log::info("Falling back to hosting site for host: {$host}");
+            return $fallback;
         }
         
-        // Step 3: No site or PWA app found, abort 404
-        Log::info("No site or PWA app found for host: {$host}");
+        Log::info("No site found for host and no fallback available: {$host}");
         abort(404);
         return null;
     }
@@ -142,13 +128,6 @@ class Controller extends FrameworkController
       // Check if this is a GitHub hosted site
       if ($site != null && !empty($site->deployment_path) && !empty($site->github_repository)) {
           // For GitHub hosted sites, we don't need a masterpage as the site has its own layout
-          // Return null to indicate no masterpage is needed
-          return $masterpage;
-      }
-      
-      // Check if this is a PWA hosted site
-      if ($site != null && $site->app && !empty($site->app->pwa_app_url)) {
-          // For PWA hosted sites, we don't need a masterpage as the PWA has its own layout
           // Return null to indicate no masterpage is needed
           return $masterpage;
       }
