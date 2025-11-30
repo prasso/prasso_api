@@ -113,22 +113,19 @@ class SiteAdminOverview extends BaseWidget
                         $deliveries24h = 0;
                         $deliverySuccessRate = 0;
                         if ($team) {
-                            $userIds = $team->users->pluck('id');
-                            if ($userIds->count() > 0) {
-                                $deliveries24h = MsgDelivery::query()
-                                    ->where('recipient_type', 'user')
-                                    ->whereIn('recipient_id', $userIds)
-                                    ->where('sent_at', '>=', now()->subDay())
-                                    ->count();
+                            // Query by team_id to include all recipient types (user, guest, member, etc.)
+                            $deliveries24h = MsgDelivery::query()
+                                ->where('team_id', $team->id)
+                                ->where('sent_at', '>=', now()->subDay())
+                                ->count();
 
-                                $totalDeliveries = MsgDelivery::whereIn('recipient_id', $userIds)->count();
-                                $successfulDeliveries = MsgDelivery::whereIn('recipient_id', $userIds)
-                                    ->where('status', 'delivered')
-                                    ->count();
-                                $deliverySuccessRate = $totalDeliveries > 0 
-                                    ? round(($successfulDeliveries / $totalDeliveries) * 100, 1)
-                                    : 0;
-                            }
+                            $totalDeliveries = MsgDelivery::where('team_id', $team->id)->count();
+                            $successfulDeliveries = MsgDelivery::where('team_id', $team->id)
+                                ->whereIn('status', ['sent', 'delivered'])
+                                ->count();
+                            $deliverySuccessRate = $totalDeliveries > 0 
+                                ? round(($successfulDeliveries / $totalDeliveries) * 100, 1)
+                                : 0;
                         }
 
                         // Build Stats with improved visual indicators

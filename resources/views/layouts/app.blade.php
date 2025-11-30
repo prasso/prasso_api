@@ -62,7 +62,7 @@
         </div>
         @endif
         <main>
-            {{ $slot }}
+            @yield('content')
         </main>
 
         <x-footer></x-footer>

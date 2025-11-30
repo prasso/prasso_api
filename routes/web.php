@@ -22,6 +22,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\TeamInvitationController;
 use App\Http\Controllers\BedrockHtmlEditorController;
+use App\Http\Controllers\ConversationController;
+use Prasso\Messaging\Http\Controllers\MessageConversationController;
 
 Route::get('logout', function () {
     return redirect('/login');
@@ -169,3 +171,13 @@ Route::get('/sites/{site}/site-map', [SiteMapController::class, 'edit'])
     ->name('sites.site-map.edit');
 Route::put('/sites/{site}/site-map', [SiteMapController::class, 'update'])
     ->name('sites.site-map.update');
+
+// Conversation views (authenticated)
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/conversations/{deliveryId}', [ConversationController::class, 'show'])
+        ->name('conversations.show');
+    Route::get('/messages/{messageId}/conversation', [MessageConversationController::class, 'show'])
+        ->name('message-conversations.show');
+    Route::get('/messages/{messageId}/conversation/export', [MessageConversationController::class, 'export'])
+        ->name('message-conversations.export');
+});
