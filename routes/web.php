@@ -24,10 +24,15 @@ use App\Http\Controllers\TeamInvitationController;
 use App\Http\Controllers\BedrockHtmlEditorController;
 use App\Http\Controllers\ConversationController;
 use Prasso\Messaging\Http\Controllers\MessageConversationController;
+use App\Http\Controllers\PwaController;
 
 Route::get('logout', function () {
     return redirect('/login');
 });
+
+// PWA Routes - Dynamic manifest and service worker per site
+Route::get('/manifest.json', [PwaController::class, 'manifest'])->name('pwa.manifest');
+Route::get('/service-worker.js', [PwaController::class, 'serviceWorker'])->name('pwa.service-worker');
 Route::get('/', 'SitePageController@index');
 
 Route::get('terms', function () {

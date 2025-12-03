@@ -21,6 +21,14 @@
    <link rel="icon" sizes="192x192" href="{{ config('app.photo_url').$site->image_folder}}android-chrome-192x192.png">
    <link rel="icon" sizes="512x512" href="{{ config('app.photo_url').$site->image_folder}}android-chrome-512x512.png">
    <link rel="apple-touch-icon" href="{{ config('app.photo_url').$site->image_folder}}apple-touch-icon.png">
+   
+   <!-- PWA Manifest - Dynamic per site -->
+   <link rel="manifest" href="/manifest.json">
+   <meta name="theme-color" content="{{ $site->main_color ?? '#000000' }}">
+   <meta name="apple-mobile-web-app-capable" content="yes">
+   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+   <meta name="apple-mobile-web-app-title" content="{{ $site->site_name ?? config('app.name') }}">
+   
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="/js/faith-app.min.js"></script>
 <script src="https://images.faxt.com/fbc/cdn.files/production/websites/designs/dusk/base-ae8948f5e23c447398a0e96992fcb396c6936d1bd5213c83a88a0134815f6158.js" debug="false" data-turbolinks-track="true" class="clover"></script>
@@ -345,6 +353,10 @@
       ga('send', 'pageview');
       
    </script>
+   
+   <!-- PWA Hidden Login Access & Service Worker Registration -->
+   <script src="{{ asset('/js/pwa-login.js') }}" defer></script>
+   
    @livewireScripts
 </body>
 </html>
