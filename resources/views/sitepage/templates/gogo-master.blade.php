@@ -235,6 +235,9 @@
         
         <!-- PWA Hidden Login Access & Service Worker Registration -->
         <script src="{{ asset('/js/pwa-login.js') }}" defer></script>
+        
+        <!-- PWA Install Prompt (Android & iOS) -->
+        <script src="{{ asset('/js/pwa-install-prompt.js') }}" defer></script>
               
    @livewireScripts
     </body>
