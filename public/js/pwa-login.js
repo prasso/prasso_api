@@ -68,6 +68,29 @@
     }
 
     /**
+     * Check if user is logged in by checking for auth token or session
+     */
+    function isUserLoggedIn() {
+        // Check for Sanctum token in localStorage
+        if (localStorage.getItem('sanctum_token')) {
+            return true;
+        }
+        
+        // Check for session cookie (Laravel session)
+        if (document.cookie.includes('XSRF-TOKEN') || document.cookie.includes('laravel_session')) {
+            return true;
+        }
+        
+        // Check for meta tag indicating logged-in state
+        const authMeta = document.querySelector('meta[name="auth-user"]');
+        if (authMeta && authMeta.getAttribute('content')) {
+            return true;
+        }
+        
+        return false;
+    }
+
+    /**
      * Handle keyboard events for login access
      * @param {KeyboardEvent} e - The keyboard event
      */
@@ -75,7 +98,14 @@
         // 'L' key or '?' key (Shift + /)
         if ((e.shiftKey && e.key === '?') || e.key.toLowerCase() === 'l') {
             e.preventDefault();
-            toggleLoginButton(true);
+            
+            // If user is logged in, navigate to site-admin menu
+            if (isUserLoggedIn()) {
+                window.location.href = '/site-admin';
+            } else {
+                // Otherwise show login button
+                toggleLoginButton(true);
+            }
         }
         // Escape key to hide
         if (e.key === 'Escape') {
