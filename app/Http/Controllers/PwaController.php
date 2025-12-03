@@ -19,8 +19,12 @@ class PwaController extends Controller
             return response()->json(['error' => 'Site not found'], 404);
         }
 
+        // Get the host to differentiate between localhost and production
+        $host = $request->getHttpHost();
+        $hostLabel = str_replace(['.', ':'], '-', $host); // Replace dots and colons with dashes
+
         $manifest = [
-            'name' => $site->site_name,
+            'name' => $site->site_name . ' (' . $host . ')',
             'short_name' => substr($site->site_name, 0, 12),
             'description' => $site->description ?? '',
             'start_url' => '/',
@@ -99,7 +103,9 @@ class PwaController extends Controller
         }
 
         $siteName = str_replace(' ', '_', $site->site_name);
-        $cacheName = "pwa-cache-{$site->id}-{$siteName}-v1";
+        $host = $request->getHttpHost();
+        $hostLabel = str_replace(['.', ':'], '-', $host); // Replace dots and colons with dashes
+        $cacheName = "pwa-cache-{$site->id}-{$siteName}-{$hostLabel}-v1";
 
         $serviceWorkerCode = <<<'JS'
 const CACHE_NAME = 'CACHE_PLACEHOLDER';
