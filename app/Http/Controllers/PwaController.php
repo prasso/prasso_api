@@ -173,6 +173,13 @@ self.addEventListener('fetch', (event) => {
             return response;
           }
           
+          // Check Cache-Control header to respect server caching directives
+          const cacheControl = response.headers.get('cache-control') || '';
+          if (cacheControl.includes('no-cache') || cacheControl.includes('no-store') || cacheControl.includes('must-revalidate')) {
+            // Don't cache authenticated pages or pages with explicit no-cache directives
+            return response;
+          }
+          
           // Clone the response for caching
           const responseToCache = response.clone();
           caches.open(CACHE_NAME).then(cache => {
@@ -203,6 +210,13 @@ self.addEventListener('fetch', (event) => {
         .then(response => {
           // Don't cache non-successful responses
           if (!response || response.status !== 200 || response.type === 'error') {
+            return response;
+          }
+
+          // Check Cache-Control header to respect server caching directives
+          const cacheControl = response.headers.get('cache-control') || '';
+          if (cacheControl.includes('no-cache') || cacheControl.includes('no-store') || cacheControl.includes('must-revalidate')) {
+            // Don't cache responses with explicit no-cache directives
             return response;
           }
 
