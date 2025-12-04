@@ -27,7 +27,7 @@ class SiteEditor extends Component
 
     public $sites, $site_id, $site_name, $description, $host, $main_color, $logo_image, 
             $database, $favicon, $supports_registration, $subteams_enabled, $app_specific_js, $app_specific_css,
-            $does_livestreaming, $https_host, $image_folder, $invitation_only, $github_repository, $app_id;
+            $does_livestreaming, $https_host, $image_folder, $invitation_only, $github_repository, $app_id, $pwa_enabled;
             
     // Logo update properties
     public $showLogoUpdateModal = false;
@@ -213,6 +213,7 @@ class SiteEditor extends Component
         $this->subteams_enabled = $site->subteams_enabled;
         $this->does_livestreaming = $site->livestream_settings()->exists();
         $this->invitation_only = $site->invitation_only;
+        $this->pwa_enabled = $site->pwa_enabled;
         
         $this->app_specific_js = $site->app_specific_js;
         $this->app_specific_css = $site->app_specific_css;
@@ -310,6 +311,7 @@ class SiteEditor extends Component
             'app_specific_css' => $this->app_specific_css,
             'image_folder' => $this->image_folder,
             'github_repository' => $this->github_repository,
+            'pwa_enabled' => $this->pwa_enabled,
         ]);
         
         $this->site_id = $site->id;
@@ -393,6 +395,7 @@ class SiteEditor extends Component
         $this->subteams_enabled = $site->subteams_enabled;
         $this->does_livestreaming = $site->livestream_settings()->exists();
         $this->invitation_only = $site->invitation_only;
+        $this->pwa_enabled = $site->pwa_enabled;
         
         $this->app_specific_js = $site->app_specific_js;
         $this->app_specific_css = $site->app_specific_css;

@@ -22,13 +22,15 @@
    <link rel="icon" sizes="512x512" href="{{ config('app.photo_url').$site->image_folder}}android-chrome-512x512.png">
    <link rel="apple-touch-icon" href="{{ config('app.photo_url').$site->image_folder}}apple-touch-icon.png">
    
-   <!-- PWA Manifest - Dynamic per site -->
+   <!-- PWA Manifest - Dynamic per site (only if enabled) -->
+   @if($site->pwa_enabled)
    <link rel="manifest" href="/manifest.json">
    <meta name="theme-color" content="{{ $site->main_color ?? '#000000' }}">
    <meta name="mobile-web-app-capable" content="yes">
    <meta name="apple-mobile-web-app-capable" content="yes">
    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
    <meta name="apple-mobile-web-app-title" content="{{ $site->site_name ?? config('app.name') }}">
+   @endif
    
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="/js/faith-app.min.js"></script>

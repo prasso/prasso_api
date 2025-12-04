@@ -908,13 +908,15 @@
         </div>
     </div><!--/$--><!--/$-->
     
-    <!-- PWA Manifest - Dynamic per site -->
+    <!-- PWA Manifest - Dynamic per site (only if enabled) -->
+    @if($site->pwa_enabled)
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="{{ $site->main_color ?? '#000000' }}">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="{{ $site->site_name ?? config('app.name') }}">
+    @endif
     
     <!-- PWA Hidden Login Access & Service Worker Registration -->
     <script src="{{ asset('/js/pwa-login.js') }}" defer></script>

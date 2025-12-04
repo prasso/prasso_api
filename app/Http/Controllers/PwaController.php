@@ -19,6 +19,11 @@ class PwaController extends Controller
             return response()->json(['error' => 'Site not found'], 404);
         }
 
+        // Check if PWA is enabled for this site
+        if (!$site->pwa_enabled) {
+            return response()->json(['error' => 'PWA not enabled for this site'], 404);
+        }
+
         // Get the host to differentiate between localhost and production
         $host = $request->getHttpHost();
         $hostLabel = str_replace(['.', ':'], '-', $host); // Replace dots and colons with dashes
@@ -100,6 +105,11 @@ class PwaController extends Controller
 
         if (!$site) {
             return response('Service Worker not available', 404);
+        }
+
+        // Check if PWA is enabled for this site
+        if (!$site->pwa_enabled) {
+            return response('PWA not enabled for this site', 404);
         }
 
         $siteName = str_replace(' ', '_', $site->site_name);
