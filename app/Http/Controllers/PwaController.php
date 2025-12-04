@@ -145,15 +145,44 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - handle all requests
 self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests
-  if (event.request.method !== 'GET') {
-    return;
+  // Skip non-GET requests for non-API endpoints
+  if (event.request.method !== 'GET' && !event.request.url.includes('/api/')) {
+    return fetch(event.request);
   }
 
+  // Handle navigation and HTML requests - Network First strategy
+  if (event.request.mode === 'navigate' || 
+      (event.request.headers.get('accept') && event.request.headers.get('accept').includes('text/html'))) {
+    return event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          // Don't cache non-successful responses
+          if (!response || response.status !== 200 || response.type === 'error') {
+            return response;
+          }
+          
+          // Clone the response for caching
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            // Update the cache with the fresh response
+            cache.put(event.request, responseToCache);
+          });
+          return response;
+        })
+        .catch(() => {
+          // If network fails, try cache
+          return caches.match(event.request).then(response => {
+            return response || caches.match('/');
+          });
+        })
+    );
+  }
+
+  // For other GET requests, try cache first
   event.respondWith(
-    caches.match(event.request).then((response) => {
+    caches.match(event.request).then(response => {
       // Return cached response if available
       if (response) {
         return response;
@@ -161,27 +190,26 @@ self.addEventListener('fetch', (event) => {
 
       // Otherwise, fetch from network
       return fetch(event.request)
-        .then((response) => {
+        .then(response => {
           // Don't cache non-successful responses
           if (!response || response.status !== 200 || response.type === 'error') {
             return response;
           }
 
-          // Clone the response
+          // Clone the response for caching
           const responseToCache = response.clone();
-
-          // Cache successful responses for GET requests
-          if (event.request.method === 'GET') {
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-          }
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseToCache);
+          });
 
           return response;
         })
         .catch(() => {
           // Return a fallback response if offline
-          return caches.match('/');
+          return new Response('You are offline', {
+            status: 408,
+            statusText: 'Network request failed'
+          });
         });
     })
   );
