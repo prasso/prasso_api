@@ -357,8 +357,10 @@
       
    </script>
    
-   <!-- PWA Hidden Login Access & Service Worker Registration -->
+   <!-- PWA Hidden Login Access (only for guests) -->
+   @guest
    <script src="{{ asset('/js/pwa-login.js') }}" defer></script>
+   @endguest
    
    <!-- PWA Install Prompt (Android & iOS) -->
    <script src="{{ asset('/js/pwa-install-prompt.js') }}" defer></script>

@@ -5,7 +5,7 @@
  * Usage: Include this script in your page and the login functionality will be automatically available
  * 
  * Access Methods:
- * - Keyboard: Press 'L' or '?' to show login button
+ * - Keyboard: Press 'Command+L' (Mac) or 'Control+L' (Windows/Linux) or '?' to show login button
  * - Keyboard: Press 'Escape' to hide login button
  * - Touch/Click: Triple-tap anywhere on the page to show login button
  */
@@ -95,8 +95,8 @@
      * @param {KeyboardEvent} e - The keyboard event
      */
     function handleKeydown(e) {
-        // 'L' key or '?' key (Shift + /)
-        if ((e.shiftKey && e.key === '?') || e.key.toLowerCase() === 'l') {
+        // 'Command+L' (Mac) or 'Control+L' (Windows/Linux) or '?' key (Shift + /)
+        if ((e.shiftKey && e.key === '?') || (e.metaKey && e.key.toLowerCase() === 'l') || (e.ctrlKey && e.key.toLowerCase() === 'l')) {
             e.preventDefault();
             
             // If user is logged in, navigate to site-admin menu
@@ -145,7 +145,7 @@
 
         loginBtn.innerHTML = `
             <div style="font-size: 12px; color: #666; margin-bottom: 8px; text-align: center;">
-                Press <kbd style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 11px;">L</kbd> or <kbd style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 11px;">?</kbd> to toggle
+                Press <kbd style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 11px;">Cmd+L</kbd> or <kbd style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 11px;">?</kbd> to toggle
             </div>
             <a href="/login" class="inline-block text-white font-bold py-2 px-4 rounded-lg shadow-lg w-full text-center" style="display: block; text-decoration: none; background-color: ${themeColor}; transition: background-color 0.2s ease;" onmouseover="this.style.backgroundColor='${darkerColor}'" onmouseout="this.style.backgroundColor='${themeColor}'">
                 Login

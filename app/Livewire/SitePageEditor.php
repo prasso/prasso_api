@@ -25,6 +25,7 @@ class SitePageEditor extends Component
     public $https_host;
 
     public $isOpen = 0;
+    public $isAiModalOpen = false;
     public $siteid;
 
     public $site;
@@ -105,6 +106,11 @@ class SitePageEditor extends Component
     {
         $this->resetInputFields();
         $this->openModal();
+    }
+
+    public function createWithAi()
+    {
+        $this->isAiModalOpen = true;
     }
   
     /**
