@@ -150,7 +150,7 @@ class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
                                 'email' => 'Email',
                                 
                             ])
-                            ->default('SMS')
+                            ->default('sms')
                             ->reactive()
                             ->required(),
                             
@@ -440,7 +440,7 @@ class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
             $message = MsgMessage::create([
                 'team_id' => $team->id,
                 'type' => $data['type'],
-                'subject' => $data['subject'],
+                'subject' => $data['subject'] ?? 'SMS Message',
                 'body' => $data['body'],
             ]);
             Log::info('Message created with ID: ' . $message->id);
