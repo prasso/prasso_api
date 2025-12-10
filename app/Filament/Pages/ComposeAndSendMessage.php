@@ -146,18 +146,18 @@ class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
                         Forms\Components\Select::make('type')
                             ->label('Message Type')
                             ->options([
-                                'email' => 'Email',
                                 'sms' => 'SMS',
-                                'push' => 'Push Notification',
-                                'inapp' => 'In-App',
+                                'email' => 'Email',
+                                
                             ])
-                            ->default('email')
+                            ->default('SMS')
                             ->reactive()
                             ->required(),
                             
                         Forms\Components\TextInput::make('subject')
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->visible(fn ($get) => $get('type') !== 'sms'),
 
                         Forms\Components\Textarea::make('body')
                             ->label('Message Body')
@@ -172,51 +172,56 @@ class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
                         Forms\Components\Radio::make('recipient_type')
                             ->label('Send To')
                             ->options([
-                                'all' => 'All Users',
-                                'users' => 'Specific Users',
-                                'guests' => 'Specific Guests',
+                                'all' => 'All People',
+                                'users_and_guests' => 'Specific People'
                             ])
                             ->default('all')
                             ->live(),
 
-                        Forms\Components\Select::make('user_ids')
-                            ->label('Select Users')
+                        Forms\Components\Select::make('person_ids')
+                            ->label('Select Specific Persons')
                             ->multiple()
                             ->searchable()
                             ->options(function () use ($team) {
-                                if (!$team) return [];
+                                $options = [];
                                 
-                                // Filter users based on message type
-                                if ($this->data['type'] ?? '' === 'sms') {
-                                    return $team->users()
-                                        ->whereNotNull('users.phone')
-                                        ->where('users.phone', '!=', '')
-                                        ->pluck('name', 'users.id');
+                                if ($team) {
+                                    // Filter users based on message type
+                                    if ($this->data['type'] ?? '' === 'sms') {
+                                        $users = $team->users()
+                                            ->whereNotNull('users.phone')
+                                            ->where('users.phone', '!=', '')
+                                            ->pluck('name', 'users.id');
+                                    } else {
+                                        $users = $team->users()->pluck('name', 'id');
+                                    }
+                                    
+                                    // Add users with 'user_' prefix
+                                    foreach ($users as $id => $name) {
+                                        $options['user_' . $id] = $name . ' (User)';
+                                    }
                                 }
                                 
-                                return $team->users()->pluck('name', 'id');
-                            })
-                            ->visible(fn ($get) => $get('recipient_type') === 'users')
-                            ->preload()
-                            ->reactive()
-                            ->loadingMessage('Loading team members...'),
-
-                        Forms\Components\Select::make('guest_ids')
-                            ->label('Select Guests')
-                            ->multiple()
-                            ->searchable()
-                            ->options(function () {
                                 // Filter guests based on message type
                                 if ($this->data['type'] ?? '' === 'sms') {
-                                    return MsgGuest::whereNotNull('phone')
+                                    $guests = MsgGuest::whereNotNull('phone')
                                         ->where('phone', '!=', '')
                                         ->pluck('name', 'id');
+                                } else {
+                                    $guests = MsgGuest::pluck('name', 'id');
                                 }
                                 
-                                return MsgGuest::pluck('name', 'id');
+                                // Add guests with 'guest_' prefix
+                                foreach ($guests as $id => $name) {
+                                    $options['guest_' . $id] = $name . ' (Guest)';
+                                }
+                                
+                                return $options;
                             })
-                            ->visible(fn ($get) => $get('recipient_type') === 'guests')
+                            ->visible(fn ($get) => $get('recipient_type') === 'users_and_guests')
+                            ->preload()
                             ->reactive()
+                            ->loadingMessage('Loading persons...')
                     ])
                     ->columns(1),
                 
@@ -450,25 +455,40 @@ class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
                     $recipientCount++;
                 }
             }
-            // Send to selected users (still scoped to team members)
-            elseif ($data['recipient_type'] === 'users' && !empty($data['user_ids'])) {
-                Log::info('Sending to selected users: ' . json_encode($data['user_ids']));
-                // Ensure selected users are actually in the team
-                $users = $team->users()->whereIn('users.id', $data['user_ids'])->get();
-                Log::info('Found ' . count($users) . ' matching users in team');
-                foreach ($users as $user) {
-                    $this->createMessageDelivery($message, $user, 'user');
-                    $recipientCount++;
+            // Send to selected users and guests
+            elseif ($data['recipient_type'] === 'users_and_guests' && !empty($data['person_ids'])) {
+                Log::info('Sending to selected persons: ' . json_encode($data['person_ids']));
+                
+                // Separate user and guest IDs
+                $userIds = [];
+                $guestIds = [];
+                
+                foreach ($data['person_ids'] as $personId) {
+                    if (strpos($personId, 'user_') === 0) {
+                        $userIds[] = substr($personId, 5); // Remove 'user_' prefix
+                    } elseif (strpos($personId, 'guest_') === 0) {
+                        $guestIds[] = substr($personId, 6); // Remove 'guest_' prefix
+                    }
                 }
-            }
-            // Send to selected guests
-            elseif ($data['recipient_type'] === 'guests' && !empty($data['guest_ids'])) {
-                Log::info('Sending to selected guests: ' . json_encode($data['guest_ids']));
-                $guests = MsgGuest::whereIn('id', $data['guest_ids'])->get();
-                Log::info('Found ' . count($guests) . ' matching guests');
-                foreach ($guests as $guest) {
-                    $this->createMessageDelivery($message, $guest, 'guest');
-                    $recipientCount++;
+                
+                // Send to selected users
+                if (!empty($userIds)) {
+                    $users = $team->users()->whereIn('users.id', $userIds)->get();
+                    Log::info('Found ' . count($users) . ' matching users in team');
+                    foreach ($users as $user) {
+                        $this->createMessageDelivery($message, $user, 'user');
+                        $recipientCount++;
+                    }
+                }
+                
+                // Send to selected guests
+                if (!empty($guestIds)) {
+                    $guests = MsgGuest::whereIn('id', $guestIds)->get();
+                    Log::info('Found ' . count($guests) . ' matching guests');
+                    foreach ($guests as $guest) {
+                        $this->createMessageDelivery($message, $guest, 'guest');
+                        $recipientCount++;
+                    }
                 }
             }
             else {
