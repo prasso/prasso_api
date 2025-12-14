@@ -10,12 +10,15 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Models\Site;
+use App\Models\Team;
 use App\Models\TeamUser;
+use App\Mail\SmsRegistrationNotification;
 use Prasso\Messaging\Models\MsgMessage;
 use Prasso\Messaging\Models\MsgGuest;
 use Prasso\Messaging\Models\MsgDelivery;
 use Prasso\Messaging\Models\MsgTeamSetting;
 use Prasso\Messaging\Jobs\ProcessMsgDelivery;
+use Illuminate\Support\Facades\Mail;
 
 class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
 {
@@ -35,8 +38,44 @@ class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
     
     // Team verification properties
     public bool $isTeamVerified = false;
+    public bool $isTeamPending = false;
+    public ?string $adminEmail = null;
     public ?array $teamRegistrationData = [];
     public ?int $currentTeamId = null;
+
+    public function pendingRegistrationForm(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Forms\Components\Section::make('Registration Under Review')
+                    ->description('Your team registration is currently being reviewed by our admin team.')
+                    ->schema([
+                        Forms\Components\Placeholder::make('pending_notice')
+                            ->content(new \Illuminate\Support\HtmlString(
+                                '<div class="rounded-lg bg-blue-50 border border-blue-200 p-4">' .
+                                '<h3 class="font-semibold text-blue-900 mb-2">Registration Status: Pending Review</h3>' .
+                                '<p class="text-blue-800 mb-3">Your team registration has been submitted and is currently under review. Our admin team will verify your information and notify you once the review is complete.</p>' .
+                                '<p class="text-sm text-blue-700"><strong>Admin Contact:</strong> ' . htmlspecialchars($this->adminEmail ?? 'N/A') . '</p>' .
+                                '</div>'
+                            )),
+                    ])
+                    ->columns(1),
+                    
+                Forms\Components\Actions::make([
+                    Forms\Components\Actions\Action::make('request_update')
+                        ->label('Send Update Request Email')
+                        ->action('sendUpdateRequestEmail')
+                        ->color('primary')
+                        ->icon('heroicon-o-envelope')
+                        ->requiresConfirmation()
+                        ->modalHeading('Request Update')
+                        ->modalDescription('Send an email to the admin requesting an update on your registration status.')
+                        ->modalSubmitActionLabel('Send Email'),
+                ])
+                ->alignRight()
+            ])
+            ->statePath('teamRegistrationData');
+    }
 
     public function teamRegistrationForm(Form $form): Form
     {
@@ -54,17 +93,20 @@ class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
                             
                         Forms\Components\TextInput::make('help_business_name')
                             ->label('Business Name')
-                            ->required(),
+                            ->required()
+                            ->live(),
                             
                         Forms\Components\TextInput::make('help_contact_email')
                             ->label('Contact Email')
                             ->email()
-                            ->required(),
+                            ->required()
+                            ->live(),
                             
                         Forms\Components\TextInput::make('help_contact_phone')
                             ->label('Contact Phone')
                             ->tel()
-                            ->required(),
+                            ->required()
+                            ->live(),
                             
                         Forms\Components\Select::make('help_purpose')
                             ->label('Business Type')
@@ -75,20 +117,24 @@ class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
                                 'business' => 'Business',
                                 'other' => 'Other',
                             ])
-                            ->required(),
+                            ->required()
+                            ->live(),
                             
                         Forms\Components\TextInput::make('help_contact_website')
                             ->label('Website')
-                            ->url(),
+                            ->url()
+                            ->live(),
                             
                         Forms\Components\Textarea::make('help_disclaimer')
                             ->label('Disclaimer/Additional Information')
-                            ->rows(3),
+                            ->rows(3)
+                            ->live(),
                             
                         Forms\Components\Checkbox::make('agree_to_terms')
                             ->label('I agree to the terms and conditions for messaging services')
                             ->helperText('By checking this box, you agree to comply with all applicable laws and regulations regarding messaging.')
-                            ->required(),
+                            ->required()
+                            ->live(),
                             
                     ])
                     ->columns(1),
@@ -312,11 +358,21 @@ class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
         $teamSetting = MsgTeamSetting::query()->where('team_id', $team->id)->first();
         $status = $teamSetting?->verification_status;
         $this->isTeamVerified = $teamSetting && strtolower((string)$status) === 'verified';
+        $this->isTeamPending = $teamSetting && strtolower((string)$status) === 'pending';
+        
+        // Get admin email from team settings
+        $this->adminEmail = $teamSetting?->help_contact_email ?? null;
         
         if ($this->isTeamVerified) {
             // Team is verified, show the compose form
             $this->form->fill();
             $this->checkIncompleteData();
+        } elseif ($this->isTeamPending) {
+            // Team registration is pending, show pending notice
+            $this->teamRegistrationData = [
+                'team_id' => $team->id,
+                'team_name' => $team->name,
+            ];
         } else {
             // Team is not verified, prepare registration data
             $this->teamRegistrationData = [
@@ -562,70 +618,207 @@ class ComposeAndSendMessage extends Page implements Forms\Contracts\HasForms
 
     public function form(Form $form): Form
     {
-        // Return either the registration form or the compose form based on team verification status
-        if (!$this->isTeamVerified) {
-            return $this->teamRegistrationForm($form);
-        } else {
+        // Return form based on team verification status
+        if ($this->isTeamVerified) {
             return $this->composeForm($form);
+        } elseif ($this->isTeamPending) {
+            return $this->pendingRegistrationForm($form);
+        } else {
+            return $this->teamRegistrationForm($form);
         }
     }
     
     public function submitTeamRegistration()
     {
-        $data = $this->teamRegistrationData;
-        
-        // Log the data for debugging
-        Log::info('Team registration data submitted', ['data' => $data]);
-        
-        // Check each required field individually to provide better feedback
-        $missingFields = [];
-        
-        if (empty($data['team_id'])) $missingFields[] = 'Team ID';
-        if (empty($data['help_business_name'])) $missingFields[] = 'Business Name';
-        if (empty($data['help_contact_email'])) $missingFields[] = 'Contact Email';
-        if (empty($data['help_contact_phone'])) $missingFields[] = 'Contact Phone';
-        if (empty($data['help_purpose'])) $missingFields[] = 'Business Type';
-        if (empty($data['agree_to_terms']) || $data['agree_to_terms'] !== true) $missingFields[] = 'Terms Agreement';
-        
-        if (!empty($missingFields)) {
+        try {
+            $data = $this->teamRegistrationData;
+            
+            // Log the data for debugging
+            Log::info('Team registration data submitted', ['data' => $data]);
+            
+            // Check each required field individually to provide better feedback
+            $missingFields = [];
+            
+            if (empty($data['team_id'])) $missingFields[] = 'Team ID';
+            if (empty($data['help_business_name'])) $missingFields[] = 'Business Name';
+            if (empty($data['help_contact_email'])) $missingFields[] = 'Contact Email';
+            if (empty($data['help_contact_phone'])) $missingFields[] = 'Contact Phone';
+            if (empty($data['help_purpose'])) $missingFields[] = 'Business Type';
+            if (empty($data['agree_to_terms']) || $data['agree_to_terms'] !== true) $missingFields[] = 'Terms Agreement';
+            
+            if (!empty($missingFields)) {
+                Notification::make()
+                    ->title('Validation Error')
+                    ->body('Please fill in the following required fields: ' . implode(', ', $missingFields))
+                    ->danger()
+                    ->send();
+                return;
+            }
+            
+            // Create or update team settings
+            $teamSetting = MsgTeamSetting::query()->where('team_id', $data['team_id'])->first();
+            
+            if (!$teamSetting) {
+                $teamSetting = new MsgTeamSetting();
+                $teamSetting->team_id = $data['team_id'];
+            }
+            
+            // Update team settings
+            $teamSetting->help_business_name = $data['help_business_name'];
+            $teamSetting->help_contact_email = $data['help_contact_email'];
+            $teamSetting->help_contact_phone = $data['help_contact_phone'];
+            $teamSetting->help_purpose = $data['help_purpose'];
+            $teamSetting->help_contact_website = $data['help_contact_website'] ?? null;
+            $teamSetting->help_disclaimer = $data['help_disclaimer'] ?? null;
+            $teamSetting->verification_status = 'pending';
+            $teamSetting->save();
+            
+            // Send notification to super admin
+            $this->notifyAdminOfRegistration($teamSetting, $data['team_id']);
+            
+            Log::info('Team registration submitted for verification', ['team_id' => $data['team_id']]);
+            
+            Notification::make()
+                ->title('Registration Submitted')
+                ->body('Your team registration has been submitted for verification. You will be notified once it is approved.')
+                ->success()
+                ->persistent()
+                ->send();
+        } catch (\Throwable $e) {
+            Log::error('Error in submitTeamRegistration: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
+            
             Notification::make()
                 ->title('Error')
-                ->body('Please fill in the following required fields: ' . implode(', ', $missingFields))
+                ->body('An error occurred while submitting your registration: ' . $e->getMessage())
                 ->danger()
                 ->send();
-            return;
         }
-        
-        // Create or update team settings
-        $teamSetting = MsgTeamSetting::query()->where('team_id', $data['team_id'])->first();
-        
-        if (!$teamSetting) {
-            $teamSetting = new MsgTeamSetting();
-            $teamSetting->team_id = $data['team_id'];
-        }
-        
-        // Update team settings
-        $teamSetting->help_business_name = $data['help_business_name'];
-        $teamSetting->help_contact_email = $data['help_contact_email'];
-        $teamSetting->help_contact_phone = $data['help_contact_phone'];
-        $teamSetting->help_purpose = $data['help_purpose'];
-        $teamSetting->help_contact_website = $data['help_contact_website'] ?? null;
-        $teamSetting->help_disclaimer = $data['help_disclaimer'] ?? null;
-        $teamSetting->verification_status = 'pending';
-        $teamSetting->save();
-        
-        // Send notification to admin (you would implement this based on your notification system)
-        // For now, we'll just log it
-        Log::info('Team registration submitted for verification', ['team_id' => $data['team_id']]);
-        
-        Notification::make()
-            ->title('Registration Submitted')
-            ->body('Your team registration has been submitted for verification. You will be notified once it is approved.')
-            ->success()
-            ->persistent()
-            ->send();
     }
     
+    protected function notifyAdminOfRegistration(MsgTeamSetting $teamSetting, int $teamId): void
+    {
+        try {
+            // Get the team to retrieve its name
+            $team = Team::find($teamId);
+            if (!$team) {
+                Log::warning("Team not found for SMS registration notification: {$teamId}");
+                return;
+            }
+
+            // Get all super admin users
+            $superAdmins = User::whereHas('roles', function ($query) {
+                $query->where('role_name', config('constants.SUPER_ADMIN_ROLE_TEXT'));
+            })->get();
+
+            if ($superAdmins->isEmpty()) {
+                Log::warning('No super admin users found to notify about SMS registration');
+                return;
+            }
+
+            // Send email to each super admin
+            foreach ($superAdmins as $admin) {
+                try {
+                    Mail::to($admin)->send(new SmsRegistrationNotification($teamSetting, $team->name));
+                    Log::info("SMS registration notification sent to admin: {$admin->email}");
+                } catch (\Throwable $e) {
+                    Log::error("Failed to send SMS registration notification to {$admin->email}: {$e->getMessage()}");
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::error("Error in notifyAdminOfRegistration: {$e->getMessage()}");
+            Log::error($e->getTraceAsString());
+        }
+    }
+
+    public function sendUpdateRequestEmail(): void
+    {
+        try {
+            $user = auth()->user();
+            if (!$user) {
+                Notification::make()
+                    ->title('Error')
+                    ->body('You must be logged in to send an update request.')
+                    ->danger()
+                    ->send();
+                return;
+            }
+
+            // Get the current team
+            $site = \App\Http\Controllers\Controller::getClientFromHost();
+            if (!$site || !$site->exists) {
+                if ($user->currentTeam) {
+                    $site = $user->currentTeam->site;
+                }
+            }
+
+            if (!$site || !$site->exists) {
+                Notification::make()
+                    ->title('Error')
+                    ->body('Could not determine the site for this request.')
+                    ->danger()
+                    ->send();
+                return;
+            }
+
+            $team = $site->teams()->first();
+            if (!$team) {
+                Notification::make()
+                    ->title('Error')
+                    ->body('Could not find the team associated with this site.')
+                    ->danger()
+                    ->send();
+                return;
+            }
+
+            // Get team settings to find admin email
+            $teamSetting = MsgTeamSetting::query()->where('team_id', $team->id)->first();
+            if (!$teamSetting || !$teamSetting->help_contact_email) {
+                Notification::make()
+                    ->title('Error')
+                    ->body('Admin contact email not found in team settings.')
+                    ->danger()
+                    ->send();
+                return;
+            }
+
+            // Send email to the admin
+            $adminEmail = $teamSetting->help_contact_email;
+            $subject = "Registration Status Update Request - {$team->name}";
+            $body = "Hello,\n\n" .
+                    "A user from {$team->name} has requested an update on their team registration status.\n\n" .
+                    "User: {$user->name}\n" .
+                    "Email: {$user->email}\n" .
+                    "Team: {$team->name}\n" .
+                    "Requested at: " . now()->format('Y-m-d H:i:s') . "\n\n" .
+                    "Please review their registration status and provide an update.\n\n" .
+                    "Best regards,\nPrasso System";
+
+            Mail::raw($body, function ($message) use ($adminEmail, $subject) {
+                $message->to($adminEmail)
+                    ->subject($subject);
+            });
+
+            Log::info("Update request email sent to admin: {$adminEmail} for team: {$team->id}");
+
+            Notification::make()
+                ->title('Update Request Sent')
+                ->body("Your update request has been sent to the admin at {$adminEmail}. They will review your registration status and contact you soon.")
+                ->success()
+                ->persistent()
+                ->send();
+        } catch (\Throwable $e) {
+            Log::error('Error in sendUpdateRequestEmail: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
+
+            Notification::make()
+                ->title('Error')
+                ->body('Failed to send update request email. Please try again later.')
+                ->danger()
+                ->send();
+        }
+    }
+
     public static function shouldRegisterNavigation(): bool
     {
         $panel = \Filament\Facades\Filament::getCurrentPanel();
