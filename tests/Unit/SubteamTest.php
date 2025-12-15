@@ -5,12 +5,10 @@ namespace Tests\Unit;
 use App\Models\User;
 use App\Models\Team;
 use App\Models\TeamUser;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class SubteamTest extends TestCase
-{
-   // use RefreshDatabase;
+{   
 
     /** @test */
     public function user_can_belong_to_subteam()
