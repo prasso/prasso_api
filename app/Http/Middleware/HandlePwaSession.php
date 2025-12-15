@@ -10,11 +10,6 @@ class HandlePwaSession
 {
     public function handle(Request $request, Closure $next)
     {
-        // Ensure session is started for PWA
-        if ($request->hasHeader('X-Requested-With') || $request->wantsJson()) {
-            config(['session.driver' => 'file']);
-        }
-
         $response = $next($request);
 
         // Add headers to prevent caching of authenticated pages

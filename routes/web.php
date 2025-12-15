@@ -125,6 +125,7 @@ Route::middleware([
     Route::post('/images/upload', 'ImageController@upload')->name('images.upload');
     Route::post('/images/confirm-resize', 'ImageController@confirmResize')->name('images.confirm-resize');
     Route::post('/images/generate-ai', 'ImageController@generateImageWithAI')->name('images.generate-ai');
+    Route::delete('/images/{image}', 'ImageController@destroy')->name('images.destroy');
     Route::get('/image-library', 'ImageController@index')->name('image.library');
     Route::delete('/site-page-data/{pageid}/{id}', [SitePageDataController::class, 'destroy']);
 

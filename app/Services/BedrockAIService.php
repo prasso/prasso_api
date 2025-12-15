@@ -388,22 +388,11 @@ class BedrockAIService
             if (empty($this->accessKey) || empty($this->secretKey)) {
                 // Generate a simple placeholder image for testing
                 Log::info('Using mock image for Bedrock model invocation');
-                
-                // Create a simple colored square as a placeholder
-                $width = 200;
-                $height = 200;
-                $image = imagecreatetruecolor($width, $height);
-                $color = imagecolorallocate($image, 59, 130, 246); // Blue color
-                imagefill($image, 0, 0, $color);
-                
-                // Output the image to a buffer
-                ob_start();
-                imagepng($image);
-                $imageData = ob_get_clean();
-                imagedestroy($image);
-                
-                // Return base64 encoded image
-                return base64_encode($imageData);
+
+                // Avoid relying on PHP extensions like GD in development environments.
+                // This is a tiny 1x1 PNG (blue-ish) already base64-encoded.
+                // Keeping it small ensures it can always be decoded and uploaded.
+                return 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADUlEQVR4nGNgaGAAAAEEAIFw9selAAAAAElFTkSuQmCC';
             }
             
             // Prepare AWS SDK client if not already created
