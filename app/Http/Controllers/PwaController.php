@@ -115,7 +115,7 @@ class PwaController extends Controller
         $siteName = str_replace(' ', '_', $site->site_name);
         $host = $request->getHttpHost();
         $hostLabel = str_replace(['.', ':'], '-', $host); // Replace dots and colons with dashes
-        $cacheName = "pwa-cache-{$site->id}-{$siteName}-{$hostLabel}-v1";
+        $cacheName = "pwa-cache-{$site->id}-{$siteName}-{$hostLabel}-v2";
 
         $serviceWorkerCode = <<<'JS'
 const CACHE_NAME = 'CACHE_PLACEHOLDER';
@@ -157,43 +157,38 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event - handle all requests
 self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+
+  // Never interfere with cross-origin requests
+  if (url.origin !== self.location.origin) {
+    return;
+  }
+
   // Skip non-GET requests for non-API endpoints
   if (event.request.method !== 'GET' && !event.request.url.includes('/api/')) {
     return fetch(event.request);
   }
 
-  // Handle navigation and HTML requests - Network First strategy
-  if (event.request.mode === 'navigate' || 
-      (event.request.headers.get('accept') && event.request.headers.get('accept').includes('text/html'))) {
+  // Never cache authenticated/admin pages or image endpoints (avoid stale CSRF tokens)
+  const path = url.pathname || '/';
+  if (
+    path.startsWith('/image-library') ||
+    path.startsWith('/images/') ||
+    path.startsWith('/livewire/') ||
+    path.startsWith('/sanctum/') ||
+    path.startsWith('/login') ||
+    path.startsWith('/logout')
+  ) {
+    return event.respondWith(fetch(event.request, { cache: 'no-store' }));
+  }
+
+  // Handle navigation and HTML requests - Network Only (prevents stale CSRF/meta from cache)
+  if (
+    event.request.mode === 'navigate' ||
+    (event.request.headers.get('accept') && event.request.headers.get('accept').includes('text/html'))
+  ) {
     return event.respondWith(
-      fetch(event.request)
-        .then(response => {
-          // Don't cache non-successful responses
-          if (!response || response.status !== 200 || response.type === 'error') {
-            return response;
-          }
-          
-          // Check Cache-Control header to respect server caching directives
-          const cacheControl = response.headers.get('cache-control');
-          if (!cacheControl || cacheControl.includes('no-cache') || cacheControl.includes('no-store') || cacheControl.includes('must-revalidate')) {
-            // Don't cache if no cache-control header or if it has no-cache directives
-            return response;
-          }
-          
-          // Clone the response for caching
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            // Update the cache with the fresh response
-            cache.put(event.request, responseToCache);
-          });
-          return response;
-        })
-        .catch(() => {
-          // If network fails, try cache
-          return caches.match(event.request).then(response => {
-            return response || caches.match('/');
-          });
-        })
+      fetch(event.request, { cache: 'no-store' }).catch(() => caches.match('/'))
     );
   }
 

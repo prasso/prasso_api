@@ -9,11 +9,9 @@ use Prasso\Church\Models\EventOccurrence;
 use Prasso\Church\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class EventManagementTest extends TestCase
 {
-    use RefreshDatabase;
 
     protected function setUp(): void
     {

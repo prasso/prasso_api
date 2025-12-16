@@ -18,9 +18,19 @@ function initializeAiImageGeneration() {
     const generatedImage = document.getElementById('generatedImage');
     
     if (!generateAiImageBtn) return; // Exit if button not found
-    
-    // Get CSRF token from meta tag
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : null;
+
+    const getCookie = (name) => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    };
+
+    const xsrfCookie = getCookie('XSRF-TOKEN');
+    const xsrfToken = xsrfCookie ? decodeURIComponent(xsrfCookie) : null;
     
     // Open modal when button is clicked
     generateAiImageBtn.addEventListener('click', function() {
@@ -48,7 +58,9 @@ function initializeAiImageGeneration() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken,
+                        ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {}),
+                        ...(xsrfToken ? { 'X-XSRF-TOKEN': xsrfToken } : {}),
+                        'X-Requested-With': 'XMLHttpRequest',
                         'Accept': 'application/json'
                     },
                     body: JSON.stringify({
@@ -57,18 +69,32 @@ function initializeAiImageGeneration() {
                     }),
                     credentials: 'same-origin'
                 });
-                
-                const result = await response.json();
-                
-                if (result.success) {
+
+                const contentType = response.headers.get('content-type') || '';
+                let result = null;
+                let rawText = null;
+
+                if (contentType.includes('application/json')) {
+                    result = await response.json();
+                } else {
+                    rawText = await response.text();
+                }
+
+                if (!response.ok) {
+                    const serverError = result?.error || result?.message || rawText;
+                    showAiGenerationError(serverError || `Request failed (${response.status}). Please try again.`);
+                    return;
+                }
+
+                if (result?.success) {
                     showAiGenerationSuccess(result.imageUrl);
-                    
+
                     // Refresh the page after a short delay to show the new image
                     setTimeout(() => {
                         window.location.reload();
                     }, 3000);
                 } else {
-                    showAiGenerationError(result.error || 'Failed to generate image. Please try again.');
+                    showAiGenerationError(result?.error || 'Failed to generate image. Please try again.');
                 }
             } catch (error) {
                 console.error('AI image generation error:', error);

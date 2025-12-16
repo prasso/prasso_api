@@ -53,11 +53,14 @@ class ImageController extends Controller
         $images = TeamImage::whereIn('team_id', $teamIds)->get();
 
         // Pass the images to the view along with teams for reference
-        return view('image-library', [
+        return response()
+            ->view('image-library', [
             'images' => $images,
             'site' => $site,
             'teams' => $teams
-        ]);
+        ])
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache');
     }
     
     public function upload(Request $request)
@@ -203,6 +206,71 @@ class ImageController extends Controller
             \Log::error('Upload controller error: ' . $e->getMessage());
             return response()->json([
                 'error' => 'Error uploading image: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function destroy(Request $request, TeamImage $image)
+    {
+        try {
+            if ($request->has('site_id')) {
+                $site = \App\Models\Site::findOrFail($request->site_id);
+            } else {
+                $site = Controller::getClientFromHost();
+            }
+
+            $siteTeamIds = $site->teams->pluck('id')->toArray();
+
+            if (!in_array($image->team_id, $siteTeamIds, true)) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Unauthorized action.'
+                ], 403);
+            }
+
+            if (!\Auth::user()->isTeamMemberOrOwner($image->team_id)) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Unauthorized action.'
+                ], 403);
+            }
+
+            $path = (string) $image->path;
+
+            try {
+                $s3 = app('aws.s3');
+                $bucket = config('filesystems.disks.s3.bucket');
+
+                if (!empty($bucket) && !empty($path)) {
+                    $s3->deleteObject([
+                        'Bucket' => $bucket,
+                        'Key' => $path,
+                    ]);
+                }
+            } catch (\Exception $e) {
+                \Log::error('Error deleting image from S3: ' . $e->getMessage(), [
+                    'team_image_id' => $image->id,
+                    'path' => $path,
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Failed to delete image file from storage.'
+                ], 500);
+            }
+
+            $image->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Image deleted successfully.'
+            ], 200);
+        } catch (\Exception $e) {
+            \Log::error('Image delete error: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Error deleting image: ' . $e->getMessage()
             ], 500);
         }
     }
