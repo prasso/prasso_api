@@ -46,6 +46,7 @@ class Site extends Model
         'image_folder',
         'github_repository',
         'deployment_path',
+        'pwa_enabled',
     ];
 
     public function livestream_settings()

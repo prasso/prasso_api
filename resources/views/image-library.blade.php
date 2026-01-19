@@ -74,8 +74,18 @@
                 @else
                     <div class="grid grid-cols-3 gap-4 justify-center">
                         @foreach ($images as $image)
-                            <div class="flex items-center justify-center max-h-200">
-                                <img src="{{ config('constants.CLOUDFRONT_ASSET_URL').$image->path }}" alt="{{ $image->path }}">
+                            <div class="flex items-center justify-center">
+                                <div class="relative inline-block">
+                                    <img class="block" src="{{ config('constants.CLOUDFRONT_ASSET_URL').$image->path }}" alt="{{ $image->path }}">
+                                    <button type="button"
+                                        class="absolute top-2 right-2 z-10 bg-black bg-opacity-60 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md border border-white border-opacity-20 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                        data-image-id="{{ $image->id }}">
+                                        <span class="sr-only">Delete</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                                            <path fill-rule="evenodd" d="M9 3.75A.75.75 0 0 1 9.75 3h4.5a.75.75 0 0 1 .75.75V6h3a.75.75 0 0 1 0 1.5h-.75v12A2.25 2.25 0 0 1 15 21.75H9A2.25 2.25 0 0 1 6.75 19.5v-12H6a.75.75 0 0 1 0-1.5h3V3.75Zm1.5 2.25h3V4.5h-3V6Zm-2.25 1.5v12c0 .414.336.75.75.75h6a.75.75 0 0 0 .75-.75v-12H8.25Zm3 2.25a.75.75 0 0 1 .75.75v6a.75.75 0 0 1-1.5 0v-6a.75.75 0 0 1 .75-.75Zm3 0a.75.75 0 0 1 .75.75v6a.75.75 0 0 1-1.5 0v-6a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         @endforeach
                     </div>
@@ -140,5 +150,59 @@
     @push('scripts')
         <script src="{{ asset('js/image-upload.js') }}"></script>
         <script src="{{ asset('js/ai-image-generation.js') }}"></script>
+        <script>
+            document.addEventListener('click', function(e) {
+                const target = e.target instanceof Element ? e.target : null;
+                if (!target) return;
+
+                const button = target.closest('button[data-image-id]');
+                if (!button) return;
+
+                const id = button.getAttribute('data-image-id');
+                const imageId = id ? parseInt(id, 10) : null;
+                if (!imageId) return;
+                deleteImageFromLibrary(imageId);
+            });
+
+            async function deleteImageFromLibrary(imageId) {
+                if (!imageId) return;
+                if (!confirm('Delete this image? This cannot be undone.')) return;
+
+                const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+                const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : null;
+                const siteIdEl = document.getElementById('ai_site_id');
+                const siteId = siteIdEl ? siteIdEl.value : null;
+
+                try {
+                    const response = await fetch(`/images/${imageId}?site_id=${encodeURIComponent(siteId || '')}`, {
+                        method: 'DELETE',
+                        headers: {
+                            ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {}),
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        },
+                        credentials: 'same-origin'
+                    });
+
+                    const contentType = response.headers.get('content-type') || '';
+                    const result = contentType.includes('application/json') ? await response.json() : null;
+
+                    if (!response.ok) {
+                        alert(result?.error || result?.message || `Delete failed (${response.status}).`);
+                        return;
+                    }
+
+                    if (result?.success) {
+                        window.location.reload();
+                        return;
+                    }
+
+                    alert(result?.error || 'Delete failed.');
+                } catch (e) {
+                    console.error(e);
+                    alert('Delete failed due to a network error.');
+                }
+            }
+        </script>
     @endpush
 </x-app-layout>

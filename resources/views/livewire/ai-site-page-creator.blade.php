@@ -33,7 +33,7 @@
             </div>
             
             <div class="flex items-center justify-between">
-                <button wire:click="generateContent" wire:loading.attr="disabled" type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                <button wire:loading.attr="disabled" type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                     <span wire:loading.remove wire:target="generateContent">Generate Content</span>
                     <span wire:loading wire:target="generateContent">Generating...</span>
                 </button>

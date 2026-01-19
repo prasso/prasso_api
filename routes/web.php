@@ -22,10 +22,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\TeamInvitationController;
 use App\Http\Controllers\BedrockHtmlEditorController;
+use App\Http\Controllers\ConversationController;
+use Prasso\Messaging\Http\Controllers\MessageConversationController;
+use App\Http\Controllers\PwaController;
 
 Route::get('logout', function () {
     return redirect('/login');
 });
+
+// PWA Routes - Dynamic manifest and service worker per site
+Route::get('/manifest.json', [PwaController::class, 'manifest'])->name('pwa.manifest');
+Route::get('/service-worker.js', [PwaController::class, 'serviceWorker'])->name('pwa.service-worker');
 Route::get('/', 'SitePageController@index');
 
 Route::get('terms', function () {
@@ -118,6 +125,7 @@ Route::middleware([
     Route::post('/images/upload', 'ImageController@upload')->name('images.upload');
     Route::post('/images/confirm-resize', 'ImageController@confirmResize')->name('images.confirm-resize');
     Route::post('/images/generate-ai', 'ImageController@generateImageWithAI')->name('images.generate-ai');
+    Route::delete('/images/{image}', 'ImageController@destroy')->name('images.destroy');
     Route::get('/image-library', 'ImageController@index')->name('image.library');
     Route::delete('/site-page-data/{pageid}/{id}', [SitePageDataController::class, 'destroy']);
 
@@ -169,3 +177,13 @@ Route::get('/sites/{site}/site-map', [SiteMapController::class, 'edit'])
     ->name('sites.site-map.edit');
 Route::put('/sites/{site}/site-map', [SiteMapController::class, 'update'])
     ->name('sites.site-map.update');
+
+// Conversation views (authenticated)
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/conversations/{deliveryId}', [ConversationController::class, 'show'])
+        ->name('conversations.show');
+    Route::get('/messages/{messageId}/conversation', [MessageConversationController::class, 'show'])
+        ->name('message-conversations.show');
+    Route::get('/messages/{messageId}/conversation/export', [MessageConversationController::class, 'export'])
+        ->name('message-conversations.export');
+});

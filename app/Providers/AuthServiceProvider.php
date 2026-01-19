@@ -10,6 +10,10 @@ use App\Extensions\InstructorAuthGuard;
 use App\Extensions\InstructorUserProvider;
 use Faxt\Invenbin\Models\ErpProduct;
 use App\Policies\ErpProductPolicy;
+use Prasso\Messaging\Models\MsgDelivery;
+use App\Policies\MsgDeliveryPolicy;
+use Prasso\Messaging\Models\MsgMessage;
+use App\Policies\MsgMessagePolicy;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -23,6 +27,8 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         Team::class => TeamPolicy::class,
         ErpProduct::class => ErpProductPolicy::class,
+        MsgDelivery::class => MsgDeliveryPolicy::class,
+        MsgMessage::class => MsgMessagePolicy::class,
     ];
 
     /**

@@ -282,6 +282,22 @@
                             @error('invitation_only') <span class="text-red-500">{{ $message }}</span>@enderror
                         </div>
 
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Enable PWA (Progressive Web App): </label>
+                            <div class="flex items-center space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="pwa_enabled" id="pwa_enabled_yes" wire:model="pwa_enabled" value="1" class="form-radio h-4 w-4 text-blue-600" />
+                                    <span class="ml-2">Yes</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="pwa_enabled" id="pwa_enabled_no" wire:model="pwa_enabled" value="0" class="form-radio h-4 w-4 text-blue-600" />
+                                    <span class="ml-2">No</span>
+                                </label>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-1">Allow users to install this site as a Progressive Web App on their devices.</p>
+                            @error('pwa_enabled') <span class="text-red-500">{{ $message }}</span>@enderror
+                        </div>
+
 
                     </div>
                      <!-- New Stripe Key and Secret fields -->

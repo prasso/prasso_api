@@ -380,8 +380,8 @@
             <div class="hero-content">
                 <div class="hero-text">
                     <h1>Build Scalable Multi-Tenant SaaS</h1>
-                    <p class="subtitle">Powered by Laravel Plugin Architecture</p>
-                    <p>Faxt provides a robust foundation for creating and hosting multiple independent SaaS applications on a single codebase. Deploy tenant sites with complete data isolation, custom branding, and modular functionality.</p>
+                    <p class="subtitle">Framework-Flexible Architecture</p>
+                    <p>Faxt provides a robust foundation for creating and hosting multiple independent SaaS applications on a single codebase. Deploy tenant sites with complete data isolation, custom branding, and modular functionality using Laravel, React, or both.</p>
                     <div class="cta-buttons">
                         <a href="#get-started" class="btn btn-primary">Get Started →</a>
                         <a href="#features" class="btn btn-secondary">Learn More</a>
@@ -453,7 +453,7 @@
         <div class="container">
             <div class="section-title">
                 <h2>Why Choose Faxt?</h2>
-                <p>Everything you need to build and scale multi-tenant SaaS applications with Laravel</p>
+                <p>Everything you need to build and scale multi-tenant SaaS applications with your preferred technology stack</p>
             </div>
             <div class="features-grid">
                 <div class="feature-card">
@@ -463,8 +463,8 @@
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🔧</div>
-                    <h3>Laravel Plugin System</h3>
-                    <p>Extend functionality through modular Laravel packages. Add features without affecting other tenants or the core platform.</p>
+                    <h3>Modular Plugin System</h3>
+                    <p>Extend functionality through modular packages and components. Add features without affecting other tenants or the core platform.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🚀</div>
@@ -474,17 +474,17 @@
                 <div class="feature-card">
                     <div class="feature-icon">⚡</div>
                     <h3>API-First Design</h3>
-                    <p>RESTful APIs for seamless integration with mobile apps, third-party services, and custom applications.</p>
+                    <p>RESTful APIs for seamless integration with mobile apps, third-party services, and custom applications built with any framework.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🎛️</div>
-                    <h3>Admin Panel Integration</h3>
-                    <p>Powered by Filament for intuitive administration across all tenants. Manage everything from a single dashboard.</p>
+                    <h3>Modern Admin Interface</h3>
+                    <p>Intuitive administration across all tenants. Manage everything from a single, powerful dashboard interface.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📈</div>
                     <h3>Scalable & Flexible</h3>
-                    <p>Deploy new tenant sites with minimal development. Automatic tenant provisioning and growth-ready architecture.</p>
+                    <p>Deploy new tenant sites with minimal development. Automatic tenant provisioning and growth-ready architecture supporting multiple frameworks.</p>
                 </div>
             </div>
         </div>
@@ -506,12 +506,12 @@
                 <div class="step">
                     <div class="step-number">2</div>
                     <h3>Configure</h3>
-                    <p>Set up database connections, routing, and install base Laravel packages</p>
+                    <p>Set up database connections, routing, and choose your preferred technology stack</p>
                 </div>
                 <div class="step">
                     <div class="step-number">3</div>
                     <h3>Develop</h3>
-                    <p>Create custom plugins and packages for your specific business requirements</p>
+                    <p>Create custom plugins and components for your specific business requirements using Laravel, React, or both</p>
                 </div>
                 <div class="step">
                     <div class="step-number">4</div>
@@ -531,7 +531,7 @@
     <section id="get-started" class="cta-section">
         <div class="container">
             <h2>Ready to Build Your SaaS Platform?</h2>
-            <p>Join developers worldwide who trust Faxt for their multi-tenant Laravel applications</p>
+            <p>Join developers worldwide who trust Faxt for their multi-tenant applications</p>
             <div class="cta-buttons">
                 <a href="https://github.com/prasso/prasso_api" class="btn btn-white">View on GitHub →</a>
                 <a href="mailto:info@faxt.com" class="btn btn-secondary" style="border-color: white; color: white;">Contact Us</a>
@@ -545,7 +545,7 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>Faxt Platform</h3>
-                    <p>Building scalable SaaS solutions with Laravel made simple. From Prasso to Faxt, we continue to innovate in multi-tenant architecture.</p>
+                    <p>Building scalable SaaS solutions made simple. From Prasso to Faxt, we continue to innovate in multi-tenant architecture with flexible technology choices.</p>
                 </div>
                 <div class="footer-section">
                     <h3>Resources</h3>
@@ -555,10 +555,10 @@
                 </div>
                 <div class="footer-section">
                     <h3>Technologies</h3>
-                    <p>Laravel Framework</p>
+                    <p>Laravel Backend</p>
+                    <p>React Frontend</p>
                     <p>Multi-Tenant Architecture</p>
                     <p>Plugin System</p>
-                    <p>Filament Admin</p>
                 </div>
                 <div class="footer-section">
                     <h3>Contact</h3>

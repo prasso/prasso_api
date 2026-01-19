@@ -35,6 +35,16 @@
         <link rel="icon" sizes="192x192" href="{{ config('app.photo_url').$site->image_folder}}android-chrome-192x192.png">
         <link rel="icon" sizes="512x512" href="{{ config('app.photo_url').$site->image_folder}}android-chrome-512x512.png">
         <link rel="apple-touch-icon" href="{{ config('app.photo_url').$site->image_folder}}apple-touch-icon.png">
+        
+        <!-- PWA Manifest - Dynamic per site (only if enabled) -->
+        @if($site->pwa_enabled)
+        <link rel="manifest" href="/manifest.json">
+        <meta name="theme-color" content="{{ $site->main_color ?? '#000000' }}">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="{{ $site->site_name ?? config('app.name') }}">
+        @endif
     
         @if (isset($site->app_specific_css) && str_starts_with($site->app_specific_css, 'http') )
             <link rel="stylesheet" href="{{$site->app_specific_css}}">
@@ -64,6 +74,15 @@
             {{ $slot }}
         </div>
         <x-footer></x-footer>
+        
+        <!-- PWA Hidden Login Access (only for guests) -->
+        @guest
+        <script src="{{ asset('/js/pwa-login.js') }}" defer></script>
+        @endguest
+        
+        <!-- PWA Install Prompt (Android & iOS) -->
+        <script src="{{ asset('/js/pwa-install-prompt.js') }}" defer></script>
+        
 @livewireScripts
     </body>
 </html>

@@ -299,7 +299,8 @@ function initializeUploadForm() {
                 
                 // Refresh the page after a short delay to show the new images
                 setTimeout(() => {
-                    window.location.reload();
+                    // Force a hard refresh to bypass service worker cache
+                    window.location.reload(true);
                 }, 1500);
             } else {
                 showAlert('Failed to upload any images. Please try again.', 'error');

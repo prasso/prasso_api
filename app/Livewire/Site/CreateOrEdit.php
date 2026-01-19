@@ -27,6 +27,7 @@ class CreateOrEdit extends Component
     public $does_livestreaming; //
     public $invitation_only; //
     public $github_repository; //
+    public $pwa_enabled; //
     
     public $database;
     public $favicon;
@@ -73,6 +74,7 @@ class CreateOrEdit extends Component
         $this->does_livestreaming = $site->livestream_settings()->exists();
         $this->invitation_only = $site->invitation_only;
         $this->github_repository = $site->github_repository;
+        $this->pwa_enabled = $site->pwa_enabled;
         
         $this->database = $site->database;
         $this->favicon = $site->favicon;
@@ -163,6 +165,7 @@ class CreateOrEdit extends Component
             'app_specific_css' => $this->app_specific_css,
             'image_folder' => $this->image_folder,
             'github_repository' => $this->github_repository,
+            'pwa_enabled' => $this->pwa_enabled,
         ]);
         
         // Handle livestream settings based on does_livestreaming checkbox

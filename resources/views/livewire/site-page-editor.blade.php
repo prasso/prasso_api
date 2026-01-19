@@ -2,6 +2,9 @@
     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg px-4 py-4">
         <div class="mb-4">
             <button wire:click="create()" class="teambutton text-white font-bold py-2 px-4 rounded my-3" title="Create New Site Page">Create New Site Page</button>
+            <button wire:click="createWithAi()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded my-3 ml-2" title="Create New Site Page with AI">
+                <i class="material-icons inline mr-2">smart_toy</i>Create with AI
+            </button>
         </div>
         
         <x-dialog-modal wire:model="isOpen" maxWidth="2xl">
@@ -22,6 +25,25 @@
                 </x-secondary-button>
             </x-slot>
         </x-dialog-modal>
+
+        <x-dialog-modal wire:model="isAiModalOpen" maxWidth="2xl">
+            <x-slot name="title">
+                {{ __('Create Page with AI') }}
+            </x-slot>
+            
+            <x-slot name="content">
+                <div class="min-h-[60vh]">
+                    @livewire('ai-site-page-creator', ['siteId' => $siteid])
+                </div>
+            </x-slot>
+            
+            <x-slot name="footer">
+                <x-secondary-button wire:click="$set('isAiModalOpen', false)" wire:loading.attr="disabled">
+                    {{ __('Close') }}
+                </x-secondary-button>
+            </x-slot>
+        </x-dialog-modal>
+
         <table class="table-fixed w-full">
             <thead>
                 <tr class="bg-gray-100">
