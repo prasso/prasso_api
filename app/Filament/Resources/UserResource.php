@@ -58,6 +58,23 @@ class UserResource extends Resource
                     ->options(function () {
                         $user = \Illuminate\Support\Facades\Auth::user();
                         if (!$user) return [];
+                        
+                        // For super admins, show all teams the user belongs to
+                        if ($user && method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
+                            // Get the user being edited (from the URL)
+                            $recordId = request()->route('record');
+                            if ($recordId) {
+                                $editedUser = \App\Models\User::find($recordId);
+                                if ($editedUser) {
+                                    // Show all teams this user belongs to
+                                    return \App\Models\Team::whereHas('users', function($query) use ($editedUser) {
+                                        $query->where('users.id', $editedUser->id);
+                                    })->pluck('name', 'id');
+                                }
+                            }
+                        }
+                        
+                        // For sub-admins, show only teams from their site
                         $siteId = method_exists($user, 'getUserOwnerSiteId') ? $user->getUserOwnerSiteId() : null;
                         if (!$siteId) return [];
                         $site = Site::find($siteId);
@@ -176,7 +193,8 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\TeamsRelationManager::class,
+            RelationManagers\RolesRelationManager::class,
         ];
     }
 
