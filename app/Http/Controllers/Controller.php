@@ -112,7 +112,7 @@ class Controller extends FrameworkController
         // Fallback to the main hosting site (faxt.com home page)
         $fallback = Site::hostingSite();
         if ($fallback) {
-            Log::info("Falling back to hosting site for host: {$host}");
+            //Log::info("Falling back to hosting site for host: {$host}");
             return $fallback;
         }
         

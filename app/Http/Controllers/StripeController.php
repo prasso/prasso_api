@@ -315,7 +315,15 @@ class StripeController extends BaseController
 
     private function setStripeApi($site){
         // Retrieve the Stripe public key from the Site model's Stripe relationship
-        $stripeSecret = $site->stripe->secret; 
+        $stripeSecret = optional($site->stripe)->secret;
+        
+        if (!$stripeSecret) {
+            Log::error('Stripe is not configured for site', [
+                'siteId' => $site->id ?? null,
+                'host' => request()->getHost(),
+            ]);
+            throw new \RuntimeException('Stripe is not configured for this site.');
+        }
         // Set the Stripe API key
         \Stripe\Stripe::setApiKey($stripeSecret);
     }
