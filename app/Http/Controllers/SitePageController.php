@@ -110,7 +110,9 @@ class SitePageController extends BaseController
 
         // Only redirect instructors to the Filament admin panel if they are team owners for this specific site
         // or if they are super admins on any site
-        if ($user->hasRole(config('constants.INSTRUCTOR'))) {
+        // BUT: skip redirect if this site has a custom Dashboard page in site_pages
+        $hasCustomDashboard = $this->site && SitePages::where('fk_site_id', $this->site->id)->where('section', 'Dashboard')->exists();
+        if ($user->hasRole(config('constants.INSTRUCTOR')) && !$hasCustomDashboard) {
             // If this is the Prasso site (ID 1), only super admins should be redirected to admin
             if ($this->site->id == 1) {
                 if ($isPrassoSuperAdmin) {
