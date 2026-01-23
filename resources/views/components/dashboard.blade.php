@@ -58,6 +58,9 @@
                             <x-responsive-nav-link href="{{ route('filament.site-admin.pages.compose-and-send-message') }}">
                                 {{ __('Messaging') }}
                             </x-responsive-nav-link>
+                            <x-responsive-nav-link href="{{ route('subscription.form') }}">
+                                {{ __('Subscribe') }}
+                            </x-responsive-nav-link>
                             <div class="border-t border-gray-200 mt-2"></div>
                         </div>
                         @if (Auth::user()->isSuperAdmin())
