@@ -13,25 +13,8 @@
                 </div>
             </div>
             @if ( !Auth::user()->isInstructor($site))
-            <div class="max-w-md m-auto">
-                <div class="font-sans px-4 py-2">
-                <h2 class="text-lg font-semibold text-gray-600 mb-4">Welcome to Prasso!</h2>
-                <ul class="list-disc list-inside font-medium text-sm text-gray-500">
-                    <li>We will reach out to the registered email with next steps.</li>
-                </ul>
-                <p class="mt-4 text-lg font-semibold text-gray-600 mb-4">
-                    Feel free to reach out. We're here to make the process smooth and enjoyable.
-                </p>
-
-                <!-- Special Subscribe Link -->
-                <div class="text-center mt-6">
-                    <a href="/subscribe" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:from-purple-600 hover:to-blue-500 transform hover:scale-105 transition duration-300 ease-in-out">
-                    Subscribe Now
-                    </a>
-                </div>
-                </div>
-            </div>
-           @else
+                {!! $user_content !!}
+            @else
                 @php
                     $isPrassoSite = \App\Models\Site::isPrasso(parse_url(url()->current(), PHP_URL_HOST));
                     $isSuperAdmin = Auth::user()->isSuperAdmin();
@@ -39,27 +22,7 @@
                 @endphp
 
                 @if ($isPrassoSite && ($isSuperAdmin || $isInstructorWithNoSites))
-                <div class="max-w-md m-auto">
-                    <x-responsive-nav-link href="{{ route('apps.newsiteandapp', Auth::user()->current_team_id)  }}">
-                        <div class="text-center bg-gray-50 border-2 border-indigo-600/100">
-                            <div class="font-sans  text-lg font-semibold text-gray-600">
-                                New Site and App
-                            </div>
-                        </div>
-                    </x-responsive-nav-link>
-                    @if (!Auth::user()->isSuperAdmin())
-                    <div class="font-sans px-4 py-2">
-                        <h2 class="text-lg font-semibold text-gray-600 mb-4">Welcome to Prasso! We're excited for you to start building your apps. Here's how to get up and running:</h2>
-                        <ul class="list-disc list-inside font-medium text-sm text-gray-500">
-                            <li>Create Your Site: The first step is using the site creation wizard to make your site. This is the foundation for your apps. Your site URL identifies it. You can enable user registration and data isolation by sub-teams if needed.</li>
-                            <li>Add Views to Your Site: Next, add views to your site using the dashboard tools. You can visually design pages or connect to existing URLs.</li>
-                            <li>Build Your Mobile App: Apps link to sites. You configure apps with tabs that point to your site's views. The app host identifies the site and tabs to load. This data is sent back as JSON for the app to parse and display. Update tabs anytime through the admin panel.</li>
-                            <li>Manage Users and Teams: Users join teams associated with sites. They get access based on role (admin or user). Admins can set up apps for their sites through the admin panel. Sub-teams provide data isolation when enabled. The main site team still has access.</li>
-                        </ul>
-                        <p class="mt-4 text-lg font-semibold text-gray-600 mb-4">That's the basics! Feel free to reach out if you need any help getting your first app going. We're here to make the process smooth and enjoyable. Happy building!</p>
-                    </div>
-                    @endif
-                </div>
+                <!-- New Site and App button removed -->
                 @else
                 @if (Auth::user()->isInstructor($site) && Auth::user()->getSiteCount() > 0)
                 <div class="max-w-xs m-auto">
@@ -91,6 +54,9 @@
                             <!-- Account Management -->
                             <x-responsive-nav-link href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')">
                                 {{ __('Profile') }}
+                            </x-responsive-nav-link>
+                            <x-responsive-nav-link href="{{ route('filament.site-admin.pages.compose-and-send-message') }}">
+                                {{ __('Messaging') }}
                             </x-responsive-nav-link>
                             <div class="border-t border-gray-200 mt-2"></div>
                         </div>
