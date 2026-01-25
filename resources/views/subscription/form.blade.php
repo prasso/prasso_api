@@ -9,7 +9,6 @@
 
 <!-- Include Stripe.js -->
 <script src="https://js.stripe.com/v3/"></script>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Inter:,i,b&amp;display=block"/>
 <style>
   /* Base Styles */
   @layer base {
@@ -192,7 +191,7 @@
 <!-- Add the "Powered by Stripe" badge -->
 <div class="text-center mb-8">
     <a href="https://stripe.com" target="_blank">
-        <svg xmlns="http://www.w3.org/2000/svg" height="25" width="auto" viewBox="-17.85 -6.5 154.7 39">
+        <svg xmlns="http://www.w3.org/2000/svg" height="25" width="120" viewBox="-17.85 -6.5 154.7 39">
             <path d="M113 26H6c-3.314 0-6-2.686-6-6V6c0-3.314 2.686-6 6-6h107c3.314 0 6 2.686 6 6v14c0 3.314-2.686 6-6 6z"/>
         </svg>
     </a>
@@ -325,6 +324,7 @@
             const response = await axios.post('/subscribe', {
                 payment_method: paymentMethod,
                 subscription_product: document.getElementById('subscription-product-selection').value,
+                _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             });
 
             feedbackMessage.textContent = "Subscription successful!";
