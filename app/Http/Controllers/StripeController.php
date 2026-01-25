@@ -275,11 +275,28 @@ class StripeController extends BaseController
             $paymentMethod = $request->input('payment_method');
             $subscriptionProduct = $request->input('subscription_product');
 
-            $user->createOrGetStripeCustomer();
+            if (!$paymentMethod || !$subscriptionProduct) {
+                return $this->sendError('Subscription failed.', 'Payment method or subscription product is missing');
+            }
 
+            // Create or get the Stripe customer
+            $user->createOrGetStripeCustomer();
+            
+            if (!$user->stripe_id) {
+                return $this->sendError('Subscription failed.', 'Failed to create or retrieve Stripe customer');
+            }
+
+            // Attach the payment method to the customer
+            \Stripe\PaymentMethod::retrieve($paymentMethod)->attach([
+                'customer' => $user->stripe_id,
+            ]);
+
+            // Set as default payment method
             $user->updateDefaultPaymentMethod($paymentMethod);
 
+            // Create the subscription with the payment method
             $user->newSubscription('default', $subscriptionProduct)->create($paymentMethod);
+            
             //add instructor level if product is subscription
             $this->save_subscription($request);
             $success['message'] = 'Subscription created successfully!';
