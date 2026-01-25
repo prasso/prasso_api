@@ -269,13 +269,18 @@ class StripeController extends BaseController
 
         // Log the data to Laravel's log file for inspection
         info('Form data: ', $data);
+        info('User: ' . ($user ? $user->id : 'null'));
         
         $this->setStripeApi($this->site);
         try {
             $paymentMethod = $request->input('payment_method');
             $subscriptionProduct = $request->input('subscription_product');
 
+            info('Payment Method: ' . ($paymentMethod ?? 'null'));
+            info('Subscription Product: ' . ($subscriptionProduct ?? 'null'));
+
             if (!$paymentMethod || !$subscriptionProduct) {
+                info('Missing payment method or subscription product');
                 return $this->sendError('Subscription failed.', 'Payment method or subscription product is missing');
             }
 
